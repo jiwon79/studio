@@ -30,7 +30,7 @@ async function initialize() {
   screenTexture.wrapS = screenTexture.wrapT = THREE.RepeatWrapping;
   screenTexture.minFilter = screenTexture.magFilter = THREE.LinearFilter;
   screenTexture.generateMipmaps = false;
-  // Build a broad tonal field once per image; render individual dots from that field.
+  // Preserve interior detail and prepare only a narrow feathered silhouette band.
   const sourceCanvas = document.createElement('canvas');
   sourceCanvas.width = WIDTH / 2;
   sourceCanvas.height = HEIGHT / 2;

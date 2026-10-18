@@ -1,4 +1,4 @@
-/** Remove narrow dark ridges before converting a source image to ink density. */
+/** Local morphology used only to prepare density along the outer silhouette. */
 function extremumPass(source: Float32Array, width: number, height: number, radius: number, horizontal: boolean, minimum: boolean) {
   const result = new Float32Array(source.length);
   for (let y = 0; y < height; y++) {
@@ -43,15 +43,77 @@ function diffuse(source: Float32Array, width: number, height: number, radius: nu
   return result;
 }
 
-/** Input/output values are ink coverage, 0 = paper, 1 = black. Work at 600 × 750. */
+/** Only near-white paper connected to the frame is exterior; enclosed eye whites stay inside. */
+function findExterior(darkness: Float32Array, width: number, height: number) {
+  const exterior = new Uint8Array(darkness.length);
+  const queue = new Int32Array(darkness.length);
+  let head = 0;
+  let tail = 0;
+  const enqueue = (index: number) => {
+    if (exterior[index] || darkness[index] > 0.02) return;
+    exterior[index] = 1;
+    queue[tail++] = index;
+  };
+  for (let x = 0; x < width; x++) { enqueue(x); enqueue((height - 1) * width + x); }
+  for (let y = 0; y < height; y++) { enqueue(y * width); enqueue(y * width + width - 1); }
+  while (head < tail) {
+    const index = queue[head++];
+    const x = index % width;
+    const y = Math.floor(index / width);
+    if (x > 0) enqueue(index - 1);
+    if (x + 1 < width) enqueue(index + 1);
+    if (y > 0) enqueue(index - width);
+    if (y + 1 < height) enqueue(index + width);
+  }
+  return exterior;
+}
+
+/** Two-pass chamfer distance measures the narrow band around the actual silhouette. */
+function distanceTo(exterior: Uint8Array, width: number, height: number, target: number) {
+  const distance = Float32Array.from(exterior, value => value === target ? 0 : 1e6);
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const i = y * width + x;
+      if (x > 0) distance[i] = Math.min(distance[i], distance[i - 1] + 1);
+      if (y > 0) {
+        distance[i] = Math.min(distance[i], distance[i - width] + 1);
+        if (x > 0) distance[i] = Math.min(distance[i], distance[i - width - 1] + Math.SQRT2);
+        if (x + 1 < width) distance[i] = Math.min(distance[i], distance[i - width + 1] + Math.SQRT2);
+      }
+    }
+  }
+  for (let y = height - 1; y >= 0; y--) {
+    for (let x = width - 1; x >= 0; x--) {
+      const i = y * width + x;
+      if (x + 1 < width) distance[i] = Math.min(distance[i], distance[i + 1] + 1);
+      if (y + 1 < height) {
+        distance[i] = Math.min(distance[i], distance[i + width] + 1);
+        if (x > 0) distance[i] = Math.min(distance[i], distance[i + width - 1] + Math.SQRT2);
+        if (x + 1 < width) distance[i] = Math.min(distance[i], distance[i + width + 1] + Math.SQRT2);
+      }
+    }
+  }
+  return distance;
+}
+
+/** Input/output: ink coverage. Preserve interior detail beyond the narrow silhouette band. */
 export function softenInkField(darkness: Float32Array, width: number, height: number) {
-  // A grayscale opening removes thin contour strokes while retaining wide shadow masses.
+  const exterior = findExterior(darkness, width, height);
+  const insideDistance = distanceTo(exterior, width, height, 1);
+  const outsideDistance = distanceTo(exterior, width, height, 0);
   let opened = extremumPass(darkness, width, height, 3, true, true);
   opened = extremumPass(opened, width, height, 3, false, true);
   opened = extremumPass(opened, width, height, 3, true, false);
   opened = extremumPass(opened, width, height, 3, false, false);
-  const cleaned = Float32Array.from(darkness, (value, index) => value * 0.06 + Math.min(value, opened[index]) * 0.94);
-  const form = diffuse(cleaned, width, height, 2);
-  const feather = diffuse(cleaned, width, height, 6);
-  return Float32Array.from(form, (value, index) => value * 0.72 + feather[index] * 0.28);
+  // Remove the dark outline only when preparing the edge density. This field
+  // never replaces eyes, mouth lines, or interior shading in the actual output.
+  const edgeSource = Float32Array.from(darkness, (value, index) => value * 0.06 + Math.min(value, opened[index]) * 0.94);
+  const feather = diffuse(edgeSource, width, height, 3);
+  return Float32Array.from(darkness, (value, index) => {
+    if (exterior[index]) return outsideDistance[index] <= 10 ? feather[index] : 0;
+    if (insideDistance[index] >= 6) return value;
+    const t = Math.max(0, insideDistance[index] - 3) / 3;
+    const originalWeight = t * t * (3 - 2 * t);
+    return feather[index] * (1 - originalWeight) + value * originalWeight;
+  });
 }

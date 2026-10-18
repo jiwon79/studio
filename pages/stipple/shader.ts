@@ -25,7 +25,7 @@ void main() {
   vec2 p = vUv * vec2(1200.0, 1500.0);
   vec3 source = texture2D(uImage, vUv).rgb;
   float luminance = dot(source, vec3(0.2126, 0.7152, 0.0722));
-  // The source is a contour-suppressed, softly feathered density field.
+  // Interior tone stays sharp; only the outer silhouette has a feathered density.
   // Leave paper between dots even in shadows instead of filling a black silhouette.
   float tone = clamp(pow(max(0.0, 1.0 - luminance), 1.02) * 0.64 * uDensity, 0.0, 0.92);
   // Integrate fine dots over the output pixel instead of letting subpixel
