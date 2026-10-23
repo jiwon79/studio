@@ -6,8 +6,6 @@
 .inverse-debug { border-top: 1px solid #d5cbb9; margin-top: 24px; padding-top: 16px; }
 .inverse-debug > summary { font-size: 14px; font-weight: 500; cursor: pointer; }
 .inverse-options { display: flex; flex-wrap: wrap; gap: 12px 20px; font-size: 12px; margin: 18px 0; }
-.inverse-options label { display: flex; align-items: center; gap: 7px; }
-.inverse-options input { accent-color: #a65042; }
 .inverse-map { display: block; width: 100%; aspect-ratio: 640 / 340; background: #faf8f3; border: 1px solid #ded6c7; border-radius: 8px; }
 .inverse-map { cursor: crosshair; }
 .inverse-coordinates, .inverse-step { display: flex; flex-wrap: wrap; gap: 15px 25px; font-size: 11px; color: #746c5e; margin: 18px 0; }
@@ -124,21 +122,23 @@
 
 .shading-demo .demo-heading h3 { margin-bottom: 10px; }
 
-.pull-views { display: flex; gap: 3px; padding: 3px; border-radius: 6px; background: #e6e0d5; margin-bottom: 8px; }
-.pull-views button { flex: 1; min-height: 34px; border: 0; border-radius: 4px; background: transparent; color: #746c5e; font: inherit; font-size: 12px; cursor: pointer; }
-.pull-views button[aria-pressed=true] { background: #faf8f3; color: #332c23; box-shadow: 0 1px 3px #332c2320; }
-.pull-views button:focus-visible { outline: 2px solid #235c9a; }
-.pull-rule-canvas { display: block; width: 100%; height: clamp(170px, 37svh, 230px); background: #faf8f3; border: 1px solid #ded6c7; border-radius: 6px; touch-action: none; cursor: grab; }
-.document .pull-legend, .document .drag-legend { font-size: 10px; line-height: 1.5; color: #746c5e; margin: 4px 0 8px; }
-.pull-sliders { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; font-size: 11px; }
-.pull-sliders > div { min-width: 0; }
-.pull-sliders label { display: flex; gap: 6px; justify-content: space-between; }
-.pull-sliders input { width: 100%; }
-.pull-examples { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; margin: 5px 0; }
-.pull-examples button { min-height: 28px; padding: 3px; border: 1px solid #c8bfae; border-radius: 4px; background: transparent; color: #645c4f; font: inherit; font-size: 11px; cursor: pointer; }
-.pull-examples button[aria-pressed=true] { background: #e6dbd0; border-color: #a65042; }
-.pull-coordinates { display: block; margin: 0 0 3px; font: 10px/1.5 ui-monospace, monospace; text-align: center; font-variant-numeric: tabular-nums; }
-.pull-calculation { display: block; padding: 7px; background: #faf8f3; border-radius: 4px; font-size: 12px; text-align: center; font-variant-numeric: tabular-nums; }
+.deformation-sequence { margin: 20px 0; }
+.deformation-lesson .lesson-canvas { display: block; width: 100%; height: clamp(170px, 34svh, 220px); background: #faf8f3; border: 1px solid #ded6c7; border-radius: 6px; }
+#pull-point-demo .lesson-canvas { touch-action: none; cursor: crosshair; }
+.lesson-canvas:focus-visible { outline: 2px solid #235c9a; outline-offset: 2px; }
+.document .lesson-key, .document .drag-legend { font-size: 10px; line-height: 1.5; color: #746c5e; margin: 4px 0 8px; }
+.lesson-slider-label { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; }
+.deformation-lesson input[type=range] { width: 100%; min-height: 28px; margin: 0; }
+.lesson-comparison { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; font-size: 11px; }
+.lesson-comparison strong, .lesson-comparison small { display: block; }
+.lesson-comparison strong { font-size: 15px; font-weight: 500; }
+.lesson-comparison small { color: #746c5e; font-size: 10px; }
+.lesson-action, .inverse-options button { min-height: 34px; padding: 5px 10px; border: 1px solid #c8bfae; border-radius: 4px; background: transparent; color: #645c4f; font: inherit; font-size: 12px; cursor: pointer; }
+.lesson-action { width: 100%; margin: 4px 0; }
+.lesson-action:hover, .inverse-options button:hover { background: #e9e1d3; }
+.lesson-point-weight, .lesson-point-calculation, .lesson-point-coordinates { display: block; font-size: 11px; line-height: 1.6; font-variant-numeric: tabular-nums; }
+.lesson-point-coordinates { font-size: 10px; color: #746c5e; }
+.inverse-options { align-items: center; }
 .rose-scene .deformation-overlay { position: absolute; inset: 0; pointer-events: none; }
 .rose-scene .deformation-overlay[hidden], .drag-legend[hidden] { display: none; }
 #drag-demo .rose-scene { height: clamp(230px, 46svh, 300px); }

@@ -14,11 +14,10 @@ export function createInverseDebug(element: HTMLElement, canvas: HTMLCanvasEleme
   const details = document.createElement('details'); details.className = 'inverse-debug';
   details.id = 'inverse-debug'; details.open = location.hash === '#inverse-debug';
   details.innerHTML = `<summary>역변형 디버그: 현재 픽셀의 원래 위치 찾기</summary>
-    <p class="demo-note">예제를 불러온 뒤 오른쪽 격자에서 점을 누르고 반복 단계를 바꿔 보세요. 직접 당긴 상태를 멈추고 위 유리에서 점을 선택할 수도 있습니다.</p>
+    <p class="demo-note">예제를 불러온 뒤 오른쪽 격자에서 점을 누르고 반복 단계를 바꿔 보세요.</p>
     <button type="button" class="reset-button" data-debug-example>정지된 당김 예제 불러오기</button>
-    <div class="inverse-options"><label><input type="checkbox" data-debug="freeze" /> 변형 멈추기</label>
-      <label><input type="checkbox" data-debug="select" /> 계산할 점 선택 모드</label>
-      <label><input type="checkbox" data-debug="grid" checked /> 유리 위 격자 표시</label></div>
+    <div class="inverse-options"><button type="button" data-debug-freeze>지금 모양 멈추기</button>
+      <button type="button" data-debug-resume>다시 움직이기</button><output data-debug-status></output></div>
     <canvas class="inverse-map" role="img" aria-label="변형 전 격자와 현재 격자의 점 대응. 파란 점은 찾아낸 원래 재료 위치, 붉은 점은 선택한 현재 위치입니다."></canvas>
     <p class="demo-note">왼쪽 파란 점이 원래 재료 위치, 오른쪽 붉은 점이 현재 화면 위치입니다. 오른쪽 격자를 눌러 다른 점을 검사할 수 있습니다.</p>
     <p class="demo-note"><strong>최종 복원 결과:</strong> 두 격자와 아래 좌표는 전체 역계산을 끝낸 결과입니다.</p>
@@ -36,10 +35,13 @@ export function createInverseDebug(element: HTMLElement, canvas: HTMLCanvasEleme
   canvas.after(overlay);
   const map = details.querySelector<HTMLCanvasElement>('.inverse-map')!;
   const slider = details.querySelector<HTMLInputElement>('#inverse-iteration')!;
-  let selected: Point = { x: 410, y: 645 };
+  let selected: Point = { x: 410, y: 645 }, frozen = false;
   const format = (p: Point) => `(${p.x.toFixed(2)}, ${p.y.toFixed(2)})`;
   const text = (key: string, value: string) => { details.querySelector(`[data-value="${key}"]`)!.textContent = value; };
-  const enabled = (key: string) => details.querySelector<HTMLInputElement>(`[data-debug="${key}"]`)!.checked;
+  const setFrozen = (value: boolean) => {
+    frozen = value;
+    details.querySelector('[data-debug-status]')!.textContent = value ? '멈춘 상태' : '움직이는 상태';
+  };
   const inside = (p: Point) => {
     const y = p.y / foregroundGlassShape.height, x = (p.x - p.y * foregroundGlassShape.shear) / glassBodyWidthAt(2, y);
     return Math.abs(x) ** foregroundGlassShape.exponent + Math.abs(y) ** foregroundGlassShape.exponent <= 1;
@@ -68,7 +70,7 @@ export function createInverseDebug(element: HTMLElement, canvas: HTMLCanvasEleme
     ctx.fillStyle = color; ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI * 2); ctx.fill();
   };
   const update = () => {
-    overlay.hidden = !details.open || !enabled('grid');
+    overlay.hidden = !details.open;
     if (!details.open) return;
     const result = inspectInverse(selected, motion);
     const ratio = Math.min(devicePixelRatio, 2);
@@ -105,9 +107,11 @@ export function createInverseDebug(element: HTMLElement, canvas: HTMLCanvasEleme
   details.addEventListener('toggle', () => { update(); wake(); }); details.addEventListener('input', () => { update(); wake(); });
   details.querySelector('[data-debug-example]')!.addEventListener('click', () => {
     example(); selected = { x: 410, y: 645 };
-    details.querySelector<HTMLInputElement>('[data-debug="freeze"]')!.checked = true;
+    setFrozen(true);
     update(); wake();
   });
+  details.querySelector('[data-debug-freeze]')!.addEventListener('click', () => { setFrozen(true); update(); wake(); });
+  details.querySelector('[data-debug-resume]')!.addEventListener('click', () => { setFrozen(false); update(); wake(); });
   const select = (point: Point) => {
     if (motion.hitTest(point)) { selected = point; update(); }
     else details.querySelector('.inverse-hint')!.textContent = '유리 안쪽의 점을 눌러 주세요. 유리 바깥은 배경을 그리는 위치입니다.';
@@ -121,9 +125,7 @@ export function createInverseDebug(element: HTMLElement, canvas: HTMLCanvasEleme
   new ResizeObserver(update).observe(map);
   return {
     update,
-    get frozen() { return details.open && enabled('freeze'); },
-    get selecting() { return details.open && enabled('select'); },
-    select,
-    resume() { details.querySelector<HTMLInputElement>('[data-debug="freeze"]')!.checked = false; },
+    get frozen() { return details.open && frozen; },
+    resume() { setFrozen(false); },
   };
 }
