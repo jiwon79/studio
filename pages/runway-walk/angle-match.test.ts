@@ -33,3 +33,11 @@ test('exported source atlas offers valid consecutive blocks for every stored dir
     expect(frame.phase).toBeLessThan(1);
   }
 });
+
+test('a matching gait cannot pull a frontal person into a diagonal direction', () => {
+  const blocks = [
+    { start: 0, yaw: -45, phase: 0.5, clip: 'diagonal' },
+    { start: 3, yaw: 0, phase: 0, clip: 'frontal' },
+  ];
+  expect(chooseBlock(blocks,-30,0).clip).toBe('diagonal');
+});

@@ -18,7 +18,7 @@ export function chooseBlock(blocks: readonly AngleBlock[], yaw: number, phase: n
   const nearest = Math.min(...blocks.map(b => Math.abs(b.yaw - yaw)));
   let best = blocks[0], bestCost = Infinity;
   for (const block of blocks) {
-    if (Math.abs(block.yaw - yaw) > nearest + 15) continue;
+    if (Math.abs(block.yaw - yaw) > nearest + 5) continue;
     const cost = phaseDistance(block.phase, phase) * 5 + Math.abs(block.yaw - yaw) / 180 + (recent.includes(block.clip) ? 0.16 : 0);
     if (cost < bestCost) { best = block; bestCost = cost; }
   }
