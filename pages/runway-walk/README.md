@@ -35,23 +35,27 @@
 
 `/runway-walk/angle.html`에서 인물을 좌우로 드래그하거나 방향 슬라이더·방향키로 몸의 방향을 고른다. 손을 놓으면 선택 방향을 유지한다. `이 방향 저장 +`는 최대 다섯 방향을 이 브라우저의 로컬 저장소에 보관하며, 다시 눌러 불러올 수 있다. 선택 방향도 새로고침 뒤 복원한다. 저장소를 사용할 수 없어도 조작과 재생은 동작한다.
 
-루이비통 SS27, [Prada SS26](https://www.youtube.com/watch?v=SAjtxnyXu8U), [Prada SS25](https://www.youtube.com/watch?v=vz6dKkEiJzg), [Fendi SS25](https://www.youtube.com/watch?v=TSzy2vbjTac)의 실제 프레임을 사용한다. 현재 23개 구간의 596프레임을 512×768 투명 타일, 네 프레임씩 묶은 149장의 WebP 아틀라스에 보관한다. 미디어 전송량은 약 19.2MB다. 새 구간은 전체 연속 추출본에서 위상을 추정한 뒤 보행 주기에 분산된 여섯 개의 실제 3프레임 블록을 우선 보관한다. 같은 착장이 다른 구간에 등장하면 `lookId`로 묶어 중복 선택을 억제한다. 배경은 따뜻한 회색이며 인물의 원래 의상 색은 유지한다.
+루이비통 SS27, [Prada SS26](https://www.youtube.com/watch?v=SAjtxnyXu8U), [Prada SS25](https://www.youtube.com/watch?v=vz6dKkEiJzg), [Fendi SS25](https://www.youtube.com/watch?v=TSzy2vbjTac), [Gucci SS25](https://www.youtube.com/watch?v=4kD2CrWB_6k)의 실제 프레임을 사용한다. 현재 28개 구간의 935프레임을 512×768 투명 타일, 네 프레임씩 묶은 234장의 WebP 아틀라스에 보관한다. 미디어 전송량은 33.0 MB다. 새 구간의 일부 위상만 고르던 방식을 바꿔 전신이 유효한 연속 프레임을 보관한다. 같은 착장이 다른 구간에 등장하면 `lookId`로 묶는다. 배경은 따뜻한 회색이며 원래 의상 색은 유지한다.
 
-`angle-shots.json`의 방향은 촬영 화면을 직접 보고 붙인 카메라 기준 근사값이다. **각 원본 프레임에 구간의 방향을 저장**한다. 몸을 돌리는 도중 방향 표시와 실제 자세가 맞지 않았던 초록 상의·검은 코트 구간은 전체 제외했다. 카메라 보정으로 측정한 정확한 각도가 아니다. 선택 가능한 범위는 연속 3프레임을 확보한 약 왼쪽 75°부터 정면까지다. 반대 방향 후보는 발이 원본 밖으로 잘려 제외했다. 현재 선택 가능한 모든 정수 각도에는 가까운 방향 대역 안에 최소 네 가지 착장이 있다. 전방위 회전이나 동일 인물의 다중 시점 재구성은 아니다. 좌우 반전·몸 변형·생성 프레임을 사용하지 않는다.
+`angle-shots.json`의 방향은 화면을 직접 보고 붙인 카메라 기준 근사값이며 프레임마다 저장한다. 선택 범위는 약 왼쪽 75°부터 정면까지다. 38° 부근에서 섞이던 두 Prada 측면 구간을 측면 대역으로 옮기고, Louis Vuitton 사선 구간의 분류를 다시 검토했다. 이 부근에는 비슷한 방향의 네 착장, 전체 선택 범위의 각 정수 각도에는 최소 네 착장이 있다. 전신이 잘린 반대 방향 소스와 이전 초록 상의·검은 코트 회전 구간은 제외한다. 좌우 반전이나 생성 프레임을 사용하지 않는다.
 
-보행 위상은 MediaPipe의 3D 발목 차이를 몸의 앞 방향에 투영하고 주기 함수를 맞춰 추정한다. 재생 시 보행 시계는 방향과 독립적으로 계속 진행한다. 3프레임 경계에서 가까운 방향 대역(최근접 각도 오차 + 5° 이내), 현재 위상, 최근 네 착장의 사용을 함께 비교한다. 최적 보행 위상과의 차이가 0.08주기 이내인 다른 착장이 있으면 우선한다. 인물 수를 늘리려고 방향 대역을 넓히지는 않는다. 선택한 구간 안에서는 원본의 실제 연속 3프레임을 순서대로 보여준다. 같은 방향의 인물이 부족하면 같은 사람을 다시 사용한다. 인물·카메라마다 자세 추정과 원근이 달라 연결에 점프가 남을 수 있다.
+보행 위상은 MediaPipe의 3D 발목 차이를 몸의 앞 방향에 투영하고 주기 함수를 맞춰 추정한다. 보행 시계는 방향과 독립적으로 계속 진행한다. 3프레임 경계마다 최근접 각도 오차 + 5° 이내의 구간만 후보로 삼고, 보행 위상과 직전 인물의 무릎·발목 위치를 함께 비교한다. 위상 오차가 최적 후보보다 0.08주기 이내이고 관절 차이도 가까우면 최근 네 착장을 피한다. 선택한 구간에서는 원본의 실제 연속 3프레임을 순서대로 보여준다. 관절 좌표는 골반을 원점으로 하고 보정한 신체 크기로 정규화한다.
 
-머리·발이 원본 밖으로 잘린 후보와 너무 짧은 구간은 제외한다. 인물 전체를 같은 비율로 이동·확대해 골반 가로 위치와 발밑 높이를 맞추고, 머리가 타일 밖으로 나가면 확대를 제한한다. 알파를 곱한 상태에서 리샘플링한 뒤 투명 타일로 저장한다. 원본은 네 쇼 모두 1080p에서 다시 읽는다. [Robust Video Matting](https://github.com/PeterL1n/RobustVideoMatting)의 recurrent 상태를 원본 연속 프레임 사이에 유지해 알파를 추정하고, 골반이 속한 연결 성분만 남겨 관객·작은 배경 조각을 제거하고, 확실한 전경 주변의 좁은 반투명 경계만 유지해 옷·가방에 붙은 옅은 잔여물을 억제한다. 불투명한 내부는 원본 RGB를 유지하며 가장자리만 모델의 전경색으로 배경색 번짐을 보정한다. 파란 스웨터 구간에서 밝은 바닥과 혼동하던 흰 운동화 끝은 발 관절 주변으로 제한한 MediaPipe 마스크로 보완한다. 위치·크기 추정값만 시간 방향으로 안정화하며 움직이는 RGB·알파를 프레임끼리 섞지 않는다.
+자세 감지가 신발 클로즈업을 전신으로 오인한 프레임이 있었다. 이제 지정 구간 안의 카메라 컷을 원본 RGB 변화로 따로 찾고, 전신 자세가 가장 많이 검출된 한 쇼트만 남긴다. 카메라가 바뀐 프레임을 같은 구간으로 연결하지 않는다. 회전 중인 짧은 구간도 수동으로 줄인다.
 
-브라우저는 약 19.2MB의 압축 페이지를 최대 여섯 요청으로 읽고, ImageBitmap은 최대 다섯 페이지만 디코딩한다. 다음 3프레임 구간을 미리 디코딩하고 오래된 페이지는 `close()`로 해제한다. 디코딩된 아틀라스 픽셀은 최대 약 31.5MB이며 압축 Blob·Canvas 메모리는 별도다. 얼굴·머리·원본 촬영 압축의 한계와 자동 마스크의 일부 누락은 남는다.
+[BiRefNet general lite](https://github.com/ZhengPeng7/BiRefNet) ONNX 모델로 1080p 원본의 알파를 다시 계산한다. 선택한 골반의 연결 성분과 손·발 근처의 작은 분리 성분만 유지해 관객과 배경 조각을 제거한다. Louis Vuitton의 파도 무늬가 머리에 붙는 현상은 현재 프레임의 MediaPipe 인물 마스크로 어깨 위 영역을 추가 제한한다. 머리 가장자리에는 좁은 여유를 둔다. 발목 아래에서는 발목·뒤꿈치·발끝 주변을 벗어나는 바닥 조각을 제한한다. 원본 여섯 프레임마다 키 마스크를 구하고, 중간 프레임은 현재 영상에서 키 프레임으로 향하는 optical flow로 최대 세 프레임 거리의 마스크를 옮긴다. 양쪽 키가 가까울 때는 현재 좌표계에서 색 일치도가 높은 쪽에 무게를 둔다. 움직이는 원본 RGB를 섞거나 얼굴·옷을 생성하지 않는다. 모델·flow의 작은 경계 오차와 원본 촬영 해상도의 한계는 남는다.
 
-- `angles.json`: 출처, 구간, 착장 ID, 정규화 영상의 프레임 번호, 근사 방향, 보행 위상, 아틀라스·타일 인덱스.
-- `scripts/runway-walk/angle-sources.json`: 원본 URL, 로컬 파일, 원본·정규화 fps와 원본 시작 오프셋. Prada SS25는 50fps, Fendi SS25는 30fps 원본을 25fps로 정규화한다. Fendi 캐시는 원본 1690초부터 635초 구간이다. 원본 시각은 `sourceOffset + sourceFrame / fps`로 복원한다.
-- `angle-match.ts`: 실제 연속 구간 검증과 방향·위상 선택. `angle-match.test.ts`는 원본 프레임 누락·구간 경계 및 실제 매니페스트 선택을 검증한다.
-- `angle.ts`: 재생 시계, 드래그·키보드·슬라이더, 방향 저장과 Canvas 출력. `atlas-pool.ts`는 중복 디코딩 방지와 제한된 LRU 페이지 수명을 관리한다.
-- `refine-angles.py`: 동일한 원본 프레임·방향·위상을 유지한 고해상도 재매팅과 아틀라스 출력. 이 단계는 이전 MP4 시안을 변경하지 않는다.
+크기는 굽힌 다리의 2D 길이 대신 알파의 머리 끝부터 발바닥까지의 높이로 맞춘다. 각 프레임의 전신 높이를 660px, 발바닥을 720px로 맞춘다. 골반 가로 위치는 구간 안에서 안정화한다. 바닥 높이를 시간 방향으로 평균하면 발이 뜨므로 현재 프레임의 발바닥을 직접 기준으로 삼는다. 가방·모자·보폭이 타일을 벗어나면 확대를 제한한다. 가로세로 비율과 실제 체형은 유지한다. 알파를 곱한 상태에서 리샘플링해 투명 경계의 색 번짐을 줄인다.
 
-추가 소스를 로컬 캐시에 받은 뒤 재현한다. 원본 영상은 Git에 포함하지 않는다.
+브라우저는 압축 페이지를 최대 여섯 요청으로 읽고 ImageBitmap은 최대 다섯 페이지만 디코딩한다. 다음 구간을 미리 준비하고 오래된 페이지는 `close()`로 해제한다. 디코딩한 아틀라스 픽셀은 최대 약 31.5MB이며 압축 Blob·Canvas 메모리는 별도다. 이전 MP4 시안은 이 단계에서 변경하지 않는다.
+
+- `angles.json`: 출처, 구간·착장 ID, 정규화 원본 프레임 번호, 근사 방향, 보행 위상, 관절·크기 보정 정보, 아틀라스 인덱스.
+- `scripts/runway-walk/angle-sources.json`: 원본 URL, 로컬 파일, 원본·정규화 fps와 시작 오프셋. Prada SS25는 50fps, Fendi SS25는 30fps 원본을 25fps로 맞춘다. Fendi 캐시는 원본 1690초부터 635초 구간이다. 원본 시각은 `sourceOffset + sourceFrame / fps`로 복원한다.
+- `angle-match.ts`: 연속 구간 검증, 방향·위상·관절 선택. 테스트는 카메라 구간 경계, 38° 후보, 각도별 착장 수와 실제 매니페스트 재생 선택을 검사한다.
+- `angle.ts`: 재생 시계, 방향·저장 조작, Canvas 출력. `atlas-pool.ts`: 중복 디코딩 방지와 LRU 페이지 수명 관리.
+- `refine-angles.py`: 키 마스크·flow, 신장 보정, HD 아틀라스 출력. 원본·키 마스크·보정 PNG는 Git 제외 캐시에 보관한다.
+
+추가 소스를 로컬 캐시에 받은 뒤 재현한다. 원본 영상과 모델은 Git에 포함하지 않는다. 아래 실행 전 기본 원본·MediaPipe 모델·가상환경은 다음 절의 절차로 준비한다.
 
 ```sh
 uv tool run --from 'yt-dlp[default]' yt-dlp --no-playlist -f 136 -o .cache/runway-walk/prada-ss26.mp4 'https://www.youtube.com/watch?v=SAjtxnyXu8U'
@@ -60,8 +64,9 @@ uv tool run --from 'yt-dlp[default]' yt-dlp --no-playlist -f 'bestvideo[height=1
 ffmpeg -i .cache/runway-walk/prada-ss25-original.mp4 -vf fps=25 -c:v libx264 -preset veryfast -crf 15 -an .cache/runway-walk/prada-ss25.mp4
 uv tool run --from 'yt-dlp[default]' yt-dlp --no-playlist -f 137 -o .cache/runway-walk/fendi-ss25.mp4 'https://www.youtube.com/watch?v=TSzy2vbjTac'
 ffmpeg -ss 1690 -i .cache/runway-walk/fendi-ss25.mp4 -t 635 -vf fps=25 -c:v libx264 -preset veryfast -crf 15 -an .cache/runway-walk/fendi-ss25-show.mp4
+uv tool run --from 'yt-dlp[default]' yt-dlp --no-playlist -f 'bestvideo[height=1080][ext=mp4]/bestvideo[height=1080]' -o .cache/runway-walk/gucci-ss25-original.mp4 'https://www.youtube.com/watch?v=4kD2CrWB_6k'
+curl -fL 'https://github.com/danielgatis/rembg/releases/download/v0.0.0/BiRefNet-general-bb_swin_v1_tiny-epoch_232.onnx' -o .cache/runway-walk/birefnet-lite.onnx
 .cache/runway-walk/venv/bin/python scripts/runway-walk/angles.py --cache .cache/runway-walk --output pages/runway-walk
-curl -fL 'https://github.com/PeterL1n/RobustVideoMatting/releases/download/v1.0.0/rvm_mobilenetv3_fp32.onnx' -o .cache/runway-walk/rvm-mobilenetv3.onnx
 .cache/runway-walk/venv/bin/python scripts/runway-walk/refine-angles.py --cache .cache/runway-walk --output pages/runway-walk
 ```
 

@@ -82,7 +82,7 @@
     "source": "prada",
     "start": 233,
     "end": 235,
-    "yaw": -45,
+    "yaw": -75,
     "roi": [
       380,
       0,
@@ -93,8 +93,8 @@
   {
     "id": "prada-left-154",
     "source": "prada",
-    "start": 153,
-    "end": 155,
+    "start": 153.7,
+    "end": 154.55,
     "yaw": -75,
     "roi": [
       300,
@@ -108,14 +108,13 @@
     "source": "lv",
     "start": 65.2,
     "end": 66.8,
-    "yaw": -70,
+    "yaw": -50,
     "roi": [
       543,
       0,
       960,
       1080
-    ],
-    "sampleBlocks": 6
+    ]
   },
   {
     "id": "lv-look-138",
@@ -128,50 +127,46 @@
       0,
       960,
       1080
-    ],
-    "sampleBlocks": 6
+    ]
   },
   {
     "id": "lv-look-298",
     "source": "lv",
     "start": 297.2,
     "end": 298.8,
-    "yaw": -70,
+    "yaw": -50,
     "roi": [
       507,
       0,
       960,
       1080
-    ],
-    "sampleBlocks": 6
+    ]
   },
   {
     "id": "lv-look-410",
     "source": "lv",
     "start": 409.2,
     "end": 410.8,
-    "yaw": -55,
+    "yaw": -45,
     "roi": [
       612,
       0,
       960,
       1080
-    ],
-    "sampleBlocks": 6
+    ]
   },
   {
     "id": "lv-look-608",
     "source": "lv",
     "start": 607.2,
     "end": 608.8,
-    "yaw": -45,
+    "yaw": 0,
     "roi": [
       597,
       0,
       960,
       1080
-    ],
-    "sampleBlocks": 6
+    ]
   },
   {
     "id": "lv-look-670",
@@ -184,8 +179,7 @@
       0,
       960,
       1080
-    ],
-    "sampleBlocks": 6
+    ]
   },
   {
     "id": "prada-look-26",
@@ -198,8 +192,7 @@
       0,
       640,
       720
-    ],
-    "sampleBlocks": 6
+    ]
   },
   {
     "id": "prada-look-80",
@@ -212,8 +205,7 @@
       0,
       640,
       720
-    ],
-    "sampleBlocks": 6
+    ]
   },
   {
     "id": "prada-look-186",
@@ -226,22 +218,20 @@
       0,
       640,
       720
-    ],
-    "sampleBlocks": 6
+    ]
   },
   {
     "id": "prada-look-318",
     "source": "prada",
     "start": 317.9,
     "end": 319.1,
-    "yaw": -45,
+    "yaw": -75,
     "roi": [
       310,
       0,
       640,
       720
-    ],
-    "sampleBlocks": 6
+    ]
   },
   {
     "id": "prada25-look-50",
@@ -254,8 +244,7 @@
       0,
       960,
       1080
-    ],
-    "sampleBlocks": 6
+    ]
   },
   {
     "id": "fendi-look-1720",
@@ -269,7 +258,6 @@
       960,
       1080
     ],
-    "sampleBlocks": 6,
     "lookId": "fendi-gray-jacket-shorts"
   },
   {
@@ -283,8 +271,7 @@
       0,
       960,
       1080
-    ],
-    "sampleBlocks": 6
+    ]
   },
   {
     "id": "prada25-look-112",
@@ -297,8 +284,7 @@
       0,
       960,
       1080
-    ],
-    "sampleBlocks": 6
+    ]
   },
   {
     "id": "fendi-look-1727",
@@ -312,7 +298,71 @@
       960,
       1080
     ],
-    "sampleBlocks": 6,
     "lookId": "fendi-gray-jacket-shorts"
+  },
+  {
+    "id": "lv-look-193",
+    "source": "lv",
+    "start": 191.3,
+    "end": 193.7,
+    "yaw": -55,
+    "roi": [
+      400,
+      0,
+      1200,
+      1080
+    ]
+  },
+  {
+    "id": "gucci-look-95",
+    "source": "gucci",
+    "start": 94.3,
+    "end": 95.7,
+    "yaw": 0,
+    "roi": [
+      480,
+      0,
+      960,
+      1080
+    ]
+  },
+  {
+    "id": "gucci-look-123",
+    "source": "gucci",
+    "start": 122.3,
+    "end": 123.7,
+    "yaw": 0,
+    "roi": [
+      480,
+      0,
+      960,
+      1080
+    ]
+  },
+  {
+    "id": "gucci-look-179",
+    "source": "gucci",
+    "start": 178.3,
+    "end": 179.7,
+    "yaw": 0,
+    "roi": [
+      480,
+      0,
+      960,
+      1080
+    ]
+  },
+  {
+    "id": "gucci-look-191",
+    "source": "gucci",
+    "start": 190.3,
+    "end": 191.7,
+    "yaw": 0,
+    "roi": [
+      480,
+      0,
+      960,
+      1080
+    ]
   }
 ]

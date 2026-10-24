@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 import data from './angles.json';
-import { buildBlocks, chooseBlock, phaseDistance, type AngleFrame } from './angle-match';
+import { buildBlocks, chooseBlock, phaseDistance, gaitDistance, type AngleFrame } from './angle-match';
 const f = (clip: string, sourceFrame: number): AngleFrame => ({ clip, source: 'test', sourceFrame, yaw: 0, phase: 0, atlas: 0, tile: 0 });
 test('three-frame blocks cannot cross source gaps or clip boundaries', () => {
   const blocks = buildBlocks([f('a',10),f('a',11),f('a',12),f('a',14),f('a',15),f('b',16),f('b',17),f('b',18)]);
@@ -61,12 +61,49 @@ test('avoid recent outfits when another outfit has a nearby gait in the same dir
 });
 test('each representative direction actually visits four outfits during playback', () => {
   const blocks = buildBlocks(data.frames);
-  for (const yaw of [-75,-60,-45,0]) {
-    let recent: string[]=[]; const visited=new Set<string>();
+  for (const yaw of [-75,-60,-38,0]) {
+    let recent: string[]=[]; let previous: readonly number[] | undefined; const visited=new Set<string>();
     for (let cut=0; cut<120; cut++) {
-      const block=chooseBlock(blocks,yaw,(cut/10)%1,recent);
+      const block=chooseBlock(blocks,yaw,(cut/10)%1,recent,previous);
       const look=block.look ?? block.clip; visited.add(look); recent=[look,...recent].slice(0,4);
+      previous=data.frames[block.start+2].gait;
     }
     expect(visited.size, `playback at ${yaw}`).toBeGreaterThanOrEqual(4);
   }
+});
+test('all exported source identities are unique and stay inside one camera shot', () => {
+  expect(new Set(data.frames.map(f=>`${f.clip}:${f.sourceFrame}`)).size).toBe(data.frames.length);
+  for (const clip of data.clips) {
+    const frames=data.frames.filter(f=>f.clip===clip.id);
+    expect(buildBlocks(frames).length,clip.id).toBeGreaterThan(0);
+    for (const f of frames) {
+      expect(f.sourceFrame).toBeGreaterThanOrEqual(clip.sourceSegment[0]);
+      expect(f.sourceFrame).toBeLessThan(clip.sourceSegment[1]);
+    }
+  }
+});
+test('38-degree selection excludes the misclassified Prada side shots', () => {
+  const blocks=buildBlocks(data.frames);
+  for(let step=0;step<30;step++)expect(chooseBlock(blocks,-38,step/30).clip.startsWith('prada')).toBe(false);
+});
+test('registered stature and floor remain stable across the actual library', () => {
+  const heights=data.frames.map(f=>f.registration.height).sort((a,b)=>a-b);
+  const floors=data.frames.map(f=>f.registration.ground).sort((a,b)=>a-b);
+  const p=(values: number[],q: number)=>values[Math.floor((values.length-1)*q)];
+  expect(p(heights,.95)-p(heights,.05)).toBeLessThan(30);
+  expect(p(floors,.95)-p(floors,.05)).toBeLessThan(15);
+  for(const f of data.frames) {
+    expect(f.gait.length).toBe(8);
+    expect(f.gait.every(v=>Number.isFinite(v)&&Math.abs(v)<1)).toBe(true);
+  }
+});
+test('prefer compatible knee and ankle positions when phase estimates are close', () => {
+  const previous = [-.08,.18,.08,.18,-.1,.35,.1,.35];
+  const blocks = [
+    {start:0,yaw:-45,phase:0,clip:'swapped-legs',gait:[.1,.18,-.1,.18,.2,.35,-.2,.35]},
+    {start:3,yaw:-45,phase:.02,clip:'continuous',gait:previous},
+    {start:6,yaw:0,phase:0,clip:'wrong-direction',gait:previous},
+  ];
+  expect(chooseBlock(blocks,-38,0,[],previous).clip).toBe('continuous');
+  expect(gaitDistance(previous,previous)).toBe(0);
 });

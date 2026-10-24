@@ -65,6 +65,20 @@ with mp.tasks.vision.PoseLandmarker.create_from_options(opts) as model:
     rows.append({'sourceFrame':source_frame,'file':name,'signal':signal,'pose':p.tolist()})
    cap.release();(folder/'rows.json').write_text(json.dumps({'key':key,'rows':rows}))
   print(shot['id'],len(rows),flush=True)
+  # Pose detectors can hallucinate a whole body in a shoe close-up. Never join
+  # two camera shots under one identity: keep the shot with most full-body rows.
+  cap=cv2.VideoCapture(str(sources[shot['source']]))
+  begin=round(shot['start']*25);end=round(shot['end']*25)
+  cap.set(cv2.CAP_PROP_POS_FRAMES,begin);cuts=[begin];previous=None
+  for frame in range(begin,end):
+   ok,source=cap.read()
+   if not ok:break
+   thumbnail=cv2.resize(source,(96,54)).astype(np.float32)/255
+   if previous is not None and np.abs(thumbnail-previous).mean()>.16:cuts.append(frame)
+   previous=thumbnail
+  cap.release();cuts.append(end)
+  segment=max(zip(cuts[:-1],cuts[1:]),key=lambda ab:sum(ab[0]<=r['sourceFrame']<ab[1] for r in rows))
+  rows=[r for r in rows if segment[0]<=r['sourceFrame']<segment[1]]
   if len(rows)<12:continue
   t=np.array([r['sourceFrame']/25 for r in rows]);signal=gaussian_filter1d(np.array([r['signal'] for r in rows]),1)
   best=None
@@ -84,7 +98,7 @@ with mp.tasks.vision.PoseLandmarker.create_from_options(opts) as model:
     selected.update(range(best_start,best_start+3))
    retained=[r for i,r in enumerate(rows) if i in selected]
   all_rows.extend(retained)
-  clip_info.append({**shot,'frames':len(retained),'extractedFrames':len(rows),'frequency':float(freq),'phaseFitError':err})
+  clip_info.append({**shot,'frames':len(retained),'extractedFrames':len(rows),'sourceSegment':list(segment),'frequency':float(freq),'phaseFitError':err})
 # Lossy WebP RGB with preserved alpha, 6x6 tiles per sheet.
 atlases=[];frames=[]
 for start in range(0,len(all_rows),36):

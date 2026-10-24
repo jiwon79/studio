@@ -56,12 +56,12 @@ async function prepare(candidate: typeof block) {
   await Promise.all([...pages].map(index => images.load(index)));
 }
 function warmNext() {
-  const candidate = chooseBlock(blocks, target, (phase + (data.holdFrames - offset) / 30) % 1, recent);
+  const candidate = chooseBlock(blocks, target, (phase + (data.holdFrames - offset) / 30) % 1, recent, frames[block.start + data.holdFrames - 1].gait);
   void prepare(candidate).catch(() => { /* The foreground switch retries decoding. */ });
 }
 async function pick() {
   const version = ++pickVersion;
-  const candidate = chooseBlock(blocks, target, phase, recent);
+  const candidate = chooseBlock(blocks, target, phase, recent, ready ? frames[block.start + Math.min(offset, data.holdFrames - 1)].gait : undefined);
   switching = true;
   try {
     await prepare(candidate);
