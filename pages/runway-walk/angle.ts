@@ -14,8 +14,9 @@ const play = document.querySelector<HTMLButtonElement>('#play')!;
 const save = document.querySelector<HTMLButtonElement>('#save')!;
 const reset = document.querySelector<HTMLButtonElement>('#reset')!;
 const presets = document.querySelector<HTMLDivElement>('#presets')!;
-const minYaw = Math.min(...blocks.map(b => b.yaw));
-const maxYaw = Math.floor(Math.max(...blocks.map(b => b.yaw)));
+// Reviewed rear views remain in the data with their actual yaw. They must not
+// extend the control into directions whose source coverage has not been approved.
+const [minYaw, maxYaw] = data.yawRange;
 angle.min = String(minYaw); angle.max = String(maxYaw);
 const storageKey = 'runway-walk-direction-v1';
 const clamp = (value: number) => Math.max(minYaw, Math.min(maxYaw, value));

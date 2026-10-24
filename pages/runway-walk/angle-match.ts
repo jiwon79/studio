@@ -42,6 +42,6 @@ export function chooseBlock(blocks: readonly AngleBlock[], yaw: number, phase: n
   }));
   const bestCost = Math.min(...scored.map(s => s.cost));
   const fresh = scored.filter(({ block, cost }) => !recent.includes(block.look ?? block.clip) &&
-    cost <= bestCost + 0.35 && phaseDistance(block.phase,phase) <= bestPhase + 0.12);
+    cost <= bestCost + 0.4 && phaseDistance(block.phase,phase) <= bestPhase + 0.12);
   return (fresh.length ? fresh : scored).reduce((best,s) => s.cost < best.cost ? s : best).block;
 }

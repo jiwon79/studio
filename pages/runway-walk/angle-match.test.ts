@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 import data from './angles.json';
-import { buildBlocks, chooseBlock, directionCoverage, phaseDistance, gaitDistance, type AngleFrame } from './angle-match';
+import { buildBlocks, chooseBlock, directionCoverage, directionCandidates, phaseDistance, gaitDistance, type AngleFrame } from './angle-match';
 const f = (clip: string, sourceFrame: number): AngleFrame => ({ clip, source: 'test', sourceFrame, yaw: 0, phase: 0, atlas: 0, tile: 0 });
 test('three-frame blocks cannot cross source gaps or clip boundaries', () => {
   const blocks = buildBlocks([f('a',10),f('a',11),f('a',12),f('a',14),f('a',15),f('b',16),f('b',17),f('b',18)]);
@@ -133,9 +133,24 @@ test('finale supplements contain only reviewed complete frames of one outfit', (
     expect(clip.screenPhaseCalibration?.reference).toBe(clip.phaseReference);
   }
 });
-test('38-degree selection excludes the misclassified Prada side shots', () => {
-  const blocks=buildBlocks(data.frames);
-  for(let step=0;step<30;step++)expect(chooseBlock(blocks,-38,step/30).clip.startsWith('prada-')).toBe(false);
+test('75-degree selection excludes frontal and rear parts of the reviewed turns', () => {
+  expect(data.yawRange).toEqual([-75,0]);
+  const eligible=directionCandidates(buildBlocks(data.frames),-75);
+  const selected=eligible.flatMap(b=>data.frames.slice(b.start,b.start+data.holdFrames));
+  expect(selected.some(f=>f.clip==='prada-oblique-234')).toBe(false);
+  expect(selected.some(f=>f.clip==='prada24-turn-351')).toBe(false);
+  expect(selected.filter(f=>f.clip==='prada-look-318').every(f=>f.sourceFrame>=7968)).toBe(true);
+  expect(selected.filter(f=>f.clip==='prada-left-154').every(f=>f.sourceFrame<=3850)).toBe(true);
+  expect(selected.every(f=>Math.abs(f.yaw+75)<6)).toBe(true);
+  expect(data.frames.some(f=>f.clip==='prada-look-80'&&f.sourceFrame===2011)).toBe(false);
+  expect(data.frames.some(f=>f.clip==='prada24-turn-142'&&[3557,3560,3561,3562].includes(f.sourceFrame))).toBe(false);
+  expect(data.frames.some(f=>f.clip==='prada24-turn-351'&&[8778,8787,8802].includes(f.sourceFrame))).toBe(false);
+  const rear=data.frames.find(f=>f.clip==='prada24-turn-351'&&f.sourceFrame===8804);
+  expect(rear?.yaw).toBeLessThan(-100);
+  for(const clip of ['prada-oblique-234','prada-look-318','prada-left-154','prada-look-80']) {
+    const yaws=data.frames.filter(f=>f.clip===clip).map(f=>f.yaw);
+    expect(Math.max(...yaws)-Math.min(...yaws),clip).toBeGreaterThan(20);
+  }
 });
 test('registered stature and floor remain stable across the actual library', () => {
   const heights=data.frames.map(f=>f.registration.height).sort((a,b)=>a-b);

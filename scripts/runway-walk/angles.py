@@ -8,6 +8,7 @@ from pathlib import Path
 import cv2, mediapipe as mp, numpy as np
 from PIL import Image
 from scipy.ndimage import gaussian_filter1d
+from body_yaw import estimate_yaws
 
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--cache',type=Path,required=True)
@@ -24,7 +25,7 @@ all_rows=[];clip_info=[]
 with mp.tasks.vision.PoseLandmarker.create_from_options(opts) as model:
  for shot in shots:
   folder=root/shot['id'];folder.mkdir(exist_ok=True)
-  key=hashlib.sha256((json.dumps({k:v for k,v in shot.items() if k not in ['yaw','yawKeys','personGuard','excludedFrames','reviewedFrames','neutralWristBackdrop','headEnvelope','matteRegion','phaseReference','instance','accessoryKeys']},sort_keys=True)+'registration-v2').encode()).hexdigest()
+  key=hashlib.sha256((json.dumps({k:v for k,v in shot.items() if k not in ['yaw','yawKeys','yawMethod','personGuard','excludedFrames','reviewedFrames','neutralWristBackdrop','headEnvelope','matteRegion','phaseReference','instance','accessoryKeys']},sort_keys=True)+'registration-v2').encode()).hexdigest()
   rows=[]
   if (folder/'rows.json').exists():
    stored=json.loads((folder/'rows.json').read_text())
@@ -91,8 +92,9 @@ with mp.tasks.vision.PoseLandmarker.create_from_options(opts) as model:
    theta=(t-t[0])*2*np.pi*freq;basis=np.stack([np.sin(theta),np.cos(theta),np.ones(len(t))],axis=1);coef=np.linalg.lstsq(basis,signal,rcond=None)[0];err=float(np.mean((basis@coef-signal)**2))
    if best is None or err<best[0]:best=(err,freq,coef)
   err,freq,coef=best
+  measured_yaws=estimate_yaws(rows,shot['yawKeys']) if shot.get('yawMethod')=='reviewed-torso' else None
   for r in rows:
-   r.update(clip=shot['id'],look=shot.get('lookId',shot['id']),source=shot['source'],yaw=float(np.interp(r['sourceFrame']/25,*np.array(shot['yawKeys']).T)) if 'yawKeys' in shot else shot['yaw'],phase=float(((r['sourceFrame']/25-t[0])*freq+np.arctan2(coef[1],coef[0])/(2*np.pi))%1),path=str(folder/r['file']))
+   r.update(clip=shot['id'],look=shot.get('lookId',shot['id']),source=shot['source'],yaw=measured_yaws[r['sourceFrame']] if measured_yaws is not None else float(np.interp(r['sourceFrame']/25,*np.array(shot['yawKeys']).T)) if 'yawKeys' in shot else shot['yaw'],phase=float(((r['sourceFrame']/25-t[0])*freq+np.arctan2(coef[1],coef[0])/(2*np.pi))%1),path=str(folder/r['file']))
   retained=rows
   if shot.get('sampleBlocks'):
    starts=[i for i in range(len(rows)-2) if rows[i+1]['sourceFrame']==rows[i]['sourceFrame']+1 and rows[i+2]['sourceFrame']==rows[i]['sourceFrame']+2]
@@ -113,6 +115,6 @@ for start in range(0,len(all_rows),36):
   frames.append({k:row[k] for k in ['clip','look','source','sourceFrame','yaw','phase']}|{'atlas':atlas,'tile':i})
  if not args.manifest_only:sheet.save(media/filename,'WEBP',quality=88,method=4)
  atlases.append(filename)
-manifest={'fps':25,'holdFrames':3,'tileWidth':256,'tileHeight':384,'columns':6,'angleType':'approximate camera-relative shot annotation','sources':[source for source in catalog if source['id'] in {row['source'] for row in all_rows}],'clips':clip_info,'atlases':atlases,'frames':frames}
+manifest={'fps':25,'holdFrames':3,'yawRange':[-75,0],'tileWidth':256,'tileHeight':384,'columns':6,'angleType':'reviewed camera-relative torso anchors with pose-guided interpolation','sources':[source for source in catalog if source['id'] in {row['source'] for row in all_rows}],'clips':clip_info,'atlases':atlases,'frames':frames}
 (args.output/'angles.json').write_text(json.dumps(manifest,separators=(',',':'))+'\n')
 print('Exported',len(frames),'frames /',len(atlases),'atlases',flush=True)
