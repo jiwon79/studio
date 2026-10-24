@@ -1,4 +1,5 @@
 import data from './angles.json';
+import { AtlasPool } from './atlas-pool';
 import { buildBlocks, chooseBlock, type AngleFrame } from './angle-match';
 
 const frames: AngleFrame[] = data.frames;
@@ -27,7 +28,10 @@ function persist() {
   try { localStorage.setItem(storageKey, JSON.stringify({ angle: target, bookmarks })); } catch { /* Optional local persistence. */ }
 }
 function label(value: number) { return value === 0 ? '정면' : `${value < 0 ? '왼쪽' : '오른쪽'} ${Math.abs(value)}°`; }
-let images: HTMLImageElement[] = [];
+let blobs: Blob[] = [];
+const images = new AtlasPool(index => createImageBitmap(blobs[index]), 5);
+context.imageSmoothingQuality = 'high';
+let switching = false, pickVersion = 0;
 let ready = false;
 let playing = !matchMedia('(prefers-reduced-motion: reduce)').matches;
 let phase = 0, clock = 0, offset = 0;
@@ -36,23 +40,46 @@ let recent: string[] = [];
 let lastTime = 0, carry = 0;
 function draw() {
   const row = frames[block.start + offset];
+  const image = images.get(row.atlas);
+  if (!image) { void prepare(block).then(draw).catch(() => { playing = false; playbackState(); }); return; }
   context.clearRect(0, 0, canvas.width, canvas.height);
-  context.drawImage(images[row.atlas], (row.tile % data.columns) * data.tileWidth, Math.floor(row.tile / data.columns) * data.tileHeight, data.tileWidth, data.tileHeight, 0, 0, canvas.width, canvas.height);
+  context.drawImage(image, (row.tile % data.columns) * data.tileWidth, Math.floor(row.tile / data.columns) * data.tileHeight, data.tileWidth, data.tileHeight, 0, 0, canvas.width, canvas.height);
   canvas.dataset.sourceFrame = String(row.sourceFrame);
   canvas.dataset.clip = row.clip;
   canvas.dataset.actualYaw = String(row.yaw);
   canvas.dataset.phase = String(phase);
   canvas.dataset.clock = String(clock);
+  canvas.dataset.decodedPages = String(images.size);
 }
-function pick() {
-  block = chooseBlock(blocks, target, phase, recent);
-  recent = [block.clip, ...recent].slice(0, 2);
-  offset = 0;
+async function prepare(candidate: typeof block) {
+  const pages = new Set(frames.slice(candidate.start, candidate.start + data.holdFrames).map(row => row.atlas));
+  await Promise.all([...pages].map(index => images.load(index)));
+}
+function warmNext() {
+  const candidate = chooseBlock(blocks, target, (phase + (data.holdFrames - offset) / 30) % 1, recent);
+  void prepare(candidate).catch(() => { /* The foreground switch retries decoding. */ });
+}
+async function pick() {
+  const version = ++pickVersion;
+  const candidate = chooseBlock(blocks, target, phase, recent);
+  switching = true;
+  try {
+    await prepare(candidate);
+    if (version !== pickVersion) return;
+    block = candidate;
+    recent = [block.clip, ...recent].slice(0, 2);
+    offset = 0;
+    draw();
+    warmNext();
+    return true;
+  } catch { loading.hidden = false; loading.textContent = '프레임을 불러오지 못했어요. 새로고침해 주세요.'; playing = false; playbackState(); return false; }
+  finally { if (version === pickVersion) { switching = false; } }
 }
 function setAngle(value: number) {
   target = Math.round(clamp(value)); angle.value = String(target); direction.value = label(target);
   for (const button of presets.querySelectorAll('button')) button.setAttribute('aria-pressed', String(Number(button.dataset.angle) === target));
-  if (ready && !playing) { pick(); draw(); }
+  if (ready && !playing) void pick();
+  else if (ready) warmNext();
 }
 function renderPresets() {
   presets.replaceChildren();
@@ -95,12 +122,12 @@ canvas.addEventListener('keydown', event => {
 });
 document.addEventListener('visibilitychange', () => { lastTime = 0; carry = 0; });
 function tick(time: number) {
-  if (ready && playing && !document.hidden) {
+  if (ready && playing && !switching && !document.hidden) {
     carry += lastTime ? Math.min((time - lastTime) / 1000, 0.12) : 0;
     while (carry >= 1 / data.fps) {
       carry -= 1 / data.fps; clock++; phase = (phase + 1 / 30) % 1;
       offset++;
-      if (offset === data.holdFrames) pick();
+      if (offset === data.holdFrames) { void pick(); break; }
       draw();
     }
   }
@@ -110,13 +137,21 @@ function tick(time: number) {
 async function load() {
   try {
     let completed = 0;
-    images = await Promise.all(data.atlases.map(filename => new Promise<HTMLImageElement>((resolve, reject) => {
-      const image = new Image();
-      image.onload = () => { completed++; loading.textContent = `여러 몸의 걸음을 모으는 중… ${Math.round(completed / data.atlases.length * 100)}%`; resolve(image); };
-      image.onerror = () => reject(new Error(`Atlas failed: ${filename}`));
-      image.src = new URL(`./media/angles/${filename}`, import.meta.url).href;
-    })));
-    ready = true; pick(); draw(); loading.hidden = true;
+    blobs = new Array<Blob>(data.atlases.length);
+    let cursor = 0;
+    // Bound concurrent transfers; retain compressed pages and decode only five.
+    await Promise.all(Array.from({ length: 6 }, async () => {
+      while (cursor < data.atlases.length) {
+        const index = cursor++;
+        const response = await fetch(new URL(`./media/angles/${data.atlases[index]}`, import.meta.url).href);
+        if (!response.ok) throw new Error(`Atlas failed: ${response.status}`);
+        blobs[index] = await response.blob();
+        completed++;
+        loading.textContent = `여러 몸의 걸음을 모으는 중… ${Math.round(completed / data.atlases.length * 100)}%`;
+      }
+    }));
+    if (!await pick()) throw new Error('Initial frame decode failed');
+    ready = true; loading.hidden = true;
     for (const element of [angle, play, save, reset]) element.disabled = false;
     requestAnimationFrame(tick);
   } catch { loading.textContent = '영상을 불러오지 못했어요. 새로고침해 주세요.'; }

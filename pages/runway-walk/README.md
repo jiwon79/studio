@@ -35,23 +35,29 @@
 
 `/runway-walk/angle.html`에서 인물을 좌우로 드래그하거나 방향 슬라이더·방향키로 몸의 방향을 고른다. 손을 놓으면 선택 방향을 유지한다. `이 방향 저장 +`는 최대 다섯 방향을 이 브라우저의 로컬 저장소에 보관하며, 다시 눌러 불러올 수 있다. 선택 방향도 새로고침 뒤 복원한다. 저장소를 사용할 수 없어도 조작과 재생은 동작한다.
 
-루이비통 SS27, [Prada SS26](https://www.youtube.com/watch?v=SAjtxnyXu8U)의 실제 프레임을 사용한다. 현재 8개 구간의 331프레임을 256×384 투명 타일, 10장의 WebP 아틀라스에 보관한다. 미디어 전송량은 약 4.7MB다. 배경은 따뜻한 회색이며 인물의 원래 의상 색은 유지한다.
+루이비통 SS27, [Prada SS26](https://www.youtube.com/watch?v=SAjtxnyXu8U)의 실제 프레임을 사용한다. 현재 8개 구간의 331프레임을 512×768 투명 타일, 네 프레임씩 묶은 83장의 WebP 아틀라스에 보관한다. 미디어 전송량은 약 12.7MB다. 배경은 따뜻한 회색이며 인물의 원래 의상 색은 유지한다.
 
 `angle-shots.json`의 방향은 촬영 화면을 직접 보고 붙인 카메라 기준 근사값이다. **각 원본 프레임에 구간의 방향을 저장**한다. 몸을 돌리는 도중 방향 표시와 실제 자세가 맞지 않았던 초록 상의·검은 코트 구간은 전체 제외했다. 카메라 보정으로 측정한 정확한 각도가 아니다. 선택 가능한 범위는 연속 3프레임을 확보한 약 왼쪽 75°부터 정면까지다. 반대 방향 후보는 발이 원본 밖으로 잘려 제외했다. 촬영된 방향이 드문 대역은 같은 사람을 재사용한다. 전방위 회전이나 동일 인물의 다중 시점 재구성은 아니다. 좌우 반전·몸 변형·생성 프레임을 사용하지 않는다.
 
 보행 위상은 MediaPipe의 3D 발목 차이를 몸의 앞 방향에 투영하고 주기 함수를 맞춰 추정한다. 재생 시 보행 시계는 방향과 독립적으로 계속 진행한다. 3프레임 경계에서 가까운 방향 대역(최근접 각도 오차 + 5° 이내), 현재 위상, 최근 인물 사용을 함께 비교한다. 선택한 구간 안에서는 원본의 실제 연속 3프레임을 순서대로 보여준다. 같은 방향의 인물이 부족하면 같은 사람을 다시 사용한다. 인물·카메라마다 자세 추정과 원근이 달라 연결에 점프가 남을 수 있다.
 
-머리·발이 원본 밖으로 잘린 후보와 너무 짧은 구간은 제외한다. 인물 전체를 같은 비율로 이동·확대해 골반 가로 위치와 발밑 높이를 맞추고, 머리가 타일 밖으로 나가면 확대를 제한한다. 알파를 곱한 상태에서 리샘플링한 뒤 투명 타일로 저장한다. 브라우저는 시작할 때 아틀라스를 읽어 Canvas에 25fps로 그린다. 초기 로딩을 줄인 데스크톱 시안이며, 디코딩된 아틀라스 메모리는 약 142MB다.
+머리·발이 원본 밖으로 잘린 후보와 너무 짧은 구간은 제외한다. 인물 전체를 같은 비율로 이동·확대해 골반 가로 위치와 발밑 높이를 맞추고, 머리가 타일 밖으로 나가면 확대를 제한한다. 알파를 곱한 상태에서 리샘플링한 뒤 투명 타일로 저장한다. 원본은 두 쇼 모두 1080p에서 다시 읽는다. [Robust Video Matting](https://github.com/PeterL1n/RobustVideoMatting)의 recurrent 상태를 원본 연속 프레임 사이에 유지해 알파를 추정하고, 골반이 속한 연결 성분만 남겨 관객·작은 배경 조각을 제거하고, 확실한 전경 주변의 좁은 반투명 경계만 유지해 옷·가방에 붙은 옅은 잔여물을 억제한다. 불투명한 내부는 원본 RGB를 유지하며 가장자리만 모델의 전경색으로 배경색 번짐을 보정한다. 파란 스웨터 구간에서 밝은 바닥과 혼동하던 흰 운동화 끝은 발 관절 주변으로 제한한 MediaPipe 마스크로 보완한다. 위치·크기 추정값만 시간 방향으로 안정화하며 움직이는 RGB·알파를 프레임끼리 섞지 않는다.
+
+브라우저는 약 12.7MB의 압축 페이지를 최대 여섯 요청으로 읽고, ImageBitmap은 최대 다섯 페이지만 디코딩한다. 다음 3프레임 구간을 미리 디코딩하고 오래된 페이지는 `close()`로 해제한다. 디코딩된 아틀라스 픽셀은 최대 약 31.5MB이며 압축 Blob·Canvas 메모리는 별도다. 얼굴·머리·원본 촬영 압축의 한계와 자동 마스크의 일부 누락은 남는다.
 
 - `angles.json`: 출처, 구간, 원본 프레임 번호, 근사 방향, 보행 위상, 아틀라스·타일 인덱스.
 - `angle-match.ts`: 실제 연속 구간 검증과 방향·위상 선택. `angle-match.test.ts`는 원본 프레임 누락·구간 경계 및 실제 매니페스트 선택을 검증한다.
-- `angle.ts`: 재생 시계, 드래그·키보드·슬라이더, 방향 저장과 Canvas 출력.
+- `angle.ts`: 재생 시계, 드래그·키보드·슬라이더, 방향 저장과 Canvas 출력. `atlas-pool.ts`는 중복 디코딩 방지와 제한된 LRU 페이지 수명을 관리한다.
+- `refine-angles.py`: 동일한 원본 프레임·방향·위상을 유지한 고해상도 재매팅과 아틀라스 출력. 이 단계는 이전 MP4 시안을 변경하지 않는다.
 
 추가 소스를 로컬 캐시에 받은 뒤 재현한다. 원본 영상은 Git에 포함하지 않는다.
 
 ```sh
 uv tool run --from 'yt-dlp[default]' yt-dlp --no-playlist -f 136 -o .cache/runway-walk/prada-ss26.mp4 'https://www.youtube.com/watch?v=SAjtxnyXu8U'
 .cache/runway-walk/venv/bin/python scripts/runway-walk/angles.py --cache .cache/runway-walk --output pages/runway-walk
+uv tool run --from 'yt-dlp[default]' yt-dlp --no-playlist -f 137 -o .cache/runway-walk/prada-ss26-hd.mp4 'https://www.youtube.com/watch?v=SAjtxnyXu8U'
+curl -fL 'https://github.com/PeterL1n/RobustVideoMatting/releases/download/v1.0.0/rvm_mobilenetv3_fp32.onnx' -o .cache/runway-walk/rvm-mobilenetv3.onnx
+.cache/runway-walk/venv/bin/python scripts/runway-walk/refine-angles.py --cache .cache/runway-walk --output pages/runway-walk
 ```
 
 ## 다시 만들기

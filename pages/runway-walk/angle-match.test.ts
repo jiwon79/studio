@@ -28,7 +28,7 @@ test('exported source atlas offers valid consecutive blocks for every stored dir
   }
   for (const frame of data.frames) {
     expect(frame.atlas).toBeLessThan(data.atlases.length);
-    expect(frame.tile).toBeLessThan(36);
+    expect(frame.tile).toBeLessThan(data.columns * data.rows);
     expect(frame.phase).toBeGreaterThanOrEqual(0);
     expect(frame.phase).toBeLessThan(1);
   }
