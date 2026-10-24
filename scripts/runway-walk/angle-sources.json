@@ -1,0 +1,6 @@
+[
+  {"id":"lv","file":"source.mp4","poseFile":"source.mp4","roiScale":1,"url":"https://www.youtube.com/watch?v=qcE5NeDUvIk","title":"Louis Vuitton Men's Spring-Summer 2027","fps":25,"originalFps":25,"sourceOffset":0},
+  {"id":"prada","file":"prada-ss26-hd.mp4","poseFile":"prada-ss26.mp4","roiScale":1.5,"url":"https://www.youtube.com/watch?v=SAjtxnyXu8U","title":"Prada Spring/Summer 2026 Menswear","fps":25,"originalFps":25,"sourceOffset":0},
+  {"id":"prada25","file":"prada-ss25.mp4","poseFile":"prada-ss25.mp4","roiScale":1,"url":"https://www.youtube.com/watch?v=vz6dKkEiJzg","title":"Prada Spring/Summer 2025 Menswear","fps":25,"originalFps":50,"sourceOffset":0},
+  {"id":"fendi","file":"fendi-ss25-show.mp4","poseFile":"fendi-ss25-show.mp4","roiScale":1,"url":"https://www.youtube.com/watch?v=TSzy2vbjTac","title":"Fendi Men's Spring/Summer 2025","fps":25,"originalFps":30,"sourceOffset":1690}
+]

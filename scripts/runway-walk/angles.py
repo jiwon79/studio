@@ -16,7 +16,8 @@ args=parser.parse_args()
 shots=json.loads(Path(__file__).with_name('angle-shots.json').read_text())
 root=args.cache/'angles';root.mkdir(exist_ok=True)
 media=args.output/'media'/'angles';media.mkdir(parents=True,exist_ok=True)
-sources={'lv':args.cache/'source.mp4','prada':args.cache/'prada-ss26.mp4','fw':args.cache/'prada-fw26.mp4'}
+catalog=json.loads(Path(__file__).with_name('angle-sources.json').read_text())
+sources={source['id']:args.cache/source['poseFile'] for source in catalog}
 opts=mp.tasks.vision.PoseLandmarkerOptions(base_options=mp.tasks.BaseOptions(model_asset_path=str(args.cache/'pose.task')),num_poses=3,output_segmentation_masks=True,min_pose_detection_confidence=.45)
 all_rows=[];clip_info=[]
 with mp.tasks.vision.PoseLandmarker.create_from_options(opts) as model:
@@ -72,17 +73,26 @@ with mp.tasks.vision.PoseLandmarker.create_from_options(opts) as model:
    if best is None or err<best[0]:best=(err,freq,coef)
   err,freq,coef=best
   for r in rows:
-   r.update(clip=shot['id'],source=shot['source'],yaw=float(np.interp(r['sourceFrame']/25,*np.array(shot['yawKeys']).T)) if 'yawKeys' in shot else shot['yaw'],phase=float(((r['sourceFrame']/25-t[0])*freq+np.arctan2(coef[1],coef[0])/(2*np.pi))%1),path=str(folder/r['file']))
-   all_rows.append(r)
-  clip_info.append({**shot,'frames':len(rows),'frequency':float(freq),'phaseFitError':err})
+   r.update(clip=shot['id'],look=shot.get('lookId',shot['id']),source=shot['source'],yaw=float(np.interp(r['sourceFrame']/25,*np.array(shot['yawKeys']).T)) if 'yawKeys' in shot else shot['yaw'],phase=float(((r['sourceFrame']/25-t[0])*freq+np.arctan2(coef[1],coef[0])/(2*np.pi))%1),path=str(folder/r['file']))
+  retained=rows
+  if shot.get('sampleBlocks'):
+   starts=[i for i in range(len(rows)-2) if rows[i+1]['sourceFrame']==rows[i]['sourceFrame']+1 and rows[i+2]['sourceFrame']==rows[i]['sourceFrame']+2]
+   selected=set()
+   for target in np.arange(shot['sampleBlocks'])/shot['sampleBlocks']:
+    if not starts:break
+    best_start=min(starts,key=lambda i:abs(np.angle(np.exp(2j*np.pi*(rows[i]['phase']-target))))+(.4 if any(j in selected for j in range(i,i+3)) else 0))
+    selected.update(range(best_start,best_start+3))
+   retained=[r for i,r in enumerate(rows) if i in selected]
+  all_rows.extend(retained)
+  clip_info.append({**shot,'frames':len(retained),'extractedFrames':len(rows),'frequency':float(freq),'phaseFitError':err})
 # Lossy WebP RGB with preserved alpha, 6x6 tiles per sheet.
 atlases=[];frames=[]
 for start in range(0,len(all_rows),36):
  batch=all_rows[start:start+36];sheet=Image.new('RGBA',(256*6,384*6));atlas=len(atlases);filename=f'angle-{atlas:02}.webp'
  for i,row in enumerate(batch):
   im=Image.open(row['path']).convert('RGBA');sheet.paste(im,((i%6)*256,(i//6)*384))
-  frames.append({k:row[k] for k in ['clip','source','sourceFrame','yaw','phase']}|{'atlas':atlas,'tile':i})
+  frames.append({k:row[k] for k in ['clip','look','source','sourceFrame','yaw','phase']}|{'atlas':atlas,'tile':i})
  sheet.save(media/filename,'WEBP',quality=88,method=4);atlases.append(filename)
-manifest={'fps':25,'holdFrames':3,'tileWidth':256,'tileHeight':384,'columns':6,'angleType':'approximate camera-relative shot annotation','sources':[s for s in [{'id':'lv','url':'https://www.youtube.com/watch?v=qcE5NeDUvIk','title':"Louis Vuitton Men's Spring-Summer 2027"},{'id':'prada','url':'https://www.youtube.com/watch?v=SAjtxnyXu8U','title':'Prada Spring/Summer 2026 Menswear'},{'id':'fw','url':'https://www.youtube.com/watch?v=J1GCDcbYIRI','title':'Prada Fall/Winter 2026 Menswear'}] if s['id'] in {r['source'] for r in all_rows}],'clips':clip_info,'atlases':atlases,'frames':frames}
+manifest={'fps':25,'holdFrames':3,'tileWidth':256,'tileHeight':384,'columns':6,'angleType':'approximate camera-relative shot annotation','sources':[source for source in catalog if source['id'] in {row['source'] for row in all_rows}],'clips':clip_info,'atlases':atlases,'frames':frames}
 (args.output/'angles.json').write_text(json.dumps(manifest,separators=(',',':'))+'\n')
 print('Exported',len(frames),'frames /',len(atlases),'atlases',flush=True)

@@ -102,5 +102,217 @@
       700,
       720
     ]
+  },
+  {
+    "id": "lv-look-66",
+    "source": "lv",
+    "start": 65.2,
+    "end": 66.8,
+    "yaw": -70,
+    "roi": [
+      543,
+      0,
+      960,
+      1080
+    ],
+    "sampleBlocks": 6
+  },
+  {
+    "id": "lv-look-138",
+    "source": "lv",
+    "start": 137.2,
+    "end": 138.8,
+    "yaw": -60,
+    "roi": [
+      472,
+      0,
+      960,
+      1080
+    ],
+    "sampleBlocks": 6
+  },
+  {
+    "id": "lv-look-298",
+    "source": "lv",
+    "start": 297.2,
+    "end": 298.8,
+    "yaw": -70,
+    "roi": [
+      507,
+      0,
+      960,
+      1080
+    ],
+    "sampleBlocks": 6
+  },
+  {
+    "id": "lv-look-410",
+    "source": "lv",
+    "start": 409.2,
+    "end": 410.8,
+    "yaw": -55,
+    "roi": [
+      612,
+      0,
+      960,
+      1080
+    ],
+    "sampleBlocks": 6
+  },
+  {
+    "id": "lv-look-608",
+    "source": "lv",
+    "start": 607.2,
+    "end": 608.8,
+    "yaw": -45,
+    "roi": [
+      597,
+      0,
+      960,
+      1080
+    ],
+    "sampleBlocks": 6
+  },
+  {
+    "id": "lv-look-670",
+    "source": "lv",
+    "start": 669.2,
+    "end": 670.8,
+    "yaw": -55,
+    "roi": [
+      481,
+      0,
+      960,
+      1080
+    ],
+    "sampleBlocks": 6
+  },
+  {
+    "id": "prada-look-26",
+    "source": "prada",
+    "start": 26,
+    "end": 27.2,
+    "yaw": -75,
+    "roi": [
+      330,
+      0,
+      640,
+      720
+    ],
+    "sampleBlocks": 6
+  },
+  {
+    "id": "prada-look-80",
+    "source": "prada",
+    "start": 79.9,
+    "end": 81.5,
+    "yaw": -75,
+    "roi": [
+      315,
+      0,
+      640,
+      720
+    ],
+    "sampleBlocks": 6
+  },
+  {
+    "id": "prada-look-186",
+    "source": "prada",
+    "start": 185.2,
+    "end": 186.2,
+    "yaw": -75,
+    "roi": [
+      346,
+      0,
+      640,
+      720
+    ],
+    "sampleBlocks": 6
+  },
+  {
+    "id": "prada-look-318",
+    "source": "prada",
+    "start": 317.9,
+    "end": 319.1,
+    "yaw": -45,
+    "roi": [
+      310,
+      0,
+      640,
+      720
+    ],
+    "sampleBlocks": 6
+  },
+  {
+    "id": "prada25-look-50",
+    "source": "prada25",
+    "start": 49.2,
+    "end": 50.8,
+    "yaw": 0,
+    "roi": [
+      482,
+      0,
+      960,
+      1080
+    ],
+    "sampleBlocks": 6
+  },
+  {
+    "id": "fendi-look-1720",
+    "source": "fendi",
+    "start": 29.2,
+    "end": 30.8,
+    "yaw": 0,
+    "roi": [
+      481,
+      0,
+      960,
+      1080
+    ],
+    "sampleBlocks": 6,
+    "lookId": "fendi-gray-jacket-shorts"
+  },
+  {
+    "id": "fendi-look-1930",
+    "source": "fendi",
+    "start": 239.2,
+    "end": 240.8,
+    "yaw": 0,
+    "roi": [
+      499,
+      0,
+      960,
+      1080
+    ],
+    "sampleBlocks": 6
+  },
+  {
+    "id": "prada25-look-112",
+    "source": "prada25",
+    "start": 111.4,
+    "end": 112.7,
+    "yaw": 0,
+    "roi": [
+      466,
+      0,
+      960,
+      1080
+    ],
+    "sampleBlocks": 6
+  },
+  {
+    "id": "fendi-look-1727",
+    "source": "fendi",
+    "start": 36.4,
+    "end": 37.7,
+    "yaw": -70,
+    "roi": [
+      481,
+      0,
+      960,
+      1080
+    ],
+    "sampleBlocks": 6,
+    "lookId": "fendi-gray-jacket-shorts"
   }
 ]

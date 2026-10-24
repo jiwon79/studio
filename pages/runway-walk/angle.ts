@@ -67,7 +67,7 @@ async function pick() {
     await prepare(candidate);
     if (version !== pickVersion) return;
     block = candidate;
-    recent = [block.clip, ...recent].slice(0, 2);
+    recent = [block.look ?? block.clip, ...recent].slice(0, 4);
     offset = 0;
     draw();
     warmNext();

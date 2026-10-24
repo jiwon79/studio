@@ -30,7 +30,9 @@ parser.add_argument('--output', type=Path, required=True)
 args = parser.parse_args()
 manifest_path = args.output / 'angles.json'
 manifest = json.loads(manifest_path.read_text())
-source_paths = {'lv': args.cache/'source.mp4', 'prada': args.cache/'prada-ss26-hd.mp4'}
+source_catalog = {s['id']:s for s in json.loads(Path(__file__).with_name('angle-sources.json').read_text())}
+source_paths = {key:args.cache/value['file'] for key,value in source_catalog.items()}
+source_hashes = {}
 model_path = args.cache/'rvm-mobilenetv3.onnx'
 model_hash = hashlib.sha256(model_path.read_bytes()).hexdigest()
 root = args.cache/'matted-hd'; root.mkdir(exist_ok=True)
@@ -43,7 +45,8 @@ all_rows = []
 for clip in manifest['clips']:
     selected = [f for f in manifest['frames'] if f['clip'] == clip['id']]
     source = source_paths[clip['source']]
-    source_hash = hashlib.sha256(source.read_bytes()).hexdigest()
+    if source not in source_hashes: source_hashes[source] = hashlib.sha256(source.read_bytes()).hexdigest()
+    source_hash = source_hashes[source]
     folder = root/clip['id']; folder.mkdir(exist_ok=True)
     fingerprint = {'source':source_hash,'model':model_hash,'version':'rvm-hd-v3-confident-edge','frames':[r['sourceFrame'] for r in selected]}
     key = folder/'input.json'
@@ -62,7 +65,7 @@ for clip in manifest['clips']:
     cap = cv2.VideoCapture(str(source))
     assert (cap.get(cv2.CAP_PROP_FRAME_WIDTH),cap.get(cv2.CAP_PROP_FRAME_HEIGHT),cap.get(cv2.CAP_PROP_FPS)) == (1920,1080,25)
     # Original Prada annotations used 720p coordinates; use the native 1080p crop.
-    factor = 1.5 if clip['source']=='prada' else 1
+    factor = source_catalog[clip['source']]['roiScale']
     x,y,w,h = [round(v*factor) for v in clip['roi']]
     rec = {f'r{i}i':np.zeros((1,1,1,1),np.float32) for i in range(1,5)}
     selection = {r['sourceFrame']:r for r in selected}

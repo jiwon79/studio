@@ -41,3 +41,32 @@ test('a matching gait cannot pull a frontal person into a diagonal direction', (
   ];
   expect(chooseBlock(blocks,-30,0).clip).toBe('diagonal');
 });
+
+test('every selectable direction has at least four reviewed outfit candidates', () => {
+  const blocks = buildBlocks(data.frames);
+  for (let yaw=-75; yaw<=0; yaw++) {
+    const nearest = Math.min(...blocks.map(b=>Math.abs(b.yaw-yaw)));
+    const outfits = new Set(blocks.filter(b=>Math.abs(b.yaw-yaw)<=nearest+5).map(b=>b.look ?? b.clip));
+    expect(outfits.size, `direction ${yaw}`).toBeGreaterThanOrEqual(4);
+  }
+});
+test('avoid recent outfits when another outfit has a nearby gait in the same direction', () => {
+  const blocks = [
+    {start:0,yaw:-45,phase:0,clip:'a'},
+    {start:3,yaw:-45,phase:0.02,clip:'b'},
+    {start:6,yaw:-45,phase:0.06,clip:'c'},
+    {start:9,yaw:0,phase:0,clip:'wrong-direction'},
+  ];
+  expect(chooseBlock(blocks,-45,0,['a','b']).clip).toBe('c');
+});
+test('each representative direction actually visits four outfits during playback', () => {
+  const blocks = buildBlocks(data.frames);
+  for (const yaw of [-75,-60,-45,0]) {
+    let recent: string[]=[]; const visited=new Set<string>();
+    for (let cut=0; cut<120; cut++) {
+      const block=chooseBlock(blocks,yaw,(cut/10)%1,recent);
+      const look=block.look ?? block.clip; visited.add(look); recent=[look,...recent].slice(0,4);
+    }
+    expect(visited.size, `playback at ${yaw}`).toBeGreaterThanOrEqual(4);
+  }
+});
