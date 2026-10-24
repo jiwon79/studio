@@ -512,7 +512,8 @@
       14012,
       14013,
       14014
-    ]
+    ],
+    "lookId": "hermes-pale-gray"
   },
   {
     "id": "hermes-turn-686",
@@ -623,7 +624,8 @@
       17253,
       17254
     ],
-    "phaseReference": "lv-look-410"
+    "phaseReference": "lv-look-410",
+    "lookId": "hermes-brown-open-cardigan"
   },
   {
     "id": "hermes-turn-692",
@@ -662,7 +664,8 @@
       17287,
       17288
     ],
-    "phaseReference": "lv-look-410"
+    "phaseReference": "lv-look-410",
+    "lookId": "hermes-brown-leather"
   },
   {
     "id": "hermes-turn-694",
@@ -698,7 +701,8 @@
       17330,
       17331
     ],
-    "phaseReference": "lv-look-410"
+    "phaseReference": "lv-look-410",
+    "lookId": "hermes-gray-tote"
   },
   {
     "id": "hermes-turn-696",
@@ -730,6 +734,871 @@
       17381,
       17382
     ],
+    "phaseReference": "lv-look-410",
+    "lookId": "hermes-plaid-white"
+  },
+  {
+    "id": "prada24-turn-10",
+    "lookId": "prada24-black-short",
+    "source": "prada24",
+    "start": 9.8,
+    "end": 11.55,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        9.8,
+        -10
+      ],
+      [
+        10.5,
+        -20
+      ],
+      [
+        11,
+        -40
+      ],
+      [
+        11.5,
+        -75
+      ]
+    ],
+    "roi": [
+      293,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
     "phaseReference": "lv-look-410"
+  },
+  {
+    "id": "prada24-turn-39",
+    "lookId": "prada24-black-suit",
+    "source": "prada24",
+    "start": 39.35,
+    "end": 40.4,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        39.35,
+        -10
+      ],
+      [
+        39.6,
+        -25
+      ],
+      [
+        40,
+        -55
+      ],
+      [
+        40.35,
+        -75
+      ]
+    ],
+    "roi": [
+      142,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410"
+  },
+  {
+    "id": "prada24-turn-49",
+    "lookId": "prada24-black-utility",
+    "source": "prada24",
+    "start": 48.9,
+    "end": 49.95,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        48.9,
+        -20
+      ],
+      [
+        49.2,
+        -35
+      ],
+      [
+        49.6,
+        -65
+      ],
+      [
+        49.9,
+        -75
+      ]
+    ],
+    "roi": [
+      302,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410"
+  },
+  {
+    "id": "prada24-turn-76",
+    "lookId": "prada24-gray-utility",
+    "source": "prada24",
+    "start": 75.8,
+    "end": 76.65,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        75.8,
+        -15
+      ],
+      [
+        76,
+        -25
+      ],
+      [
+        76.5,
+        -75
+      ]
+    ],
+    "roi": [
+      0,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "accessoryKeys": [
+      [
+        [
+          75.8,
+          0.668,
+          0.746
+        ],
+        [
+          76.2,
+          0.5486,
+          0.76
+        ],
+        [
+          76.6,
+          0.36,
+          0.775
+        ]
+      ]
+    ],
+    "excludedFrames": [
+      1895
+    ]
+  },
+  {
+    "id": "prada24-turn-81",
+    "lookId": "prada24-gray-suit",
+    "source": "prada24",
+    "start": 81.35,
+    "end": 82.65,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        81.35,
+        -15
+      ],
+      [
+        81.7,
+        -30
+      ],
+      [
+        82.1,
+        -55
+      ],
+      [
+        82.6,
+        -75
+      ]
+    ],
+    "roi": [
+      313,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410"
+  },
+  {
+    "id": "prada24-turn-99",
+    "lookId": "prada24-teal-vest",
+    "source": "prada24",
+    "start": 98.9,
+    "end": 100.4,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        98.9,
+        -10
+      ],
+      [
+        99.45,
+        -20
+      ],
+      [
+        99.8,
+        -40
+      ],
+      [
+        100.3,
+        -75
+      ]
+    ],
+    "roi": [
+      194,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410"
+  },
+  {
+    "id": "prada24-turn-142",
+    "lookId": "prada24-lavender-short",
+    "source": "prada24",
+    "start": 141.7,
+    "end": 142.65,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        141.7,
+        -15
+      ],
+      [
+        142,
+        -35
+      ],
+      [
+        142.35,
+        -65
+      ],
+      [
+        142.6,
+        -75
+      ]
+    ],
+    "roi": [
+      219,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410"
+  },
+  {
+    "id": "prada24-turn-162",
+    "lookId": "prada24-black-utility",
+    "source": "prada24",
+    "start": 162.3,
+    "end": 163.5,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        162.3,
+        -15
+      ],
+      [
+        162.7,
+        -30
+      ],
+      [
+        163.05,
+        -55
+      ],
+      [
+        163.4,
+        -75
+      ]
+    ],
+    "roi": [
+      267,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410"
+  },
+  {
+    "id": "prada24-turn-208",
+    "lookId": "prada24-floral-olive",
+    "source": "prada24",
+    "start": 208.35,
+    "end": 210.2,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        208.35,
+        -15
+      ],
+      [
+        208.8,
+        -35
+      ],
+      [
+        209.3,
+        -55
+      ],
+      [
+        210.1,
+        -75
+      ]
+    ],
+    "roi": [
+      324,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410"
+  },
+  {
+    "id": "prada24-turn-282",
+    "lookId": "prada24-navy-long",
+    "source": "prada24",
+    "start": 282.35,
+    "end": 283.85,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        282.35,
+        -30
+      ],
+      [
+        283.85,
+        -35
+      ]
+    ],
+    "roi": [
+      360,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "reviewedFrames": [
+      7059,
+      7060,
+      7061,
+      7062,
+      7063,
+      7064,
+      7065,
+      7066,
+      7067,
+      7068,
+      7069,
+      7070,
+      7071,
+      7072,
+      7073,
+      7074
+    ]
+  },
+  {
+    "id": "prada24-turn-297",
+    "lookId": "prada24-floral-white",
+    "source": "prada24",
+    "start": 296.85,
+    "end": 298.2,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        296.85,
+        -35
+      ],
+      [
+        297.2,
+        -55
+      ],
+      [
+        297.7,
+        -75
+      ]
+    ],
+    "roi": [
+      247,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410"
+  },
+  {
+    "id": "prada24-turn-306",
+    "lookId": "prada24-navy-long",
+    "source": "prada24",
+    "start": 305.9,
+    "end": 306.65,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        305.9,
+        -45
+      ],
+      [
+        306.2,
+        -60
+      ],
+      [
+        306.6,
+        -75
+      ]
+    ],
+    "roi": [
+      480,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410"
+  },
+  {
+    "id": "prada24-turn-312",
+    "lookId": "prada24-denim-short",
+    "source": "prada24",
+    "start": 312.3,
+    "end": 313.18,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        312.3,
+        -15
+      ],
+      [
+        312.55,
+        -30
+      ],
+      [
+        312.9,
+        -55
+      ],
+      [
+        313.15,
+        -70
+      ]
+    ],
+    "roi": [
+      268,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410"
+  },
+  {
+    "id": "prada24-turn-324",
+    "lookId": "prada24-floral-beige",
+    "source": "prada24",
+    "start": 324.15,
+    "end": 324.95,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        324.15,
+        -30
+      ],
+      [
+        324.5,
+        -50
+      ],
+      [
+        324.9,
+        -75
+      ]
+    ],
+    "roi": [
+      122,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410"
+  },
+  {
+    "id": "prada24-turn-351",
+    "lookId": "prada24-gray-suit",
+    "source": "prada24",
+    "start": 351.1,
+    "end": 352.2,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        351.1,
+        -35
+      ],
+      [
+        351.5,
+        -55
+      ],
+      [
+        352,
+        -75
+      ]
+    ],
+    "roi": [
+      27,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410"
+  },
+  {
+    "id": "prada24-turn-382",
+    "lookId": "prada24-floral-pink-red-shoes",
+    "source": "prada24",
+    "start": 381.9,
+    "end": 383.12,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        381.9,
+        -15
+      ],
+      [
+        382.3,
+        -30
+      ],
+      [
+        382.7,
+        -55
+      ],
+      [
+        383.1,
+        -75
+      ]
+    ],
+    "roi": [
+      0,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "reviewedFrames": [
+      9548,
+      9549,
+      9550,
+      9551,
+      9552,
+      9553,
+      9554,
+      9555,
+      9556,
+      9557,
+      9558,
+      9559,
+      9560,
+      9561
+    ]
+  },
+  {
+    "id": "hermes-side-152",
+    "lookId": "hermes-cream-brown",
+    "source": "hermes",
+    "start": 151.1,
+    "end": 152.6,
+    "yaw": -20,
+    "roi": [
+      450,
+      0,
+      1200,
+      1080
+    ],
+    "instance": true
+  },
+  {
+    "id": "hermes-side-172",
+    "lookId": "hermes-plaid-white",
+    "source": "hermes",
+    "start": 171.65,
+    "end": 173.9,
+    "yaw": -20,
+    "roi": [
+      450,
+      0,
+      1200,
+      1080
+    ],
+    "instance": false
+  },
+  {
+    "id": "hermes-side-184",
+    "lookId": "hermes-plaid-coat",
+    "source": "hermes",
+    "start": 183.3,
+    "end": 184.6,
+    "yaw": -20,
+    "roi": [
+      450,
+      0,
+      1200,
+      1080
+    ],
+    "instance": true
+  },
+  {
+    "id": "hermes-side-203",
+    "lookId": "hermes-gray-tote",
+    "source": "hermes",
+    "start": 202.4,
+    "end": 203.9,
+    "yaw": -20,
+    "roi": [
+      450,
+      0,
+      1200,
+      1080
+    ],
+    "instance": false
+  },
+  {
+    "id": "hermes-side-357",
+    "lookId": "hermes-brown-leather",
+    "source": "hermes",
+    "start": 356.2,
+    "end": 357.7,
+    "yaw": -20,
+    "roi": [
+      450,
+      0,
+      1200,
+      1080
+    ],
+    "instance": true
+  },
+  {
+    "id": "hermes-side-431",
+    "lookId": "hermes-gray-green-scarf",
+    "source": "hermes",
+    "start": 430.2,
+    "end": 432.2,
+    "yaw": -20,
+    "roi": [
+      450,
+      0,
+      1200,
+      1080
+    ],
+    "instance": true
+  },
+  {
+    "id": "hermes-side-475",
+    "lookId": "hermes-pale-gray",
+    "source": "hermes",
+    "start": 474.4,
+    "end": 475.7,
+    "yaw": -20,
+    "roi": [
+      450,
+      0,
+      1200,
+      1080
+    ],
+    "instance": true
+  },
+  {
+    "id": "hermes-side-487",
+    "lookId": "hermes-tan-scarf",
+    "source": "hermes",
+    "start": 486.15,
+    "end": 487.65,
+    "yaw": -20,
+    "roi": [
+      450,
+      0,
+      1200,
+      1080
+    ],
+    "instance": true
+  },
+  {
+    "id": "prada24-turn-122",
+    "lookId": "prada24-navy-shirt-bag",
+    "source": "prada24",
+    "start": 122.35,
+    "end": 123.55,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        122.35,
+        -15
+      ],
+      [
+        122.7,
+        -30
+      ],
+      [
+        123.1,
+        -55
+      ],
+      [
+        123.5,
+        -75
+      ]
+    ],
+    "roi": [
+      330,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "accessoryKeys": [
+      [
+        [
+          122.35,
+          0.565,
+          0.385
+        ],
+        [
+          123,
+          0.499,
+          0.415
+        ],
+        [
+          123.55,
+          0.443,
+          0.407
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "prada24-turn-177",
+    "lookId": "prada24-beige-coat-bag",
+    "source": "prada24",
+    "start": 177.2,
+    "end": 179.0,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        177.2,
+        -10
+      ],
+      [
+        177.7,
+        -15
+      ],
+      [
+        178,
+        -25
+      ],
+      [
+        178.5,
+        -55
+      ],
+      [
+        178.95,
+        -75
+      ]
+    ],
+    "roi": [
+      313,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "accessoryKeys": [
+      [
+        [
+          177.2,
+          0.53,
+          0.62
+        ],
+        [
+          178,
+          0.568,
+          0.612
+        ],
+        [
+          179,
+          0.48,
+          0.63
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "prada24-turn-239",
+    "lookId": "prada24-green-jacket-bag",
+    "source": "prada24",
+    "start": 238.9,
+    "end": 240.2,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        238.9,
+        -30
+      ],
+      [
+        240.2,
+        -35
+      ]
+    ],
+    "roi": [
+      472,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "accessoryKeys": [
+      [
+        [
+          238.9,
+          0.545,
+          0.52
+        ],
+        [
+          239.5,
+          0.548,
+          0.565
+        ],
+        [
+          240.2,
+          0.532,
+          0.62
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "hermes-side-11",
+    "lookId": "hermes-white-scarf-brown",
+    "source": "hermes",
+    "start": 10.3,
+    "end": 11.8,
+    "yaw": -10,
+    "roi": [
+      480,
+      0,
+      960,
+      1080
+    ],
+    "excludedFrames": [
+      259
+    ]
   }
 ]

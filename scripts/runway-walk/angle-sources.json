@@ -61,9 +61,21 @@
     "originalFile": "hermes-ss26-original.mp4",
     "roiScale": 1,
     "url": "https://www.youtube.com/watch?v=eQUau2GefuA",
-    "title": "Herm\u00e8s Men's Summer 2026",
+    "title": "Hermès Men's Summer 2026",
     "fps": 25,
     "originalFps": 60,
+    "sourceOffset": 0
+  },
+  {
+    "id": "prada24",
+    "file": "prada-ss24.mp4",
+    "poseFile": "prada-ss24.mp4",
+    "originalFile": "prada-ss24-original.mp4",
+    "roiScale": 1,
+    "url": "https://www.youtube.com/watch?v=BGWhB8dOKhc",
+    "title": "Prada Spring/Summer 2024 Menswear",
+    "fps": 25,
+    "originalFps": 50,
     "sourceOffset": 0
   }
 ]

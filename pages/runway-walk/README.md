@@ -35,34 +35,37 @@
 
 `/runway-walk/angle.html`에서 인물을 좌우로 드래그하거나 방향 슬라이더·방향키로 몸의 방향을 고른다. 손을 놓으면 선택 방향을 유지한다. `이 방향 저장 +`는 최대 다섯 방향을 이 브라우저의 로컬 저장소에 보관하며, 다시 눌러 불러올 수 있다. 선택 방향도 새로고침 뒤 복원한다. 저장소를 사용할 수 없어도 조작과 재생은 동작한다.
 
-루이비통 SS27, [Prada SS26](https://www.youtube.com/watch?v=SAjtxnyXu8U), [Prada SS25](https://www.youtube.com/watch?v=vz6dKkEiJzg), [Fendi SS25](https://www.youtube.com/watch?v=TSzy2vbjTac), [Gucci SS25](https://www.youtube.com/watch?v=4kD2CrWB_6k), [Hermès SS26](https://www.youtube.com/watch?v=eQUau2GefuA)의 실제 프레임을 사용한다. 현재 39개 구간의 1075프레임을 512×768 투명 타일, 네 프레임씩 묶은 269장의 WebP 아틀라스에 보관한다. 미디어 전송량은 35.53 MB다. 같은 착장이 다른 구간에 등장하면 `lookId`로 묶는다. 배경은 따뜻한 회색이며 원래 의상 색은 유지한다.
+루이비통 SS27, [Prada SS26](https://www.youtube.com/watch?v=SAjtxnyXu8U), [Prada SS25](https://www.youtube.com/watch?v=vz6dKkEiJzg), [Prada SS24](https://www.youtube.com/watch?v=BGWhB8dOKhc), [Fendi SS25](https://www.youtube.com/watch?v=TSzy2vbjTac), [Gucci SS25](https://www.youtube.com/watch?v=4kD2CrWB_6k), [Hermès SS26](https://www.youtube.com/watch?v=eQUau2GefuA)의 실제 프레임을 사용한다. 현재 67개 구간·59착장의 1800프레임을 512×768 투명 타일, 네 프레임씩 묶은 450장의 WebP 아틀라스에 보관한다. 미디어 전송량은 56.87 MB다. 같은 착장의 다른 구간은 `lookId`로 묶는다. 배경은 따뜻한 회색이며 원래 의상 색은 유지한다.
 
-`angle-shots.json`의 방향은 화면을 직접 보고 붙인 카메라 기준 근사값이다. 선택 범위는 약 왼쪽 75°부터 정면까지다. 좌우 반전이나 생성 프레임을 사용하지 않는다. 정면 소스는 늘리지 않고 뒤의 모델이 함께 남던 Gucci·Fendi의 겹침 구간을 제외했다. Gucci의 갈색 재킷은 팔 옆에 다른 모델의 셔츠가 남아 구간 전체를 빼고 Fendi의 11프레임을 추가 제외했다. 정면은 334프레임·10착장이다. Hermès의 사선·피날레 회전 구간에서 8착장·115프레임을 추가했다. 피날레는 다른 인물로 추적이 넘어가거나 배경 사람이 붙고 머리·발이 잘리는 프레임을 빼고 `reviewedFrames`에 기록한 장면만 보관한다.
+`angle-shots.json`의 방향은 화면을 직접 보고 붙인 카메라 기준 근사값이다. 회전 구간은 확인한 시점 사이를 `yawKeys`로 보간하며, 선택 범위는 약 왼쪽 75°부터 정면까지다. 좌우 반전이나 생성 프레임을 사용하지 않는다. 정면은 334프레임·10착장을 유지한다. 뒤의 모델이 붙던 Gucci 구간과 Fendi의 11프레임을 제외한 상태로, 부족한 방향에 Prada SS24의 회전 구간과 Hermès의 사선 구간을 보충했다. 반사로 몸이 왜곡되거나 다른 인물로 추적이 넘어간 프레임, 보라색 가방이 불안정하게 잘리는 구간은 제외했다.
 
-아래 수치는 같은 방향 태그의 실제 착장 수와 프레임 수다. 프레임이 많아도 같은 착장이면 한 착장으로 센다. 재생 후보는 최근접 방향 오차 + 5°까지 포함하므로 이 표의 단일 방향 집계보다 많을 수 있다. 30~35°는 인접 방향을 합쳐도 깨끗한 세 착장만 후보로 갖는 좁은 대역이 남는다. 원본에서 확인되지 않은 각도를 붙여 수를 채우지 않는다.
+아래는 이전의 단일 방향 태그 집계와 달리, **선택한 방향에서 실제 연속 3프레임 재생이 가능한 후보**를 센 수치다. 세 프레임 전체의 최대 방향 오차를 비교하고, 그중 최소 오차 + 5° 범위를 사용한다. 겹치는 3프레임 블록의 원본 프레임은 한 번만 세고, 같은 착장이 다시 나타나도 한 착장으로 센다. 1° 간격의 76개 선택 방향 모두 100프레임·8착장 이상이며, 최소치는 122프레임·8착장이다. 화면에도 같은 후보 수를 표시한다. 위상·관절 조건을 추가 적용한 실제 재생에서는 이 후보 중 일부가 선택된다.
 
-| 왼쪽 방향 | 착장 | 프레임 |
+| 선택 방향 | 착장 후보 | 실제 프레임 후보 |
 | --- | ---: | ---: |
 | 정면 | 10 | 334 |
-| 10° | 1 | 27 |
-| 15° | 3 | 59 |
-| 20° | 3 | 87 |
-| 30° | 1 | 10 |
-| 35° | 2 | 19 |
-| 45° | 1 | 40 |
-| 50° | 4 | 120 |
-| 55° | 3 | 85 |
-| 60° | 3 | 64 |
-| 70° | 2 | 73 |
-| 75° | 6 | 157 |
+| 10° | 8 | 139 |
+| 15° | 25 | 461 |
+| 20° | 24 | 413 |
+| 30° | 17 | 129 |
+| 35° | 18 | 129 |
+| 38° | 18 | 122 |
+| 45° | 19 | 220 |
+| 50° | 22 | 302 |
+| 55° | 23 | 327 |
+| 60° | 18 | 209 |
+| 70° | 21 | 312 |
+| 75° | 16 | 272 |
 
-보행 위상은 MediaPipe의 3D 발목 차이를 몸의 앞 방향에 투영하고 주기 함수를 맞춰 추정한다. 정면 근처의 사선 구간은 기준 정면 보행의 좌우 무릎·발목 차이와 비교해 위상 시작점을 추가 보정한다. 짧은 Hermès 회전 구간은 검토에서 남은 인물의 관절만으로 가까운 LV 사선 보행 한 주기에 주파수와 위상 시작점을 맞춘다. 다른 사람이 섞인 원시 검출 구간의 위상을 그대로 사용하지 않는다. 보행 시계는 방향과 독립적으로 계속 진행한다. 3프레임 경계마다 최근접 각도 오차 + 5° 이내의 구간만 후보로 삼는다. 직전 인물의 무릎·발목 위치와 이동 속도로 다음 프레임의 위치를 예상하고, 그 위치·이동 방향·보행 위상을 함께 비교한다. 비슷한 자세에서 발이 반대로 움직이는 컷의 우선순위를 낮춘다. 최적 비용과 가깝고 위상 차이도 작은 후보 중 최근 네 착장을 피한다. 선택한 구간에서는 원본의 실제 연속 3프레임을 순서대로 보여준다. 관절은 보정된 타일에서 실제로 그려지는 위치를 비교한다. 골반을 원점으로 빼면 사람마다 골반 높이가 달라지는 것을 놓치므로, 화면상의 무릎·발목 위치와 이동 방향을 직접 사용한다.
+보행 위상은 MediaPipe의 3D 발목 차이를 몸의 앞 방향에 투영하고 주기 함수를 맞춰 추정한다. 정면 근처의 사선 구간은 기준 정면 보행의 좌우 무릎·발목 차이와 비교해 위상 시작점을 추가 보정한다. 짧은 Hermès·Prada 회전 구간은 검토에서 남은 인물의 관절만으로 가까운 LV 사선 보행 한 주기에 주파수와 위상 시작점을 맞춘다. 다른 사람이 섞인 원시 검출 구간의 위상을 그대로 사용하지 않는다. 보행 시계는 방향과 독립적으로 계속 진행한다. 3프레임 경계마다 각 구간의 세 프레임에서 최소·최대 각도를 검사하고, 전체가 허용 방향 오차 안에 있는 구간만 후보로 삼는다. 회전 중인 구간의 대표 각도는 세 프레임의 평균이다. 직전 인물의 무릎·발목 위치와 이동 속도로 다음 프레임의 위치를 예상하고, 그 위치·이동 방향·보행 위상을 함께 비교한다. 비슷한 자세에서 발이 반대로 움직이는 컷의 우선순위를 낮춘다. 최적 비용과 가깝고 위상 차이도 작은 후보 중 최근 네 착장을 피한다. 선택한 구간에서는 원본의 실제 연속 3프레임을 순서대로 보여준다. 관절은 보정된 타일에서 실제로 그려지는 위치를 비교한다. 골반을 원점으로 빼면 사람마다 골반 높이가 달라지는 것을 놓치므로, 화면상의 무릎·발목 위치와 이동 방향을 직접 사용한다.
 
 자세 감지가 신발 클로즈업을 전신으로 오인한 프레임이 있었다. 이제 지정 구간 안의 카메라 컷을 원본 RGB 변화로 따로 찾고, 전신 자세가 가장 많이 검출된 한 쇼트만 남긴다. 카메라가 바뀐 프레임을 같은 구간으로 연결하지 않는다. 회전 중인 짧은 구간도 수동으로 줄인다.
 
 [BiRefNet lite](https://huggingface.co/ZhengPeng7/BiRefNet_lite)로 각 1080p 원본 프레임의 알파를 직접 계산한다. 이전 여섯 프레임 간격의 키 마스크와 optical flow는 가방 끈·발의 경계를 잘못 옮기는 경우가 있어 제거했다. 선택한 골반의 연결 성분과, 보이는 머리·팔다리·손 근처의 분리 성분을 유지한다. 가방처럼 큰 성분도 손 근처에서 지지를 받으면 보존한다. 발목 주변의 기하학적 제한으로 실제 신발이 잘리던 처리도 제거했다. 머리나 보이는 무릎·발목이 마스크에서 사라진 프레임은 제외한다.
 
-Louis Vuitton의 파도 무늬가 머리에 붙는 현상은 현재 프레임의 MediaPipe 인물 마스크로 어깨 위 영역을 추가 제한한다. 새 Prada SS25의 가방 없는 네 구간은 관객의 손·다리가 인물에 붙는 것을 막기 위해 목 아래 영역에 이 제한을 적용하고 머리의 직접 마스크는 유지한다. 검은 코트 구간은 얼굴 위치를 기준으로 넉넉한 머리 영역을 추가 제한해 뒤쪽 관객의 머리가 붙는 것을 막는다. 청록색 셔츠 구간에서 손에 붙는 중립색 무대 테두리는 그 구간의 손 주변에서만 추가 제거한다. 관객의 손이 붙거나 머리 끝이 잘린 것으로 직접 확인한 프레임도 제외 목록에 기록한다. Prada의 흰 난간과 검은 무대 장식이 남던 두 구간도 전신 지지 마스크로 정리한다. Fendi의 겹침 구간에는 원본 ROI에서 직접 확인한 `matteRegion`을 적용한다. 이 영역은 누끼를 새로 그리지 않고 인물 바깥의 다른 모델만 제외하므로 실제 가방은 원시 알파 그대로 유지한다. 영역이 겹쳐 분리가 불확실한 프레임은 제외한다. 가방이 있는 구간에는 전신 제한을 적용하지 않는다. 원본 RGB를 섞거나 얼굴·옷을 생성하지 않는다. 자동 마스크의 작은 테두리 오차와 원본 촬영 해상도의 한계는 남는다.
+Louis Vuitton의 파도 무늬가 머리에 붙는 현상은 현재 프레임의 MediaPipe 인물 마스크로 어깨 위 영역을 추가 제한한다. 새 Prada SS25의 가방 없는 네 구간은 관객의 손·다리가 인물에 붙는 것을 막기 위해 목 아래 영역에 이 제한을 적용하고 머리의 직접 마스크는 유지한다. 검은 코트 구간은 얼굴 위치를 기준으로 넉넉한 머리 영역을 추가 제한해 뒤쪽 관객의 머리가 붙는 것을 막는다. 청록색 셔츠 구간에서 손에 붙는 중립색 무대 테두리는 그 구간의 손 주변에서만 추가 제거한다. 관객의 손이 붙거나 머리 끝이 잘린 것으로 직접 확인한 프레임도 제외 목록에 기록한다. Prada의 흰 난간과 검은 무대 장식이 남던 두 구간도 전신 지지 마스크로 정리한다. Fendi의 겹침 구간에는 원본 ROI에서 직접 확인한 `matteRegion`을 적용한다. 이 영역은 누끼를 새로 그리지 않고 인물 바깥의 다른 모델만 제외하므로 실제 가방은 원시 알파 그대로 유지한다. 영역이 겹쳐 분리가 불확실한 프레임은 제외한다. 기존 MediaPipe의 전신 제한은 가방이 있는 구간에 적용하지 않는다. 원본 RGB를 섞거나 얼굴·옷을 생성하지 않는다. 자동 마스크의 작은 테두리 오차와 원본 촬영 해상도의 한계는 남는다.
+
+새 Prada SS24와 추가 Hermès 구간은 [SAM2.1 tiny](https://huggingface.co/facebook/sam2.1-hiera-tiny)의 인물별 마스크로 다른 모델·관객을 분리한다. 실제로 보이는 얼굴·어깨·골반·팔·다리 좌표를 양성 지점으로 사용하며, 가방은 원본에서 확인한 별도 지점을 시간에 따라 보간해 함께 분리한다. 인물 마스크만으로 가방을 지우거나 배경을 채워 넣지 않는다. 경계의 부드러운 알파와 모든 RGB는 BiRefNet 및 촬영 원본에서 가져온다. 골반에 연결되지 않은 잔여 관객의 손은 제외하되, 명시한 가방 지점의 성분은 보존한다. 보이는 팔이 중간에 끊기거나 누끼가 원본 크롭 가장자리에 닿는 컷은 제외한다. 유리 반사, 인물 교체, 불안정한 가방 경계는 검토 목록으로 추가 제외한다. 모델·설정의 고정 리비전과 SHA-256은 `prepare-instance.py`에서 검증한다.
 
 Apple Silicon에서는 공식 모델의 고정 리비전을 로컬에 내려받아 MPS로 처리한다. 다운로드 스크립트가 모델과 실행 코드의 SHA-256을 확인한다. ONNX CPU 실행도 선택할 수 있다. 마스크 캐시는 인물 선택 이전의 원시 알파를 보관하므로 정리 규칙을 바꿔도 가방이나 분리된 신체 영역을 다시 복구할 수 있다.
 
@@ -81,6 +84,8 @@ Apple Silicon에서는 공식 모델의 고정 리비전을 로컬에 내려받�
 ```sh
 uv tool run --from 'yt-dlp[default]' yt-dlp --no-playlist -f 136 -o .cache/runway-walk/prada-ss26.mp4 'https://www.youtube.com/watch?v=SAjtxnyXu8U'
 uv tool run --from 'yt-dlp[default]' yt-dlp --no-playlist -f 137 -o .cache/runway-walk/prada-ss26-hd.mp4 'https://www.youtube.com/watch?v=SAjtxnyXu8U'
+uv tool run --from 'yt-dlp[default]' yt-dlp --no-playlist -f 'bestvideo[height=1080][ext=mp4]/bestvideo[height=1080]' -o .cache/runway-walk/prada-ss24-original.mp4 'https://www.youtube.com/watch?v=BGWhB8dOKhc'
+ffmpeg -i .cache/runway-walk/prada-ss24-original.mp4 -vf fps=25 -c:v libx264 -preset veryfast -crf 15 -an .cache/runway-walk/prada-ss24.mp4
 uv tool run --from 'yt-dlp[default]' yt-dlp --no-playlist -f 'bestvideo[height=1080][ext=mp4]/bestvideo[height=1080]/bestvideo[height<=1080]' -o .cache/runway-walk/prada-ss25-original.mp4 'https://www.youtube.com/watch?v=vz6dKkEiJzg'
 ffmpeg -i .cache/runway-walk/prada-ss25-original.mp4 -vf fps=25 -c:v libx264 -preset veryfast -crf 15 -an .cache/runway-walk/prada-ss25.mp4
 uv tool run --from 'yt-dlp[default]' yt-dlp --no-playlist -f 137 -o .cache/runway-walk/fendi-ss25.mp4 'https://www.youtube.com/watch?v=TSzy2vbjTac'
@@ -89,14 +94,16 @@ uv tool run --from 'yt-dlp[default]' yt-dlp --no-playlist -f 'bestvideo[height=1
 uv tool run --from 'yt-dlp[default]' yt-dlp --no-playlist -f 'bestvideo[height=1080][ext=mp4]/bestvideo[height=1080]' -o .cache/runway-walk/hermes-ss26-original.mp4 'https://www.youtube.com/watch?v=eQUau2GefuA'
 ffmpeg -i .cache/runway-walk/hermes-ss26-original.mp4 -vf fps=25 -c:v libx264 -preset veryfast -crf 15 -an .cache/runway-walk/hermes-ss26.mp4
 curl -fL 'https://github.com/danielgatis/rembg/releases/download/v0.0.0/BiRefNet-general-bb_swin_v1_tiny-epoch_232.onnx' -o .cache/runway-walk/birefnet-lite.onnx
-.cache/runway-walk/venv/bin/python scripts/runway-walk/angles.py --cache .cache/runway-walk --output pages/runway-walk
-.cache/runway-walk/venv/bin/python scripts/runway-walk/refine-angles.py --cache .cache/runway-walk --output pages/runway-walk
 
 # Apple Silicon: 프레임별 추론 가속 (공식 고정 리비전, 로컬 실행)
 uv pip install --python .cache/runway-walk/venv/bin/python -r scripts/runway-walk/requirements-mps.txt
 .cache/runway-walk/venv/bin/python scripts/runway-walk/prepare-matting.py --cache .cache/runway-walk
-.cache/runway-walk/venv/bin/python scripts/runway-walk/refine-angles.py --cache .cache/runway-walk --output pages/runway-walk --engine mps
+.cache/runway-walk/venv/bin/python scripts/runway-walk/prepare-instance.py --cache .cache/runway-walk
+.cache/runway-walk/venv/bin/python scripts/runway-walk/angles.py --cache .cache/runway-walk --output .cache/runway-walk/export --manifest-only
+.cache/runway-walk/venv/bin/python scripts/runway-walk/refine-angles.py --cache .cache/runway-walk --output .cache/runway-walk/export --engine mps
 ```
+
+위 명령은 Git 제외 스테이징에 출력한다. 원본·누끼·재생을 확인한 다음 `angles.json`과 그 안에 나열된 HD 아틀라스만 `pages/runway-walk/`에 반영한다. 인물별 분리를 사용하는 현재 자료는 `requirements-mps.txt`의 PyTorch·Transformers가 필요하며, CPU로 실행하려면 마지막 명령의 `--engine onnx`를 사용할 수 있다.
 
 ## 다시 만들기
 

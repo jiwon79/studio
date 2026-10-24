@@ -12,6 +12,7 @@ from scipy.ndimage import gaussian_filter1d
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--cache',type=Path,required=True)
 parser.add_argument('--output',type=Path,required=True)
+parser.add_argument('--manifest-only',action='store_true',help='Skip coarse atlas encoding before direct HD refinement')
 args=parser.parse_args()
 shots=json.loads(Path(__file__).with_name('angle-shots.json').read_text())
 root=args.cache/'angles';root.mkdir(exist_ok=True)
@@ -23,7 +24,7 @@ all_rows=[];clip_info=[]
 with mp.tasks.vision.PoseLandmarker.create_from_options(opts) as model:
  for shot in shots:
   folder=root/shot['id'];folder.mkdir(exist_ok=True)
-  key=hashlib.sha256((json.dumps({k:v for k,v in shot.items() if k not in ['yaw','yawKeys','personGuard','excludedFrames','reviewedFrames','neutralWristBackdrop','headEnvelope','matteRegion','phaseReference']},sort_keys=True)+'registration-v2').encode()).hexdigest()
+  key=hashlib.sha256((json.dumps({k:v for k,v in shot.items() if k not in ['yaw','yawKeys','personGuard','excludedFrames','reviewedFrames','neutralWristBackdrop','headEnvelope','matteRegion','phaseReference','instance','accessoryKeys']},sort_keys=True)+'registration-v2').encode()).hexdigest()
   rows=[]
   if (folder/'rows.json').exists():
    stored=json.loads((folder/'rows.json').read_text())
@@ -110,7 +111,8 @@ for start in range(0,len(all_rows),36):
  for i,row in enumerate(batch):
   im=Image.open(row['path']).convert('RGBA');sheet.paste(im,((i%6)*256,(i//6)*384))
   frames.append({k:row[k] for k in ['clip','look','source','sourceFrame','yaw','phase']}|{'atlas':atlas,'tile':i})
- sheet.save(media/filename,'WEBP',quality=88,method=4);atlases.append(filename)
+ if not args.manifest_only:sheet.save(media/filename,'WEBP',quality=88,method=4)
+ atlases.append(filename)
 manifest={'fps':25,'holdFrames':3,'tileWidth':256,'tileHeight':384,'columns':6,'angleType':'approximate camera-relative shot annotation','sources':[source for source in catalog if source['id'] in {row['source'] for row in all_rows}],'clips':clip_info,'atlases':atlases,'frames':frames}
 (args.output/'angles.json').write_text(json.dumps(manifest,separators=(',',':'))+'\n')
 print('Exported',len(frames),'frames /',len(atlases),'atlases',flush=True)

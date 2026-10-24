@@ -1,6 +1,6 @@
 import data from './angles.json';
 import { AtlasPool } from './atlas-pool';
-import { buildBlocks, chooseBlock, type AngleFrame } from './angle-match';
+import { buildBlocks, chooseBlock, directionCoverage, type AngleFrame } from './angle-match';
 
 const frames: AngleFrame[] = data.frames;
 const blocks = buildBlocks(frames, data.holdFrames);
@@ -8,6 +8,7 @@ const canvas = document.querySelector<HTMLCanvasElement>('#person')!;
 const context = canvas.getContext('2d')!;
 const angle = document.querySelector<HTMLInputElement>('#angle')!;
 const direction = document.querySelector<HTMLOutputElement>('#direction')!;
+const coverage = document.querySelector<HTMLElement>('#coverage')!;
 const loading = document.querySelector<HTMLParagraphElement>('#loading')!;
 const play = document.querySelector<HTMLButtonElement>('#play')!;
 const save = document.querySelector<HTMLButtonElement>('#save')!;
@@ -79,6 +80,8 @@ async function pick() {
 }
 function setAngle(value: number) {
   target = Math.round(clamp(value)); angle.value = String(target); direction.value = label(target);
+  const available = directionCoverage(frames, blocks, target, data.holdFrames);
+  coverage.textContent = `${available.outfits}착장 · ${available.frames}프레임 후보`;
   for (const button of presets.querySelectorAll('button')) button.setAttribute('aria-pressed', String(Number(button.dataset.angle) === target));
   if (ready && !playing) void pick();
   else if (ready) warmNext();

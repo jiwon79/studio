@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 import data from './angles.json';
-import { buildBlocks, chooseBlock, phaseDistance, gaitDistance, type AngleFrame } from './angle-match';
+import { buildBlocks, chooseBlock, directionCoverage, phaseDistance, gaitDistance, type AngleFrame } from './angle-match';
 const f = (clip: string, sourceFrame: number): AngleFrame => ({ clip, source: 'test', sourceFrame, yaw: 0, phase: 0, atlas: 0, tile: 0 });
 test('three-frame blocks cannot cross source gaps or clip boundaries', () => {
   const blocks = buildBlocks([f('a',10),f('a',11),f('a',12),f('a',14),f('a',15),f('b',16),f('b',17),f('b',18)]);
@@ -42,21 +42,30 @@ test('a matching gait cannot pull a frontal person into a diagonal direction', (
   expect(chooseBlock(blocks,-30,0).clip).toBe('diagonal');
 });
 
-test('every selectable direction has at least three reviewed outfit candidates', () => {
+test('a turn must match the requested direction for the entire three-frame hold', () => {
+  const frames=[
+    {...f('turn-away',10),yaw:-38}, {...f('turn-away',11),yaw:-46}, {...f('turn-away',12),yaw:-54},
+    {...f('compatible',20),yaw:-38}, {...f('compatible',21),yaw:-39}, {...f('compatible',22),yaw:-40},
+  ];
+  expect(chooseBlock(buildBlocks(frames),-38,0).clip).toBe('compatible');
+});
+
+test('every selectable direction offers 100 real frames and eight distinct outfits', () => {
   const blocks = buildBlocks(data.frames);
   for (let yaw=-75; yaw<=0; yaw++) {
-    const nearest = Math.min(...blocks.map(b=>Math.abs(b.yaw-yaw)));
-    const outfits = new Set(blocks.filter(b=>Math.abs(b.yaw-yaw)<=nearest+5).map(b=>b.look ?? b.clip));
-    // The newly filmed 30–35 degree band has three clean outfits. Reject
-    // crowd-overlap frames instead of labeling frontal views as diagonal.
-    expect(outfits.size, `direction ${yaw}`).toBeGreaterThanOrEqual(yaw>=-40&&yaw<=-25 ? 3 : 4);
+    const coverage = directionCoverage(data.frames,blocks,yaw,data.holdFrames);
+    expect(coverage.outfits, `outfits at ${yaw}`).toBeGreaterThanOrEqual(8);
+    expect(coverage.frames, `frames at ${yaw}`).toBeGreaterThanOrEqual(100);
   }
 });
 test('supplemental footage only adds deficient non-frontal directions', () => {
   const added=data.frames.filter(f=>f.source==='hermes');
-  expect(new Set(added.map(f=>f.look)).size).toBe(8);
-  expect(added.every(f=>f.yaw<=-20)).toBe(true);
+  expect(new Set(added.map(f=>f.look)).size).toBeGreaterThanOrEqual(8);
+  expect(added.every(f=>f.yaw<=-10)).toBe(true);
   for(const yaw of [-30,-35])expect(added.some(f=>f.yaw===yaw)).toBe(true);
+  const turns=data.frames.filter(f=>f.source==='prada24');
+  expect(new Set(turns.map(f=>f.look)).size).toBeGreaterThanOrEqual(8);
+  expect(turns.every(f=>f.yaw<=-10)).toBe(true);
 });
 test('reviewed spectator-overlap frames stay out of the frontal library', () => {
   expect(data.frames.some(f=>f.clip==='gucci-look-179')).toBe(false);
@@ -82,9 +91,8 @@ test('each representative direction visits several compatible outfits during pla
       previous=data.frames[block.start+2].gait;
       velocity=data.frames[block.start+2].gaitVelocity;
     }
-    // Closer filmed views now exclude the old 50-degree fallback at 38 degrees.
-    // This narrow band has three compatible outfits; 20 degrees now has more.
-    expect(visited.size, `playback at ${yaw}`).toBeGreaterThanOrEqual(yaw>=-38&&yaw<=-30 ? 3 : 4);
+    // Phase and joint continuity can narrow an eight-outfit source pool.
+    expect(visited.size, `playback at ${yaw}`).toBeGreaterThanOrEqual(6);
   }
 });
 test('an approaching foot keeps moving in the same direction across an identity cut', () => {
@@ -127,7 +135,7 @@ test('finale supplements contain only reviewed complete frames of one outfit', (
 });
 test('38-degree selection excludes the misclassified Prada side shots', () => {
   const blocks=buildBlocks(data.frames);
-  for(let step=0;step<30;step++)expect(chooseBlock(blocks,-38,step/30).clip.startsWith('prada')).toBe(false);
+  for(let step=0;step<30;step++)expect(chooseBlock(blocks,-38,step/30).clip.startsWith('prada-')).toBe(false);
 });
 test('registered stature and floor remain stable across the actual library', () => {
   const heights=data.frames.map(f=>f.registration.height).sort((a,b)=>a-b);

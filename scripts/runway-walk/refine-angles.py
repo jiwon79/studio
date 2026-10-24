@@ -7,6 +7,7 @@ import mediapipe as mp
 from PIL import Image
 from scipy.ndimage import gaussian_filter1d
 from matting import MatteModel
+from instance import InstanceSupport, REPO as INSTANCE_REPO, REVISION as INSTANCE_REVISION, FILES as INSTANCE_FILES
 
 VERSION = 'biref-direct-v8-screen-joints'
 TARGET_HEIGHT = 660
@@ -53,6 +54,35 @@ def complete_body(alpha,pose):
         x,y=np.round(pose[k,:2]*[w,h]).astype(int);r=max(6,round(h*.018))
         patch=alpha[max(0,y-r):min(h,y+r+1),max(0,x-r):min(w,x+r+1)]
         if not patch.size or np.count_nonzero(patch>.5)<max(3,patch.size*.02):return False
+    return True
+
+def instance_components(alpha,pose,accessories):
+    """A prompted body may retain detached spectator hands near a wrist prompt."""
+    h,w=alpha.shape
+    count,labels,stats,_=cv2.connectedComponentsWithStats((alpha>.35).astype('uint8'))
+    def label_at(point):
+        px,py=np.clip(np.round(point).astype(int),[0,0],[w-1,h-1])
+        label=labels[py,px]
+        if label:return label
+        patch=labels[max(0,py-10):py+11,max(0,px-10):px+11]
+        ids,n=np.unique(patch[patch>0],return_counts=True)
+        return ids[n.argmax()] if len(ids) else 0
+    body=label_at(pose[[23,24],:2].mean(axis=0)*[w,h])
+    if not body:raise ValueError('Selected body is absent')
+    keep=np.zeros(count,np.uint8);keep[body]=1
+    for point in accessories:
+        label=label_at(np.array(point)*[w,h])
+        if label and stats[label,cv2.CC_STAT_AREA]>=24:keep[label]=1
+    return alpha*cv2.dilate(keep[labels],np.ones((3,3),np.uint8))
+
+def complete_arms(alpha,pose):
+    h,w=alpha.shape
+    for a,b in [(11,13),(13,15),(12,14),(14,16)]:
+        if min(pose[a,3],pose[b,3])<.8:continue
+        for fraction in [.2,.4,.6,.8]:
+            x,y=np.round((pose[a,:2]*(1-fraction)+pose[b,:2]*fraction)*[w,h]).astype(int)
+            r=max(7,round(h*.012));patch=alpha[max(0,y-r):min(h,y+r+1),max(0,x-r):min(w,x+r+1)]
+            if not patch.size or np.count_nonzero(patch>.5)<max(3,patch.size*.02):return False
     return True
 
 def reviewed_region(alpha,vertices):
@@ -139,6 +169,8 @@ head_root=args.cache/'head-masks';head_root.mkdir(exist_ok=True)
 pose_hash=hashlib.sha256((args.cache/'pose.task').read_bytes()).hexdigest()
 media=args.output/'media/angles';media.mkdir(parents=True,exist_ok=True)
 head_model=None
+instance_model=None
+instance_root=args.cache/'instance-support';instance_root.mkdir(exist_ok=True)
 cv2.setNumThreads(2)
 source_hashes={};all_rows=[]
 for clip in manifest['clips']:
@@ -154,6 +186,10 @@ for clip in manifest['clips']:
     if clip.get('headEnvelope'):fingerprint['headEnvelope']=clip['headEnvelope']
     if clip.get('neutralWristBackdrop'):fingerprint['neutralWristBackdrop']=True
     if clip.get('matteRegion'):fingerprint['matteRegion']=clip['matteRegion']
+    if clip.get('instance') or clip['id'].startswith('hermes-side-'):fingerprint['fullFrameGuardVersion']=1
+    if clip.get('instance'):
+        if instance_model is None:instance_model=InstanceSupport(args.cache,'mps' if args.engine=='mps' else 'cpu')
+        fingerprint.update(instance=instance_model.fingerprint,instanceSelectionVersion=2,accessoryKeys=clip.get('accessoryKeys',[]))
     folder=root/clip['id'];folder.mkdir(exist_ok=True);key=folder/'input.json';metadata=folder/'registration.json'
     if key.exists() and json.loads(key.read_text())==fingerprint and metadata.exists():
         registered=json.loads(metadata.read_text())
@@ -185,14 +221,32 @@ for clip in manifest['clips']:
             mask=model.infer(originals[frame])
             Image.fromarray((mask*65535).round().astype('uint16')).save(path)
         if clip.get('matteRegion'):mask=reviewed_region(mask,clip['matteRegion'])
-        try:alpha=selected_component(mask,pose)
-        except ValueError:rejected.append(frame);continue
+        if clip.get('instance'):
+            accessories=[]
+            for keys in clip.get('accessoryKeys',[]):
+                keys=np.array(keys)
+                accessories.append([float(np.interp(frame/25,keys[:,0],keys[:,axis])) for axis in [1,2]])
+            support_key=hashlib.sha256((mask_key+instance_model.fingerprint+json.dumps(clip.get('accessoryKeys',[]))+pose.tobytes().hex()).encode()).hexdigest()[:20]
+            support_path=instance_root/f'{support_key}.png'
+            if support_path.exists():support=np.array(Image.open(support_path)).astype(np.float32)/255
+            else:
+                support=instance_model.infer(originals[frame],pose,accessories)
+                Image.fromarray(support.astype('uint8')*255).save(support_path)
+            alpha=instance_model.matte(mask,support)
+            try:alpha=instance_components(alpha,pose,accessories)
+            except ValueError:rejected.append(frame);continue
+            if not complete_arms(alpha,pose):rejected.append(frame);continue
+        else:
+            try:alpha=selected_component(mask,pose)
+            except ValueError:rejected.append(frame);continue
         if clip['source']=='lv' or clip.get('personGuard')=='body':
             head_key=hashlib.sha256((source_hashes[source]+pose_hash+str((x,y,w,h,frame))).encode()).hexdigest()[:20]
             alpha=guard_person(alpha,originals[frame],pose,head_root/f'{head_key}.png',clip.get('personGuard')=='body',clip.get('headEnvelope',False))
         if clip.get('neutralWristBackdrop'):alpha=remove_wrist_backdrop(alpha,originals[frame],pose)
         if not complete_body(alpha,pose):rejected.append(frame);continue
         top,floor,left,right=bounds(alpha)
+        if (clip.get('instance') or clip['id'].startswith('hermes-side-')) and (top<=3 or floor>=h-4 or left<=3 or right>=w-4):
+            rejected.append(frame);continue
         hip=pose[[23,24],:2].mean(axis=0)*[w,h]
         decoded.append((frame,originals[frame],alpha,hip,top,floor,left,right))
     # Use each complete silhouette's head and sole for exact registration.
@@ -271,4 +325,6 @@ for clip in manifest['clips']:
     clip['frames']=sum(f['clip']==clip['id'] for f in frames)
 asset_version=hashlib.sha256(b''.join(hashlib.sha256((media/name).read_bytes()).digest() for name in atlases)).hexdigest()[:12]
 manifest.update(tileWidth=512,tileHeight=768,columns=2,rows=2,atlases=atlases,frames=frames,assetVersion=asset_version,quality={'sourceResolution':[1920,1080],'matting':'BiRefNet lite per-frame + complete-body validation + reviewed person support','engine':args.engine,'modelSha256':model.weights_sha256,'inferenceFingerprint':model_hash,'headSupportModelSha256':pose_hash,'maskKeySpacing':1,'maskMaxDistance':0,'targetHeight':TARGET_HEIGHT,'targetGround':GROUND,'webpQuality':96,'atlasDecodeLimit':5})
+if instance_model is not None:
+    manifest['quality']['instanceSupport']={'repo':INSTANCE_REPO,'revision':INSTANCE_REVISION,'modelSha256':INSTANCE_FILES['model.safetensors'],'fingerprint':instance_model.fingerprint,'selectionVersion':2}
 manifest_path.write_text(json.dumps(manifest,separators=(',',':'))+'\n');print('Exported',len(frames),'HD frames in',len(atlases),'pages',flush=True)
