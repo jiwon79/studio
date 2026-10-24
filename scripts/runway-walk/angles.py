@@ -23,7 +23,7 @@ all_rows=[];clip_info=[]
 with mp.tasks.vision.PoseLandmarker.create_from_options(opts) as model:
  for shot in shots:
   folder=root/shot['id'];folder.mkdir(exist_ok=True)
-  key=hashlib.sha256((json.dumps({k:v for k,v in shot.items() if k not in ['yaw','yawKeys','personGuard','excludedFrames','reviewedFrames','neutralWristBackdrop']},sort_keys=True)+'registration-v2').encode()).hexdigest()
+  key=hashlib.sha256((json.dumps({k:v for k,v in shot.items() if k not in ['yaw','yawKeys','personGuard','excludedFrames','reviewedFrames','neutralWristBackdrop','headEnvelope']},sort_keys=True)+'registration-v2').encode()).hexdigest()
   rows=[]
   if (folder/'rows.json').exists():
    stored=json.loads((folder/'rows.json').read_text())

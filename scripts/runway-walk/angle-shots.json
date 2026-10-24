@@ -437,6 +437,10 @@
       520,
       1080
     ],
-    "personGuard": "body"
+    "personGuard": "body",
+    "headEnvelope": [
+      1.1,
+      2.0
+    ]
   }
 ]

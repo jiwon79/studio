@@ -68,7 +68,7 @@ def remove_wrist_backdrop(alpha,rgb,pose):
     neutral=np.clip((.2-(high-low)/np.maximum(high,1))/.04,0,1)*np.clip((low-80)/15,0,1)
     return alpha*(1-neutral*zone)
 
-def guard_person(alpha,rgb,pose,path,full_body=False):
+def guard_person(alpha,rgb,pose,path,full_body=False,head_envelope=False):
     """Reject attached scenery; full-body support is for reviewed bag-free shots."""
     global head_model
     h,w=alpha.shape
@@ -91,7 +91,24 @@ def guard_person(alpha,rgb,pose,path,full_body=False):
         # The coarse person mask can truncate hair; keep the direct head matte.
         neck=min(pose[11,1],pose[12,1])*h-h*.03
         body=np.clip((np.arange(h)-neck)/(h*.02),0,1)[:,None]
-        return alpha*np.maximum(support,1-body)
+        head=np.ones((h,w),np.float32)
+        if head_envelope:
+            # This reviewed hat-free shot crosses spectators' dark heads. Keep
+            # the direct matte inside a generous envelope around the face;
+            # the coarse semantic mask alone also includes the touching heads.
+            xy=pose[:,:2]*[w,h];width=np.linalg.norm(xy[7]-xy[8])
+            center=(round((xy[7,0]+xy[8,0])/2),round(xy[0,1]-width*.1))
+            head=np.zeros((h,w),np.float32)
+            rx,ry=head_envelope
+            cv2.ellipse(head,center,(max(10,round(width*rx)),max(15,round(width*ry))),0,0,360,1,-1)
+            head=cv2.GaussianBlur(head,(0,0),.8)
+        guarded=alpha*np.maximum(support,1-body)
+        if head_envelope:
+            # End the head restriction at ear/face height. Never fade a coat's
+            # shoulders while transitioning from a narrow head to a wider torso.
+            release=np.clip((np.arange(h)-xy[[7,8],1].mean())/(h*.02),0,1)[:,None]
+            guarded*=np.maximum(head,release)
+        return guarded
     shoulder=max(pose[11,1],pose[12,1])*h;transition=h*.025
     body=np.clip((np.arange(h)-shoulder+transition)/transition,0,1)[:,None]
     return alpha*np.maximum(support,body)
@@ -119,9 +136,10 @@ for clip in manifest['clips']:
     source=args.cache/catalog[clip['source']]['file']
     if source not in source_hashes:source_hashes[source]=hashlib.sha256(source.read_bytes()).hexdigest()
     fingerprint={'version':VERSION,'source':source_hashes[source],'model':model_hash,'roi':clip['roi'],'frames':[r['sourceFrame'] for r in selected]}
-    if clip.get('personGuard'):fingerprint.update(personGuard=clip['personGuard'],personGuardVersion=2)
+    if clip.get('personGuard'):fingerprint.update(personGuard=clip['personGuard'],personGuardVersion=4)
     if clip.get('excludedFrames'):fingerprint['excludedFrames']=clip['excludedFrames']
     if clip.get('reviewedFrames'):fingerprint['reviewedFrames']=clip['reviewedFrames']
+    if clip.get('headEnvelope'):fingerprint['headEnvelope']=clip['headEnvelope']
     if clip.get('neutralWristBackdrop'):fingerprint['neutralWristBackdrop']=True
     folder=root/clip['id'];folder.mkdir(exist_ok=True);key=folder/'input.json';metadata=folder/'registration.json'
     if key.exists() and json.loads(key.read_text())==fingerprint and metadata.exists():
@@ -157,7 +175,7 @@ for clip in manifest['clips']:
         except ValueError:rejected.append(frame);continue
         if clip['source']=='lv' or clip.get('personGuard')=='body':
             head_key=hashlib.sha256((source_hashes[source]+pose_hash+str((x,y,w,h,frame))).encode()).hexdigest()[:20]
-            alpha=guard_person(alpha,originals[frame],pose,head_root/f'{head_key}.png',clip.get('personGuard')=='body')
+            alpha=guard_person(alpha,originals[frame],pose,head_root/f'{head_key}.png',clip.get('personGuard')=='body',clip.get('headEnvelope',False))
         if clip.get('neutralWristBackdrop'):alpha=remove_wrist_backdrop(alpha,originals[frame],pose)
         if not complete_body(alpha,pose):rejected.append(frame);continue
         top,floor,left,right=bounds(alpha)
