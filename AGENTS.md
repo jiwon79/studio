@@ -18,6 +18,7 @@ Interactive web implementations of brand artworks.
 
 ## Documentation
 
+- 카드뉴스의 제목·원고·표지를 만들거나 수정하기 전에 Notion `Project > Vibe`의 [카드뉴스 레퍼런스 · 제목과 카드별 텍스트](https://app.notion.com/p/403a89f7e31a81c8bf04d1c08f8f58de)를 읽고, 소재와 가까운 게시물 2–3편의 제목과 전개를 참고한다. 전사 본문은 Notion에서 관리하며 저장소에 복제하지 않는다.
 - Instagram DM 요청함을 분류·답변하거나 자동 답변 로직을 수정하기 전에 Notion `Project > Vibe > 내부 운영`의 [Instagram DM 답변 규칙](https://app.notion.com/p/3e7a89f7e31a815b8b60c3ead057bf0a)을 읽고 최신 문구·분기·개별 승인 기준을 따른다. 규칙 본문은 저장소에 복제하지 않는다.
 - Instagram 어시스턴트 운영은 `instagram-assistant/assistant --env prod ...` 스크립트를 기본 진입점으로 사용한다. DM 검토는 `review --limit 10`, 승인된 분리 답장은 `send-batch FILE --yes`를 사용한다. 명령과 예시는 `instagram-assistant/README.md` 및 `./assistant --env prod --help`에서 확인한다. `instagram-assistant/API.md`는 백엔드 구현·장애 조사용 참고 문서다. Chrome은 요청함 수락과 댓글·DM 하트에 사용하며, 하트는 화면에서 확인한 뒤 스크립트로 해당 항목만 동기화하거나 기록한다. 승인 묶음에 제외·보류한 계정은 전송 목록에서 빼고, 발송 결과가 불확실하면 재시도 전에 실제 대화를 확인한다.
 - 판매 상품의 원본 에셋·제작 자료·배포 ZIP은 [Google Drive 바이브코딩 판매자료](https://drive.google.com/drive/folders/1S7Lre1gpLGEGQNKL0eSpjHyWcsJmRmnM)에서 관리한다. 상품별 위치와 업로드·검증 절차는 `docs/guides/sales-asset-management.md`를 따른다. `kits/`와 판매용 ZIP은 Git에 커밋하지 않는다. 리틀리 첨부 파일은 Drive 배포본의 전달용 사본으로 취급한다.
