@@ -45,3 +45,5 @@ a:hover { color: #222; }
 .archive summary { font-size: 10px; line-height: 24px; color: #777; cursor: pointer; text-align: center; }
 .archive summary:focus-visible { outline: 2px solid #555; outline-offset: 4px; }
 .archive[open] summary { margin-bottom: 6px; }
+
+.angle-link { align-self: center; padding: 10px 12px; color: #4e5946; border: 1px solid #b8c0b0; border-radius: 20px; }

@@ -65,6 +65,8 @@ for (const name of pageEntries) {
 
 // 런타임 문자열/OG 경로에 필요한 파일만 원래 경로로 복사한다.
 // Vite가 번들에 포함한 파일은 JS에서도 new URL(..., import.meta.url)로 참조한다.
+input['runway-walk-angle'] = resolve(pagesDir, 'runway-walk/angle.html');
+
 const assetDirectories = pageEntries
   .filter(name => existsSync(resolve(pagesDir, name, 'assets')))
   .map(name => resolve(pagesDir, name, 'assets'));
