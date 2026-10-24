@@ -1,6 +1,11 @@
 import manifest from './manifest.json';
 
 const sources = {
+  color3: new URL('./media/runway-color-3.mp4', import.meta.url).href,
+  color4: new URL('./media/runway-color-4.mp4', import.meta.url).href,
+  color5: new URL('./media/runway-color-5.mp4', import.meta.url).href,
+  color6: new URL('./media/runway-color-6.mp4', import.meta.url).href,
+  cadence: new URL('./media/runway-color-cadence.mp4', import.meta.url).href,
   color: new URL('./media/runway-color.mp4', import.meta.url).href,
   footfall: new URL('./media/runway-footfall.mp4', import.meta.url).href,
   frame: new URL('./media/runway-frame.mp4', import.meta.url).href,
@@ -9,6 +14,9 @@ const sources = {
 type Source = keyof typeof sources;
 type Mode = Source | 'compare';
 const labels: Record<Source, string> = {
+  color3: '색 흐름 · 3프레임', color4: '색 흐름 · 4프레임',
+  color5: '색 흐름 · 5프레임', color6: '색 흐름 · 6프레임',
+  cadence: '전환 간격 비교 · 위 3·4 / 아래 5·6프레임',
   color: '01 · 색의 흐름', footfall: '03 · 발 디딤', frame: '기존 · 매 프레임', step: '기존 · 3프레임',
 };
 const video = document.querySelector<HTMLVideoElement>('#walk')!;
@@ -24,6 +32,11 @@ const downloadFootfall = document.querySelector<HTMLAnchorElement>('#download-fo
 const status = document.querySelector<HTMLParagraphElement>('#status')!;
 const modes = document.querySelectorAll<HTMLButtonElement>('[data-mode]');
 const posters = {
+  color3: new URL('./media/poster-color-3.jpg', import.meta.url).href,
+  color4: new URL('./media/poster-color-4.jpg', import.meta.url).href,
+  color5: new URL('./media/poster-color-5.jpg', import.meta.url).href,
+  color6: new URL('./media/poster-color-6.jpg', import.meta.url).href,
+  cadence: new URL('./media/poster-color-cadence.jpg', import.meta.url).href,
   color: new URL('./media/poster-color.jpg', import.meta.url).href,
   footfall: new URL('./media/poster-footfall.jpg', import.meta.url).href,
   frame: new URL('./media/poster.jpg', import.meta.url).href,
@@ -32,7 +45,7 @@ const posters = {
 footfall.poster = posters.footfall;
 downloadFootfall.href = sources.footfall;
 frame.max = String(manifest.frames - 1);
-let mode: Mode = 'compare';
+let mode: Mode = 'cadence';
 let pendingSwitch: { time: number; playing: boolean } | undefined;
 
 function showPosition() {
@@ -81,7 +94,7 @@ function selectMode(nextMode: Mode, initial = false) {
   if (mode !== 'compare') footfall.pause();
   download.href = sources[primary];
   download.download = `runway-${primary}.mp4`;
-  download.textContent = mode === 'compare' ? '색의 흐름 MP4 ↗' : 'MP4 다운로드 ↗';
+  download.textContent = mode === 'compare' ? '색의 흐름 MP4 ↗' : mode === 'cadence' ? '4종 비교 MP4 ↗' : 'MP4 다운로드 ↗';
   status.textContent = '영상을 불러오는 중…';
   frame.disabled = true;
   const url = new URL(location.href);
@@ -126,5 +139,5 @@ for (const button of modes) button.addEventListener('click', () => {
   if (nextMode !== mode) selectMode(nextMode);
 });
 const queryMode = new URL(location.href).searchParams.get('mode');
-selectMode(queryMode && [...Object.keys(sources), 'compare'].includes(queryMode) ? queryMode as Mode : 'compare', true);
+selectMode(queryMode && [...Object.keys(sources), 'compare'].includes(queryMode) ? queryMode as Mode : 'cadence', true);
 playbackState();

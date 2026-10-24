@@ -41,3 +41,7 @@ a:hover { color: #222; }
   .transport { gap: 0; }
   output { padding: 0 4px; font-size: 9px; }
 }
+
+.archive summary { font-size: 10px; line-height: 24px; color: #777; cursor: pointer; text-align: center; }
+.archive summary:focus-visible { outline: 2px solid #555; outline-offset: 4px; }
+.archive[open] summary { margin-bottom: 6px; }

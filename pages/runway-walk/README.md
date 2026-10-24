@@ -1,6 +1,6 @@
 # Runway Walk
 
-루이비통 쇼의 실제 프레임에서 인물만 분리하고, 걸음의 위상을 맞춰 인물을 교체하는 시안 모음. `/runway-walk/`에서 색의 흐름과 발 디딤 버전을 나란히 재생하거나, 각 버전을 따로 볼 수 있다. 두 영상을 함께 일시정지하고 한 프레임씩 이동할 수 있다. 갤러리 인덱스에는 추가하지 않았다.
+루이비통 쇼의 실제 프레임에서 인물만 분리하고, 걸음의 위상을 맞춰 인물을 교체하는 시안 모음. `/runway-walk/`의 기본 화면에서 색 흐름의 3·4·5·6프레임 전환 간격을 비교한다. 이전 색 흐름과 발 디딤 버전도 선택할 수 있다. 두 영상을 함께 일시정지하고 한 프레임씩 이동할 수 있다. 갤러리 인덱스에는 추가하지 않았다.
 
 - 원본: [Men’s Spring-Summer 2027 Show | LOUIS VUITTON](https://www.youtube.com/watch?v=qcE5NeDUvIk), 1920×1080 / 25fps.
 - 결과: 720×1080, 25fps, 180프레임, 7.2초, 무음.
@@ -13,24 +13,32 @@
 - `media/compare.gif`: 왼쪽 색의 흐름 / 오른쪽 발 디딤을 함께 보는 축소 미리보기.
 - `variants.json`, `variant-edits.json`: 두 버전의 설정, 발 디딤 표시, 출력 프레임별 원본 위치.
 
-개별 미리보기는 `?mode=color`, `?mode=footfall`, 나란히 보기는 `?mode=compare`로 열 수 있다. 기존 `frame`, `step` 버전도 같은 화면에서 선택한다.
+색 흐름의 전환 속도 비교는 `?mode=cadence`, 개별 버전은 `?mode=color3`, `?mode=color4`, `?mode=color5`, `?mode=color6`로 연다. 네 영상 모두 같은 색 진행과 보행 주기의 7.2초 루프다. 6프레임 버전은 23명, 나머지는 24명이 사용됐다. 구간 길이에 맞는 연속 원본 프레임을 고르므로 버전별 인물 선택은 조금씩 다르다.
+
+- `media/runway-color-{3,4,5,6}.mp4`: 같은 인물을 각각 3·4·5·6프레임 유지한다. 구간 안에서는 원본 프레임을 하나씩 진행시킨다.
+- `media/runway-color-cadence.mp4`, `media/color-cadence.gif`: 위 3·4프레임 / 아래 5·6프레임의 2×2 비교. 간격 라벨은 비교본에만 표시한다.
+- `color-cadence.json`, `color-cadence-edits.json`: 전환 간격·인물 수와 출력 프레임별 원본 위치.
+
+이전 개별 미리보기는 `?mode=color`, `?mode=footfall`, 두 작품 나란히 보기는 `?mode=compare`로 열 수 있다. 기존 `frame`, `step` 버전도 같은 화면에서 선택한다.
 
 ## 다시 만들기
 
-Python 3.11+, FFmpeg, uv, 최신 yt-dlp가 필요하다. 원본, 모델, 인물 PNG 캐시는 Git에 포함하지 않는다. 아래 작업 디렉터리는 로컬의 임시 공간이다. 현재 작업을 끝낸 뒤에는 임시 캐시를 제거하므로 다시 만들 때 원본과 모델부터 받아야 한다.
+Python 3.11+, FFmpeg, uv, 최신 yt-dlp가 필요하다. 원본, 모델, 인물 PNG 캐시는 Git에 포함하지 않는다. 반복 조정을 위해 `.cache/runway-walk/`에 로컬로 보관한다. 캐시가 있으면 내려받기·추출을 건너뛰고 합성 단계만 실행할 수 있다. 검증용 비교 자료와 임시 분석 스크립트는 별도 `.qa/`에서 만들고 제거한다.
 
 ```sh
-mkdir -p .qa/runway
-uv venv --python 3.11 .qa/runway/venv
-uv pip install --python .qa/runway/venv/bin/python -r scripts/runway-walk/requirements.txt
-uv tool run --from 'yt-dlp[default]' yt-dlp --no-playlist -f 137 -o .qa/runway/source.mp4 'https://www.youtube.com/watch?v=qcE5NeDUvIk'
-curl -fLs 'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_full/float16/latest/pose_landmarker_full.task' -o .qa/runway/pose.task
-.qa/runway/venv/bin/python scripts/runway-walk/extract.py --source .qa/runway/source.mp4 --pose-model .qa/runway/pose.task --cache .qa/runway/clips
-.qa/runway/venv/bin/python scripts/runway-walk/compose.py --cache .qa/runway/clips --output pages/runway-walk
-.qa/runway/venv/bin/python scripts/runway-walk/extract.py --source .qa/runway/source.mp4 --pose-model .qa/runway/pose.task --cache .qa/runway/clips --footfalls scripts/runway-walk/footfalls.json
-.qa/runway/venv/bin/python scripts/runway-walk/variants.py --cache .qa/runway/clips --output pages/runway-walk
+mkdir -p .cache/runway-walk
+uv venv --python 3.11 .cache/runway-walk/venv
+uv pip install --python .cache/runway-walk/venv/bin/python -r scripts/runway-walk/requirements.txt
+uv tool run --from 'yt-dlp[default]' yt-dlp --no-playlist -f 137 -o .cache/runway-walk/source.mp4 'https://www.youtube.com/watch?v=qcE5NeDUvIk'
+curl -fLs 'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_full/float16/latest/pose_landmarker_full.task' -o .cache/runway-walk/pose.task
+.cache/runway-walk/venv/bin/python scripts/runway-walk/extract.py --source .cache/runway-walk/source.mp4 --pose-model .cache/runway-walk/pose.task --cache .cache/runway-walk/clips
+.cache/runway-walk/venv/bin/python scripts/runway-walk/compose.py --cache .cache/runway-walk/clips --output pages/runway-walk
+.cache/runway-walk/venv/bin/python scripts/runway-walk/extract.py --source .cache/runway-walk/source.mp4 --pose-model .cache/runway-walk/pose.task --cache .cache/runway-walk/clips --footfalls scripts/runway-walk/footfalls.json
+.cache/runway-walk/venv/bin/python scripts/runway-walk/variants.py --cache .cache/runway-walk/clips --output pages/runway-walk
+.cache/runway-walk/venv/bin/python scripts/runway-walk/color-cadence.py --cache .cache/runway-walk/clips --output pages/runway-walk
 ffmpeg -hide_banner -loglevel error -y -i pages/runway-walk/media/runway-frame.mp4 -filter_complex '[0:v]scale=320:-1:flags=lanczos,split[a][b];[a]palettegen=stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=3' -loop 0 pages/runway-walk/media/preview.gif
 ffmpeg -hide_banner -loglevel error -y -i pages/runway-walk/media/runway-color.mp4 -i pages/runway-walk/media/runway-footfall.mp4 -filter_complex '[0:v]scale=256:384:flags=lanczos[a];[1:v]scale=256:384:flags=lanczos[b];[a][b]hstack,split[c][d];[c]palettegen=stats_mode=diff[p];[d][p]paletteuse=dither=bayer:bayer_scale=3' -loop 0 pages/runway-walk/media/compare.gif
+ffmpeg -hide_banner -loglevel error -y -i pages/runway-walk/media/runway-color-cadence.mp4 -filter_complex '[0:v]scale=360:540:flags=lanczos,split[a][b];[a]palettegen=stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=3' -loop 0 pages/runway-walk/media/color-cadence.gif
 ```
 
 쇼의 정면 카메라 구간 27개를 지정한 처리기다. 다른 영상에 그대로 적용하는 범용 탐지기는 아니다. 중앙 ROI에서 MediaPipe로 신체 좌표와 마스크를 얻고, 전신이 보이는 프레임만 남긴다. 골반 위치와 다리 길이로 크기를 맞추며, 마스크의 골반 연결 성분을 남긴다. 리샘플링 전에 알파를 곱해 배경색의 가장자리 번짐을 줄인다.
