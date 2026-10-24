@@ -25,7 +25,7 @@ all_rows=[];clip_info=[]
 with mp.tasks.vision.PoseLandmarker.create_from_options(opts) as model:
  for shot in shots:
   folder=root/shot['id'];folder.mkdir(exist_ok=True)
-  key=hashlib.sha256((json.dumps({k:v for k,v in shot.items() if k not in ['yaw','yawKeys','yawMethod','personGuard','excludedFrames','reviewedFrames','neutralWristBackdrop','headEnvelope','matteRegion','phaseReference','instance','accessoryKeys']},sort_keys=True)+'registration-v2').encode()).hexdigest()
+  key=hashlib.sha256((json.dumps({k:v for k,v in shot.items() if k not in ['yaw','yawKeys','yawMethod','poseXYOverrides','occludedLimbFrames','instanceThreshold','instanceHeadThreshold','detailKeys','solidAccessoryKeys','personGuard','excludedFrames','reviewedFrames','neutralWristBackdrop','headEnvelope','matteRegion','phaseReference','instance','accessoryKeys']},sort_keys=True)+'registration-v2').encode()).hexdigest()
   rows=[]
   if (folder/'rows.json').exists():
    stored=json.loads((folder/'rows.json').read_text())
@@ -42,7 +42,7 @@ with mp.tasks.vision.PoseLandmarker.create_from_options(opts) as model:
     for j,landmarks in enumerate(result.pose_landmarks):
      p=np.array([[a.x,a.y,a.z,a.visibility] for a in landmarks]);hip=p[[23,24],:2].mean(axis=0)
      height=p[[27,28,29,30,31,32],1].max()-p[0,1]
-     if p[0,1]<.025 or p[[27,28,29,30,31,32],1].max()>.985 or height<.32 or abs(hip[0]-.5)>.38:continue
+     if p[0,1]<.025 or p[[27,28,29,30,31,32],1].max()>.985 or height<shot.get('minPoseHeight',.32) or abs(hip[0]-.5)>.38:continue
      # Reviewed finale turns can contain a larger outgoing model. Follow the
      # annotated subject corridor instead of switching identity to that person.
      target=float(np.interp(source_frame/fps,*np.array(shot['targetXKeys']).T)) if shot.get('targetXKeys') else .5

@@ -22,7 +22,10 @@ export function directionCandidates(blocks: readonly AngleBlock[], yaw: number) 
   if (!blocks.length) return [];
   const error = (block: AngleBlock) => Math.max(Math.abs((block.minYaw ?? block.yaw) - yaw), Math.abs((block.maxYaw ?? block.yaw) - yaw));
   const nearest = Math.min(...blocks.map(error));
-  return blocks.filter(block => error(block) <= nearest + 5);
+  const close = blocks.filter(block => error(block) <= 5);
+  // The presence of a sparse angle must not expand a five-degree allowance.
+  // Outside the filmed range, retain only the nearest block as a fallback.
+  return close.length ? close : blocks.filter(block => error(block) <= nearest + 1e-6);
 }
 export function directionCoverage(frames: readonly AngleFrame[], blocks: readonly AngleBlock[], yaw: number, hold = 3) {
   const candidates = directionCandidates(blocks, yaw);
@@ -42,6 +45,6 @@ export function chooseBlock(blocks: readonly AngleBlock[], yaw: number, phase: n
   }));
   const bestCost = Math.min(...scored.map(s => s.cost));
   const fresh = scored.filter(({ block, cost }) => !recent.includes(block.look ?? block.clip) &&
-    cost <= bestCost + 0.4 && phaseDistance(block.phase,phase) <= bestPhase + 0.12);
+    cost <= bestCost + 0.6 && phaseDistance(block.phase,phase) <= bestPhase + 0.12);
   return (fresh.length ? fresh : scored).reduce((best,s) => s.cost < best.cost ? s : best).block;
 }

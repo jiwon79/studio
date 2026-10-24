@@ -58,11 +58,11 @@ test('every selectable direction offers 100 real frames and eight distinct outfi
     expect(coverage.frames, `frames at ${yaw}`).toBeGreaterThanOrEqual(100);
   }
 });
-test('supplemental footage only adds deficient non-frontal directions', () => {
+test('supplemental footage covers shallow and diagonal directions with actual left turns', () => {
   const added=data.frames.filter(f=>f.source==='hermes');
   expect(new Set(added.map(f=>f.look)).size).toBeGreaterThanOrEqual(8);
-  expect(added.every(f=>f.yaw<=-10)).toBe(true);
-  for(const yaw of [-30,-35])expect(added.some(f=>f.yaw===yaw)).toBe(true);
+  expect(added.every(f=>f.yaw<=0)).toBe(true);
+  for(const yaw of [-30,-35])expect(added.some(f=>Math.abs(f.yaw-yaw)<=5)).toBe(true);
   const turns=data.frames.filter(f=>f.source==='prada24');
   expect(new Set(turns.map(f=>f.look)).size).toBeGreaterThanOrEqual(8);
   expect(turns.every(f=>f.yaw<=-10)).toBe(true);
@@ -70,7 +70,8 @@ test('supplemental footage only adds deficient non-frontal directions', () => {
 test('reviewed spectator-overlap frames stay out of the frontal library', () => {
   expect(data.frames.some(f=>f.clip==='gucci-look-179')).toBe(false);
   expect(data.frames.some(f=>f.clip==='fendi-look-1720'&&f.sourceFrame>=759)).toBe(false);
-  expect(new Set(data.frames.filter(f=>f.yaw===0).map(f=>f.look)).size).toBe(10);
+  const frontal=['lv-front-276','lv-front-488','lv-front-662','prada25-look-50','prada25-look-112','fendi-look-1720','fendi-look-1930','gucci-look-95','gucci-look-123','gucci-look-191'];
+  expect(data.frames.filter(f=>frontal.includes(f.clip)).length).toBe(334);
 });
 test('avoid recent outfits when another outfit has a nearby gait in the same direction', () => {
   const blocks = [
@@ -137,7 +138,8 @@ test('75-degree selection excludes frontal and rear parts of the reviewed turns'
   expect(data.yawRange).toEqual([-75,0]);
   const eligible=directionCandidates(buildBlocks(data.frames),-75);
   const selected=eligible.flatMap(b=>data.frames.slice(b.start,b.start+data.holdFrames));
-  expect(selected.some(f=>f.clip==='prada-oblique-234')).toBe(false);
+  expect(selected.some(f=>f.clip==='lv-left-100')).toBe(false);
+  expect(selected.filter(f=>f.clip==='prada-oblique-234').every(f=>f.sourceFrame>=5872)).toBe(true);
   expect(selected.some(f=>f.clip==='prada24-turn-351')).toBe(false);
   expect(selected.filter(f=>f.clip==='prada-look-318').every(f=>f.sourceFrame>=7968)).toBe(true);
   expect(selected.filter(f=>f.clip==='prada-left-154').every(f=>f.sourceFrame<=3850)).toBe(true);
@@ -173,4 +175,34 @@ test('prefer compatible knee and ankle positions when phase estimates are close'
   ];
   expect(chooseBlock(blocks,-38,0,[],previous).clip).toBe('continuous');
   expect(gaitDistance(previous,previous)).toBe(0);
+});
+
+test('an available direction does not widen the absolute five-degree allowance', () => {
+  const blocks=[
+    {start:0,yaw:-35,minYaw:-36,maxYaw:-34,phase:.1,clip:'close'},
+    {start:3,yaw:-30,minYaw:-30,maxYaw:-30,phase:0,clip:'too-frontal'},
+  ];
+  expect(directionCandidates(blocks,-38).map(b=>b.clip)).toEqual(['close']);
+  expect(chooseBlock(blocks,-38,0).clip).toBe('close');
+});
+
+test('right-facing Prada footage never enters a left-facing candidate pool', () => {
+  const blocks=buildBlocks(data.frames);
+  for(let yaw=-75;yaw<=0;yaw++) {
+    const selected=directionCandidates(blocks,yaw);
+    expect(selected.some(b=>['prada25-curve-70','prada25-nearfront-83'].includes(b.clip))).toBe(false);
+    for(const b of selected) {
+      expect(Math.abs((b.minYaw??b.yaw)-yaw)).toBeLessThanOrEqual(5);
+      expect(Math.abs((b.maxYaw??b.yaw)-yaw)).toBeLessThanOrEqual(5);
+    }
+  }
+});
+
+
+test('reviewed bag occlusions and corrected ankle detections remain usable without incomplete shoe mattes', () => {
+  const frames=data.frames;
+  expect(frames.some(f=>f.clip==='prada24-turn-76')).toBe(false);
+  expect(frames.some(f=>f.clip==='lv-left-100'&&f.sourceFrame===2529)).toBe(false);
+  for(const sourceFrame of [2522,2523,2524])expect(frames.some(f=>f.clip==='lv-left-100'&&f.sourceFrame===sourceFrame)).toBe(true);
+  expect(buildBlocks(frames).some(b=>b.clip==='prada-left-129'&&frames[b.start].sourceFrame===3217)).toBe(true);
 });

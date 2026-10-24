@@ -28,7 +28,7 @@ class InstanceSupport:
         self.processor=Sam2Processor.from_pretrained(root,local_files_only=True)
         self.fingerprint=hashlib.sha256((REVISION+Path(__file__).read_text()).encode()).hexdigest()
 
-    def infer(self, rgb, pose, accessories=()):
+    def infer(self, rgb, pose, accessories=(), threshold=0.0, head_threshold=None):
         import torch
         from PIL import Image
         h,w=rgb.shape[:2]
@@ -41,8 +41,13 @@ class InstanceSupport:
             input_labels=[[[1]*len(points) for points in objects]],return_tensors='pt').to(self.device)
         inputs['pixel_values']=inputs['pixel_values'].to(self.dtype)
         with torch.inference_mode():output=self.model(**inputs,multimask_output=False)
-        masks=self.processor.post_process_masks(output.pred_masks.float().cpu(),inputs['original_sizes'].cpu())[0]
-        support=masks[:,0].numpy().any(axis=0).astype('uint8')
+        logits=self.processor.post_process_masks(output.pred_masks.float().cpu(),inputs['original_sizes'].cpu(),binarize=False)[0][:,0].numpy()
+        # This is an exclusion boundary; the direct matte supplies the alpha.
+        # A strict semantic threshold can punch holes in real hair and shoes.
+        support=(logits>threshold).any(axis=0).astype('uint8')
+        if head_threshold is not None:
+            end=max(0,min(h,round(min(pose[11,1],pose[12,1])*h)))
+            support[:end]=(logits[:,:end]>head_threshold).any(axis=0).astype('uint8')
         # Let the direct matting alpha supply the fine hair, strap and cloth edge.
         support=cv2.morphologyEx(support,cv2.MORPH_CLOSE,np.ones((5,5),np.uint8))
         return cv2.dilate(support,np.ones((7,7),np.uint8))

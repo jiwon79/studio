@@ -7,13 +7,14 @@ import mediapipe as mp
 from PIL import Image
 from scipy.ndimage import gaussian_filter1d
 from matting import MatteModel
+from solid_accessory import enclosed_hole
 from instance import InstanceSupport, REPO as INSTANCE_REPO, REVISION as INSTANCE_REVISION, FILES as INSTANCE_FILES
 
 VERSION = 'biref-direct-v8-screen-joints'
 TARGET_HEIGHT = 660
 GROUND = 720
 
-def selected_component(alpha, pose):
+def selected_component(alpha, pose, accessories=()):
     """Keep the selected body and handheld islands, including detached straps."""
     h,w = alpha.shape
     hip = pose[[23,24],:2].mean(axis=0)*[w,h]
@@ -33,6 +34,9 @@ def selected_component(alpha, pose):
         if pose[k,3]<.5:continue
         px,py=np.round(pose[k,:2]*[w,h]).astype(int)
         cv2.circle(seeds,(px,py),max(6,round(h*(.03 if k in [15,16,19,20] else .012))),1,-1)
+    for point in accessories:
+        px,py=np.round(np.array(point)*[w,h]).astype(int)
+        cv2.circle(seeds,(px,py),max(6,round(h*.025)),1,-1)
     for j in range(1,count):
         if j==label or stats[j,cv2.CC_STAT_AREA]<12: continue
         island=labels==j
@@ -46,11 +50,11 @@ def bounds(alpha):
     counts=np.bincount(yy,minlength=alpha.shape[0]); rows=np.flatnonzero(counts>=3)
     return float(rows[0]),float(rows[-1]),float(xx.min()),float(xx.max())
 
-def complete_body(alpha,pose):
+def complete_body(alpha,pose,occluded_limbs=()):
     """A missed head or visible limb must never become a normalized whole body."""
     h,w=alpha.shape
     for k in [0,25,26,27,28]:
-        if pose[k,3]<.65:continue
+        if pose[k,3]<.65 or (k!=0 and k in occluded_limbs):continue
         x,y=np.round(pose[k,:2]*[w,h]).astype(int);r=max(6,round(h*.018))
         patch=alpha[max(0,y-r):min(h,y+r+1),max(0,x-r):min(w,x+r+1)]
         if not patch.size or np.count_nonzero(patch>.5)<max(3,patch.size*.02):return False
@@ -186,6 +190,9 @@ for clip in manifest['clips']:
     if clip.get('headEnvelope'):fingerprint['headEnvelope']=clip['headEnvelope']
     if clip.get('neutralWristBackdrop'):fingerprint['neutralWristBackdrop']=True
     if clip.get('matteRegion'):fingerprint['matteRegion']=clip['matteRegion']
+    for field in ['instanceThreshold','instanceHeadThreshold','detailKeys','solidAccessoryKeys','accessoryKeys','occludedLimbFrames','poseXYOverrides']:
+        if field in clip:fingerprint[field]=clip[field]
+    if clip.get('detailKeys') or clip.get('solidAccessoryKeys') or (clip.get('accessoryKeys') and not clip.get('instance')):fingerprint['accessoryRepairVersion']=1
     if clip.get('instance') or clip['id'].startswith('hermes-side-'):fingerprint['fullFrameGuardVersion']=1
     if clip.get('instance'):
         if instance_model is None:instance_model=InstanceSupport(args.cache,'mps' if args.engine=='mps' else 'cpu')
@@ -199,6 +206,10 @@ for clip in manifest['clips']:
     pose_rows=json.loads((args.cache/'angles'/clip['id']/'rows.json').read_text())['rows']
     begin,end=min(r['sourceFrame'] for r in selected),max(r['sourceFrame'] for r in selected)
     poses={r['sourceFrame']:np.array(r['pose']) for r in pose_rows if begin<=r['sourceFrame']<=end}
+    # Source-reviewed image coordinates correct isolated detector foot swaps.
+    for frame,joints in clip.get('poseXYOverrides',{}).items():
+        for joint,xy in joints.items():
+            if int(frame) in poses:poses[int(frame)][int(joint),:2]=xy
     cap=cv2.VideoCapture(str(source));assert(cap.get(cv2.CAP_PROP_FRAME_WIDTH),cap.get(cv2.CAP_PROP_FRAME_HEIGHT),cap.get(cv2.CAP_PROP_FPS))==(1920,1080,25)
     factor=catalog[clip['source']]['roiScale'];x,y,w,h=[round(v*factor) for v in clip['roi']]
     first,last=min(poses),max(poses); cap.set(cv2.CAP_PROP_POS_FRAMES,first)
@@ -220,30 +231,51 @@ for clip in manifest['clips']:
         else:
             mask=model.infer(originals[frame])
             Image.fromarray((mask*65535).round().astype('uint16')).save(path)
+        def key_values(field):
+            values=[]
+            for points in clip.get(field,[]):
+                points=np.array(points)
+                values.append([float(np.interp(frame/25,points[:,0],points[:,axis])) for axis in range(1,points.shape[1])])
+            return values
+        accessories=key_values('accessoryKeys')
+        solid_points=key_values('solidAccessoryKeys')
+        for region in key_values('detailKeys'):
+            dx,dy,dw,dh=np.round(np.array(region)*[w,h,w,h]).astype(int)
+            dx=max(0,min(w-1,dx));dy=max(0,min(h-1,dy));dw=max(1,min(w-dx,dw));dh=max(1,min(h-dy,dh))
+            detail_key=hashlib.sha256((mask_key+str((dx,dy,dw,dh))+'detail-v1').encode()).hexdigest()[:20]
+            detail_path=mask_root/f'detail-{detail_key}.png'
+            if detail_path.exists():detail=np.array(Image.open(detail_path)).astype(np.float32)/65535
+            else:
+                detail=model.infer(originals[frame][dy:dy+dh,dx:dx+dw])
+                Image.fromarray((detail*65535).round().astype('uint16')).save(detail_path)
+            yy,xx=np.indices(detail.shape);feather=np.clip(np.minimum(np.minimum(xx,dw-1-xx),np.minimum(yy,dh-1-yy))/3,0,1)
+            mask[dy:dy+dh,dx:dx+dw]=np.maximum(mask[dy:dy+dh,dx:dx+dw],detail*feather)
+        for point in solid_points:
+            seed=tuple(np.round(np.array(point)*[w,h]).astype(int))
+            pixels=enclosed_hole((mask*255).round().astype('uint8').tobytes(),w,h,seed)
+            if pixels:mask.flat[pixels]=1
         if clip.get('matteRegion'):mask=reviewed_region(mask,clip['matteRegion'])
         if clip.get('instance'):
-            accessories=[]
-            for keys in clip.get('accessoryKeys',[]):
-                keys=np.array(keys)
-                accessories.append([float(np.interp(frame/25,keys[:,0],keys[:,axis])) for axis in [1,2]])
-            support_key=hashlib.sha256((mask_key+instance_model.fingerprint+json.dumps(clip.get('accessoryKeys',[]))+pose.tobytes().hex()).encode()).hexdigest()[:20]
+            support_key=hashlib.sha256((mask_key+instance_model.fingerprint+json.dumps([clip.get('accessoryKeys',[]),clip.get('instanceThreshold',0),clip.get('instanceHeadThreshold')])+pose.tobytes().hex()).encode()).hexdigest()[:20]
             support_path=instance_root/f'{support_key}.png'
             if support_path.exists():support=np.array(Image.open(support_path)).astype(np.float32)/255
             else:
-                support=instance_model.infer(originals[frame],pose,accessories)
+                support=instance_model.infer(originals[frame],pose,accessories,clip.get('instanceThreshold',0),clip.get('instanceHeadThreshold'))
                 Image.fromarray(support.astype('uint8')*255).save(support_path)
             alpha=instance_model.matte(mask,support)
             try:alpha=instance_components(alpha,pose,accessories)
             except ValueError:rejected.append(frame);continue
             if not complete_arms(alpha,pose):rejected.append(frame);continue
         else:
-            try:alpha=selected_component(mask,pose)
+            try:alpha=selected_component(mask,pose,accessories+solid_points)
             except ValueError:rejected.append(frame);continue
         if clip['source']=='lv' or clip.get('personGuard')=='body':
             head_key=hashlib.sha256((source_hashes[source]+pose_hash+str((x,y,w,h,frame))).encode()).hexdigest()[:20]
             alpha=guard_person(alpha,originals[frame],pose,head_root/f'{head_key}.png',clip.get('personGuard')=='body',clip.get('headEnvelope',False))
         if clip.get('neutralWristBackdrop'):alpha=remove_wrist_backdrop(alpha,originals[frame],pose)
-        if not complete_body(alpha,pose):rejected.append(frame);continue
+        # Reviewed bag occlusions do not make a detector's guessed ankle visible.
+        occluded=clip.get('occludedLimbFrames',{}).get(str(frame),[])
+        if not complete_body(alpha,pose,occluded):rejected.append(frame);continue
         top,floor,left,right=bounds(alpha)
         if (clip.get('instance') or clip['id'].startswith('hermes-side-')) and (top<=3 or floor>=h-4 or left<=3 or right>=w-4):
             rejected.append(frame);continue
