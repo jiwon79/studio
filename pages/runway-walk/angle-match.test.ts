@@ -59,16 +59,38 @@ test('avoid recent outfits when another outfit has a nearby gait in the same dir
   ];
   expect(chooseBlock(blocks,-45,0,['a','b']).clip).toBe('c');
 });
-test('each representative direction actually visits four outfits during playback', () => {
+test('each representative direction visits several compatible outfits during playback', () => {
   const blocks = buildBlocks(data.frames);
-  for (const yaw of [-75,-60,-38,0]) {
-    let recent: string[]=[]; let previous: readonly number[] | undefined; const visited=new Set<string>();
+  for (const yaw of [-75,-60,-38,-20,-15,-10,-5,0]) {
+    let recent: string[]=[]; let previous: readonly number[] | undefined; let velocity: readonly number[] | undefined; const visited=new Set<string>();
     for (let cut=0; cut<120; cut++) {
-      const block=chooseBlock(blocks,yaw,(cut/10)%1,recent,previous);
+      const block=chooseBlock(blocks,yaw,(cut/10)%1,recent,previous,velocity);
       const look=block.look ?? block.clip; visited.add(look); recent=[look,...recent].slice(0,4);
       previous=data.frames[block.start+2].gait;
+      velocity=data.frames[block.start+2].gaitVelocity;
     }
-    expect(visited.size, `playback at ${yaw}`).toBeGreaterThanOrEqual(4);
+    // The 20-degree band has fewer clean phase matches after rejecting damaged
+    // crowd-overlap frames; do not force a large joint jump just for variety.
+    expect(visited.size, `playback at ${yaw}`).toBeGreaterThanOrEqual(yaw===-20 ? 3 : 4);
+  }
+});
+test('an approaching foot keeps moving in the same direction across an identity cut', () => {
+  const pose = [0,0,0,0,0,0,0,0];
+  const velocity = [.01,0,0,0,0,0,0,0];
+  const blocks = [
+    {start:0,yaw:-15,phase:0,clip:'reverse',gait:velocity,gaitVelocity:velocity.map(v=>-v)},
+    {start:3,yaw:-15,phase:.01,clip:'forward',gait:velocity,gaitVelocity:velocity},
+  ];
+  expect(chooseBlock(blocks,-15,0,[],pose,velocity).clip).toBe('forward');
+});
+test('near-front directions have filmed intermediate views instead of repeating only frontal frames', () => {
+  const blocks=buildBlocks(data.frames);
+  for(const yaw of [-10,-15,-20]) {
+    for(let step=0;step<30;step++) {
+      const block=chooseBlock(blocks,yaw,step/30);
+      expect(block.yaw).toBeLessThan(0);
+      expect(Math.abs(block.yaw-yaw)).toBeLessThanOrEqual(5);
+    }
   }
 });
 test('all exported source identities are unique and stay inside one camera shot', () => {
@@ -94,6 +116,7 @@ test('registered stature and floor remain stable across the actual library', () 
   expect(p(floors,.95)-p(floors,.05)).toBeLessThan(15);
   for(const f of data.frames) {
     expect(f.gait.length).toBe(8);
+    expect(f.gaitVelocity.length).toBe(8);
     expect(f.gait.every(v=>Number.isFinite(v)&&Math.abs(v)<1)).toBe(true);
   }
 });

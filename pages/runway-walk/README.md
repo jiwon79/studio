@@ -35,15 +35,19 @@
 
 `/runway-walk/angle.html`에서 인물을 좌우로 드래그하거나 방향 슬라이더·방향키로 몸의 방향을 고른다. 손을 놓으면 선택 방향을 유지한다. `이 방향 저장 +`는 최대 다섯 방향을 이 브라우저의 로컬 저장소에 보관하며, 다시 눌러 불러올 수 있다. 선택 방향도 새로고침 뒤 복원한다. 저장소를 사용할 수 없어도 조작과 재생은 동작한다.
 
-루이비통 SS27, [Prada SS26](https://www.youtube.com/watch?v=SAjtxnyXu8U), [Prada SS25](https://www.youtube.com/watch?v=vz6dKkEiJzg), [Fendi SS25](https://www.youtube.com/watch?v=TSzy2vbjTac), [Gucci SS25](https://www.youtube.com/watch?v=4kD2CrWB_6k)의 실제 프레임을 사용한다. 현재 28개 구간의 935프레임을 512×768 투명 타일, 네 프레임씩 묶은 234장의 WebP 아틀라스에 보관한다. 미디어 전송량은 33.0 MB다. 새 구간의 일부 위상만 고르던 방식을 바꿔 전신이 유효한 연속 프레임을 보관한다. 같은 착장이 다른 구간에 등장하면 `lookId`로 묶는다. 배경은 따뜻한 회색이며 원래 의상 색은 유지한다.
+루이비통 SS27, [Prada SS26](https://www.youtube.com/watch?v=SAjtxnyXu8U), [Prada SS25](https://www.youtube.com/watch?v=vz6dKkEiJzg), [Fendi SS25](https://www.youtube.com/watch?v=TSzy2vbjTac), [Gucci SS25](https://www.youtube.com/watch?v=4kD2CrWB_6k)의 실제 프레임을 사용한다. 현재 32개 구간의 1005프레임을 512×768 투명 타일, 네 프레임씩 묶은 252장의 WebP 아틀라스에 보관한다. 미디어 전송량은 34.5 MB다. 새 구간의 일부 위상만 고르던 방식을 바꿔 전신이 유효한 연속 프레임을 보관한다. 같은 착장이 다른 구간에 등장하면 `lookId`로 묶는다. 배경은 따뜻한 회색이며 원래 의상 색은 유지한다.
 
-`angle-shots.json`의 방향은 화면을 직접 보고 붙인 카메라 기준 근사값이며 프레임마다 저장한다. 선택 범위는 약 왼쪽 75°부터 정면까지다. 38° 부근에서 섞이던 두 Prada 측면 구간을 측면 대역으로 옮기고, Louis Vuitton 사선 구간의 분류를 다시 검토했다. 이 부근에는 비슷한 방향의 네 착장, 전체 선택 범위의 각 정수 각도에는 최소 네 착장이 있다. 전신이 잘린 반대 방향 소스와 이전 초록 상의·검은 코트 회전 구간은 제외한다. 좌우 반전이나 생성 프레임을 사용하지 않는다.
+`angle-shots.json`의 방향은 화면을 직접 보고 붙인 카메라 기준 근사값이며 프레임마다 저장한다. 선택 범위는 약 왼쪽 75°부터 정면까지다. 38° 부근에서 섞이던 두 Prada 측면 구간을 측면 대역으로 옮기고, Louis Vuitton 사선 구간의 분류를 다시 검토했다. 이 부근에는 비슷한 방향의 네 착장이 있다. 정면을 반복하던 0~20°에는 Prada SS25 네 착장을 추가하고 기존 LV 구간의 방향을 재분류했다. 전체 선택 범위의 각 정수 각도에는 최소 네 착장이 있으며, 10°·15° 재생에서 네 착장 이상을 방문한다. 20°에서는 깨끗한 보행 위상 소스가 적어 시작 위상에 따라 세 착장 정도로 반복될 수 있다. 전신이 잘린 반대 방향 소스와 이전 초록 상의·검은 코트 회전 구간은 제외한다. 좌우 반전이나 생성 프레임을 사용하지 않는다.
 
-보행 위상은 MediaPipe의 3D 발목 차이를 몸의 앞 방향에 투영하고 주기 함수를 맞춰 추정한다. 보행 시계는 방향과 독립적으로 계속 진행한다. 3프레임 경계마다 최근접 각도 오차 + 5° 이내의 구간만 후보로 삼고, 보행 위상과 직전 인물의 무릎·발목 위치를 함께 비교한다. 위상 오차가 최적 후보보다 0.08주기 이내이고 관절 차이도 가까우면 최근 네 착장을 피한다. 선택한 구간에서는 원본의 실제 연속 3프레임을 순서대로 보여준다. 관절 좌표는 골반을 원점으로 하고 보정한 신체 크기로 정규화한다.
+보행 위상은 MediaPipe의 3D 발목 차이를 몸의 앞 방향에 투영하고 주기 함수를 맞춰 추정한다. 정면 근처의 사선 구간은 기준 정면 보행의 좌우 무릎·발목 차이와 비교해 위상 시작점을 추가 보정한다. 보행 시계는 방향과 독립적으로 계속 진행한다. 3프레임 경계마다 최근접 각도 오차 + 5° 이내의 구간만 후보로 삼는다. 직전 인물의 무릎·발목 위치와 이동 속도로 다음 프레임의 위치를 예상하고, 그 위치·이동 방향·보행 위상을 함께 비교한다. 비슷한 자세에서 발이 반대로 움직이는 컷의 우선순위를 낮춘다. 최적 비용과 가깝고 위상 차이도 작은 후보 중 최근 네 착장을 피한다. 선택한 구간에서는 원본의 실제 연속 3프레임을 순서대로 보여준다. 관절은 보정된 타일에서 실제로 그려지는 위치를 비교한다. 골반을 원점으로 빼면 사람마다 골반 높이가 달라지는 것을 놓치므로, 화면상의 무릎·발목 위치와 이동 방향을 직접 사용한다.
 
 자세 감지가 신발 클로즈업을 전신으로 오인한 프레임이 있었다. 이제 지정 구간 안의 카메라 컷을 원본 RGB 변화로 따로 찾고, 전신 자세가 가장 많이 검출된 한 쇼트만 남긴다. 카메라가 바뀐 프레임을 같은 구간으로 연결하지 않는다. 회전 중인 짧은 구간도 수동으로 줄인다.
 
-[BiRefNet general lite](https://github.com/ZhengPeng7/BiRefNet) ONNX 모델로 1080p 원본의 알파를 다시 계산한다. 선택한 골반의 연결 성분과 손·발 근처의 작은 분리 성분만 유지해 관객과 배경 조각을 제거한다. Louis Vuitton의 파도 무늬가 머리에 붙는 현상은 현재 프레임의 MediaPipe 인물 마스크로 어깨 위 영역을 추가 제한한다. 머리 가장자리에는 좁은 여유를 둔다. 발목 아래에서는 발목·뒤꿈치·발끝 주변을 벗어나는 바닥 조각을 제한한다. 원본 여섯 프레임마다 키 마스크를 구하고, 중간 프레임은 현재 영상에서 키 프레임으로 향하는 optical flow로 최대 세 프레임 거리의 마스크를 옮긴다. 양쪽 키가 가까울 때는 현재 좌표계에서 색 일치도가 높은 쪽에 무게를 둔다. 움직이는 원본 RGB를 섞거나 얼굴·옷을 생성하지 않는다. 모델·flow의 작은 경계 오차와 원본 촬영 해상도의 한계는 남는다.
+[BiRefNet lite](https://huggingface.co/ZhengPeng7/BiRefNet_lite)로 각 1080p 원본 프레임의 알파를 직접 계산한다. 이전 여섯 프레임 간격의 키 마스크와 optical flow는 가방 끈·발의 경계를 잘못 옮기는 경우가 있어 제거했다. 선택한 골반의 연결 성분과, 보이는 머리·팔다리·손 근처의 분리 성분을 유지한다. 가방처럼 큰 성분도 손 근처에서 지지를 받으면 보존한다. 발목 주변의 기하학적 제한으로 실제 신발이 잘리던 처리도 제거했다. 머리나 보이는 무릎·발목이 마스크에서 사라진 프레임은 제외한다.
+
+Louis Vuitton의 파도 무늬가 머리에 붙는 현상은 현재 프레임의 MediaPipe 인물 마스크로 어깨 위 영역을 추가 제한한다. 새 Prada SS25의 가방 없는 네 구간은 관객의 손·다리가 인물에 붙는 것을 막기 위해 목 아래 영역에 이 제한을 적용하고 머리의 직접 마스크는 유지한다. 청록색 셔츠 구간에서 손에 붙는 중립색 무대 테두리는 그 구간의 손 주변에서만 추가 제거한다. 관객의 손이 붙거나 머리 끝이 잘린 것으로 직접 확인한 프레임도 제외 목록에 기록한다. 가방이 있는 구간에는 전신 제한을 적용하지 않는다. 원본 RGB를 섞거나 얼굴·옷을 생성하지 않는다. 자동 마스크의 작은 테두리 오차와 원본 촬영 해상도의 한계는 남는다.
+
+Apple Silicon에서는 공식 모델의 고정 리비전을 로컬에 내려받아 MPS로 처리한다. 다운로드 스크립트가 모델과 실행 코드의 SHA-256을 확인한다. ONNX CPU 실행도 선택할 수 있다. 마스크 캐시는 인물 선택 이전의 원시 알파를 보관하므로 정리 규칙을 바꿔도 가방이나 분리된 신체 영역을 다시 복구할 수 있다.
 
 크기는 굽힌 다리의 2D 길이 대신 알파의 머리 끝부터 발바닥까지의 높이로 맞춘다. 각 프레임의 전신 높이를 660px, 발바닥을 720px로 맞춘다. 골반 가로 위치는 구간 안에서 안정화한다. 바닥 높이를 시간 방향으로 평균하면 발이 뜨므로 현재 프레임의 발바닥을 직접 기준으로 삼는다. 가방·모자·보폭이 타일을 벗어나면 확대를 제한한다. 가로세로 비율과 실제 체형은 유지한다. 알파를 곱한 상태에서 리샘플링해 투명 경계의 색 번짐을 줄인다.
 
@@ -53,7 +57,7 @@
 - `scripts/runway-walk/angle-sources.json`: 원본 URL, 로컬 파일, 원본·정규화 fps와 시작 오프셋. Prada SS25는 50fps, Fendi SS25는 30fps 원본을 25fps로 맞춘다. Fendi 캐시는 원본 1690초부터 635초 구간이다. 원본 시각은 `sourceOffset + sourceFrame / fps`로 복원한다.
 - `angle-match.ts`: 연속 구간 검증, 방향·위상·관절 선택. 테스트는 카메라 구간 경계, 38° 후보, 각도별 착장 수와 실제 매니페스트 재생 선택을 검사한다.
 - `angle.ts`: 재생 시계, 방향·저장 조작, Canvas 출력. `atlas-pool.ts`: 중복 디코딩 방지와 LRU 페이지 수명 관리.
-- `refine-angles.py`: 키 마스크·flow, 신장 보정, HD 아틀라스 출력. 원본·키 마스크·보정 PNG는 Git 제외 캐시에 보관한다.
+- `refine-angles.py`: 프레임별 마스크·전신 검증, 신장 보정, HD 아틀라스 출력. `matting.py`: ONNX/MPS 추론. 원본·원시 마스크·보정 PNG는 Git 제외 캐시에 보관한다.
 
 추가 소스를 로컬 캐시에 받은 뒤 재현한다. 원본 영상과 모델은 Git에 포함하지 않는다. 아래 실행 전 기본 원본·MediaPipe 모델·가상환경은 다음 절의 절차로 준비한다.
 
@@ -68,6 +72,11 @@ uv tool run --from 'yt-dlp[default]' yt-dlp --no-playlist -f 'bestvideo[height=1
 curl -fL 'https://github.com/danielgatis/rembg/releases/download/v0.0.0/BiRefNet-general-bb_swin_v1_tiny-epoch_232.onnx' -o .cache/runway-walk/birefnet-lite.onnx
 .cache/runway-walk/venv/bin/python scripts/runway-walk/angles.py --cache .cache/runway-walk --output pages/runway-walk
 .cache/runway-walk/venv/bin/python scripts/runway-walk/refine-angles.py --cache .cache/runway-walk --output pages/runway-walk
+
+# Apple Silicon: 프레임별 추론 가속 (공식 고정 리비전, 로컬 실행)
+uv pip install --python .cache/runway-walk/venv/bin/python -r scripts/runway-walk/requirements-mps.txt
+.cache/runway-walk/venv/bin/python scripts/runway-walk/prepare-matting.py --cache .cache/runway-walk
+.cache/runway-walk/venv/bin/python scripts/runway-walk/refine-angles.py --cache .cache/runway-walk --output pages/runway-walk --engine mps
 ```
 
 ## 다시 만들기

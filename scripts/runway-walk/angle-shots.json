@@ -160,7 +160,7 @@
     "source": "lv",
     "start": 607.2,
     "end": 608.8,
-    "yaw": 0,
+    "yaw": -20,
     "roi": [
       597,
       0,
@@ -364,5 +364,79 @@
       960,
       1080
     ]
+  },
+  {
+    "id": "prada25-curve-70",
+    "source": "prada25",
+    "start": 69.2,
+    "end": 72.4,
+    "yaw": -15,
+    "roi": [
+      300,
+      0,
+      640,
+      1080
+    ],
+    "personGuard": "body",
+    "neutralWristBackdrop": true,
+    "reviewedFrames": [
+      1775,
+      1776,
+      1777,
+      1778,
+      1790,
+      1791,
+      1792
+    ]
+  },
+  {
+    "id": "prada25-nearfront-83",
+    "source": "prada25",
+    "start": 82.0,
+    "end": 83.6,
+    "yaw": -10,
+    "roi": [
+      660,
+      0,
+      600,
+      1080
+    ],
+    "personGuard": "body"
+  },
+  {
+    "id": "prada25-curve-130",
+    "source": "prada25",
+    "start": 129.6,
+    "end": 132.4,
+    "yaw": -15,
+    "roi": [
+      300,
+      0,
+      640,
+      1080
+    ],
+    "personGuard": "body",
+    "excludedFrames": [
+      3265,
+      3267,
+      3269,
+      3270,
+      3271,
+      3272
+    ]
+  },
+  {
+    "id": "prada25-curve-174",
+    "source": "prada25",
+    "start": 172.6,
+    "end": 174.3,
+    "yaw": -15,
+    "roi": [
+      340,
+      0,
+      520,
+      1080
+    ],
+    "personGuard": "body"
   }
 ]

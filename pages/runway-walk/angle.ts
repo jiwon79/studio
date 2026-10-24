@@ -56,12 +56,14 @@ async function prepare(candidate: typeof block) {
   await Promise.all([...pages].map(index => images.load(index)));
 }
 function warmNext() {
-  const candidate = chooseBlock(blocks, target, (phase + (data.holdFrames - offset) / 30) % 1, recent, frames[block.start + data.holdFrames - 1].gait);
+  const last = frames[block.start + data.holdFrames - 1];
+  const candidate = chooseBlock(blocks, target, (phase + (data.holdFrames - offset) / 30) % 1, recent, last.gait, last.gaitVelocity);
   void prepare(candidate).catch(() => { /* The foreground switch retries decoding. */ });
 }
 async function pick() {
   const version = ++pickVersion;
-  const candidate = chooseBlock(blocks, target, phase, recent, ready ? frames[block.start + Math.min(offset, data.holdFrames - 1)].gait : undefined);
+  const last = ready ? frames[block.start + Math.min(offset, data.holdFrames - 1)] : undefined;
+  const candidate = chooseBlock(blocks, target, phase, recent, last?.gait, last?.gaitVelocity);
   switching = true;
   try {
     await prepare(candidate);
@@ -143,7 +145,7 @@ async function load() {
     await Promise.all(Array.from({ length: 6 }, async () => {
       while (cursor < data.atlases.length) {
         const index = cursor++;
-        const response = await fetch(new URL(`./media/angles/${data.atlases[index]}`, import.meta.url).href);
+        const response = await fetch(new URL(`./media/angles/${data.atlases[index]}?v=${data.assetVersion}`, import.meta.url).href);
         if (!response.ok) throw new Error(`Atlas failed: ${response.status}`);
         blobs[index] = await response.blob();
         completed++;
