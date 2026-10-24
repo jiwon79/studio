@@ -1,6 +1,5 @@
 import { GlassView, scenePoint } from './glass-view';
 import { GlassBodyMotion } from '../../../pages/rose-glass/interaction';
-import { createInverseDebug } from './inverse-debug';
 import { drawDeformationOverlay } from './deformation-overlay';
 
 const stages = [
@@ -56,33 +55,29 @@ export function createMaterialDemo() {
 }
 
 export function createDragDemo() {
-  const { element, view } = createDemo('drag-demo', '국소 변형',
-    '유리를 잡아당기고 손을 놓아 보세요.');
+  const { element, view } = createDemo('drag-demo', '국소 변형 · 1. 실제 유리 당기기',
+    '잡은 곳 주변이 늘어납니다. 직접 당기거나 버튼을 눌러 보세요.');
   if (!view) return element;
   const motion = new GlassBodyMotion();
   const controls = element.querySelector('.rose-controls')!;
   controls.innerHTML = `<p class="rose-drag-status" aria-live="polite">유리 위를 잡아당겨 보세요.</p>
     <button type="button" data-action="pull">오른쪽으로 당겨 보기</button>
-    <button type="button" data-action="release">손 놓기</button>
-    <button type="button" data-action="reset">처음으로</button>`;
+    <button type="button" data-action="release">손 놓기</button>`;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const pointers = new Set<number>();
   const overlay = document.createElement('canvas'); overlay.className = 'deformation-overlay'; overlay.setAttribute('aria-hidden', 'true'); view.canvas.after(overlay);
-  const legend = document.createElement('p'); legend.className = 'drag-legend'; legend.textContent = '점선: 원래 외곽 · 파란 선: 점의 이동'; element.querySelector('.rose-demo-layout')!.after(legend);
+  const legend = document.createElement('p'); legend.className = 'drag-legend'; legend.textContent = '점선: 원래 외곽 · 파란 점: 원래 자리 · 빨간 점: 현재 자리'; element.querySelector('.rose-demo-layout')!.after(legend);
   const draw = () => {
     view.stage = 6; view.draw(motion);
-    overlay.hidden = Boolean(element.querySelector('.inverse-debug[open]'));
-    legend.hidden = overlay.hidden;
-    if (!overlay.hidden) drawDeformationOverlay(overlay, motion, view.previewZoom);
+    drawDeformationOverlay(overlay, motion, view.previewZoom);
   };
   let frame = 0, previous = 0, inView = true, lastMode = '';
   const render = (now: number) => {
     frame = 0;
     if (!inView || document.hidden) return;
     const dt = Math.min((now - previous) / 1000 || 1 / 60, 1 / 30); previous = now;
-    const active = !debug.frozen && motion.step(dt, 85, 1, { softness: 1.1, indentationDepth: 1, recovery: 1, stretchLimit: 430 }, reduced.matches);
+    const active = motion.step(dt, 85, 1, { softness: 1.1, indentationDepth: 1, recovery: 1, stretchLimit: 430 }, reduced.matches);
     draw(); view.canvas.dataset.interaction = motion.mode;
-    debug.update();
     if (lastMode !== motion.mode) {
       lastMode = motion.mode;
       controls.querySelector('.rose-drag-status')!.textContent = motion.mode === 'dragging' ? '잡은 곳 주변이 늘어나고 있습니다.' : motion.mode === 'returning' ? '손을 놓아 원래 형태로 돌아오는 중입니다.' : '유리 위를 잡아당겨 보세요.';
@@ -90,10 +85,6 @@ export function createDragDemo() {
     if (active) wake();
   };
   const wake = () => { if (!frame && inView && !document.hidden) frame = requestAnimationFrame(render); };
-  const debug = createInverseDebug(element, view.canvas, motion, wake, () => {
-    releaseAll(); motion.reset(true); motion.grab(-1, { x: 420, y: 645 }); motion.move(-1, { x: 600, y: 580 });
-    for (let i = 0; i < 90; i++) motion.step(1 / 60, 85, 1, { softness: 1.1, indentationDepth: 1, recovery: 1, stretchLimit: 430 }, reduced.matches);
-  });
   const releaseAll = () => {
     for (const id of pointers) { motion.release(id, reduced.matches); if (view.canvas.hasPointerCapture(id)) view.canvas.releasePointerCapture(id); }
     pointers.clear(); motion.release(-1, reduced.matches); wake();
@@ -104,7 +95,6 @@ export function createDragDemo() {
   };
   view.canvas.addEventListener('pointerdown', event => {
     if (event.pointerType === 'mouse' && event.button !== 0) return;
-    debug.resume();
     motion.release(-1, reduced.matches);
     if (motion.grab(event.pointerId, position(event), event.pressure)) {
       pointers.add(event.pointerId); view.canvas.setPointerCapture(event.pointerId); wake();
@@ -116,12 +106,10 @@ export function createDragDemo() {
     if (pointers.delete(id)) { motion.release(id, reduced.matches); wake(); }
   });
   controls.querySelector('[data-action="pull"]')!.addEventListener('click', () => {
-    debug.resume();
     releaseAll(); motion.reset(true); motion.grab(-1, { x: 420, y: 645 }); motion.move(-1, { x: 600, y: 580 }); wake();
   });
-  controls.querySelector('[data-action="release"]')!.addEventListener('click', () => { debug.resume(); releaseAll(); });
-  controls.querySelector('[data-action="reset"]')!.addEventListener('click', () => { debug.resume(); releaseAll(); motion.reset(true); wake(); });
-  new ResizeObserver(() => { draw(); debug.update(); }).observe(element.querySelector('.rose-scene')!);
+  controls.querySelector('[data-action="release"]')!.addEventListener('click', () => { releaseAll(); });
+  new ResizeObserver(draw).observe(element.querySelector('.rose-scene')!);
   new IntersectionObserver(entries => { inView = entries[0].isIntersecting; if (inView) wake(); else releaseAll(); }).observe(element);
   document.addEventListener('visibilitychange', () => { if (document.hidden) releaseAll(); else wake(); });
   return element;

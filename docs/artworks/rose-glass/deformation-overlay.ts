@@ -37,7 +37,7 @@ export function drawDeformationOverlay(canvas: HTMLCanvasElement, motion: GlassB
     const a = screen(p), b = screen(moved(p));
     ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.strokeStyle = 'white'; ctx.lineWidth = 4; ctx.stroke(); ctx.strokeStyle = '#235c9a'; ctx.lineWidth = 2; ctx.stroke();
     for (const [q, filled] of [[a, false], [b, true]] as const) {
-      ctx.beginPath(); ctx.arc(q.x, q.y, 3, 0, 2 * Math.PI); ctx.fillStyle = filled ? '#235c9a' : 'white'; ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.arc(q.x, q.y, 3, 0, 2 * Math.PI); ctx.fillStyle = filled ? '#b64e3c' : 'white'; ctx.fill(); ctx.strokeStyle = filled ? '#b64e3c' : '#235c9a'; ctx.stroke();
     }
   }
 }

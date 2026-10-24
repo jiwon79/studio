@@ -1,16 +1,6 @@
 .rose-demo-layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 26px; align-items: center; }
 .rose-scene { position: relative; aspect-ratio: 4 / 5; min-width: 0; overflow: hidden; border: 1px solid #ded6c7; border-radius: 8px; background: #efe7e2; }
 .rose-scene canvas { display: block; width: 100%; height: 100%; touch-action: none; }
-.rose-scene .inverse-overlay { position: absolute; inset: 0; pointer-events: none; }
-.rose-scene .inverse-overlay[hidden] { display: none; }
-.inverse-debug { border-top: 1px solid #d5cbb9; margin-top: 24px; padding-top: 16px; }
-.inverse-debug > summary { font-size: 14px; font-weight: 500; cursor: pointer; }
-.inverse-options { display: flex; flex-wrap: wrap; gap: 12px 20px; font-size: 12px; margin: 18px 0; }
-.inverse-map { display: block; width: 100%; aspect-ratio: 640 / 340; background: #faf8f3; border: 1px solid #ded6c7; border-radius: 8px; }
-.inverse-map { cursor: crosshair; }
-.inverse-coordinates, .inverse-step { display: flex; flex-wrap: wrap; gap: 15px 25px; font-size: 11px; color: #746c5e; margin: 18px 0; }
-.inverse-coordinates strong, .inverse-step strong { display: block; font-family: ui-monospace, monospace; font-size: 13px; font-weight: 500; color: #423e36; }
-.inverse-matrix { font-size: 12px; margin-top: 20px; }
 #drag-demo .rose-scene canvas { cursor: grab; }
 #drag-demo .rose-scene canvas:active { cursor: grabbing; }
 .rose-controls { min-width: 0; font-size: 13px; }
@@ -64,11 +54,6 @@
 .outline-panels { gap: 8px; margin: 12px 0; }
 .outline-panels canvas { height: clamp(90px, 18svh, 145px); object-fit: contain; }
 .outline-panels figcaption { font-size: 10px; line-height: 1.4; margin-top: 3px; }
-.inverse-debug { margin-top: 12px; padding-top: 10px; }
-.inverse-map { width: 100%; max-width: 340px; height: auto; max-height: none; margin: 8px auto; }
-.inverse-options { gap: 6px 12px; margin: 8px 0; font-size: 11px; }
-.inverse-coordinates, .inverse-step { gap: 6px 14px; margin: 8px 0; }
-.inverse-coordinates strong, .inverse-step strong { font-size: 11px; }
 @media (max-width: 359px) {
   .rose-demo-layout { grid-template-columns: 1fr; }
   .rose-scene { height: 160px; }
@@ -133,12 +118,28 @@
 .lesson-comparison strong, .lesson-comparison small { display: block; }
 .lesson-comparison strong { font-size: 15px; font-weight: 500; }
 .lesson-comparison small { color: #746c5e; font-size: 10px; }
-.lesson-action, .inverse-options button { min-height: 34px; padding: 5px 10px; border: 1px solid #c8bfae; border-radius: 4px; background: transparent; color: #645c4f; font: inherit; font-size: 12px; cursor: pointer; }
+.lesson-action { min-height: 34px; padding: 5px 10px; border: 1px solid #c8bfae; border-radius: 4px; background: transparent; color: #645c4f; font: inherit; font-size: 12px; cursor: pointer; }
 .lesson-action { width: 100%; margin: 4px 0; }
-.lesson-action:hover, .inverse-options button:hover { background: #e9e1d3; }
+.lesson-action:hover { background: #e9e1d3; }
 .lesson-point-weight, .lesson-point-calculation, .lesson-point-coordinates { display: block; font-size: 11px; line-height: 1.6; font-variant-numeric: tabular-nums; }
 .lesson-point-coordinates { font-size: 10px; color: #746c5e; }
-.inverse-options { align-items: center; }
 .rose-scene .deformation-overlay { position: absolute; inset: 0; pointer-events: none; }
 .rose-scene .deformation-overlay[hidden], .drag-legend[hidden] { display: none; }
-#drag-demo .rose-scene { height: clamp(230px, 46svh, 300px); }
+
+#drag-demo .rose-demo-layout { display: block; }
+#drag-demo .rose-scene { height: clamp(200px, 44svh, 260px); }
+#drag-demo .rose-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+#drag-demo .rose-controls button { width: 100%; margin: 0; }
+#drag-demo .rose-drag-status { grid-column: 1 / -1; font-size: 11px; margin: 4px 0; }
+.inverse-lesson canvas { display: block; width: 100%; height: 210px; max-width: none; margin: 0; background: #faf8f3; border: 1px solid #ded6c7; border-radius: 6px; }
+.inverse-lesson .inverse-map { touch-action: none; cursor: crosshair; }
+.inverse-map:focus-visible { outline: 2px solid #235c9a; outline-offset: 2px; }
+.inverse-pair { display: block; margin-top: 8px; font-size: 11px; font-variant-numeric: tabular-nums; }
+.document .inverse-caption { font-size: 10px; color: #746c5e; margin: 5px 0; line-height: 1.5; }
+.inverse-progress { display: flex; justify-content: space-between; gap: 8px; margin: 8px 0 4px; font-size: 12px; font-variant-numeric: tabular-nums; }
+.inverse-actions { display: flex; gap: 6px; margin: 6px 0; }
+.inverse-actions button { min-height: 34px; padding: 5px 10px; border: 1px solid #c8bfae; border-radius: 4px; background: transparent; color: #645c4f; font: inherit; font-size: 12px; cursor: pointer; }
+.inverse-actions button:first-child { flex: 1; }
+.inverse-actions button:hover { background: #e9e1d3; }
+.inverse-actions button:disabled { opacity: .5; cursor: default; }
+.inverse-explanation { display: block; font-size: 11px; line-height: 1.5; min-height: 33px; }

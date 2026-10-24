@@ -5,7 +5,7 @@ import { scenePoint } from './glass-view';
 import { GlassBodyMotion } from '../../../pages/rose-glass/interaction';
 import { applyDeformation, invertDeformation } from '../../../pages/rose-glass/deformation';
 import { reliefSample } from './relief-demo';
-import { inspectInverse } from './inverse-debug';
+import { inspectInverse, inverseCorrectionSamples } from './inverse-debug';
 
 test('Rose Glass renders its own Markdown with the material and drag demo slots', () => {
   const path = '/docs/artworks/rose-glass/architecture.md';
@@ -15,6 +15,8 @@ test('Rose Glass renders its own Markdown with the material and drag demo slots'
   expect(html).toContain('<!-- interactive-demo: drag -->');
   expect(html).toContain('<!-- interactive-demo: relief -->');
   expect(html).toContain('<!-- interactive-demo: deformation -->');
+  expect(html).toContain('<!-- interactive-demo: inverse-map -->');
+  expect(html).toContain('<!-- interactive-demo: inverse-steps -->');
   expect(html).toContain('<strong>안팎 판별값 f</strong>');
   expect(html).toContain('<strong>혼합 비율 w</strong>');
   expect(html).not.toContain('**');
@@ -71,9 +73,18 @@ test('inverse debug traces the same solver and reconstructs the selected scene p
   expect(result.source).toEqual(invertDeformation(result.target, motion));
   expect(result.steps[0].error.x).toBeCloseTo(result.steps[0].forward.x - result.steps[0].target.x);
   expect(result.residual).toBeLessThan(0.001);
+  const correction = inverseCorrectionSamples(result, motion);
+  expect(correction).toHaveLength(6);
+  expect(correction[0].guess).toEqual(result.steps[0].guess);
+  expect(correction[5].guess).toEqual(result.steps[4].next);
+  expect(correction[5].guess).not.toEqual(result.source);
+  expect(correction[5].forward.x).toBeCloseTo(correction[5].target.x, 6);
+  expect(correction[5].forward.y).toBeCloseTo(correction[5].target.y, 6);
+  expect(correction.every(sample => sample.target === correction[0].target)).toBe(true);
   const still = inspectInverse({ x: 410, y: 645 }, new GlassBodyMotion());
   expect(still.steps).toHaveLength(0);
   expect(still.source).toEqual(still.target);
+  expect(inverseCorrectionSamples(still, new GlassBodyMotion())).toEqual([]);
 });
 
 test('pixel inspection follows shape boundaries, shade weights and edge absorption', async () => {

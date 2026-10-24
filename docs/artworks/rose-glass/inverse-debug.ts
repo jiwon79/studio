@@ -1,131 +1,177 @@
 import { applyDeformation, invertDeformation, rotate, foregroundGlassShape, glassBodyWidthAt,
-  type Point, type InverseDeformationStep } from '../../../pages/rose-glass/deformation';
-import type { GlassBodyMotion } from '../../../pages/rose-glass/interaction';
+  type Point, type InverseDeformationStep, type DeformationState } from '../../../pages/rose-glass/deformation';
+import { GlassBodyMotion } from '../../../pages/rose-glass/interaction';
+import { outlinePoint } from './outline-demo';
 
-export function inspectInverse(point: Point, motion: GlassBodyMotion) {
-  const target = rotate({ x: point.x - foregroundGlassShape.x - motion.x, y: point.y - foregroundGlassShape.y - motion.y }, -motion.angle);
+function inspectMaterialInverse(target: Point, state: DeformationState) {
   const steps: InverseDeformationStep[] = [];
-  const source = invertDeformation(target, motion, step => steps.push(step));
-  const reconstructed = applyDeformation(source, motion);
+  const source = invertDeformation(target, state, step => steps.push(step));
+  const reconstructed = applyDeformation(source, state);
   return { target, source, steps, residual: Math.hypot(reconstructed.x - target.x, reconstructed.y - target.y) };
 }
 
-export function createInverseDebug(element: HTMLElement, canvas: HTMLCanvasElement, motion: GlassBodyMotion, wake: () => void, example: () => void) {
-  const details = document.createElement('details'); details.className = 'inverse-debug';
-  details.id = 'inverse-debug'; details.open = location.hash === '#inverse-debug';
-  details.innerHTML = `<summary>역변형 디버그: 현재 픽셀의 원래 위치 찾기</summary>
-    <p class="demo-note">예제를 불러온 뒤 오른쪽 격자에서 점을 누르고 반복 단계를 바꿔 보세요.</p>
-    <button type="button" class="reset-button" data-debug-example>정지된 당김 예제 불러오기</button>
-    <div class="inverse-options"><button type="button" data-debug-freeze>지금 모양 멈추기</button>
-      <button type="button" data-debug-resume>다시 움직이기</button><output data-debug-status></output></div>
-    <canvas class="inverse-map" role="img" aria-label="변형 전 격자와 현재 격자의 점 대응. 파란 점은 찾아낸 원래 재료 위치, 붉은 점은 선택한 현재 위치입니다."></canvas>
-    <p class="demo-note">왼쪽 파란 점이 원래 재료 위치, 오른쪽 붉은 점이 현재 화면 위치입니다. 오른쪽 격자를 눌러 다른 점을 검사할 수 있습니다.</p>
-    <p class="demo-note"><strong>최종 복원 결과:</strong> 두 격자와 아래 좌표는 전체 역계산을 끝낸 결과입니다.</p>
-    <div class="inverse-coordinates"><span>현재 위치 <strong data-value="target"></strong></span><span>찾아낸 원래 위치 <strong data-value="source"></strong></span><span>다시 변형했을 때 오차 <strong data-value="residual"></strong></span></div>
-    <p class="demo-note">좌표는 유리 중심을 기준으로 표시합니다. 몸체 전체 이동과 회전은 먼저 되돌린 상태입니다.</p>
-    <p class="demo-note"><strong>반복별 중간값:</strong> 아래에서 선택한 작은 변형 하나를 되돌리는 과정을 봅니다.</p>
-    <label class="slider-label" for="inverse-iteration"><span>역계산 반복 단계</span><output id="inverse-step-name" for="inverse-iteration"></output></label>
-    <input id="inverse-iteration" type="range" min="0" max="0" value="0" step="1" />
-    <div class="inverse-step"><span>시작한 추정 위치 <strong data-value="guess"></strong></span><span>앞으로 변형해 본 위치 <strong data-value="forward"></strong></span><span>이번 변형의 목표 위치 <strong data-value="step-target"></strong></span><span>목표와의 차이 <strong data-value="error"></strong></span><span>고친 추정 위치 <strong data-value="next"></strong></span></div>
-    <p class="demo-note inverse-hint"></p>
-    <details class="inverse-matrix"><summary>변형 기울기 행렬도 보기</summary><pre data-value="matrix"></pre><p class="demo-note">추정 위치를 가로·세로로 조금 옮겼을 때 결과가 얼마나 움직이는지 나타냅니다. 이 행렬을 거꾸로 사용해 화면의 오차를 원래 위치의 수정량으로 바꿉니다.</p></details>`;
-  element.append(details);
-  const overlay = document.createElement('canvas'); overlay.className = 'inverse-overlay'; overlay.setAttribute('aria-hidden', 'true');
-  overlay.hidden = true;
-  canvas.after(overlay);
-  const map = details.querySelector<HTMLCanvasElement>('.inverse-map')!;
-  const slider = details.querySelector<HTMLInputElement>('#inverse-iteration')!;
-  let selected: Point = { x: 410, y: 645 }, frozen = false;
-  const format = (p: Point) => `(${p.x.toFixed(2)}, ${p.y.toFixed(2)})`;
-  const text = (key: string, value: string) => { details.querySelector(`[data-value="${key}"]`)!.textContent = value; };
-  const setFrozen = (value: boolean) => {
-    frozen = value;
-    details.querySelector('[data-debug-status]')!.textContent = value ? '멈춘 상태' : '움직이는 상태';
+export function inspectInverse(point: Point, motion: GlassBodyMotion) {
+  const target = rotate({ x: point.x - foregroundGlassShape.x - motion.x, y: point.y - foregroundGlassShape.y - motion.y }, -motion.angle);
+  return inspectMaterialInverse(target, motion);
+}
+
+/** Only the last small map: keep its intermediate target separate from the full inverse result. */
+export function inverseCorrectionSamples(result: ReturnType<typeof inspectInverse>, state: DeformationState) {
+  const first = result.steps[0];
+  if (!first) return [];
+  const steps = result.steps.filter(step => step.fieldIndex === first.fieldIndex);
+  const last = steps[steps.length - 1];
+  const finalForward = applyDeformation(last.next, { deformationFields: [state.deformationFields[first.fieldIndex]] });
+  return [...steps.map(step => ({ guess: step.guess, forward: step.forward, target: step.target })),
+    { guess: last.next, forward: finalForward, target: last.target }];
+}
+
+const blue = '#235c9a', red = '#b64e3c', gray = '#827b70';
+const pair = (p: Point) => `(${p.x.toFixed(1)}, ${p.y.toFixed(1)})`;
+const length = (a: Point, b: Point) => Math.hypot(a.x - b.x, a.y - b.y);
+
+function card(id: string, title: string, description: string, body: string) {
+  const element = document.createElement('section'); element.id = id; element.className = 'interactive-demo inverse-lesson';
+  element.setAttribute('aria-labelledby', `${id}-title`);
+  element.innerHTML = `<div class="demo-heading"><h3 id="${id}-title">${title}</h3><p>${description}</p></div>${body}`;
+  return element;
+}
+
+function paint(canvas: HTMLCanvasElement) {
+  const width = canvas.clientWidth, height = canvas.clientHeight, ratio = Math.min(devicePixelRatio, 2);
+  canvas.width = Math.round(width * ratio); canvas.height = Math.round(height * ratio);
+  const ctx = canvas.getContext('2d')!; ctx.scale(ratio, ratio);
+  const dot = (p: Point, color: string, hollow = false) => {
+    ctx.beginPath(); ctx.arc(p.x, p.y, 5, 0, 2 * Math.PI); ctx.fillStyle = hollow ? '#faf8f3' : color; ctx.fill();
+    ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.stroke();
   };
-  const inside = (p: Point) => {
-    const y = p.y / foregroundGlassShape.height, x = (p.x - p.y * foregroundGlassShape.shear) / glassBodyWidthAt(2, y);
-    return Math.abs(x) ** foregroundGlassShape.exponent + Math.abs(y) ** foregroundGlassShape.exponent <= 1;
+  const label = (text: string, x: number, y: number, color = gray) => {
+    ctx.font = '11px system-ui, sans-serif'; ctx.fillStyle = color;
+    const textWidth = ctx.measureText(text).width, centered = ctx.textAlign === 'center';
+    const start = centered ? textWidth / 2 + 4 : 4, end = width - (centered ? textWidth / 2 + 4 : textWidth + 4);
+    ctx.fillText(text, Math.max(start, Math.min(end, x)), Math.max(14, Math.min(height - 5, y)));
   };
-  const moved = (p: Point) => {
-    const warped = rotate(applyDeformation(p, motion), motion.angle);
-    return { x: warped.x + motion.x, y: warped.y + motion.y };
+  const arrow = (from: Point, to: Point) => {
+    ctx.beginPath(); ctx.moveTo(from.x, from.y); ctx.lineTo(to.x, to.y); ctx.strokeStyle = '#faf8f3'; ctx.lineWidth = 4; ctx.stroke();
+    ctx.strokeStyle = '#235c9a99'; ctx.lineWidth = 1.5; ctx.stroke();
+    const a = Math.atan2(to.y - from.y, to.x - from.x);
+    ctx.beginPath(); ctx.moveTo(to.x, to.y); ctx.lineTo(to.x - 7 * Math.cos(a - .4), to.y - 7 * Math.sin(a - .4));
+    ctx.lineTo(to.x - 7 * Math.cos(a + .4), to.y - 7 * Math.sin(a + .4)); ctx.closePath(); ctx.fillStyle = blue; ctx.fill();
   };
-  const drawGrid = (ctx: CanvasRenderingContext2D, project: (p: Point) => Point) => {
-    ctx.strokeStyle = '#3b687a80'; ctx.lineWidth = 1;
-    for (const vertical of [true, false]) {
-      for (let fixed = -375; fixed <= 375; fixed += 75) {
-        ctx.beginPath(); let pen = false;
-        for (let variable = -390; variable <= 390; variable += 6) {
-          const p = vertical ? { x: fixed, y: variable } : { x: variable, y: fixed };
-          if (!inside(p)) { pen = false; continue; }
-          const out = project(p);
-          if (pen) ctx.lineTo(out.x, out.y); else ctx.moveTo(out.x, out.y);
-          pen = true;
-        }
-        ctx.stroke();
-      }
+  return { ctx, width, height, dot, label, arrow };
+}
+
+const inside = (p: Point) => {
+  const y = p.y / foregroundGlassShape.height, x = (p.x - p.y * foregroundGlassShape.shear) / glassBodyWidthAt(2, y);
+  return Math.abs(x) ** foregroundGlassShape.exponent + Math.abs(y) ** foregroundGlassShape.exponent <= 1;
+};
+
+function drawGlass(ctx: CanvasRenderingContext2D, project: (p: Point) => Point) {
+  ctx.beginPath();
+  for (let i = 0; i <= 160; i++) {
+    const p = project(outlinePoint(i / 160 * 2 * Math.PI, foregroundGlassShape.exponent, 3));
+    if (i) ctx.lineTo(p.x, p.y); else ctx.moveTo(p.x, p.y);
+  }
+  ctx.closePath(); ctx.fillStyle = '#eed8d455'; ctx.fill(); ctx.strokeStyle = '#c6aea4'; ctx.lineWidth = 1; ctx.stroke();
+  ctx.strokeStyle = '#3b687a88';
+  for (const vertical of [true, false]) for (let fixed = -375; fixed <= 375; fixed += 75) {
+    ctx.beginPath(); let pen = false;
+    for (let variable = -390; variable <= 390; variable += 8) {
+      const p = vertical ? { x: fixed, y: variable } : { x: variable, y: fixed };
+      if (!inside(p)) { pen = false; continue; }
+      const q = project(p); if (pen) ctx.lineTo(q.x, q.y); else ctx.moveTo(q.x, q.y); pen = true;
     }
+    ctx.stroke();
+  }
+}
+
+/** A fixed production pull gives the two explanatory cards the same stable example. */
+export function createInverseDemos() {
+  const motion = new GlassBodyMotion();
+  motion.grab(-1, { x: 420, y: 645 }); motion.move(-1, { x: 600, y: 580 });
+  for (let i = 0; i < 90; i++) motion.step(1 / 60, 85, 1, { softness: 1.1, indentationDepth: 1, recovery: 1, stretchLimit: 430 }, false);
+  const correspondence = card('inverse-debug', '국소 변형 · 2. 지금 점의 원래 자리',
+    '오른쪽 유리에서 점을 옮겨 보세요. 왼쪽 점이 원래 자리입니다.', `
+    <canvas class="inverse-map" tabindex="0" role="img" aria-label="왼쪽은 원래 유리, 오른쪽은 늘어난 유리입니다. 오른쪽을 누르거나 점을 드래그하세요. 방향키로도 점을 옮길 수 있습니다."></canvas>
+    <output class="inverse-pair" aria-live="polite"></output>
+    <p class="inverse-caption">이 원래 자리에서 색과 무늬를 계산합니다.</p>`);
+  const correction = card('inverse-steps', '국소 변형 · 3. 추정한 자리를 고치기',
+    '위에서 고른 점을 마지막 작은 변형 직전으로 돌려 봅니다.', `
+    <canvas class="inverse-correction" role="img" aria-label="왼쪽은 추정 위치, 오른쪽은 그 위치를 변형해 본 결과와 목표입니다. 보정할수록 오른쪽 파란 점이 빨간 목표에 가까워집니다."></canvas>
+    <p class="inverse-caption">점 주변을 확대한 그림입니다. 두 그림의 배율은 같습니다.</p>
+    <div class="inverse-progress"><span data-correction-count></span><output data-correction-error aria-live="polite"></output></div>
+    <div class="inverse-actions"><button type="button" data-correct>한 번 보정하기</button><button type="button" data-restart>처음부터</button></div>
+    <output class="inverse-explanation"></output>`);
+  const map = correspondence.querySelector<HTMLCanvasElement>('canvas')!, plot = correction.querySelector<HTMLCanvasElement>('canvas')!;
+  const nextButton = correction.querySelector<HTMLButtonElement>('[data-correct]')!;
+  let selected = { x: 110, y: 0 }, iteration = 0;
+  let result = inspectMaterialInverse(selected, motion), samples = inverseCorrectionSamples(result, motion);
+  const mapScale = () => Math.min((map.clientWidth / 2 - 20) / 800, (map.clientHeight - 40) / 900);
+  const drawMap = () => {
+    const p = paint(map), scale = mapScale();
+    const left = (q: Point) => ({ x: p.width * .25 + q.x * scale, y: p.height * .55 + q.y * scale });
+    const right = (q: Point) => ({ x: p.width * .75 + (q.x - 65) * scale, y: p.height * .55 + q.y * scale });
+    p.ctx.textAlign = 'center'; p.label('원래 유리', p.width * .25, 18); p.label('늘어난 유리', p.width * .75, 18); p.ctx.textAlign = 'start';
+    drawGlass(p.ctx, left); drawGlass(p.ctx, q => right(applyDeformation(q, motion)));
+    const a = left(result.source), b = right(selected); p.arrow(b, a); p.dot(a, blue); p.dot(b, red);
+    p.label('P', a.x - 16, a.y - 10, blue); p.label('Q', b.x + 9, b.y + 15, red);
   };
-  const dot = (ctx: CanvasRenderingContext2D, p: Point, color: string) => {
-    ctx.fillStyle = color; ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI * 2); ctx.fill();
+  const drawCorrection = () => {
+    const p = paint(plot), current = samples[iteration];
+    const start = samples[0], end = samples[samples.length - 1];
+    const scale = Math.min((p.width / 2 - 48) / Math.max(20, length(start.guess, end.guess)), (p.height - 85) / Math.max(20, length(start.forward, start.target)));
+    const midpoint = { x: (start.guess.x + end.guess.x) / 2, y: (start.guess.y + end.guess.y) / 2 };
+    const left = (q: Point) => ({ x: p.width * .25 + (q.x - midpoint.x) * scale, y: p.height * .57 + (q.y - midpoint.y) * scale });
+    const comparisonCenter = { x: (start.forward.x + start.target.x) / 2, y: (start.forward.y + start.target.y) / 2 };
+    const right = (q: Point) => ({ x: p.width * .75 + (q.x - comparisonCenter.x) * scale, y: p.height * .57 + (q.y - comparisonCenter.y) * scale });
+    p.ctx.textAlign = 'center'; p.label('한 단계 전 위치 추정', p.width * .25, 18); p.label('다시 변형해 본 결과', p.width * .75, 18); p.ctx.textAlign = 'start';
+    p.ctx.strokeStyle = '#d5cbb9'; p.ctx.lineWidth = 1; p.ctx.beginPath(); p.ctx.moveTo(p.width / 2, 32); p.ctx.lineTo(p.width / 2, p.height - 10); p.ctx.stroke();
+    const first = left(start.guess), guess = left(current.guess), target = right(current.target), forward = right(current.forward);
+    if (iteration) { p.dot(first, gray, true); p.label('첫 추정', first.x - 12, first.y + 22); p.arrow(first, guess); }
+    p.dot(guess, blue); p.label(iteration ? '지금 추정' : '첫 추정', guess.x - 18, guess.y - 14, blue);
+    if (length(forward, target) > 1) p.arrow(forward, target);
+    p.dot(target, red, true); p.dot(forward, blue);
+    const error = length(current.forward, current.target);
+    if (length(forward, target) < 12) p.label(error < .001 ? '목표와 일치' : '목표 가까이', target.x - 30, target.y + 24, red);
+    else { p.label('목표', target.x - 24, target.y + 23, red); p.label('변형 결과', forward.x - 30, forward.y - 12, blue); }
+    correction.querySelector('[data-correction-count]')!.textContent = `보정 ${iteration} / ${samples.length - 1}`;
+    correction.querySelector('[data-correction-error]')!.textContent = `목표와의 거리 ${error.toFixed(3)}`;
+    correction.querySelector('.inverse-explanation')!.textContent = iteration === 0
+      ? '현재 위치를 첫 추정으로 삼습니다. 앞으로 변형해 보니 목표에서 벗어납니다.'
+      : iteration < samples.length - 1
+        ? '목표와의 차이를 줄이도록 추정을 옮겼습니다. 앞으로 변형한 결과가 목표에 가까워집니다.'
+        : '작은 변형 하나를 되돌렸습니다. 남은 세 변형도 거꾸로 같은 과정을 반복합니다.';
+    nextButton.disabled = iteration === samples.length - 1;
   };
-  const update = () => {
-    overlay.hidden = !details.open;
-    if (!details.open) return;
-    const result = inspectInverse(selected, motion);
-    const ratio = Math.min(devicePixelRatio, 2);
-    map.width = Math.round(map.clientWidth * ratio); map.height = Math.round(map.clientWidth * 340 / 640 * ratio);
-    const ctx = map.getContext('2d')!;
-    ctx.setTransform(map.width / 640, 0, 0, map.height / 340, 0, 0);
-    ctx.clearRect(0, 0, 640, 340);
-    const left = (p: Point) => ({ x: 160 + p.x * 0.28, y: 175 + p.y * 0.28 });
-    const right = (p: Point) => ({ x: 480 + p.x * 0.28, y: 175 + p.y * 0.28 });
-    ctx.fillStyle = '#36352f'; ctx.font = `${map.clientWidth < 480 ? 22 : 14}px system-ui`;
-    ctx.fillText('변형 전 유리', 85, 28); ctx.fillText('현재 유리', 425, 28);
-    drawGrid(ctx, left); drawGrid(ctx, p => right(moved(p)));
-    dot(ctx, left(result.source), '#3b687a');
-    dot(ctx, right({ x: selected.x - foregroundGlassShape.x, y: selected.y - foregroundGlassShape.y }), '#b64e3c');
-    if (!overlay.hidden) {
-      const width = canvas.clientWidth, height = canvas.clientHeight;
-      overlay.width = Math.round(width * ratio); overlay.height = Math.round(height * ratio);
-      const top = overlay.getContext('2d')!; top.setTransform(ratio, 0, 0, ratio, 0, 0);
-      const scale = Math.min(width / 590, height / 1280);
-      const screen = (p: Point) => ({ x: (p.x + foregroundGlassShape.x - 295) * scale + width / 2, y: (p.y + foregroundGlassShape.y - 640) * scale + height / 2 });
-      drawGrid(top, p => screen(moved(p)));
-      dot(top, screen({ x: selected.x - foregroundGlassShape.x, y: selected.y - foregroundGlassShape.y }), '#b64e3c');
-    }
-    text('target', format(result.target)); text('source', format(result.source)); text('residual', result.residual.toFixed(5));
-    slider.max = String(Math.max(0, result.steps.length - 1)); slider.disabled = !result.steps.length;
-    const step = result.steps[Number(slider.value)];
-    details.querySelector('#inverse-step-name')!.textContent = step ? `변형 ${step.fieldIndex + 1} · 반복 ${step.iteration + 1}/5` : '변형 없음';
-    for (const [key, value] of Object.entries({ guess: step?.guess, forward: step?.forward, 'step-target': step?.target, error: step?.error, next: step?.next })) text(key, value ? format(value) : '—');
-    text('matrix', step ? `[ ${step.jacobian.a.toFixed(4)}  ${step.jacobian.b.toFixed(4)} ]\n[ ${step.jacobian.c.toFixed(4)}  ${step.jacobian.d.toFixed(4)} ]` : '변형이 없으므로 단위 행렬입니다.');
-    details.querySelector('.inverse-hint')!.textContent = step
-      ? '추정한 원래 위치를 앞으로 변형해 목표와 비교합니다. 차이가 남으면 변형의 기울기로 수정량을 계산합니다. 마지막에 적용한 작은 변형부터 거꾸로, 각각 다섯 번 반복합니다.'
-      : '유리를 당기면 역계산 과정이 나타납니다. 변형이 없을 때는 현재 위치와 원래 위치가 같습니다.';
+  const updateSelection = (point: Point) => {
+    if (!inside(invertDeformation(point, motion))) return;
+    selected = point; iteration = 0; result = inspectMaterialInverse(selected, motion); samples = inverseCorrectionSamples(result, motion);
+    correspondence.querySelector('.inverse-pair')!.textContent = `현재 Q ${pair(selected)} → 원래 P ${pair(result.source)}`;
+    map.setAttribute('aria-description', `현재 위치 ${pair(selected)}의 원래 위치는 ${pair(result.source)}입니다.`);
+    drawMap(); drawCorrection();
   };
-  details.addEventListener('toggle', () => { update(); wake(); }); details.addEventListener('input', () => { update(); wake(); });
-  details.querySelector('[data-debug-example]')!.addEventListener('click', () => {
-    example(); selected = { x: 410, y: 645 };
-    setFrozen(true);
-    update(); wake();
-  });
-  details.querySelector('[data-debug-freeze]')!.addEventListener('click', () => { setFrozen(true); update(); wake(); });
-  details.querySelector('[data-debug-resume]')!.addEventListener('click', () => { setFrozen(false); update(); wake(); });
-  const select = (point: Point) => {
-    if (motion.hitTest(point)) { selected = point; update(); }
-    else details.querySelector('.inverse-hint')!.textContent = '유리 안쪽의 점을 눌러 주세요. 유리 바깥은 배경을 그리는 위치입니다.';
+  const pick = (event: PointerEvent) => {
+    const rect = map.getBoundingClientRect(), x = event.clientX - rect.left - map.clientLeft, y = event.clientY - rect.top - map.clientTop;
+    if (x < map.clientWidth / 2) return;
+    updateSelection({ x: (x - map.clientWidth * .75) / mapScale() + 65, y: (y - map.clientHeight * .55) / mapScale() });
   };
+  let pointer: number | null = null;
   map.addEventListener('pointerdown', event => {
-    const rect = map.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / rect.width * 640, y = (event.clientY - rect.top) / rect.height * 340;
-    if (x >= 320) select({ x: (x - 480) / 0.28 + foregroundGlassShape.x, y: (y - 175) / 0.28 + foregroundGlassShape.y });
+    if (pointer !== null || (event.pointerType === 'mouse' && event.button !== 0)) return;
+    pointer = event.pointerId; map.setPointerCapture(pointer); pick(event);
   });
-  document.querySelector('a[href="#inverse-debug"]')?.addEventListener('click', () => { details.open = true; });
-  new ResizeObserver(update).observe(map);
-  return {
-    update,
-    get frozen() { return details.open && frozen; },
-    resume() { setFrozen(false); },
-  };
+  map.addEventListener('pointermove', event => { if (pointer === event.pointerId) pick(event); });
+  for (const name of ['pointerup', 'pointercancel', 'lostpointercapture']) map.addEventListener(name, event => {
+    const id = (event as PointerEvent).pointerId; if (pointer !== id) return;
+    pointer = null; if (map.hasPointerCapture(id)) map.releasePointerCapture(id);
+  });
+  map.addEventListener('keydown', event => {
+    const directions: Record<string, Point> = { ArrowLeft: { x: -20, y: 0 }, ArrowRight: { x: 20, y: 0 }, ArrowUp: { x: 0, y: -20 }, ArrowDown: { x: 0, y: 20 } };
+    const d = directions[event.key]; if (!d) return; event.preventDefault(); updateSelection({ x: selected.x + d.x, y: selected.y + d.y });
+  });
+  nextButton.addEventListener('click', () => { iteration = Math.min(samples.length - 1, iteration + 1); drawCorrection(); });
+  correction.querySelector('[data-restart]')!.addEventListener('click', () => { iteration = 0; drawCorrection(); });
+  new ResizeObserver(drawMap).observe(map); new ResizeObserver(drawCorrection).observe(plot);
+  correspondence.querySelector('.inverse-pair')!.textContent = `현재 Q ${pair(selected)} → 원래 P ${pair(result.source)}`;
+  return { correspondence, correction };
 }
