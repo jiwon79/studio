@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#f4f4f4" />
+  <title>Runway Walk · Jiiwon Studio</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <header><h1>한 걸음, 여러 사람</h1><span>RUNWAY WALK — STUDY 01</span></header>
+  <main>
+    <video id="walk" autoplay loop muted playsinline preload="auto" aria-label="인물이 바뀌며 걸음이 이어지는 런웨이 콜라주"></video>
+    <p id="status" role="status">영상을 불러오는 중…</p>
+  </main>
+  <footer>
+    <div class="modes" role="group" aria-label="인물 전환 간격">
+      <button type="button" data-mode="frame" aria-pressed="true">매 프레임</button>
+      <button type="button" data-mode="step" aria-pressed="false">3프레임</button>
+    </div>
+    <div class="transport">
+      <button id="toggle" type="button" aria-label="일시정지">Ⅱ</button>
+      <button id="previous" type="button" aria-label="이전 프레임">←</button>
+      <input id="frame" type="range" min="0" max="179" value="0" aria-label="프레임 탐색" />
+      <button id="next" type="button" aria-label="다음 프레임">→</button>
+      <output id="position">001 / 180</output>
+      <select id="speed" aria-label="재생 속도"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="1.5">1.5×</option></select>
+    </div>
+    <div class="links"><a id="download" download="runway-walk.mp4">MP4 다운로드 ↗</a><a href="https://www.youtube.com/watch?v=qcE5NeDUvIk" target="_blank" rel="noreferrer">원본 · Louis Vuitton ↗</a></div>
+  </footer>
+  <script type="module" src="./script.ts"></script>
+</body>
+</html>
