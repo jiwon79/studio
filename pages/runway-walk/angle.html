@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex,nofollow" />
+  <meta name="theme-color" content="#d8d6d0" />
+  <title>몸의 방향 · Runway Walk</title>
+  <link rel="stylesheet" href="./angle.css" />
+</head>
+<body>
+  <header><a href="./">한 걸음, 여러 사람</a><span>RUNWAY WALK / DIRECTION</span></header>
+  <main id="surface">
+    <div class="halo" aria-hidden="true"></div>
+    <canvas id="person" width="512" height="768" tabindex="0" aria-label="걷는 인물의 방향 조절. 좌우 드래그 또는 방향키를 사용하세요."></canvas>
+    <p id="loading" role="status">여러 몸의 걸음을 모으는 중…</p>
+    <p class="gesture">좌우로 드래그해서 몸의 방향을 바꿔보세요</p>
+  </main>
+  <footer>
+    <div class="direction"><span>왼쪽 측면</span><output id="direction">정면</output><span>정면</span></div>
+    <input id="angle" type="range" min="-75" max="0" step="1" value="0" aria-label="몸의 방향" disabled />
+    <div class="ticks" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+    <div id="presets" class="presets" aria-label="저장한 방향"></div>
+    <div class="actions"><button id="save" disabled>이 방향 저장 +</button><button id="play" aria-label="일시정지" disabled>Ⅱ</button><button id="reset" disabled>정면으로</button></div>
+    <p class="note">실제 촬영된 방향에 가까운 몸이 걸음을 이어받습니다.<br><span id="coverage"></span></p>
+    <div class="credits"><a href="https://www.youtube.com/watch?v=qcE5NeDUvIk" target="_blank" rel="noreferrer">Louis Vuitton SS27 ↗</a><a href="https://www.youtube.com/watch?v=SAjtxnyXu8U" target="_blank" rel="noreferrer">Prada SS26 ↗</a><a href="https://www.youtube.com/watch?v=vz6dKkEiJzg" target="_blank" rel="noreferrer">Prada SS25 ↗</a><a href="https://www.youtube.com/watch?v=BGWhB8dOKhc" target="_blank" rel="noreferrer">Prada SS24 ↗</a><a href="https://www.youtube.com/watch?v=TSzy2vbjTac" target="_blank" rel="noreferrer">Fendi SS25 ↗</a><a href="https://www.youtube.com/watch?v=4kD2CrWB_6k" target="_blank" rel="noreferrer">Gucci SS25 ↗</a><a href="https://www.youtube.com/watch?v=eQUau2GefuA" target="_blank" rel="noreferrer">Hermès SS26 ↗</a><a href="./?mode=color3">영상 시안 ↗</a></div>
+  </footer>
+  <script type="module" src="./angle.ts"></script>
+</body>
+</html>

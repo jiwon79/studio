@@ -1,0 +1,2572 @@
+[
+  {
+    "id": "lv-front-276",
+    "source": "lv",
+    "start": 274.6,
+    "end": 277.6,
+    "yaw": 0,
+    "roi": [
+      480,
+      0,
+      960,
+      1080
+    ]
+  },
+  {
+    "id": "lv-front-488",
+    "source": "lv",
+    "start": 486.8,
+    "end": 489.0,
+    "yaw": 0,
+    "roi": [
+      480,
+      0,
+      960,
+      1080
+    ]
+  },
+  {
+    "id": "lv-front-662",
+    "source": "lv",
+    "start": 660.6,
+    "end": 663.0,
+    "yaw": 0,
+    "roi": [
+      480,
+      0,
+      960,
+      1080
+    ]
+  },
+  {
+    "id": "lv-left-100",
+    "source": "lv",
+    "start": 99,
+    "end": 101.36,
+    "yaw": -70,
+    "roi": [
+      480,
+      0,
+      960,
+      1080
+    ],
+    "yawKeys": [
+      [
+        99.0,
+        -55
+      ],
+      [
+        99.52,
+        -60
+      ],
+      [
+        99.96,
+        -65
+      ],
+      [
+        100.4,
+        -60
+      ],
+      [
+        100.84,
+        -65
+      ],
+      [
+        101.28,
+        -65
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "poseXYOverrides": {
+      "2522": {
+        "27": [
+          0.421227,
+          0.891667
+        ],
+        "28": [
+          0.675889,
+          0.866667
+        ]
+      },
+      "2523": {
+        "27": [
+          0.441079,
+          0.894444
+        ],
+        "28": [
+          0.678106,
+          0.85463
+        ]
+      },
+      "2524": {
+        "27": [
+          0.461071,
+          0.894444
+        ],
+        "28": [
+          0.664891,
+          0.843519
+        ]
+      }
+    },
+    "excludedFrames": [
+      2529
+    ]
+  },
+  {
+    "id": "lv-left-308",
+    "source": "lv",
+    "start": 307.1,
+    "end": 308.9,
+    "yaw": -50,
+    "roi": [
+      480,
+      0,
+      960,
+      1080
+    ],
+    "yawKeys": [
+      [
+        307.12,
+        -35
+      ],
+      [
+        307.76,
+        -40
+      ],
+      [
+        308.36,
+        -45
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "lv-left-548",
+    "source": "lv",
+    "start": 547,
+    "end": 548.3,
+    "yaw": -60,
+    "roi": [
+      480,
+      0,
+      960,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "yawKeys": [
+      [
+        547.0,
+        -50
+      ],
+      [
+        547.64,
+        -55
+      ],
+      [
+        548.24,
+        -45
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "prada-oblique-234",
+    "source": "prada",
+    "start": 233,
+    "end": 235.84,
+    "yaw": -75,
+    "roi": [
+      380,
+      0,
+      600,
+      720
+    ],
+    "yawKeys": [
+      [
+        233.0,
+        -20
+      ],
+      [
+        233.88,
+        -30
+      ],
+      [
+        234.28,
+        -35
+      ],
+      [
+        234.56,
+        -45
+      ],
+      [
+        234.76,
+        -60
+      ],
+      [
+        234.96,
+        -70
+      ],
+      [
+        235.2,
+        -80
+      ],
+      [
+        235.44,
+        -90
+      ],
+      [
+        235.84,
+        -100
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "prada-left-154",
+    "source": "prada",
+    "start": 153.7,
+    "end": 154.55,
+    "yaw": -75,
+    "roi": [
+      300,
+      0,
+      700,
+      720
+    ],
+    "yawKeys": [
+      [
+        153.68,
+        -65
+      ],
+      [
+        153.84,
+        -70
+      ],
+      [
+        154.0,
+        -80
+      ],
+      [
+        154.2,
+        -90
+      ],
+      [
+        154.36,
+        -100
+      ],
+      [
+        154.52,
+        -110
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "lv-look-66",
+    "source": "lv",
+    "start": 65.2,
+    "end": 66.8,
+    "yaw": -50,
+    "roi": [
+      543,
+      0,
+      960,
+      1080
+    ],
+    "yawKeys": [
+      [
+        65.2,
+        -35
+      ],
+      [
+        65.92,
+        -40
+      ],
+      [
+        66.6,
+        -45
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "lv-look-138",
+    "source": "lv",
+    "start": 137.2,
+    "end": 138.8,
+    "yaw": -60,
+    "roi": [
+      472,
+      0,
+      960,
+      1080
+    ],
+    "yawKeys": [
+      [
+        137.2,
+        -35
+      ],
+      [
+        137.68,
+        -30
+      ],
+      [
+        138.16,
+        -40
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "lv-look-298",
+    "source": "lv",
+    "start": 297.2,
+    "end": 298.8,
+    "yaw": -50,
+    "roi": [
+      507,
+      0,
+      960,
+      1080
+    ],
+    "yawKeys": [
+      [
+        297.2,
+        -40
+      ],
+      [
+        297.8,
+        -45
+      ],
+      [
+        298.76,
+        -45
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "lv-look-410",
+    "source": "lv",
+    "start": 409.2,
+    "end": 410.8,
+    "yaw": -45,
+    "roi": [
+      612,
+      0,
+      960,
+      1080
+    ],
+    "yawKeys": [
+      [
+        409.2,
+        -30
+      ],
+      [
+        410.0,
+        -35
+      ],
+      [
+        410.76,
+        -35
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "lv-look-608",
+    "source": "lv",
+    "start": 607.2,
+    "end": 608.8,
+    "yaw": -20,
+    "roi": [
+      597,
+      0,
+      960,
+      1080
+    ],
+    "yawKeys": [
+      [
+        607.48,
+        -10
+      ],
+      [
+        608.12,
+        -20
+      ],
+      [
+        608.44,
+        -25
+      ],
+      [
+        608.76,
+        -20
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "lv-look-670",
+    "source": "lv",
+    "start": 669.2,
+    "end": 670.8,
+    "yaw": -55,
+    "roi": [
+      481,
+      0,
+      960,
+      1080
+    ],
+    "yawKeys": [
+      [
+        669.2,
+        -30
+      ],
+      [
+        669.68,
+        -35
+      ],
+      [
+        670.32,
+        -40
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "prada-look-26",
+    "source": "prada",
+    "start": 26,
+    "end": 27.2,
+    "yaw": -75,
+    "roi": [
+      330,
+      0,
+      640,
+      720
+    ],
+    "yawKeys": [
+      [
+        26.0,
+        -50
+      ],
+      [
+        26.24,
+        -55
+      ],
+      [
+        26.48,
+        -60
+      ],
+      [
+        26.68,
+        -70
+      ],
+      [
+        26.92,
+        -75
+      ],
+      [
+        27.16,
+        -80
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "prada-look-80",
+    "source": "prada",
+    "start": 79.9,
+    "end": 81.5,
+    "yaw": -75,
+    "roi": [
+      315,
+      0,
+      640,
+      720
+    ],
+    "yawKeys": [
+      [
+        79.92,
+        -40
+      ],
+      [
+        80.2,
+        -60
+      ],
+      [
+        80.44,
+        -75
+      ],
+      [
+        80.76,
+        -90
+      ],
+      [
+        81.08,
+        -105
+      ],
+      [
+        81.48,
+        -120
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "excludedFrames": [
+      2011
+    ]
+  },
+  {
+    "id": "prada-look-186",
+    "source": "prada",
+    "start": 185.2,
+    "end": 186.2,
+    "yaw": -75,
+    "roi": [
+      346,
+      0,
+      640,
+      720
+    ],
+    "yawKeys": [
+      [
+        185.2,
+        -70
+      ],
+      [
+        185.56,
+        -80
+      ],
+      [
+        185.8,
+        -90
+      ],
+      [
+        186.16,
+        -100
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "prada-look-318",
+    "source": "prada",
+    "start": 317.9,
+    "end": 319.1,
+    "yaw": -75,
+    "roi": [
+      310,
+      0,
+      640,
+      720
+    ],
+    "personGuard": "body",
+    "yawKeys": [
+      [
+        317.92,
+        -30
+      ],
+      [
+        318.16,
+        -35
+      ],
+      [
+        318.36,
+        -45
+      ],
+      [
+        318.64,
+        -60
+      ],
+      [
+        318.84,
+        -70
+      ],
+      [
+        319.08,
+        -80
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "prada25-look-50",
+    "source": "prada25",
+    "start": 49.2,
+    "end": 50.8,
+    "yaw": 0,
+    "roi": [
+      482,
+      0,
+      960,
+      1080
+    ]
+  },
+  {
+    "id": "fendi-look-1720",
+    "source": "fendi",
+    "start": 29.2,
+    "end": 30.8,
+    "yaw": 0,
+    "roi": [
+      481,
+      0,
+      960,
+      1080
+    ],
+    "lookId": "fendi-gray-jacket-shorts",
+    "matteRegion": [
+      [
+        0.3,
+        0
+      ],
+      [
+        0.68,
+        0
+      ],
+      [
+        0.68,
+        0.48
+      ],
+      [
+        0.615,
+        0.55
+      ],
+      [
+        0.615,
+        1
+      ],
+      [
+        0.3,
+        1
+      ]
+    ],
+    "excludedFrames": [
+      759,
+      760,
+      761,
+      762,
+      763,
+      764,
+      765,
+      766,
+      767,
+      768,
+      769
+    ]
+  },
+  {
+    "id": "fendi-look-1930",
+    "source": "fendi",
+    "start": 239.2,
+    "end": 240.8,
+    "yaw": 0,
+    "roi": [
+      499,
+      0,
+      960,
+      1080
+    ]
+  },
+  {
+    "id": "prada25-look-112",
+    "source": "prada25",
+    "start": 111.4,
+    "end": 112.7,
+    "yaw": 0,
+    "roi": [
+      466,
+      0,
+      960,
+      1080
+    ],
+    "personGuard": "body"
+  },
+  {
+    "id": "fendi-look-1727",
+    "source": "fendi",
+    "start": 35.72,
+    "end": 38.0,
+    "yaw": -75,
+    "roi": [
+      481,
+      0,
+      960,
+      1080
+    ],
+    "lookId": "fendi-gray-jacket-shorts",
+    "yawKeys": [
+      [
+        35.72,
+        -70
+      ],
+      [
+        36.48,
+        -72
+      ],
+      [
+        37.12,
+        -75
+      ],
+      [
+        37.96,
+        -78
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "lv-look-193",
+    "source": "lv",
+    "start": 191.3,
+    "end": 193.7,
+    "yaw": -55,
+    "roi": [
+      400,
+      0,
+      1200,
+      1080
+    ],
+    "yawKeys": [
+      [
+        191.36,
+        -35
+      ],
+      [
+        192.32,
+        -40
+      ],
+      [
+        193.24,
+        -45
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "gucci-look-95",
+    "source": "gucci",
+    "start": 94.3,
+    "end": 95.7,
+    "yaw": 0,
+    "roi": [
+      480,
+      0,
+      960,
+      1080
+    ]
+  },
+  {
+    "id": "gucci-look-123",
+    "source": "gucci",
+    "start": 122.3,
+    "end": 123.7,
+    "yaw": 0,
+    "roi": [
+      480,
+      0,
+      960,
+      1080
+    ],
+    "detailKeys": [
+      [
+        [
+          122.32,
+          0.32,
+          0.51,
+          0.16,
+          0.23
+        ],
+        [
+          123.6,
+          0.31,
+          0.53,
+          0.17,
+          0.23
+        ]
+      ]
+    ],
+    "accessoryKeys": [
+      [
+        [
+          122.32,
+          0.4,
+          0.61
+        ],
+        [
+          123.6,
+          0.38,
+          0.655
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "gucci-look-191",
+    "source": "gucci",
+    "start": 190.3,
+    "end": 191.7,
+    "yaw": 0,
+    "roi": [
+      480,
+      0,
+      960,
+      1080
+    ]
+  },
+  {
+    "id": "prada25-curve-70",
+    "source": "prada25",
+    "start": 69.2,
+    "end": 72.4,
+    "yaw": 10,
+    "roi": [
+      300,
+      0,
+      640,
+      1080
+    ],
+    "personGuard": "body",
+    "neutralWristBackdrop": true,
+    "reviewedFrames": [
+      1775,
+      1776,
+      1777,
+      1778,
+      1790,
+      1791,
+      1792
+    ]
+  },
+  {
+    "id": "prada25-nearfront-83",
+    "source": "prada25",
+    "start": 82.0,
+    "end": 83.6,
+    "yaw": 10,
+    "roi": [
+      660,
+      0,
+      600,
+      1080
+    ],
+    "personGuard": "body"
+  },
+  {
+    "id": "prada25-curve-130",
+    "source": "prada25",
+    "start": 129.6,
+    "end": 132.4,
+    "yaw": -15,
+    "roi": [
+      300,
+      0,
+      640,
+      1080
+    ],
+    "personGuard": "body",
+    "excludedFrames": [
+      3265,
+      3267,
+      3269,
+      3270,
+      3271,
+      3272
+    ],
+    "instance": true,
+    "yawKeys": [
+      [
+        130.56,
+        -10
+      ],
+      [
+        130.8,
+        -5
+      ],
+      [
+        131.04,
+        0
+      ],
+      [
+        131.28,
+        5
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "prada25-curve-174",
+    "source": "prada25",
+    "start": 172.6,
+    "end": 174.3,
+    "yaw": -15,
+    "roi": [
+      340,
+      0,
+      520,
+      1080
+    ],
+    "personGuard": "body",
+    "headEnvelope": [
+      1.1,
+      2.0
+    ],
+    "instance": true,
+    "yawKeys": [
+      [
+        172.6,
+        -5
+      ],
+      [
+        173.12,
+        -10
+      ],
+      [
+        173.6,
+        -15
+      ],
+      [
+        174.28,
+        -15
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermes-left-499",
+    "source": "hermes",
+    "start": 498.6,
+    "end": 500.0,
+    "yaw": -20,
+    "roi": [
+      650,
+      0,
+      650,
+      1080
+    ],
+    "yawKeys": [
+      [
+        498.6,
+        -5
+      ],
+      [
+        499.16,
+        -10
+      ],
+      [
+        499.72,
+        -15
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermes-left-560",
+    "source": "hermes",
+    "start": 559.0,
+    "end": 560.6,
+    "yaw": -20,
+    "roi": [
+      600,
+      0,
+      700,
+      1080
+    ],
+    "excludedFrames": [
+      14000,
+      14001,
+      14002,
+      14003,
+      14004,
+      14005,
+      14006,
+      14007,
+      14008,
+      14009,
+      14010,
+      14011,
+      14012,
+      14013,
+      14014
+    ],
+    "lookId": "hermes-pale-gray",
+    "yawKeys": [
+      [
+        559.0,
+        -10
+      ],
+      [
+        559.96,
+        -15
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermes-turn-686",
+    "source": "hermes",
+    "start": 684.4,
+    "end": 687.3,
+    "yaw": -55,
+    "roi": [
+      350,
+      0,
+      1200,
+      1080
+    ],
+    "targetXKeys": [
+      [
+        684.4,
+        0.6
+      ],
+      [
+        687.3,
+        0.37
+      ]
+    ],
+    "reviewedFrames": [
+      17164,
+      17165,
+      17166,
+      17167,
+      17168,
+      17169,
+      17170,
+      17171,
+      17174,
+      17175,
+      17176,
+      17177,
+      17178,
+      17179
+    ],
+    "phaseReference": "lv-look-138",
+    "yawKeys": [
+      [
+        686.56,
+        -35
+      ],
+      [
+        687.16,
+        -50
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermes-turn-688",
+    "source": "hermes",
+    "start": 686.8,
+    "end": 689.1,
+    "yaw": -60,
+    "roi": [
+      350,
+      0,
+      1200,
+      1080
+    ],
+    "targetXKeys": [
+      [
+        686.8,
+        0.6
+      ],
+      [
+        689.1,
+        0.37
+      ]
+    ],
+    "reviewedFrames": [
+      17207,
+      17208,
+      17209,
+      17210,
+      17211,
+      17212,
+      17213
+    ],
+    "phaseReference": "lv-look-138",
+    "yawKeys": [
+      [
+        688.28,
+        -45
+      ],
+      [
+        688.52,
+        -55
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermes-turn-690",
+    "source": "hermes",
+    "start": 688.9,
+    "end": 691.1,
+    "yaw": -50,
+    "roi": [
+      350,
+      0,
+      1200,
+      1080
+    ],
+    "targetXKeys": [
+      [
+        688.9,
+        0.6
+      ],
+      [
+        691.1,
+        0.37
+      ]
+    ],
+    "reviewedFrames": [
+      17243,
+      17244,
+      17245,
+      17246,
+      17247,
+      17248,
+      17249,
+      17250,
+      17251,
+      17252,
+      17253,
+      17254
+    ],
+    "phaseReference": "lv-look-410",
+    "lookId": "hermes-brown-open-cardigan",
+    "yawKeys": [
+      [
+        689.72,
+        -30
+      ],
+      [
+        690.16,
+        -40
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermes-turn-692",
+    "source": "hermes",
+    "start": 691.0,
+    "end": 693.0,
+    "yaw": -35,
+    "roi": [
+      350,
+      0,
+      1200,
+      1080
+    ],
+    "targetXKeys": [
+      [
+        691.0,
+        0.6
+      ],
+      [
+        693.0,
+        0.37
+      ]
+    ],
+    "reviewedFrames": [
+      17275,
+      17276,
+      17278,
+      17279,
+      17280,
+      17281,
+      17282,
+      17283,
+      17284,
+      17285,
+      17286,
+      17287,
+      17288
+    ],
+    "phaseReference": "lv-look-410",
+    "lookId": "hermes-brown-leather",
+    "yawKeys": [
+      [
+        691.0,
+        -25
+      ],
+      [
+        691.52,
+        -35
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermes-turn-694",
+    "source": "hermes",
+    "start": 692.9,
+    "end": 695.1,
+    "yaw": -30,
+    "roi": [
+      350,
+      0,
+      1200,
+      1080
+    ],
+    "targetXKeys": [
+      [
+        692.9,
+        0.6
+      ],
+      [
+        695.1,
+        0.37
+      ]
+    ],
+    "reviewedFrames": [
+      17322,
+      17323,
+      17324,
+      17325,
+      17326,
+      17327,
+      17328,
+      17329,
+      17330,
+      17331
+    ],
+    "phaseReference": "lv-look-410",
+    "lookId": "hermes-gray-tote",
+    "yawKeys": [
+      [
+        692.88,
+        -10
+      ],
+      [
+        693.24,
+        -15
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermes-turn-696",
+    "source": "hermes",
+    "start": 695.0,
+    "end": 697.3,
+    "yaw": -35,
+    "roi": [
+      350,
+      0,
+      1200,
+      1080
+    ],
+    "targetXKeys": [
+      [
+        695.0,
+        0.6
+      ],
+      [
+        697.3,
+        0.37
+      ]
+    ],
+    "reviewedFrames": [
+      17377,
+      17378,
+      17379,
+      17380,
+      17381,
+      17382
+    ],
+    "phaseReference": "lv-look-410",
+    "lookId": "hermes-plaid-white",
+    "excludedFrames": [
+      17379
+    ],
+    "yawKeys": [
+      [
+        695.08,
+        -15
+      ],
+      [
+        695.28,
+        -20
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "prada24-turn-10",
+    "lookId": "prada24-black-short",
+    "source": "prada24",
+    "start": 9.8,
+    "end": 11.55,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        9.8,
+        -10
+      ],
+      [
+        10.5,
+        -20
+      ],
+      [
+        11,
+        -40
+      ],
+      [
+        11.5,
+        -75
+      ]
+    ],
+    "roi": [
+      293,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "instanceThreshold": -2.2
+  },
+  {
+    "id": "prada24-turn-39",
+    "lookId": "prada24-black-suit",
+    "source": "prada24",
+    "start": 39.35,
+    "end": 40.4,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        39.36,
+        -10
+      ],
+      [
+        39.56,
+        -20
+      ],
+      [
+        39.72,
+        -30
+      ],
+      [
+        39.92,
+        -40
+      ],
+      [
+        40.08,
+        -50
+      ],
+      [
+        40.28,
+        -60
+      ]
+    ],
+    "roi": [
+      142,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "yawMethod": "reviewed-torso",
+    "instanceThreshold": 0,
+    "excludedFrames": [
+      991,
+      992
+    ]
+  },
+  {
+    "id": "prada24-turn-49",
+    "lookId": "prada24-black-utility",
+    "source": "prada24",
+    "start": 48.9,
+    "end": 49.95,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        48.9,
+        -20
+      ],
+      [
+        49.2,
+        -35
+      ],
+      [
+        49.6,
+        -65
+      ],
+      [
+        49.9,
+        -75
+      ]
+    ],
+    "roi": [
+      302,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "instanceThreshold": -2.2
+  },
+  {
+    "id": "prada24-turn-81",
+    "lookId": "prada24-gray-suit",
+    "source": "prada24",
+    "start": 81.35,
+    "end": 82.65,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        81.35,
+        -15
+      ],
+      [
+        81.7,
+        -30
+      ],
+      [
+        82.1,
+        -55
+      ],
+      [
+        82.6,
+        -75
+      ]
+    ],
+    "roi": [
+      313,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "instanceThreshold": -2.2
+  },
+  {
+    "id": "prada24-turn-99",
+    "lookId": "prada24-teal-vest",
+    "source": "prada24",
+    "start": 98.9,
+    "end": 100.4,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        99.0,
+        -10
+      ],
+      [
+        99.4,
+        -25
+      ],
+      [
+        99.8,
+        -50
+      ],
+      [
+        100.08,
+        -75
+      ],
+      [
+        100.36,
+        -90
+      ]
+    ],
+    "roi": [
+      194,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "yawMethod": "reviewed-torso",
+    "instanceThreshold": -2.2
+  },
+  {
+    "id": "prada24-turn-142",
+    "lookId": "prada24-lavender-short",
+    "source": "prada24",
+    "start": 141.7,
+    "end": 142.65,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        141.72,
+        -15
+      ],
+      [
+        141.92,
+        -35
+      ],
+      [
+        142.2,
+        -60
+      ],
+      [
+        142.4,
+        -75
+      ],
+      [
+        142.64,
+        -95
+      ]
+    ],
+    "roi": [
+      219,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "yawMethod": "reviewed-torso",
+    "excludedFrames": [
+      3557,
+      3560,
+      3561,
+      3562
+    ],
+    "instanceThreshold": -2.2
+  },
+  {
+    "id": "prada24-turn-162",
+    "lookId": "prada24-black-utility",
+    "source": "prada24",
+    "start": 162.3,
+    "end": 163.5,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        162.32,
+        -15
+      ],
+      [
+        162.72,
+        -35
+      ],
+      [
+        163.12,
+        -60
+      ],
+      [
+        163.32,
+        -80
+      ],
+      [
+        163.48,
+        -100
+      ]
+    ],
+    "roi": [
+      267,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "yawMethod": "reviewed-torso",
+    "instanceThreshold": -2.2
+  },
+  {
+    "id": "prada24-turn-208",
+    "lookId": "prada24-floral-olive",
+    "source": "prada24",
+    "start": 208.35,
+    "end": 210.2,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        208.36,
+        -15
+      ],
+      [
+        208.88,
+        -38
+      ],
+      [
+        209.44,
+        -65
+      ],
+      [
+        209.76,
+        -75
+      ],
+      [
+        210.24,
+        -90
+      ]
+    ],
+    "roi": [
+      324,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "yawMethod": "reviewed-torso",
+    "instanceThreshold": -2.2
+  },
+  {
+    "id": "prada24-turn-282",
+    "lookId": "prada24-navy-long",
+    "source": "prada24",
+    "start": 282.35,
+    "end": 283.85,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        282.36,
+        -20
+      ],
+      [
+        282.64,
+        -25
+      ],
+      [
+        282.96,
+        -30
+      ]
+    ],
+    "roi": [
+      360,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "reviewedFrames": [
+      7059,
+      7060,
+      7061,
+      7062,
+      7063,
+      7064,
+      7065,
+      7066,
+      7067,
+      7068,
+      7069,
+      7070,
+      7071,
+      7072,
+      7073,
+      7074
+    ],
+    "instanceThreshold": 0,
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "prada24-turn-297",
+    "lookId": "prada24-floral-white",
+    "source": "prada24",
+    "start": 296.85,
+    "end": 298.2,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        296.84,
+        -35
+      ],
+      [
+        297.12,
+        -50
+      ],
+      [
+        297.4,
+        -65
+      ],
+      [
+        297.6,
+        -75
+      ],
+      [
+        298.16,
+        -90
+      ]
+    ],
+    "roi": [
+      247,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "yawMethod": "reviewed-torso",
+    "instanceThreshold": -2.2
+  },
+  {
+    "id": "prada24-turn-306",
+    "lookId": "prada24-navy-long",
+    "source": "prada24",
+    "start": 305.9,
+    "end": 306.65,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        305.9,
+        -45
+      ],
+      [
+        306.2,
+        -60
+      ],
+      [
+        306.6,
+        -75
+      ]
+    ],
+    "roi": [
+      480,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "instanceThreshold": -2.2,
+    "instanceHeadThreshold": -4,
+    "reviewedFrames": [
+      7651,
+      7652,
+      7653
+    ]
+  },
+  {
+    "id": "prada24-turn-312",
+    "lookId": "prada24-denim-short",
+    "source": "prada24",
+    "start": 312.3,
+    "end": 313.18,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        312.32,
+        -15
+      ],
+      [
+        312.48,
+        -20
+      ],
+      [
+        312.64,
+        -30
+      ],
+      [
+        312.84,
+        -40
+      ],
+      [
+        313.0,
+        -50
+      ],
+      [
+        313.16,
+        -60
+      ]
+    ],
+    "roi": [
+      268,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "yawMethod": "reviewed-torso",
+    "instanceThreshold": -2.2
+  },
+  {
+    "id": "prada24-turn-324",
+    "lookId": "prada24-floral-beige",
+    "source": "prada24",
+    "start": 324.15,
+    "end": 324.95,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        324.15,
+        -30
+      ],
+      [
+        324.5,
+        -50
+      ],
+      [
+        324.9,
+        -75
+      ]
+    ],
+    "roi": [
+      122,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": 0,
+    "reviewedFrames": [
+      8111,
+      8112,
+      8113
+    ]
+  },
+  {
+    "id": "prada24-turn-351",
+    "lookId": "prada24-gray-suit",
+    "source": "prada24",
+    "start": 351.1,
+    "end": 352.2,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        351.12,
+        -36
+      ],
+      [
+        351.24,
+        -42
+      ],
+      [
+        351.32,
+        -46
+      ],
+      [
+        351.48,
+        -54
+      ],
+      [
+        351.72,
+        -85
+      ],
+      [
+        352.16,
+        -125
+      ]
+    ],
+    "roi": [
+      27,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "yawMethod": "reviewed-torso",
+    "excludedFrames": [
+      8778,
+      8787,
+      8802
+    ],
+    "instanceThreshold": -2.2
+  },
+  {
+    "id": "prada24-turn-382",
+    "lookId": "prada24-floral-pink-red-shoes",
+    "source": "prada24",
+    "start": 381.9,
+    "end": 383.12,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        381.92,
+        -10
+      ],
+      [
+        382.08,
+        -20
+      ],
+      [
+        382.2,
+        -30
+      ],
+      [
+        382.32,
+        -40
+      ],
+      [
+        382.44,
+        -50
+      ]
+    ],
+    "roi": [
+      0,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "reviewedFrames": [
+      9548,
+      9549,
+      9550,
+      9551,
+      9552,
+      9553,
+      9554,
+      9555,
+      9556,
+      9557,
+      9558,
+      9559,
+      9560,
+      9561
+    ],
+    "instanceThreshold": -2.2,
+    "yawMethod": "reviewed-torso",
+    "excludedFrames": [
+      9551,
+      9552,
+      9553,
+      9556
+    ]
+  },
+  {
+    "id": "hermes-side-152",
+    "lookId": "hermes-cream-brown",
+    "source": "hermes",
+    "start": 151.1,
+    "end": 152.6,
+    "yaw": -20,
+    "roi": [
+      450,
+      0,
+      1200,
+      1080
+    ],
+    "instance": true,
+    "yawKeys": [
+      [
+        151.4,
+        -10
+      ],
+      [
+        152.04,
+        -20
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermes-side-172",
+    "lookId": "hermes-plaid-white",
+    "source": "hermes",
+    "start": 171.65,
+    "end": 173.9,
+    "yaw": -20,
+    "roi": [
+      450,
+      0,
+      1200,
+      1080
+    ],
+    "instance": false,
+    "yawKeys": [
+      [
+        171.64,
+        -10
+      ],
+      [
+        172.64,
+        -15
+      ],
+      [
+        173.64,
+        -20
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermes-side-184",
+    "lookId": "hermes-plaid-coat",
+    "source": "hermes",
+    "start": 183.3,
+    "end": 184.6,
+    "yaw": -20,
+    "roi": [
+      450,
+      0,
+      1200,
+      1080
+    ],
+    "instance": true,
+    "yawKeys": [
+      [
+        183.64,
+        -15
+      ],
+      [
+        184.12,
+        -25
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermes-side-203",
+    "lookId": "hermes-gray-tote",
+    "source": "hermes",
+    "start": 202.4,
+    "end": 203.9,
+    "yaw": -20,
+    "roi": [
+      450,
+      0,
+      1200,
+      1080
+    ],
+    "instance": false,
+    "yawKeys": [
+      [
+        202.4,
+        -5
+      ],
+      [
+        203.48,
+        -15
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermes-side-357",
+    "lookId": "hermes-brown-leather",
+    "source": "hermes",
+    "start": 356.2,
+    "end": 357.7,
+    "yaw": -20,
+    "roi": [
+      450,
+      0,
+      1200,
+      1080
+    ],
+    "instance": true,
+    "yawKeys": [
+      [
+        356.2,
+        -10
+      ],
+      [
+        357.24,
+        -20
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermes-side-431",
+    "lookId": "hermes-gray-green-scarf",
+    "source": "hermes",
+    "start": 430.2,
+    "end": 432.2,
+    "yaw": -20,
+    "roi": [
+      450,
+      0,
+      1200,
+      1080
+    ],
+    "instance": true,
+    "yawKeys": [
+      [
+        430.56,
+        -10
+      ],
+      [
+        430.72,
+        -15
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermes-side-475",
+    "lookId": "hermes-pale-gray",
+    "source": "hermes",
+    "start": 474.4,
+    "end": 475.7,
+    "yaw": -20,
+    "roi": [
+      450,
+      0,
+      1200,
+      1080
+    ],
+    "instance": true,
+    "yawKeys": [
+      [
+        474.4,
+        -5
+      ],
+      [
+        475.64,
+        -15
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermes-side-487",
+    "lookId": "hermes-tan-scarf",
+    "source": "hermes",
+    "start": 486.15,
+    "end": 487.65,
+    "yaw": -20,
+    "roi": [
+      450,
+      0,
+      1200,
+      1080
+    ],
+    "instance": true,
+    "yawKeys": [
+      [
+        486.16,
+        -5
+      ],
+      [
+        487.0,
+        -15
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "prada24-turn-122",
+    "lookId": "prada24-navy-shirt-bag",
+    "source": "prada24",
+    "start": 122.35,
+    "end": 123.55,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        122.4,
+        -15
+      ],
+      [
+        122.72,
+        -30
+      ],
+      [
+        123.04,
+        -55
+      ],
+      [
+        123.28,
+        -75
+      ],
+      [
+        123.52,
+        -90
+      ]
+    ],
+    "roi": [
+      330,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "accessoryKeys": [
+      [
+        [
+          122.35,
+          0.565,
+          0.385
+        ],
+        [
+          123,
+          0.499,
+          0.415
+        ],
+        [
+          123.55,
+          0.443,
+          0.407
+        ]
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "instanceThreshold": -2.2
+  },
+  {
+    "id": "prada24-turn-177",
+    "lookId": "prada24-beige-coat-bag",
+    "source": "prada24",
+    "start": 177.2,
+    "end": 179.0,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        177.2,
+        -10
+      ],
+      [
+        177.7,
+        -15
+      ],
+      [
+        178,
+        -25
+      ],
+      [
+        178.5,
+        -55
+      ],
+      [
+        178.95,
+        -75
+      ]
+    ],
+    "roi": [
+      313,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "accessoryKeys": [
+      [
+        [
+          177.2,
+          0.53,
+          0.62
+        ],
+        [
+          178,
+          0.568,
+          0.612
+        ],
+        [
+          179,
+          0.48,
+          0.63
+        ]
+      ]
+    ],
+    "instanceThreshold": -2.2
+  },
+  {
+    "id": "prada24-turn-239",
+    "lookId": "prada24-green-jacket-bag",
+    "source": "prada24",
+    "start": 238.9,
+    "end": 240.2,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        238.9,
+        -30
+      ],
+      [
+        240.2,
+        -35
+      ]
+    ],
+    "roi": [
+      472,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "accessoryKeys": [
+      [
+        [
+          238.9,
+          0.545,
+          0.52
+        ],
+        [
+          239.5,
+          0.548,
+          0.565
+        ],
+        [
+          240.2,
+          0.532,
+          0.62
+        ]
+      ]
+    ],
+    "instanceThreshold": -2.2
+  },
+  {
+    "id": "hermes-side-11",
+    "lookId": "hermes-white-scarf-brown",
+    "source": "hermes",
+    "start": 9.0,
+    "end": 11.8,
+    "yaw": -10,
+    "roi": [
+      480,
+      0,
+      960,
+      1080
+    ],
+    "excludedFrames": [
+      259
+    ],
+    "accessoryKeys": [
+      [
+        [
+          9.0,
+          0.67,
+          0.7
+        ],
+        [
+          10.32,
+          0.66,
+          0.71
+        ],
+        [
+          11.04,
+          0.66,
+          0.7
+        ],
+        [
+          11.28,
+          0.62,
+          0.72
+        ],
+        [
+          11.76,
+          0.53,
+          0.72
+        ]
+      ]
+    ],
+    "solidAccessoryKeys": [
+      [
+        [
+          9.0,
+          0.68,
+          0.76
+        ],
+        [
+          10.32,
+          0.65,
+          0.77
+        ],
+        [
+          11.04,
+          0.66,
+          0.78
+        ],
+        [
+          11.28,
+          0.61,
+          0.78
+        ],
+        [
+          11.76,
+          0.5,
+          0.76
+        ]
+      ]
+    ],
+    "yawKeys": [
+      [
+        9.0,
+        -3
+      ],
+      [
+        9.2,
+        -5
+      ],
+      [
+        10.32,
+        -5
+      ],
+      [
+        10.8,
+        -10
+      ],
+      [
+        11.12,
+        -20
+      ],
+      [
+        11.44,
+        -35
+      ],
+      [
+        11.76,
+        -50
+      ]
+    ],
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "prada24-side-137",
+    "lookId": "prada24-lavender-short",
+    "source": "prada24",
+    "start": 136.0,
+    "end": 138.44,
+    "yaw": -70,
+    "yawKeys": [
+      [
+        136,
+        -60
+      ],
+      [
+        136.4,
+        -65
+      ],
+      [
+        136.8,
+        -70
+      ],
+      [
+        137.2,
+        -70
+      ],
+      [
+        137.6,
+        -75
+      ],
+      [
+        138.4,
+        -75
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      180,
+      150,
+      1440,
+      750
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "phaseReference": "lv-look-410",
+    "minPoseHeight": 0.24,
+    "excludedFrames": [
+      3434,
+      3436,
+      3437,
+      3447,
+      3450,
+      3453,
+      3455
+    ]
+  },
+  {
+    "id": "prada24-turn-130",
+    "lookId": "prada24-navy-double-coat",
+    "source": "prada24",
+    "start": 129.4,
+    "end": 130.72,
+    "yaw": -65,
+    "yawKeys": [
+      [
+        129.4,
+        -40
+      ],
+      [
+        129.8,
+        -55
+      ],
+      [
+        130.2,
+        -70
+      ],
+      [
+        130.6,
+        -85
+      ],
+      [
+        130.68,
+        -90
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": 0,
+    "phaseReference": "lv-look-410",
+    "excludedFrames": [
+      3235,
+      3236,
+      3237,
+      3238,
+      3239,
+      3251,
+      3252,
+      3254
+    ],
+    "instanceHeadThreshold": -2.2
+  },
+  {
+    "id": "prada-left-129",
+    "source": "prada",
+    "start": 128.32,
+    "end": 129.6,
+    "yaw": -75,
+    "roi": [
+      300,
+      0,
+      700,
+      720
+    ],
+    "yawKeys": [
+      [
+        128.32,
+        -40
+      ],
+      [
+        128.48,
+        -50
+      ],
+      [
+        128.64,
+        -60
+      ],
+      [
+        128.8,
+        -75
+      ],
+      [
+        129,
+        -85
+      ],
+      [
+        129.2,
+        -95
+      ],
+      [
+        129.56,
+        -105
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "occludedLimbFrames": {
+      "3219": [
+        27
+      ]
+    }
+  }
+]
