@@ -53,5 +53,17 @@
     "fps": 25,
     "originalFps": 25,
     "sourceOffset": 0
+  },
+  {
+    "id": "hermes",
+    "file": "hermes-ss26.mp4",
+    "poseFile": "hermes-ss26.mp4",
+    "originalFile": "hermes-ss26-original.mp4",
+    "roiScale": 1,
+    "url": "https://www.youtube.com/watch?v=eQUau2GefuA",
+    "title": "Herm\u00e8s Men's Summer 2026",
+    "fps": 25,
+    "originalFps": 60,
+    "sourceOffset": 0
   }
 ]

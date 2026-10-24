@@ -42,13 +42,26 @@ test('a matching gait cannot pull a frontal person into a diagonal direction', (
   expect(chooseBlock(blocks,-30,0).clip).toBe('diagonal');
 });
 
-test('every selectable direction has at least four reviewed outfit candidates', () => {
+test('every selectable direction has at least three reviewed outfit candidates', () => {
   const blocks = buildBlocks(data.frames);
   for (let yaw=-75; yaw<=0; yaw++) {
     const nearest = Math.min(...blocks.map(b=>Math.abs(b.yaw-yaw)));
     const outfits = new Set(blocks.filter(b=>Math.abs(b.yaw-yaw)<=nearest+5).map(b=>b.look ?? b.clip));
-    expect(outfits.size, `direction ${yaw}`).toBeGreaterThanOrEqual(4);
+    // The newly filmed 30–35 degree band has three clean outfits. Reject
+    // crowd-overlap frames instead of labeling frontal views as diagonal.
+    expect(outfits.size, `direction ${yaw}`).toBeGreaterThanOrEqual(yaw>=-40&&yaw<=-25 ? 3 : 4);
   }
+});
+test('supplemental footage only adds deficient non-frontal directions', () => {
+  const added=data.frames.filter(f=>f.source==='hermes');
+  expect(new Set(added.map(f=>f.look)).size).toBe(8);
+  expect(added.every(f=>f.yaw<=-20)).toBe(true);
+  for(const yaw of [-30,-35])expect(added.some(f=>f.yaw===yaw)).toBe(true);
+});
+test('reviewed spectator-overlap frames stay out of the frontal library', () => {
+  expect(data.frames.some(f=>f.clip==='gucci-look-179')).toBe(false);
+  expect(data.frames.some(f=>f.clip==='fendi-look-1720'&&f.sourceFrame>=759)).toBe(false);
+  expect(new Set(data.frames.filter(f=>f.yaw===0).map(f=>f.look)).size).toBe(10);
 });
 test('avoid recent outfits when another outfit has a nearby gait in the same direction', () => {
   const blocks = [
@@ -61,7 +74,7 @@ test('avoid recent outfits when another outfit has a nearby gait in the same dir
 });
 test('each representative direction visits several compatible outfits during playback', () => {
   const blocks = buildBlocks(data.frames);
-  for (const yaw of [-75,-60,-38,-20,-15,-10,-5,0]) {
+  for (const yaw of [-75,-60,-38,-35,-30,-20,-15,-10,-5,0]) {
     let recent: string[]=[]; let previous: readonly number[] | undefined; let velocity: readonly number[] | undefined; const visited=new Set<string>();
     for (let cut=0; cut<120; cut++) {
       const block=chooseBlock(blocks,yaw,(cut/10)%1,recent,previous,velocity);
@@ -69,9 +82,9 @@ test('each representative direction visits several compatible outfits during pla
       previous=data.frames[block.start+2].gait;
       velocity=data.frames[block.start+2].gaitVelocity;
     }
-    // The 20-degree band has fewer clean phase matches after rejecting damaged
-    // crowd-overlap frames; do not force a large joint jump just for variety.
-    expect(visited.size, `playback at ${yaw}`).toBeGreaterThanOrEqual(yaw===-20 ? 3 : 4);
+    // Closer filmed views now exclude the old 50-degree fallback at 38 degrees.
+    // This narrow band has three compatible outfits; 20 degrees now has more.
+    expect(visited.size, `playback at ${yaw}`).toBeGreaterThanOrEqual(yaw>=-38&&yaw<=-30 ? 3 : 4);
   }
 });
 test('an approaching foot keeps moving in the same direction across an identity cut', () => {
@@ -95,6 +108,7 @@ test('near-front directions have filmed intermediate views instead of repeating 
 });
 test('all exported source identities are unique and stay inside one camera shot', () => {
   expect(new Set(data.frames.map(f=>`${f.clip}:${f.sourceFrame}`)).size).toBe(data.frames.length);
+  expect(new Set(data.frames.map(f=>`${f.source}:${f.sourceFrame}`)).size).toBe(data.frames.length);
   for (const clip of data.clips) {
     const frames=data.frames.filter(f=>f.clip===clip.id);
     expect(buildBlocks(frames).length,clip.id).toBeGreaterThan(0);
@@ -102,6 +116,13 @@ test('all exported source identities are unique and stay inside one camera shot'
       expect(f.sourceFrame).toBeGreaterThanOrEqual(clip.sourceSegment[0]);
       expect(f.sourceFrame).toBeLessThan(clip.sourceSegment[1]);
     }
+  }
+});
+test('finale supplements contain only reviewed complete frames of one outfit', () => {
+  for(const clip of data.clips.filter(c=>c.id.startsWith('hermes-turn-'))) {
+    const allowed=new Set(clip.reviewedFrames);
+    for(const f of data.frames.filter(f=>f.clip===clip.id))expect(allowed.has(f.sourceFrame)).toBe(true);
+    expect(clip.screenPhaseCalibration?.reference).toBe(clip.phaseReference);
   }
 });
 test('38-degree selection excludes the misclassified Prada side shots', () => {

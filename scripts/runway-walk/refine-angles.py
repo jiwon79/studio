@@ -55,6 +55,18 @@ def complete_body(alpha,pose):
         if not patch.size or np.count_nonzero(patch>.5)<max(3,patch.size*.02):return False
     return True
 
+def reviewed_region(alpha,vertices):
+    """Limit a reviewed shot to the subject's corridor, retaining its raw matte.
+
+    Unlike a semantic body mask, this does not erase a carried bag. Vertices
+    describe empty space outside the subject in normalized source-ROI pixels.
+    """
+    h,w=alpha.shape
+    region=np.zeros((h,w),np.float32)
+    polygon=np.round(np.array(vertices)*[w-1,h-1]).astype(np.int32)
+    cv2.fillPoly(region,[polygon],1)
+    return alpha*cv2.GaussianBlur(region,(0,0),.7)
+
 def remove_wrist_backdrop(alpha,rgb,pose):
     """Reviewed cyan-shirt shot: the neutral runway edge touches a bare hand.
 
@@ -141,6 +153,7 @@ for clip in manifest['clips']:
     if clip.get('reviewedFrames'):fingerprint['reviewedFrames']=clip['reviewedFrames']
     if clip.get('headEnvelope'):fingerprint['headEnvelope']=clip['headEnvelope']
     if clip.get('neutralWristBackdrop'):fingerprint['neutralWristBackdrop']=True
+    if clip.get('matteRegion'):fingerprint['matteRegion']=clip['matteRegion']
     folder=root/clip['id'];folder.mkdir(exist_ok=True);key=folder/'input.json';metadata=folder/'registration.json'
     if key.exists() and json.loads(key.read_text())==fingerprint and metadata.exists():
         registered=json.loads(metadata.read_text())
@@ -171,6 +184,7 @@ for clip in manifest['clips']:
         else:
             mask=model.infer(originals[frame])
             Image.fromarray((mask*65535).round().astype('uint16')).save(path)
+        if clip.get('matteRegion'):mask=reviewed_region(mask,clip['matteRegion'])
         try:alpha=selected_component(mask,pose)
         except ValueError:rejected.append(frame);continue
         if clip['source']=='lv' or clip.get('personGuard')=='body':
@@ -208,22 +222,33 @@ for clip in manifest['clips']:
 
 if head_model is not None:head_model.close()
 by_clip={clip['id']:[r for r,_ in all_rows if r['clip']==clip['id']] for clip in manifest['clips']}
-reference=by_clip['lv-front-276']
-reference_phase=np.array([r['phase'] for r in reference])
 def leg_difference(rows):
     g=np.array([r['gait'] for r in rows])
     return np.stack([g[:,0]-g[:,2],(g[:,1]-g[:,3])*2,g[:,4]-g[:,6],(g[:,5]-g[:,7])*2],axis=1)
-reference_legs=leg_difference(reference)
-def leg_template(phase):
+def leg_template(phase,reference):
+    reference_phase=np.array([r['phase'] for r in reference])
+    reference_legs=leg_difference(reference)
     distance=np.abs((phase[:,None]-reference_phase[None,:]+.5)%1-.5)
     weights=np.exp(-distance**2/(2*.05**2))
     return weights@reference_legs/np.maximum(weights.sum(axis=1,keepdims=True),1e-9)
 for clip in manifest['clips']:
-    if not 0<abs(clip['yaw'])<=20:continue
+    reference_id=clip.get('phaseReference') or ('lv-front-276' if 0<abs(clip['yaw'])<=20 else None)
+    if not reference_id:continue
+    reference=by_clip[reference_id]
     rows=by_clip[clip['id']];phase=np.array([r['phase'] for r in rows]);legs=leg_difference(rows)
-    error,offset=min((float(np.mean((leg_template((phase+offset)%1)-legs)**2)),offset) for offset in np.arange(180)/180)
-    for row in rows:row['phase']=float((row['phase']+offset)%1)
-    clip['screenPhaseCalibration']={'reference':'lv-front-276','offset':float(offset),'error':error}
+    if clip.get('phaseReference'):
+        # The unreviewed finale can contain another identity. Fit only the
+        # accepted subject's screen-space legs against a complete filmed cycle.
+        time=np.array([r['sourceFrame'] for r in rows])/25;time-=time[0]
+        error,frequency,offset=min((float(np.mean((leg_template((time*freq+offset)%1,reference)-legs)**2)),freq,offset)
+            for freq in np.linspace(.65,1.25,61) for offset in np.arange(120)/120)
+        phase=(time*frequency+offset)%1
+        clip['screenPhaseCalibration']={'reference':reference_id,'frequency':float(frequency),'offset':float(offset),'error':error}
+    else:
+        error,offset=min((float(np.mean((leg_template((phase+offset)%1,reference)-legs)**2)),offset) for offset in np.arange(180)/180)
+        phase=(phase+offset)%1
+        clip['screenPhaseCalibration']={'reference':reference_id,'offset':float(offset),'error':error}
+    for row,value in zip(rows,phase):row['phase']=float(value)
 for rows in by_clip.values():
     for i,row in enumerate(rows):
         before=rows[max(0,i-1)];after=rows[min(len(rows)-1,i+1)]
