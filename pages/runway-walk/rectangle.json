@@ -1,0 +1,2172 @@
+{
+  "fps": 25,
+  "frames": 180,
+  "duration": 7.2,
+  "holdFrames": 3,
+  "timeline": "color-cadence-edits.json#3",
+  "timelineSha256": "fccb46780a4467a4ff5e74af9559008fbaedad22744e47d540229466942c45e5",
+  "sourcePixelsVerified": 180,
+  "framingAdjustedFrames": 71,
+  "edits": [
+    {
+      "look": 774,
+      "sourceFrame": 19352,
+      "colorOrder": 0,
+      "crop": {
+        "x": 617.0759433441193,
+        "y": 53.86384670713704,
+        "width": 613.5495770111021,
+        "height": 920.3243655166532
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 774,
+      "sourceFrame": 19353,
+      "colorOrder": 0,
+      "crop": {
+        "x": 619.8031340327557,
+        "y": 55.36436930077571,
+        "width": 609.2762545174967,
+        "height": 913.9143817762449
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 774,
+      "sourceFrame": 19354,
+      "colorOrder": 0,
+      "crop": {
+        "x": 626.0995817436576,
+        "y": 55.02238237841169,
+        "width": 608.1687354537249,
+        "height": 912.2531031805875
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 816,
+      "sourceFrame": 20393,
+      "colorOrder": 1,
+      "crop": {
+        "x": 683.4453964233398,
+        "y": 0.0,
+        "width": 720.0,
+        "height": 1080.0
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 816,
+      "sourceFrame": 20394,
+      "colorOrder": 1,
+      "crop": {
+        "x": 679.7357838684118,
+        "y": 0.0,
+        "width": 719.9979032409595,
+        "height": 1079.9968548614393
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 816,
+      "sourceFrame": 20395,
+      "colorOrder": 1,
+      "crop": {
+        "x": 686.8521956241699,
+        "y": 0.0,
+        "width": 711.9438021110351,
+        "height": 1067.9157031665527
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 774,
+      "sourceFrame": 19356,
+      "colorOrder": 0,
+      "crop": {
+        "x": 624.029088562701,
+        "y": 36.717010594284034,
+        "width": 616.4925945878549,
+        "height": 924.7388918817825
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 774,
+      "sourceFrame": 19357,
+      "colorOrder": 0,
+      "crop": {
+        "x": 620.4654540270699,
+        "y": 22.673656916266452,
+        "width": 625.4212495386338,
+        "height": 938.1318743079506
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 774,
+      "sourceFrame": 19358,
+      "colorOrder": 0,
+      "crop": {
+        "x": 614.3271990749097,
+        "y": 14.827259010480475,
+        "width": 635.6363351875829,
+        "height": 953.4545027813743
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 816,
+      "sourceFrame": 20425,
+      "colorOrder": 1,
+      "crop": {
+        "x": 629.6663831059051,
+        "y": 0.0,
+        "width": 708.0276349417542,
+        "height": 1062.0414524126313
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 816,
+      "sourceFrame": 20426,
+      "colorOrder": 1,
+      "crop": {
+        "x": 629.3597866280545,
+        "y": 0.0,
+        "width": 714.1871783765814,
+        "height": 1071.2807675648721
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 816,
+      "sourceFrame": 20427,
+      "colorOrder": 1,
+      "crop": {
+        "x": 626.2250375747681,
+        "y": 0.0,
+        "width": 720.0,
+        "height": 1080.0
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 94,
+      "sourceFrame": 2334,
+      "colorOrder": 2,
+      "crop": {
+        "x": 678.1133238875043,
+        "y": 0.0,
+        "width": 679.5180955721594,
+        "height": 1019.2771433582391
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 94,
+      "sourceFrame": 2335,
+      "colorOrder": 2,
+      "crop": {
+        "x": 676.5589878872015,
+        "y": 0.0,
+        "width": 685.7337812751574,
+        "height": 1028.600671912736
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 94,
+      "sourceFrame": 2336,
+      "colorOrder": 2,
+      "crop": {
+        "x": 676.424196780388,
+        "y": 0.0,
+        "width": 688.8953999267727,
+        "height": 1033.343099890159
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 244,
+      "sourceFrame": 6078,
+      "colorOrder": 3,
+      "crop": {
+        "x": 625.1683682340142,
+        "y": 59.19003166750423,
+        "width": 630.7849371159559,
+        "height": 946.1774056739339
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 244,
+      "sourceFrame": 6079,
+      "colorOrder": 3,
+      "crop": {
+        "x": 626.9691853891964,
+        "y": 72.36126371050949,
+        "width": 619.8601712443124,
+        "height": 929.7902568664684
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 244,
+      "sourceFrame": 6080,
+      "colorOrder": 3,
+      "crop": {
+        "x": 631.0671168201703,
+        "y": 82.62083323546841,
+        "width": 610.359996630045,
+        "height": 915.5399949450675
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 94,
+      "sourceFrame": 2362,
+      "colorOrder": 2,
+      "crop": {
+        "x": 677.8996536973899,
+        "y": 0.0,
+        "width": 692.7208761684526,
+        "height": 1039.081314252679
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 94,
+      "sourceFrame": 2363,
+      "colorOrder": 2,
+      "crop": {
+        "x": 682.2717739310949,
+        "y": 0.0,
+        "width": 692.3923919266285,
+        "height": 1038.5885878899428
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 94,
+      "sourceFrame": 2364,
+      "colorOrder": 2,
+      "crop": {
+        "x": 680.7502311252249,
+        "y": 0.0,
+        "width": 692.4968064263078,
+        "height": 1038.7452096394618
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 244,
+      "sourceFrame": 6083,
+      "colorOrder": 3,
+      "crop": {
+        "x": 638.8858235466912,
+        "y": 84.1680025812833,
+        "width": 598.2923101209732,
+        "height": 897.4384651814597
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 244,
+      "sourceFrame": 6084,
+      "colorOrder": 3,
+      "crop": {
+        "x": 632.7373355184479,
+        "y": 79.19038857527448,
+        "width": 602.3216451099547,
+        "height": 903.4824676649321
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 244,
+      "sourceFrame": 6085,
+      "colorOrder": 3,
+      "crop": {
+        "x": 625.6608456041706,
+        "y": 65.63653903467099,
+        "width": 611.0525859065269,
+        "height": 916.5788788597905
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 168,
+      "sourceFrame": 4166,
+      "colorOrder": 4,
+      "crop": {
+        "x": 661.5300949189736,
+        "y": 24.584557765094587,
+        "width": 641.9004997067306,
+        "height": 962.8507495600959
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 168,
+      "sourceFrame": 4167,
+      "colorOrder": 4,
+      "crop": {
+        "x": 650.9433313759807,
+        "y": 0.25942848022452836,
+        "width": 663.0705363447181,
+        "height": 994.6058045170771
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 168,
+      "sourceFrame": 4168,
+      "colorOrder": 4,
+      "crop": {
+        "x": 641.9532402455199,
+        "y": 0.0,
+        "width": 683.8811286093021,
+        "height": 1025.821692913953
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 244,
+      "sourceFrame": 6088,
+      "colorOrder": 3,
+      "crop": {
+        "x": 609.6705344241077,
+        "y": 32.849335066280446,
+        "width": 647.0488542474877,
+        "height": 970.5732813712316
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 244,
+      "sourceFrame": 6089,
+      "colorOrder": 3,
+      "crop": {
+        "x": 605.85473052208,
+        "y": 35.22495945356991,
+        "width": 651.5365411531055,
+        "height": 977.3048117296582
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 244,
+      "sourceFrame": 6090,
+      "colorOrder": 3,
+      "crop": {
+        "x": 607.8536380674918,
+        "y": 46.364322001393475,
+        "width": 649.3571350283464,
+        "height": 974.0357025425196
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 168,
+      "sourceFrame": 4171,
+      "colorOrder": 4,
+      "crop": {
+        "x": 632.4015854008949,
+        "y": 0.0,
+        "width": 698.8649944051195,
+        "height": 1048.2974916076794
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 168,
+      "sourceFrame": 4172,
+      "colorOrder": 4,
+      "crop": {
+        "x": 635.8389146375869,
+        "y": 0.0,
+        "width": 690.9908661746555,
+        "height": 1036.4862992619833
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 168,
+      "sourceFrame": 4173,
+      "colorOrder": 4,
+      "crop": {
+        "x": 643.2561215572296,
+        "y": 2.226095977535124,
+        "width": 681.0349256172304,
+        "height": 1021.5523884258456
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 276,
+      "sourceFrame": 6883,
+      "colorOrder": 5,
+      "crop": {
+        "x": 666.5391423464697,
+        "y": 93.42589051108064,
+        "width": 615.7587666986622,
+        "height": 923.6381500479931
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 276,
+      "sourceFrame": 6884,
+      "colorOrder": 5,
+      "crop": {
+        "x": 669.9976508717748,
+        "y": 89.89925581798292,
+        "width": 612.4759640492971,
+        "height": 918.7139460739456
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 276,
+      "sourceFrame": 6885,
+      "colorOrder": 5,
+      "crop": {
+        "x": 671.3878317114363,
+        "y": 84.55094819314706,
+        "width": 610.514112425516,
+        "height": 915.771168638274
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 168,
+      "sourceFrame": 4176,
+      "colorOrder": 4,
+      "crop": {
+        "x": 662.5844302098785,
+        "y": 29.78755048338786,
+        "width": 644.8829336323669,
+        "height": 967.3244004485504
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 168,
+      "sourceFrame": 4177,
+      "colorOrder": 4,
+      "crop": {
+        "x": 669.4266684112142,
+        "y": 34.940738253105735,
+        "width": 635.4195818787435,
+        "height": 953.1293728181153
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 168,
+      "sourceFrame": 4178,
+      "colorOrder": 4,
+      "crop": {
+        "x": 674.0303535292926,
+        "y": 35.20619457302445,
+        "width": 632.2029934266442,
+        "height": 948.3044901399663
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 276,
+      "sourceFrame": 6915,
+      "colorOrder": 5,
+      "crop": {
+        "x": 643.954083024362,
+        "y": 37.26803258303727,
+        "width": 650.1406258366518,
+        "height": 975.2109387549777
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 276,
+      "sourceFrame": 6916,
+      "colorOrder": 5,
+      "crop": {
+        "x": 636.6595651229511,
+        "y": 17.430819443796622,
+        "width": 662.4377533753135,
+        "height": 993.6566300629703
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 276,
+      "sourceFrame": 6917,
+      "colorOrder": 5,
+      "crop": {
+        "x": 630.3807728669149,
+        "y": 0.0,
+        "width": 678.4767450529133,
+        "height": 1017.71511757937
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 558,
+      "sourceFrame": 13957,
+      "colorOrder": 6,
+      "crop": {
+        "x": 682.7348156858866,
+        "y": 79.22579330164587,
+        "width": 561.5181882998577,
+        "height": 842.2772824497865
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 558,
+      "sourceFrame": 13958,
+      "colorOrder": 6,
+      "crop": {
+        "x": 680.7374644312558,
+        "y": 68.54748113806977,
+        "width": 572.6554059916141,
+        "height": 858.9831089874212
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 558,
+      "sourceFrame": 13959,
+      "colorOrder": 6,
+      "crop": {
+        "x": 680.0289475495001,
+        "y": 75.15871231741517,
+        "width": 578.9524007689196,
+        "height": 868.4286011533794
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 514,
+      "sourceFrame": 12831,
+      "colorOrder": 7,
+      "crop": {
+        "x": 622.9630215929791,
+        "y": 0.0,
+        "width": 712.95156797432,
+        "height": 1069.42735196148
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 514,
+      "sourceFrame": 12832,
+      "colorOrder": 7,
+      "crop": {
+        "x": 628.2269824977714,
+        "y": 0.0,
+        "width": 700.0950023659074,
+        "height": 1050.142503548861
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 514,
+      "sourceFrame": 12833,
+      "colorOrder": 7,
+      "crop": {
+        "x": 636.117930870153,
+        "y": 16.656335847264813,
+        "width": 685.8694734952898,
+        "height": 1028.8042102429347
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 558,
+      "sourceFrame": 13938,
+      "colorOrder": 6,
+      "crop": {
+        "x": 728.4308286860008,
+        "y": 188.16080738555695,
+        "width": 456.6857345194778,
+        "height": 685.0286017792167
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 558,
+      "sourceFrame": 13939,
+      "colorOrder": 6,
+      "crop": {
+        "x": 730.4937762835218,
+        "y": 187.2775999242799,
+        "width": 455.82083328195546,
+        "height": 683.7312499229332
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 558,
+      "sourceFrame": 13940,
+      "colorOrder": 6,
+      "crop": {
+        "x": 731.1304725303592,
+        "y": 179.81896458905686,
+        "width": 455.25377013398383,
+        "height": 682.8806552009758
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 514,
+      "sourceFrame": 12838,
+      "colorOrder": 7,
+      "crop": {
+        "x": 641.7043902071084,
+        "y": 23.92388862022301,
+        "width": 672.8772303279707,
+        "height": 1009.315845491956
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 514,
+      "sourceFrame": 12839,
+      "colorOrder": 7,
+      "crop": {
+        "x": 637.4169527593435,
+        "y": 17.231024943374223,
+        "width": 679.9892355793354,
+        "height": 1019.9838533690031
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 514,
+      "sourceFrame": 12840,
+      "colorOrder": 7,
+      "crop": {
+        "x": 628.7547850468172,
+        "y": 0.0,
+        "width": 694.6905565543149,
+        "height": 1042.0358348314724
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 602,
+      "sourceFrame": 15022,
+      "colorOrder": 8,
+      "crop": {
+        "x": 623.2773174345537,
+        "y": 36.79442947317182,
+        "width": 672.3501369357022,
+        "height": 1008.5252054035533
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 602,
+      "sourceFrame": 15023,
+      "colorOrder": 8,
+      "crop": {
+        "x": 618.9919891950225,
+        "y": 24.58367021910442,
+        "width": 683.3860224491883,
+        "height": 1025.0790336737825
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 602,
+      "sourceFrame": 15024,
+      "colorOrder": 8,
+      "crop": {
+        "x": 615.8980898652158,
+        "y": 11.738683502825893,
+        "width": 694.1472521238165,
+        "height": 1041.2208781857248
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 514,
+      "sourceFrame": 12815,
+      "colorOrder": 7,
+      "crop": {
+        "x": 617.8483057022095,
+        "y": 0.0,
+        "width": 720.0,
+        "height": 1080.0
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 514,
+      "sourceFrame": 12816,
+      "colorOrder": 7,
+      "crop": {
+        "x": 618.3423614501953,
+        "y": 0.0,
+        "width": 720.0,
+        "height": 1080.0
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 514,
+      "sourceFrame": 12817,
+      "colorOrder": 7,
+      "crop": {
+        "x": 618.6137294769287,
+        "y": 0.0,
+        "width": 720.0,
+        "height": 1080.0
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 602,
+      "sourceFrame": 15027,
+      "colorOrder": 8,
+      "crop": {
+        "x": 611.0901169731551,
+        "y": 6.712128598987647,
+        "width": 703.6538210005892,
+        "height": 1055.4807315008838
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 602,
+      "sourceFrame": 15028,
+      "colorOrder": 8,
+      "crop": {
+        "x": 612.1752530080579,
+        "y": 11.503539219088566,
+        "width": 698.9794672047093,
+        "height": 1048.469200807064
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 602,
+      "sourceFrame": 15029,
+      "colorOrder": 8,
+      "crop": {
+        "x": 613.6246292148553,
+        "y": 16.704864369582765,
+        "width": 692.645112603004,
+        "height": 1038.9676689045061
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 424,
+      "sourceFrame": 10600,
+      "colorOrder": 9,
+      "crop": {
+        "x": 683.0533466252241,
+        "y": 87.48190418840358,
+        "width": 592.8890781576329,
+        "height": 889.3336172364493
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 424,
+      "sourceFrame": 10601,
+      "colorOrder": 9,
+      "crop": {
+        "x": 685.7079765236787,
+        "y": 94.07899038812974,
+        "width": 588.9167457746642,
+        "height": 883.3751186619962
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 424,
+      "sourceFrame": 10602,
+      "colorOrder": 9,
+      "crop": {
+        "x": 684.3447224604142,
+        "y": 94.93862240774888,
+        "width": 586.9190469767545,
+        "height": 880.3785704651319
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 602,
+      "sourceFrame": 15032,
+      "colorOrder": 8,
+      "crop": {
+        "x": 627.388028900319,
+        "y": 42.79660471964473,
+        "width": 675.6467060238249,
+        "height": 1013.4700590357373
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 602,
+      "sourceFrame": 15033,
+      "colorOrder": 8,
+      "crop": {
+        "x": 624.9105899877491,
+        "y": 37.19623630828755,
+        "width": 674.4657768116111,
+        "height": 1011.6986652174168
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 602,
+      "sourceFrame": 15034,
+      "colorOrder": 8,
+      "crop": {
+        "x": 623.9434223479996,
+        "y": 26.438573501021096,
+        "width": 677.6950396881562,
+        "height": 1016.5425595322342
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 424,
+      "sourceFrame": 10604,
+      "colorOrder": 9,
+      "crop": {
+        "x": 689.564069301446,
+        "y": 86.048677485481,
+        "width": 589.7483186114634,
+        "height": 884.6224779171952
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 424,
+      "sourceFrame": 10605,
+      "colorOrder": 9,
+      "crop": {
+        "x": 684.3954617114831,
+        "y": 75.50061457067795,
+        "width": 596.1431872185133,
+        "height": 894.2147808277699
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 424,
+      "sourceFrame": 10606,
+      "colorOrder": 9,
+      "crop": {
+        "x": 682.422668993575,
+        "y": 60.48070774574518,
+        "width": 605.8136223552573,
+        "height": 908.7204335328859
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 506,
+      "sourceFrame": 12658,
+      "colorOrder": 10,
+      "crop": {
+        "x": 700.2438138007323,
+        "y": 10.892773070475528,
+        "width": 664.3376974107425,
+        "height": 996.5065461161138
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 506,
+      "sourceFrame": 12659,
+      "colorOrder": 10,
+      "crop": {
+        "x": 696.9606334203679,
+        "y": 0.0,
+        "width": 677.6779877674185,
+        "height": 1016.5169816511277
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 506,
+      "sourceFrame": 12660,
+      "colorOrder": 10,
+      "crop": {
+        "x": 690.2353684913238,
+        "y": 0.0,
+        "width": 685.7597508408386,
+        "height": 1028.639626261258
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 488,
+      "sourceFrame": 12169,
+      "colorOrder": 11,
+      "crop": {
+        "x": 674.4266519206456,
+        "y": 102.37896725827773,
+        "width": 594.6805268014091,
+        "height": 892.0207902021136
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 488,
+      "sourceFrame": 12170,
+      "colorOrder": 11,
+      "crop": {
+        "x": 676.2751775515248,
+        "y": 117.23014195916716,
+        "width": 586.9869125818869,
+        "height": 880.4803688728304
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 488,
+      "sourceFrame": 12171,
+      "colorOrder": 11,
+      "crop": {
+        "x": 683.8931636398836,
+        "y": 127.38898958265213,
+        "width": 578.2679501402766,
+        "height": 867.401925210415
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 506,
+      "sourceFrame": 12635,
+      "colorOrder": 10,
+      "crop": {
+        "x": 683.663650957792,
+        "y": 48.717776546731386,
+        "width": 646.1693258920329,
+        "height": 969.2539888380495
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 506,
+      "sourceFrame": 12636,
+      "colorOrder": 10,
+      "crop": {
+        "x": 690.1934200101073,
+        "y": 70.49247331882265,
+        "width": 635.8651245488774,
+        "height": 953.797686823316
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 506,
+      "sourceFrame": 12637,
+      "colorOrder": 10,
+      "crop": {
+        "x": 690.8705910143485,
+        "y": 80.64464920509073,
+        "width": 631.2528212672013,
+        "height": 946.879231900802
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 488,
+      "sourceFrame": 12172,
+      "colorOrder": 11,
+      "crop": {
+        "x": 692.1105344530247,
+        "y": 136.2628672193352,
+        "width": 570.5460819728568,
+        "height": 855.8191229592852
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 488,
+      "sourceFrame": 12173,
+      "colorOrder": 11,
+      "crop": {
+        "x": 692.790021929033,
+        "y": 140.91624192226072,
+        "width": 565.1289462389801,
+        "height": 847.6934193584702
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 488,
+      "sourceFrame": 12174,
+      "colorOrder": 11,
+      "crop": {
+        "x": 693.3258536995113,
+        "y": 136.35116652219187,
+        "width": 563.3363621352792,
+        "height": 845.0045432029187
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 448,
+      "sourceFrame": 11168,
+      "colorOrder": 12,
+      "crop": {
+        "x": 604.6036366729995,
+        "y": 0.0,
+        "width": 706.538099426218,
+        "height": 1059.8071491393268
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 448,
+      "sourceFrame": 11169,
+      "colorOrder": 12,
+      "crop": {
+        "x": 599.1216087341309,
+        "y": 0.0,
+        "width": 720.0,
+        "height": 1080.0
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 448,
+      "sourceFrame": 11170,
+      "colorOrder": 12,
+      "crop": {
+        "x": 599.6549463272095,
+        "y": 0.0,
+        "width": 720.0,
+        "height": 1080.0
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 488,
+      "sourceFrame": 12181,
+      "colorOrder": 11,
+      "crop": {
+        "x": 668.8596116161593,
+        "y": 79.83951264530992,
+        "width": 601.3089254188042,
+        "height": 901.9633881282064
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 488,
+      "sourceFrame": 12182,
+      "colorOrder": 11,
+      "crop": {
+        "x": 666.2267023585854,
+        "y": 80.83772856283497,
+        "width": 608.6919867470625,
+        "height": 913.0379801205938
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 488,
+      "sourceFrame": 12183,
+      "colorOrder": 11,
+      "crop": {
+        "x": 665.8079309078255,
+        "y": 85.04069846782744,
+        "width": 609.3582688148423,
+        "height": 914.0374032222635
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 448,
+      "sourceFrame": 11172,
+      "colorOrder": 12,
+      "crop": {
+        "x": 595.7174205780029,
+        "y": 0.0,
+        "width": 720.0,
+        "height": 1080.0
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 448,
+      "sourceFrame": 11173,
+      "colorOrder": 12,
+      "crop": {
+        "x": 597.3937797546387,
+        "y": 0.0,
+        "width": 720.0,
+        "height": 1080.0
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 448,
+      "sourceFrame": 11174,
+      "colorOrder": 12,
+      "crop": {
+        "x": 598.166971206665,
+        "y": 0.0,
+        "width": 720.0,
+        "height": 1080.0
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 406,
+      "sourceFrame": 10141,
+      "colorOrder": 13,
+      "crop": {
+        "x": 626.1449640446251,
+        "y": 39.31044287735108,
+        "width": 681.4680160178056,
+        "height": 1022.2020240267084
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 406,
+      "sourceFrame": 10142,
+      "colorOrder": 13,
+      "crop": {
+        "x": 631.6930016832257,
+        "y": 49.95177620553818,
+        "width": 670.1387959804722,
+        "height": 1005.2081939707084
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 406,
+      "sourceFrame": 10143,
+      "colorOrder": 13,
+      "crop": {
+        "x": 635.1062657672244,
+        "y": 51.443871443060175,
+        "width": 662.2232480370844,
+        "height": 993.3348720556266
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 394,
+      "sourceFrame": 9848,
+      "colorOrder": 14,
+      "crop": {
+        "x": 617.443718167327,
+        "y": 0.0,
+        "width": 707.4796405391253,
+        "height": 1061.219460808688
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 394,
+      "sourceFrame": 9849,
+      "colorOrder": 14,
+      "crop": {
+        "x": 619.8016594844157,
+        "y": 0.0,
+        "width": 705.2402593697916,
+        "height": 1057.8603890546874
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 394,
+      "sourceFrame": 9850,
+      "colorOrder": 14,
+      "crop": {
+        "x": 611.4268533189705,
+        "y": 0.0,
+        "width": 709.2373768886703,
+        "height": 1063.8560653330053
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 406,
+      "sourceFrame": 10146,
+      "colorOrder": 13,
+      "crop": {
+        "x": 637.0294302606189,
+        "y": 25.093138095277368,
+        "width": 664.2203295422387,
+        "height": 996.330494313358
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 406,
+      "sourceFrame": 10147,
+      "colorOrder": 13,
+      "crop": {
+        "x": 631.2942429097014,
+        "y": 19.76119249424653,
+        "width": 674.6670016226137,
+        "height": 1012.0005024339206
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 406,
+      "sourceFrame": 10148,
+      "colorOrder": 13,
+      "crop": {
+        "x": 622.2544609480591,
+        "y": 1.2376688144887567,
+        "width": 688.7586428774415,
+        "height": 1033.1379643161622
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 394,
+      "sourceFrame": 9853,
+      "colorOrder": 14,
+      "crop": {
+        "x": 613.3046722412109,
+        "y": 0.0,
+        "width": 720.0,
+        "height": 1080.0
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 394,
+      "sourceFrame": 9854,
+      "colorOrder": 14,
+      "crop": {
+        "x": 614.7771835327148,
+        "y": 0.0,
+        "width": 720.0,
+        "height": 1080.0
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 394,
+      "sourceFrame": 9855,
+      "colorOrder": 14,
+      "crop": {
+        "x": 612.0461515170973,
+        "y": 0.0,
+        "width": 717.8161518608248,
+        "height": 1076.7242277912371
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 584,
+      "sourceFrame": 14614,
+      "colorOrder": 15,
+      "crop": {
+        "x": 612.0794962264466,
+        "y": 0.0,
+        "width": 703.6179545685911,
+        "height": 1055.4269318528866
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 584,
+      "sourceFrame": 14615,
+      "colorOrder": 15,
+      "crop": {
+        "x": 612.1778552516937,
+        "y": 0.0,
+        "width": 696.287619116974,
+        "height": 1044.4314286754611
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 584,
+      "sourceFrame": 14616,
+      "colorOrder": 15,
+      "crop": {
+        "x": 620.3776854622107,
+        "y": 6.902493251273427,
+        "width": 686.1034452224293,
+        "height": 1029.1551678336439
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 394,
+      "sourceFrame": 9859,
+      "colorOrder": 14,
+      "crop": {
+        "x": 627.5762774384457,
+        "y": 0.0,
+        "width": 699.5517679380499,
+        "height": 1049.3276519070748
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 394,
+      "sourceFrame": 9860,
+      "colorOrder": 14,
+      "crop": {
+        "x": 629.7613497803645,
+        "y": 0.0,
+        "width": 694.1214712003792,
+        "height": 1041.1822068005688
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 394,
+      "sourceFrame": 9861,
+      "colorOrder": 14,
+      "crop": {
+        "x": 631.1889252211533,
+        "y": 0.0,
+        "width": 690.8148222871855,
+        "height": 1036.2222334307783
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 584,
+      "sourceFrame": 14619,
+      "colorOrder": 15,
+      "crop": {
+        "x": 624.5662653393815,
+        "y": 8.043213892371341,
+        "width": 661.1098361120086,
+        "height": 991.6647541680129
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 584,
+      "sourceFrame": 14620,
+      "colorOrder": 15,
+      "crop": {
+        "x": 621.8673960628471,
+        "y": 2.8537692814608135,
+        "width": 660.1181379432754,
+        "height": 990.1772069149131
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 584,
+      "sourceFrame": 14621,
+      "colorOrder": 15,
+      "crop": {
+        "x": 623.614825934143,
+        "y": 1.0988781613159517,
+        "width": 664.2175489068603,
+        "height": 996.3263233602905
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 766,
+      "sourceFrame": 19184,
+      "colorOrder": 16,
+      "crop": {
+        "x": 645.6543800800814,
+        "y": 0.0,
+        "width": 696.2602477133723,
+        "height": 1044.3903715700585
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 766,
+      "sourceFrame": 19185,
+      "colorOrder": 16,
+      "crop": {
+        "x": 641.8350569009059,
+        "y": 0.0,
+        "width": 708.298632383491,
+        "height": 1062.4479485752365
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 766,
+      "sourceFrame": 19186,
+      "colorOrder": 16,
+      "crop": {
+        "x": 627.9358863830566,
+        "y": 0.0,
+        "width": 720.0,
+        "height": 1080.0
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 584,
+      "sourceFrame": 14599,
+      "colorOrder": 15,
+      "crop": {
+        "x": 617.0121151750661,
+        "y": 0.0,
+        "width": 703.3185469020651,
+        "height": 1054.9778203530977
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 584,
+      "sourceFrame": 14600,
+      "colorOrder": 15,
+      "crop": {
+        "x": 624.5438674485276,
+        "y": 0.0,
+        "width": 695.291871349893,
+        "height": 1042.9378070248395
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 584,
+      "sourceFrame": 14601,
+      "colorOrder": 15,
+      "crop": {
+        "x": 633.996909577216,
+        "y": 0.0,
+        "width": 684.9165278304314,
+        "height": 1027.3747917456471
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 766,
+      "sourceFrame": 19165,
+      "colorOrder": 16,
+      "crop": {
+        "x": 609.0215826576657,
+        "y": 0.0,
+        "width": 719.8069571364508,
+        "height": 1079.7104357046762
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 766,
+      "sourceFrame": 19166,
+      "colorOrder": 16,
+      "crop": {
+        "x": 618.4243977792386,
+        "y": 0.0,
+        "width": 709.424693439936,
+        "height": 1064.137040159904
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 766,
+      "sourceFrame": 19167,
+      "colorOrder": 16,
+      "crop": {
+        "x": 624.5745647942631,
+        "y": 0.0,
+        "width": 700.2795241285148,
+        "height": 1050.4192861927722
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 334,
+      "sourceFrame": 8367,
+      "colorOrder": 17,
+      "crop": {
+        "x": 602.5769254580771,
+        "y": 0.0,
+        "width": 700.640483495467,
+        "height": 1050.9607252432006
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 334,
+      "sourceFrame": 8368,
+      "colorOrder": 17,
+      "crop": {
+        "x": 610.2801399151833,
+        "y": 0.0,
+        "width": 692.3657837072312,
+        "height": 1038.5486755608467
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 334,
+      "sourceFrame": 8369,
+      "colorOrder": 17,
+      "crop": {
+        "x": 616.0944590649667,
+        "y": 1.0247386357682444,
+        "width": 684.1623620824691,
+        "height": 1026.2435431237036
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 766,
+      "sourceFrame": 19169,
+      "colorOrder": 16,
+      "crop": {
+        "x": 630.6545162494422,
+        "y": 0.0,
+        "width": 694.1481685051438,
+        "height": 1041.2222527577158
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 766,
+      "sourceFrame": 19170,
+      "colorOrder": 16,
+      "crop": {
+        "x": 629.5632744123106,
+        "y": 0.0,
+        "width": 699.4835280796756,
+        "height": 1049.2252921195134
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 766,
+      "sourceFrame": 19171,
+      "colorOrder": 16,
+      "crop": {
+        "x": 627.588436801465,
+        "y": 0.0,
+        "width": 710.1666780328121,
+        "height": 1065.2500170492183
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 334,
+      "sourceFrame": 8372,
+      "colorOrder": 17,
+      "crop": {
+        "x": 622.0975786188933,
+        "y": 0.0,
+        "width": 679.7142875711735,
+        "height": 1019.5714313567602
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 334,
+      "sourceFrame": 8373,
+      "colorOrder": 17,
+      "crop": {
+        "x": 618.109249505932,
+        "y": 0.0,
+        "width": 691.8732177544935,
+        "height": 1037.8098266317402
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 334,
+      "sourceFrame": 8374,
+      "colorOrder": 17,
+      "crop": {
+        "x": 610.311874960594,
+        "y": 0.0,
+        "width": 707.5658138300328,
+        "height": 1061.3487207450491
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 696,
+      "sourceFrame": 17377,
+      "colorOrder": 18,
+      "crop": {
+        "x": 670.1617219784521,
+        "y": 118.52847721492367,
+        "width": 581.8009228033499,
+        "height": 872.7013842050247
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 696,
+      "sourceFrame": 17378,
+      "colorOrder": 18,
+      "crop": {
+        "x": 666.809912345025,
+        "y": 110.77343653469563,
+        "width": 584.6885096605358,
+        "height": 877.0327644908037
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 696,
+      "sourceFrame": 17379,
+      "colorOrder": 18,
+      "crop": {
+        "x": 671.5419001684706,
+        "y": 115.03185609644157,
+        "width": 586.0620889452854,
+        "height": 879.0931334179281
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 662,
+      "sourceFrame": 16552,
+      "colorOrder": 19,
+      "crop": {
+        "x": 630.5825421033732,
+        "y": 30.51383253667467,
+        "width": 643.5757071140545,
+        "height": 965.3635606710817
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 662,
+      "sourceFrame": 16553,
+      "colorOrder": 19,
+      "crop": {
+        "x": 628.8898682719762,
+        "y": 33.60379793891104,
+        "width": 639.5586442696463,
+        "height": 959.3379664044694
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 662,
+      "sourceFrame": 16554,
+      "colorOrder": 19,
+      "crop": {
+        "x": 631.2622725570852,
+        "y": 50.77034074858102,
+        "width": 635.909435827602,
+        "height": 953.864153741403
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 696,
+      "sourceFrame": 17408,
+      "colorOrder": 18,
+      "crop": {
+        "x": 665.8004419670701,
+        "y": 113.43958137664617,
+        "width": 589.0916552809476,
+        "height": 883.6374829214215
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 696,
+      "sourceFrame": 17409,
+      "colorOrder": 18,
+      "crop": {
+        "x": 668.1524426352203,
+        "y": 115.47203047831283,
+        "width": 583.0010019518494,
+        "height": 874.5015029277741
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 696,
+      "sourceFrame": 17410,
+      "colorOrder": 18,
+      "crop": {
+        "x": 667.3735850923601,
+        "y": 117.98769497717939,
+        "width": 577.4048435939663,
+        "height": 866.1072653909495
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 662,
+      "sourceFrame": 16585,
+      "colorOrder": 19,
+      "crop": {
+        "x": 608.7329784794078,
+        "y": 42.263345526968976,
+        "width": 649.8559729728248,
+        "height": 974.7839594592373
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 662,
+      "sourceFrame": 16586,
+      "colorOrder": 19,
+      "crop": {
+        "x": 610.3122610414619,
+        "y": 37.466581543561404,
+        "width": 649.3731795619738,
+        "height": 974.0597693429606
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 662,
+      "sourceFrame": 16587,
+      "colorOrder": 19,
+      "crop": {
+        "x": 610.4812517310336,
+        "y": 31.281956814508703,
+        "width": 651.1342448899837,
+        "height": 976.7013673349757
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 750,
+      "sourceFrame": 18772,
+      "colorOrder": 20,
+      "crop": {
+        "x": 686.11971420487,
+        "y": 15.073145627388499,
+        "width": 670.529183498219,
+        "height": 1005.7937752473285
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 750,
+      "sourceFrame": 18773,
+      "colorOrder": 20,
+      "crop": {
+        "x": 676.8164629912299,
+        "y": 4.341588062929873,
+        "width": 677.22759342672,
+        "height": 1015.8413901400799
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 750,
+      "sourceFrame": 18774,
+      "colorOrder": 20,
+      "crop": {
+        "x": 675.8910805931004,
+        "y": 0.0,
+        "width": 683.6671529312309,
+        "height": 1025.5007293968465
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 662,
+      "sourceFrame": 16563,
+      "colorOrder": 19,
+      "crop": {
+        "x": 618.0601461635022,
+        "y": 31.635732161469946,
+        "width": 650.7395061043921,
+        "height": 976.1092591565881
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 662,
+      "sourceFrame": 16564,
+      "colorOrder": 19,
+      "crop": {
+        "x": 619.0729361483376,
+        "y": 26.432932147698352,
+        "width": 654.1579950434127,
+        "height": 981.2369925651191
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 662,
+      "sourceFrame": 16565,
+      "colorOrder": 19,
+      "crop": {
+        "x": 617.742803777541,
+        "y": 29.51924275244312,
+        "width": 652.3808418009972,
+        "height": 978.5712627014959
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 750,
+      "sourceFrame": 18727,
+      "colorOrder": 20,
+      "crop": {
+        "x": 647.4316366399,
+        "y": 20.731024646880087,
+        "width": 667.083528859482,
+        "height": 1000.6252932892231
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 750,
+      "sourceFrame": 18728,
+      "colorOrder": 20,
+      "crop": {
+        "x": 649.465829740837,
+        "y": 25.781689924068587,
+        "width": 666.8671381257479,
+        "height": 1000.3007071886219
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 750,
+      "sourceFrame": 18729,
+      "colorOrder": 20,
+      "crop": {
+        "x": 653.6019105888604,
+        "y": 28.46012474075428,
+        "width": 665.689512257338,
+        "height": 998.5342683860069
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 638,
+      "sourceFrame": 15976,
+      "colorOrder": 21,
+      "crop": {
+        "x": 653.887898975199,
+        "y": 82.20598821914808,
+        "width": 624.5670555957446,
+        "height": 936.850583393617
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 638,
+      "sourceFrame": 15977,
+      "colorOrder": 21,
+      "crop": {
+        "x": 660.4108531466284,
+        "y": 89.58994686134548,
+        "width": 614.8886284845754,
+        "height": 922.3329427268632
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 638,
+      "sourceFrame": 15978,
+      "colorOrder": 21,
+      "crop": {
+        "x": 666.1230476154781,
+        "y": 87.19787137691947,
+        "width": 608.5639843436287,
+        "height": 912.845976515443
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 750,
+      "sourceFrame": 18732,
+      "colorOrder": 20,
+      "crop": {
+        "x": 660.8764964661889,
+        "y": 31.963552725499767,
+        "width": 654.791005785884,
+        "height": 982.1865086788259
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 750,
+      "sourceFrame": 18733,
+      "colorOrder": 20,
+      "crop": {
+        "x": 667.0232895607758,
+        "y": 30.241841936326523,
+        "width": 653.561853648224,
+        "height": 980.3427804723359
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 750,
+      "sourceFrame": 18734,
+      "colorOrder": 20,
+      "crop": {
+        "x": 670.3320014150595,
+        "y": 21.663202641872658,
+        "width": 655.6446290668537,
+        "height": 983.4669436002805
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 638,
+      "sourceFrame": 15982,
+      "colorOrder": 21,
+      "crop": {
+        "x": 670.6171670742926,
+        "y": 62.803782870724035,
+        "width": 621.2617271764879,
+        "height": 931.8925907647318
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 638,
+      "sourceFrame": 15983,
+      "colorOrder": 21,
+      "crop": {
+        "x": 662.4117994391171,
+        "y": 46.17731274472203,
+        "width": 634.1790103746955,
+        "height": 951.2685155620433
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 638,
+      "sourceFrame": 15984,
+      "colorOrder": 21,
+      "crop": {
+        "x": 657.4953329060506,
+        "y": 31.043636802757135,
+        "width": 648.113706212435,
+        "height": 972.1705593186524
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 736,
+      "sourceFrame": 18418,
+      "colorOrder": 22,
+      "crop": {
+        "x": 624.8048686981201,
+        "y": 0.0,
+        "width": 720.0,
+        "height": 1080.0
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 736,
+      "sourceFrame": 18419,
+      "colorOrder": 22,
+      "crop": {
+        "x": 623.9059782028198,
+        "y": 0.0,
+        "width": 720.0,
+        "height": 1080.0
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 736,
+      "sourceFrame": 18420,
+      "colorOrder": 22,
+      "crop": {
+        "x": 625.8457946777344,
+        "y": 0.0,
+        "width": 720.0,
+        "height": 1080.0
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 728,
+      "sourceFrame": 18200,
+      "colorOrder": 23,
+      "crop": {
+        "x": 637.4259567164611,
+        "y": 7.535016918989754,
+        "width": 677.5445938302613,
+        "height": 1016.316890745392
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 728,
+      "sourceFrame": 18201,
+      "colorOrder": 23,
+      "crop": {
+        "x": 644.4325919076671,
+        "y": 15.695942608722817,
+        "width": 672.5658903271219,
+        "height": 1008.8488354906827
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 728,
+      "sourceFrame": 18202,
+      "colorOrder": 23,
+      "crop": {
+        "x": 653.4759953595519,
+        "y": 22.177360919389912,
+        "width": 669.1807359502077,
+        "height": 1003.7711039253116
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 736,
+      "sourceFrame": 18397,
+      "colorOrder": 22,
+      "crop": {
+        "x": 641.3442594909113,
+        "y": 0.0,
+        "width": 702.8225550843393,
+        "height": 1054.233832626509
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 736,
+      "sourceFrame": 18398,
+      "colorOrder": 22,
+      "crop": {
+        "x": 644.6963834620964,
+        "y": 0.0,
+        "width": 695.4091739937761,
+        "height": 1043.113760990664
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 736,
+      "sourceFrame": 18399,
+      "colorOrder": 22,
+      "crop": {
+        "x": 647.4131525293554,
+        "y": 0.0,
+        "width": 690.0618957011768,
+        "height": 1035.0928435517653
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 774,
+      "sourceFrame": 19367,
+      "colorOrder": 0,
+      "crop": {
+        "x": 633.4408120518976,
+        "y": 41.81687417306847,
+        "width": 624.6770039784801,
+        "height": 937.0155059677202
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 774,
+      "sourceFrame": 19368,
+      "colorOrder": 0,
+      "crop": {
+        "x": 624.410494065396,
+        "y": 37.18799239315172,
+        "width": 628.8175044534365,
+        "height": 943.2262566801548
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 774,
+      "sourceFrame": 19369,
+      "colorOrder": 0,
+      "crop": {
+        "x": 618.6508974092176,
+        "y": 29.659716611434987,
+        "width": 636.9471008267064,
+        "height": 955.4206512400598
+      },
+      "framingAdjusted": false
+    },
+    {
+      "look": 728,
+      "sourceFrame": 18209,
+      "colorOrder": 23,
+      "crop": {
+        "x": 651.6298345640168,
+        "y": 0.0,
+        "width": 675.5169288486509,
+        "height": 1013.2753932729762
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 728,
+      "sourceFrame": 18210,
+      "colorOrder": 23,
+      "crop": {
+        "x": 646.8929813129622,
+        "y": 0.0,
+        "width": 683.6242394004429,
+        "height": 1025.4363591006643
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 728,
+      "sourceFrame": 18211,
+      "colorOrder": 23,
+      "crop": {
+        "x": 637.2815677242224,
+        "y": 0.0,
+        "width": 690.8548886146656,
+        "height": 1036.2823329219984
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 816,
+      "sourceFrame": 20414,
+      "colorOrder": 1,
+      "crop": {
+        "x": 649.4682025909424,
+        "y": 0.0,
+        "width": 720.0,
+        "height": 1080.0
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 816,
+      "sourceFrame": 20415,
+      "colorOrder": 1,
+      "crop": {
+        "x": 646.133623123169,
+        "y": 0.0,
+        "width": 720.0,
+        "height": 1080.0
+      },
+      "framingAdjusted": true
+    },
+    {
+      "look": 816,
+      "sourceFrame": 20416,
+      "colorOrder": 1,
+      "crop": {
+        "x": 641.8016910552979,
+        "y": 0.0,
+        "width": 720.0,
+        "height": 1080.0
+      },
+      "framingAdjusted": true
+    }
+  ]
+}

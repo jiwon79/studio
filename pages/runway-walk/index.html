@@ -9,32 +9,34 @@
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
-  <header><h1>한 걸음, 여러 사람</h1><span>RUNWAY WALK — COLOR — 3 / 4 / 5 / 6</span></header>
+  <header><h1>한 걸음, 여러 사람</h1><span>RUNWAY WALK — 3 FRAMES / RECTANGLE</span></header>
   <main class="stage">
     <figure>
-      <video id="walk" autoplay loop muted playsinline preload="auto" aria-label="색의 흐름에 따라 인물이 바뀌는 런웨이 콜라주"></video>
-      <figcaption id="primary-label">전환 간격 비교 · 위 3·4 / 아래 5·6프레임</figcaption>
+      <video id="walk" autoplay loop muted playsinline preload="auto" aria-label="원본 배경을 남긴 사각 크롭 런웨이 콜라주"></video>
+      <figcaption id="primary-label">사각 크롭 · 3프레임</figcaption>
     </figure>
     <figure id="companion" hidden>
-      <video id="footfall" loop muted playsinline preload="auto" aria-label="발을 디딜 때 인물이 바뀌는 런웨이 콜라주"></video>
-      <figcaption>03 · 발 디딤</figcaption>
+      <video id="secondary" loop muted playsinline preload="auto" aria-label="발을 디딜 때 인물이 바뀌는 런웨이 콜라주"></video>
+      <figcaption id="secondary-label">사각 크롭 · 3프레임</figcaption>
     </figure>
     <p id="status" role="status">영상을 불러오는 중…</p>
   </main>
   <footer>
-    <div class="modes" role="group" aria-label="색 흐름 전환 간격">
-      <button type="button" data-mode="color3" aria-pressed="false">3프레임</button>
-      <button type="button" data-mode="color4" aria-pressed="false">4프레임</button>
-      <button type="button" data-mode="color5" aria-pressed="false">5프레임</button>
-      <button type="button" data-mode="color6" aria-pressed="false">6프레임</button>
-      <button type="button" data-mode="cadence" aria-pressed="true">4종 비교</button>
+    <div class="modes" role="group" aria-label="3프레임 배경 처리">
+      <button type="button" data-mode="rectangle" aria-pressed="true">사각 크롭</button>
+      <button type="button" data-mode="color3" aria-pressed="false">누끼</button>
+      <button type="button" data-mode="cropCompare" aria-pressed="false">나란히 비교</button>
     </div>
     <details class="archive">
       <summary>이전 시안</summary>
-    <div class="modes" role="group" aria-label="작품 버전">
+    <div class="modes" role="group" aria-label="이전 작품 버전">
+      <button type="button" data-mode="color4" aria-pressed="false">4프레임</button>
+      <button type="button" data-mode="color5" aria-pressed="false">5프레임</button>
+      <button type="button" data-mode="color6" aria-pressed="false">6프레임</button>
+      <button type="button" data-mode="cadence" aria-pressed="false">4종 비교</button>
       <button type="button" data-mode="color" aria-pressed="false">색의 흐름</button>
       <button type="button" data-mode="footfall" aria-pressed="false">발 디딤</button>
-      <button type="button" data-mode="compare" aria-pressed="false">나란히 비교</button>
+      <button type="button" data-mode="compare" aria-pressed="false">색·발 디딤 비교</button>
       <button type="button" data-mode="frame" aria-pressed="false">기존 · 매 프레임</button>
       <button type="button" data-mode="step" aria-pressed="false">기존 · 3프레임</button>
     </div>
@@ -47,7 +49,7 @@
       <output id="position">001 / 180</output>
       <select id="speed" aria-label="재생 속도"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="1.5">1.5×</option></select>
     </div>
-    <div class="links"><a id="download" download="runway-color.mp4">색의 흐름 MP4 ↗</a><a id="download-footfall" download="runway-footfall.mp4" hidden>발 디딤 MP4 ↗</a><a href="https://www.youtube.com/watch?v=qcE5NeDUvIk" target="_blank" rel="noreferrer">원본 · Louis Vuitton ↗</a></div>
+    <div class="links"><a id="download" download="runway-color.mp4">색의 흐름 MP4 ↗</a><a id="download-secondary" download="runway-footfall.mp4" hidden>발 디딤 MP4 ↗</a><a href="https://www.youtube.com/watch?v=qcE5NeDUvIk" target="_blank" rel="noreferrer">원본 · Louis Vuitton ↗</a></div>
   </footer>
   <script type="module" src="./script.ts"></script>
 </body>

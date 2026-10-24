@@ -1,6 +1,7 @@
 import manifest from './manifest.json';
 
 const sources = {
+  rectangle: new URL('./media/runway-color-3-rectangle.mp4', import.meta.url).href,
   color3: new URL('./media/runway-color-3.mp4', import.meta.url).href,
   color4: new URL('./media/runway-color-4.mp4', import.meta.url).href,
   color5: new URL('./media/runway-color-5.mp4', import.meta.url).href,
@@ -12,15 +13,17 @@ const sources = {
   step: new URL('./media/runway-step.mp4', import.meta.url).href,
 };
 type Source = keyof typeof sources;
-type Mode = Source | 'compare';
+type Mode = Source | 'compare' | 'cropCompare';
 const labels: Record<Source, string> = {
+  rectangle: '사각 크롭 · 3프레임',
   color3: '색 흐름 · 3프레임', color4: '색 흐름 · 4프레임',
   color5: '색 흐름 · 5프레임', color6: '색 흐름 · 6프레임',
   cadence: '전환 간격 비교 · 위 3·4 / 아래 5·6프레임',
   color: '01 · 색의 흐름', footfall: '03 · 발 디딤', frame: '기존 · 매 프레임', step: '기존 · 3프레임',
 };
 const video = document.querySelector<HTMLVideoElement>('#walk')!;
-const footfall = document.querySelector<HTMLVideoElement>('#footfall')!;
+const secondary = document.querySelector<HTMLVideoElement>('#secondary')!;
+const secondaryLabel = document.querySelector<HTMLElement>('#secondary-label')!;
 const companion = document.querySelector<HTMLElement>('#companion')!;
 const primaryLabel = document.querySelector<HTMLElement>('#primary-label')!;
 const toggle = document.querySelector<HTMLButtonElement>('#toggle')!;
@@ -28,10 +31,11 @@ const frame = document.querySelector<HTMLInputElement>('#frame')!;
 const position = document.querySelector<HTMLOutputElement>('#position')!;
 const speed = document.querySelector<HTMLSelectElement>('#speed')!;
 const download = document.querySelector<HTMLAnchorElement>('#download')!;
-const downloadFootfall = document.querySelector<HTMLAnchorElement>('#download-footfall')!;
+const downloadSecondary = document.querySelector<HTMLAnchorElement>('#download-secondary')!;
 const status = document.querySelector<HTMLParagraphElement>('#status')!;
 const modes = document.querySelectorAll<HTMLButtonElement>('[data-mode]');
 const posters = {
+  rectangle: new URL('./media/poster-color-3-rectangle.jpg', import.meta.url).href,
   color3: new URL('./media/poster-color-3.jpg', import.meta.url).href,
   color4: new URL('./media/poster-color-4.jpg', import.meta.url).href,
   color5: new URL('./media/poster-color-5.jpg', import.meta.url).href,
@@ -42,10 +46,9 @@ const posters = {
   frame: new URL('./media/poster.jpg', import.meta.url).href,
   step: new URL('./media/poster.jpg', import.meta.url).href,
 };
-footfall.poster = posters.footfall;
-downloadFootfall.href = sources.footfall;
 frame.max = String(manifest.frames - 1);
-let mode: Mode = 'cadence';
+let mode: Mode = 'rectangle';
+function isComparing() { return mode === 'compare' || mode === 'cropCompare'; }
 let pendingSwitch: { time: number; playing: boolean } | undefined;
 
 function showPosition() {
@@ -58,12 +61,12 @@ function playbackState() {
   toggle.setAttribute('aria-label', video.paused ? '재생' : '일시정지');
 }
 async function syncCompanion() {
-  if (mode !== 'compare' || footfall.readyState < 2) return;
-  if (Math.abs(footfall.currentTime - video.currentTime) > 0.08) footfall.currentTime = video.currentTime;
-  footfall.playbackRate = video.playbackRate;
-  if (video.paused) footfall.pause();
-  else if (footfall.paused) {
-    try { await footfall.play(); } catch { /* A later user play can retry. */ }
+  if (!isComparing() || secondary.readyState < 2) return;
+  if (Math.abs(secondary.currentTime - video.currentTime) > 0.08) secondary.currentTime = video.currentTime;
+  secondary.playbackRate = video.playbackRate;
+  if (video.paused) secondary.pause();
+  else if (secondary.paused) {
+    try { await secondary.play(); } catch { /* A later user play can retry. */ }
   }
 }
 async function play() {
@@ -73,28 +76,36 @@ function seek(index: number) {
   video.pause();
   const time = (Math.max(0, Math.min(manifest.frames - 1, index)) + 0.1) / manifest.fps;
   video.currentTime = time;
-  if (mode === 'compare' && footfall.readyState >= 1) footfall.currentTime = time;
+  if (isComparing() && secondary.readyState >= 1) secondary.currentTime = time;
   showPosition();
 }
 function selectMode(nextMode: Mode, initial = false) {
   const playing = initial ? !matchMedia('(prefers-reduced-motion: reduce)').matches : !video.paused;
   pendingSwitch = { time: initial ? 0 : video.currentTime, playing };
   mode = nextMode;
-  const primary: Source = mode === 'compare' ? 'color' : mode;
-  document.body.classList.toggle('comparing', mode === 'compare');
-  companion.hidden = mode !== 'compare';
-  downloadFootfall.hidden = mode !== 'compare';
+  const primary: Source = mode === 'compare' ? 'color' : mode === 'cropCompare' ? 'color3' : mode;
+  const paired: Source | undefined = mode === 'compare' ? 'footfall' : mode === 'cropCompare' ? 'rectangle' : undefined;
+  document.body.classList.toggle('comparing', isComparing());
+  companion.hidden = !isComparing();
+  downloadSecondary.hidden = !isComparing();
   primaryLabel.textContent = labels[primary];
   video.setAttribute('aria-label', `${labels[primary]} 런웨이 콜라주`);
   for (const item of modes) item.setAttribute('aria-pressed', String(item.dataset.mode === mode));
   video.poster = posters[primary];
   video.autoplay = playing;
   video.src = sources[primary];
-  if (mode === 'compare' && !footfall.getAttribute('src')) footfall.src = sources.footfall;
-  if (mode !== 'compare') footfall.pause();
+  if (paired) {
+    secondary.poster = posters[paired];
+    secondaryLabel.textContent = labels[paired];
+    secondary.setAttribute('aria-label', `${labels[paired]} 런웨이 콜라주`);
+    if (secondary.getAttribute('src') !== sources[paired]) secondary.src = sources[paired];
+    downloadSecondary.href = sources[paired];
+    downloadSecondary.download = `runway-${paired}.mp4`;
+    downloadSecondary.textContent = paired === 'rectangle' ? '사각 크롭 MP4 ↗' : '발 디딤 MP4 ↗';
+  } else secondary.pause();
   download.href = sources[primary];
   download.download = `runway-${primary}.mp4`;
-  download.textContent = mode === 'compare' ? '색의 흐름 MP4 ↗' : mode === 'cadence' ? '4종 비교 MP4 ↗' : 'MP4 다운로드 ↗';
+  download.textContent = mode === 'cropCompare' ? '누끼 MP4 ↗' : mode === 'compare' ? '색의 흐름 MP4 ↗' : mode === 'cadence' ? '4종 비교 MP4 ↗' : 'MP4 다운로드 ↗';
   status.textContent = '영상을 불러오는 중…';
   frame.disabled = true;
   const url = new URL(location.href);
@@ -114,18 +125,18 @@ video.addEventListener('loadedmetadata', () => {
   showPosition();
 });
 video.addEventListener('canplay', () => { status.textContent = ''; void syncCompanion(); });
-footfall.addEventListener('canplay', () => { void syncCompanion(); });
-for (const item of [video, footfall]) {
+secondary.addEventListener('canplay', () => { void syncCompanion(); });
+for (const item of [video, secondary]) {
   item.addEventListener('error', () => { status.textContent = '영상을 불러오지 못했어요. 페이지를 새로고침해 주세요.'; });
 }
 video.addEventListener('play', () => { playbackState(); void syncCompanion(); });
-video.addEventListener('pause', () => { playbackState(); footfall.pause(); });
+video.addEventListener('pause', () => { playbackState(); secondary.pause(); });
 video.addEventListener('timeupdate', showPosition);
 video.addEventListener('seeked', () => { showPosition(); void syncCompanion(); });
 if ('requestVideoFrameCallback' in video) {
   video.requestVideoFrameCallback(function updateFrame() {
     showPosition();
-    if (mode === 'compare') void syncCompanion();
+    if (isComparing()) void syncCompanion();
     video.requestVideoFrameCallback(updateFrame);
   });
 }
@@ -139,5 +150,5 @@ for (const button of modes) button.addEventListener('click', () => {
   if (nextMode !== mode) selectMode(nextMode);
 });
 const queryMode = new URL(location.href).searchParams.get('mode');
-selectMode(queryMode && [...Object.keys(sources), 'compare'].includes(queryMode) ? queryMode as Mode : 'cadence', true);
+selectMode(queryMode && [...Object.keys(sources), 'compare', 'cropCompare'].includes(queryMode) ? queryMode as Mode : 'rectangle', true);
 playbackState();
