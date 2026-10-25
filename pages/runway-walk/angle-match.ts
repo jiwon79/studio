@@ -34,7 +34,11 @@ export function directionCoverage(frames: readonly AngleFrame[], blocks: readonl
 }
 export function chooseBlock(blocks: readonly AngleBlock[], yaw: number, phase: number, recent: readonly string[] = [], previousGait?: readonly number[], previousVelocity?: readonly number[]) {
   if (!blocks.length) throw new Error('No consecutive source blocks available');
-  const eligible = directionCandidates(blocks, yaw);
+  return chooseCandidate(directionCandidates(blocks, yaw), yaw, phase, recent, previousGait, previousVelocity);
+}
+/** Score a direction's indexed pool without scanning the entire source library. */
+export function chooseCandidate(eligible: readonly AngleBlock[], yaw: number, phase: number, recent: readonly string[] = [], previousGait?: readonly number[], previousVelocity?: readonly number[]) {
+  if (!eligible.length) throw new Error('No direction candidates available');
   const bestPhase = Math.min(...eligible.map(block => phaseDistance(block.phase,phase)));
   // Match the next joint position and its motion, so two similar-looking poses
   // with opposite swing directions cannot make a foot suddenly reverse.
