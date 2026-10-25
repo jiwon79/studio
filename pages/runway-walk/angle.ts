@@ -1,6 +1,7 @@
 import data from './angles.json';
 import previews from './drag.json';
 import { AtlasPool } from './atlas-pool';
+import { ANGLE_STEP, snapYaw } from './direction-step';
 import { buildBlocks, chooseCandidate, directionCandidates, type AngleFrame, type AngleBlock } from './angle-match';
 
 const frames: AngleFrame[] = data.frames;
@@ -15,12 +16,11 @@ const [minYaw, maxYaw] = data.yawRange;
 surface.setAttribute('aria-valuemin', String(minYaw));
 surface.setAttribute('aria-valuemax', String(maxYaw));
 const storageKey = 'runway-walk-direction-v1';
-const clamp = (value: number) => Math.max(minYaw, Math.min(maxYaw, value));
 let target = 0, saved: Record<string, unknown> = {};
 try {
   const stored = JSON.parse(localStorage.getItem(storageKey) || '{}');
   if (stored && typeof stored === 'object') saved = stored;
-  if (typeof saved.angle === 'number' && Number.isFinite(saved.angle)) target = Math.round(clamp(saved.angle));
+  if (typeof saved.angle === 'number' && Number.isFinite(saved.angle)) target = snapYaw(saved.angle, minYaw, maxYaw);
 } catch { /* Storage is optional. */ }
 function persist() {
   try { localStorage.setItem(storageKey, JSON.stringify({ ...saved, angle: target })); } catch { /* Optional local persistence. */ }
@@ -56,8 +56,8 @@ const images = new AtlasPool(async index => {
   if (!blob) throw new Error('Playback started before the complete download');
   return createImageBitmap(blob);
 }, 12);
-// These small pages cover every angle/phase before input is enabled. Dragging
-// needs no fetch/decode; full-resolution pages remain in the bounded HD pool.
+// Trimmed original-resolution pixels cover every snapped view before input is
+// enabled. Dragging needs neither a decode nor a low-resolution substitute.
 const dragImages: ImageBitmap[] = [];
 let downloaded = 0;
 function downloadedPage() {
@@ -97,8 +97,12 @@ let generation = 0, filling: number | undefined;
 let lastTime = 0, carry = 0;
 let drag: { id: number; x: number; start: number; moved: boolean } | undefined;
 function paint(image: ImageBitmap, tile: number, columns: number, width: number, height: number, row: AngleFrame, yaw: number, quality: string) {
+  paintRegion(image, tile % columns * width, Math.floor(tile / columns) * height,
+    width, height, 0, 0, row, yaw, quality);
+}
+function paintRegion(image: ImageBitmap, x: number, y: number, width: number, height: number, dx: number, dy: number, row: AngleFrame, yaw: number, quality: string) {
   context.clearRect(0, 0, canvas.width, canvas.height);
-  context.drawImage(image, tile % columns * width, Math.floor(tile / columns) * height, width, height, 0, 0, canvas.width, canvas.height);
+  context.drawImage(image, x, y, width, height, dx, dy, width, height);
   direction.value = label(yaw);
   canvas.dataset.sourceFrame = String(row.sourceFrame);
   canvas.dataset.clip = row.clip;
@@ -110,12 +114,13 @@ function paint(image: ImageBitmap, tile: number, columns: number, width: number,
   canvas.dataset.compressedPages = String(compressed.size);
   canvas.dataset.previewPages = String(dragImages.length);
   canvas.dataset.bufferedFrames = String(upcoming.length * data.holdFrames);
+  canvas.dataset.pixelScale = '1';
 }
 function drawPreview() {
   const slot = Math.round(phase * previews.phases) % previews.phases;
-  const tile = previews.tiles[previews.lookup[target - minYaw][slot]];
+  const tile = previews.tiles[previews.lookup[(target - minYaw) / previews.yawStep][slot]];
   const image = dragImages[tile.atlas];
-  if (image) paint(image, tile.tile, previews.columns, previews.tileWidth, previews.tileHeight, frames[tile.frame], target, 'drag');
+  if (image) paintRegion(image, tile.x, tile.y, tile.width, tile.height, tile.offsetX, tile.offsetY, frames[tile.frame], target, 'drag-hd');
 }
 function draw() {
   if (drag?.moved || renderedTarget !== target) { drawPreview(); return; }
@@ -186,7 +191,7 @@ async function startDirection() {
   } catch (error) { if (epoch === generation) throw error; }
 }
 function setAngle(value: number) {
-  const next = Math.round(clamp(value));
+  const next = snapYaw(value, minYaw, maxYaw);
   const changed = next !== target;
   target = next;
   surface.setAttribute('aria-valuenow', String(target));
@@ -224,7 +229,7 @@ surface.addEventListener('keydown', event => {
   if (!ready) return;
   if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
     event.preventDefault();
-    setAngle(target + (event.key === 'ArrowRight' ? 1 : -1) * (event.shiftKey ? 1 : 5));
+    setAngle(target + (event.key === 'ArrowRight' ? 1 : -1) * ANGLE_STEP);
     persist();
   } else if (event.key === 'Home') {
     event.preventDefault(); setAngle(0); persist();
