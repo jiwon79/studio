@@ -16,6 +16,8 @@ parser.add_argument('--output',type=Path,required=True)
 parser.add_argument('--manifest-only',action='store_true',help='Skip coarse atlas encoding before direct HD refinement')
 args=parser.parse_args()
 shots=json.loads(Path(__file__).with_name('angle-shots.json').read_text())
+if any(shot.get('carriedItems') != 'none' for shot in shots):
+ raise ValueError('Direction sources must be reviewed without bags or other carried items')
 root=args.cache/'angles';root.mkdir(exist_ok=True)
 media=args.output/'media'/'angles';media.mkdir(parents=True,exist_ok=True)
 catalog=json.loads(Path(__file__).with_name('angle-sources.json').read_text())
@@ -25,7 +27,7 @@ all_rows=[];clip_info=[]
 with mp.tasks.vision.PoseLandmarker.create_from_options(opts) as model:
  for shot in shots:
   folder=root/shot['id'];folder.mkdir(exist_ok=True)
-  key=hashlib.sha256((json.dumps({k:v for k,v in shot.items() if k not in ['yaw','yawKeys','yawMethod','poseXYOverrides','occludedLimbFrames','instanceThreshold','instanceHeadThreshold','detailKeys','solidAccessoryKeys','personGuard','excludedFrames','reviewedFrames','neutralWristBackdrop','headEnvelope','matteRegion','phaseReference','instance','accessoryKeys']},sort_keys=True)+'registration-v2').encode()).hexdigest()
+  key=hashlib.sha256((json.dumps({k:v for k,v in shot.items() if k not in ['carriedItems','yaw','yawKeys','yawMethod','poseXYOverrides','occludedLimbFrames','instanceThreshold','instanceHeadThreshold','detailKeys','solidAccessoryKeys','personGuard','excludedFrames','reviewedFrames','neutralWristBackdrop','headEnvelope','matteRegion','phaseReference','instance','accessoryKeys']},sort_keys=True)+'registration-v2').encode()).hexdigest()
   rows=[]
   if (folder/'rows.json').exists():
    stored=json.loads((folder/'rows.json').read_text())

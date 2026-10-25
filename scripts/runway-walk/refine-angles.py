@@ -318,7 +318,7 @@ def leg_template(phase,reference):
     weights=np.exp(-distance**2/(2*.05**2))
     return weights@reference_legs/np.maximum(weights.sum(axis=1,keepdims=True),1e-9)
 for clip in manifest['clips']:
-    reference_id=clip.get('phaseReference') or ('lv-front-276' if 0<abs(clip['yaw'])<=20 else None)
+    reference_id=clip.get('phaseReference') or ('prada25-look-50' if 0<abs(clip['yaw'])<=20 else None)
     if not reference_id:continue
     reference=by_clip[reference_id]
     rows=by_clip[clip['id']];phase=np.array([r['phase'] for r in rows]);legs=leg_difference(rows)

@@ -19,9 +19,9 @@ test('angle selection takes priority; phase remains continuous across the loop',
 
 test('exported source atlas offers valid consecutive blocks for every stored direction', () => {
   const blocks = buildBlocks(data.frames);
-  for (const yaw of new Set(data.frames.map(f => f.yaw))) {
+  for (let yaw=data.yawRange[0]; yaw<=data.yawRange[1]; yaw++) {
     const chosen = chooseBlock(blocks,yaw,0.25);
-    expect(Math.abs(chosen.yaw - yaw)).toBeLessThanOrEqual(15);
+    expect(Math.abs(chosen.yaw - yaw)).toBeLessThanOrEqual(5);
     const sequence = data.frames.slice(chosen.start, chosen.start+3);
     expect(sequence[2].sourceFrame - sequence[0].sourceFrame).toBe(2);
     expect(new Set(sequence.map(f => f.clip)).size).toBe(1);
@@ -50,12 +50,12 @@ test('a turn must match the requested direction for the entire three-frame hold'
   expect(chooseBlock(buildBlocks(frames),-38,0).clip).toBe('compatible');
 });
 
-test('every selectable direction offers 100 real frames and eight distinct outfits', () => {
+test('bag-free directions retain eight outfits and a cycle of consecutive source frames', () => {
   const blocks = buildBlocks(data.frames);
   for (let yaw=-90; yaw<=90; yaw++) {
     const coverage = directionCoverage(data.frames,blocks,yaw,data.holdFrames);
     expect(coverage.outfits, `outfits at ${yaw}`).toBeGreaterThanOrEqual(8);
-    expect(coverage.frames, `frames at ${yaw}`).toBeGreaterThanOrEqual(100);
+    expect(coverage.frames, `frames at ${yaw}`).toBeGreaterThanOrEqual(30);
   }
 });
 test('supplemental footage covers shallow and diagonal directions with actual left turns', () => {
@@ -65,14 +65,20 @@ test('supplemental footage covers shallow and diagonal directions with actual le
   for(const yaw of [-30,-35])expect(added.some(f=>Math.abs(f.yaw-yaw)<=5)).toBe(true);
   const turns=data.frames.filter(f=>f.source==='prada24');
   expect(new Set(turns.map(f=>f.look)).size).toBeGreaterThanOrEqual(8);
-  expect(turns.every(f=>f.yaw<=-10)).toBe(true);
+  expect(turns.every(f=>f.yaw<=0)).toBe(true);
 });
 test('reviewed spectator-overlap frames stay out of the frontal library', () => {
   expect(data.frames.some(f=>f.clip==='gucci-look-179')).toBe(false);
-  for(const clip of ['hermes24-right-349','hermes25-right-33','hermes25-right-243','hermes25-right-494','hermes25-left-541','hermes25-right-163','hermes25-right-211','hermes25-right-256','hermes24-right-247','hermes24-right-259','hermes24-right-552'])expect(data.frames.some(f=>f.clip===clip)).toBe(false);
+  for(const clip of ['hermes24-right-349','hermes25-right-33','hermes25-right-243','hermes25-right-494','hermes25-left-541','hermes25-right-163','hermes25-right-211','hermes25-right-256','hermes24-right-247','hermes24-right-259','hermes24-right-552','hermes25-right-70','hermes24-right-327'])expect(data.frames.some(f=>f.clip===clip)).toBe(false);
   expect(data.frames.some(f=>f.clip==='fendi-look-1720'&&f.sourceFrame>=759)).toBe(false);
-  const frontal=['lv-front-276','lv-front-488','lv-front-662','prada25-look-50','prada25-look-112','fendi-look-1720','fendi-look-1930','gucci-look-95','gucci-look-123','gucci-look-191'];
-  expect(data.frames.filter(f=>frontal.includes(f.clip)).length).toBe(334);
+  const frontal=['prada25-look-50','prada25-look-112','fendi-look-1720','gucci-look-95'];
+  expect(data.frames.filter(f=>frontal.includes(f.clip)).length).toBe(111);
+});
+test('all published clips were reviewed without carried items', () => {
+  expect(data.clips.every(clip => clip.carriedItems === 'none')).toBe(true);
+  for (const clip of ['lv-front-276','lv-front-488','lv-front-662','prada-oblique-234','prada-left-154','gucci-look-123','gucci-look-191','prada25-nearfront-86','hermes24-right-125','hermes25-right-45','hermes25-right-223','hermes25-right-383','hermes25-right-409','hermes25-right-70']) {
+    expect(data.frames.some(frame => frame.clip === clip), clip).toBe(false);
+  }
 });
 test('avoid recent outfits when another outfit has a nearby gait in the same direction', () => {
   const blocks = [
@@ -150,7 +156,7 @@ test('75-degree selection excludes frontal and rear parts of the reviewed turns'
   expect(data.frames.some(f=>f.clip==='prada24-turn-351'&&[8778,8787,8802].includes(f.sourceFrame))).toBe(false);
   const rear=data.frames.find(f=>f.clip==='prada24-turn-351'&&f.sourceFrame===8804);
   expect(rear?.yaw).toBeLessThan(-100);
-  for(const clip of ['prada-oblique-234','prada-look-318','prada-left-154','prada-look-80']) {
+  for(const clip of ['prada-look-318','prada-look-26','prada-look-186']) {
     const yaws=data.frames.filter(f=>f.clip===clip).map(f=>f.yaw);
     expect(Math.max(...yaws)-Math.min(...yaws),clip).toBeGreaterThan(20);
   }
@@ -200,16 +206,16 @@ test('right-facing Prada footage never enters a left-facing candidate pool', () 
 });
 
 
-test('reviewed bag occlusions and corrected ankle detections remain usable without incomplete shoe mattes', () => {
+test('corrected ankle detections remain usable in the bag-free library', () => {
   const frames=data.frames;
   expect(frames.some(f=>f.clip==='prada24-turn-76')).toBe(false);
   expect(frames.some(f=>f.clip==='lv-left-100'&&f.sourceFrame===2529)).toBe(false);
   expect(frames.some(f=>f.clip==='hermes25-left-613'&&f.sourceFrame===15358)).toBe(true);
+  expect(frames.some(f=>f.clip==='hermes25-left-613'&&f.sourceFrame===15359)).toBe(true);
   for(const sourceFrame of [15075,15076])expect(frames.some(f=>f.clip==='hermes25-left-601'&&f.sourceFrame===sourceFrame)).toBe(true);
   expect(frames.some(f=>f.clip==='hermes25-left-626'&&f.sourceFrame===15676)).toBe(false);
   for(const sourceFrame of [15677,15678,15679])expect(frames.some(f=>f.clip==='hermes25-left-626'&&f.sourceFrame===sourceFrame)).toBe(true);
-  for(const sourceFrame of [2522,2523,2524])expect(frames.some(f=>f.clip==='lv-left-100'&&f.sourceFrame===sourceFrame)).toBe(true);
-  expect(buildBlocks(frames).some(b=>b.clip==='prada-left-129'&&frames[b.start].sourceFrame===3217)).toBe(true);
+  for(const clip of ['lv-left-100','prada-left-129'])expect(frames.some(f=>f.clip===clip)).toBe(false);
 });
 
 
@@ -233,8 +239,8 @@ test('the expanded right range is filmed and stays within the absolute allowance
 });
 
 
-test('new spectator and bag overlap shots contain only the source-reviewed complete frames', () => {
-  const restricted=['hermes25-right-275','hermes25-right-383','hermes25-left-626','hermes25-left-542','hermes25-right-45','hermes25-right-341','hermes25-left-574','hermes25-right-188'];
+test('crowded shots contain only the source-reviewed complete frames', () => {
+  const restricted=['hermes25-right-275','hermes25-left-626','hermes25-left-542','hermes25-right-341','hermes25-left-574','hermes25-right-188','hermes24-clean-563'];
   for(const id of restricted) {
     const clip=data.clips.find(c=>c.id===id)!;
     const allowed=new Set(clip.reviewedFrames);

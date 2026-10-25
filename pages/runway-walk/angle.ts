@@ -34,7 +34,8 @@ function select(yaw: number, phase: number, recent: readonly string[] = [], last
   return chooseCandidate(eligible, yaw, phase, recent, last?.gait, last?.gaitVelocity);
 }
 async function fetchPage(name: string, version: string) {
-  const url = new URL(`./media/angles/${name}?v=${version}`, import.meta.url).href;
+  const url = new URL(`./media/angles/${name}`, import.meta.url);
+  url.searchParams.set('v', version);
   for (let attempt = 0; ; attempt++) {
     try {
       const response = await fetch(url);
@@ -75,7 +76,7 @@ let block = select(target, phase);
 let renderedTarget = target;
 let recent: string[] = [];
 let lastTime = 0, carry = 0;
-let drag: { id: number; x: number; start: number } | undefined;
+let drag: { id: number; x: number; start: number; moved: boolean } | undefined;
 function paint(image: ImageBitmap, tile: number, columns: number, width: number, height: number, row: AngleFrame, yaw: number, quality: string) {
   context.clearRect(0, 0, canvas.width, canvas.height);
   context.drawImage(image, tile % columns * width, Math.floor(tile / columns) * height, width, height, 0, 0, canvas.width, canvas.height);
@@ -97,7 +98,7 @@ function drawPreview() {
   if (image) paint(image, tile.tile, previews.columns, previews.tileWidth, previews.tileHeight, frames[tile.frame], target, 'drag');
 }
 function draw() {
-  if (drag || renderedTarget !== target) { drawPreview(); return; }
+  if (drag?.moved || renderedTarget !== target) { drawPreview(); return; }
   const row = frames[block.start + Math.min(offset, data.holdFrames - 1)];
   const image = images.get(row.atlas);
   if (image) paint(image, row.tile, data.columns, data.tileWidth, data.tileHeight, row, renderedTarget, 'hd');
@@ -108,7 +109,7 @@ async function prepare(candidate: typeof block) {
   await Promise.all([...pages].map(index => images.load(index)));
 }
 function warmNext() {
-  if (drag) return;
+  if (drag?.moved) return;
   const last = frames[block.start + data.holdFrames - 1];
   const candidate = select(target, (phase + (data.holdFrames - offset) / 30) % 1, recent, last);
   void prepare(candidate).catch(() => { /* Foreground decoding retries a failed prefetch. */ });
@@ -120,7 +121,7 @@ function failed() {
   status.textContent = '프레임을 불러오지 못했어요. 새로고침해 주세요.';
 }
 async function pick() {
-  if (drag) return;
+  if (drag?.moved) return;
   if (switching) { repick = true; return; }
   switching = true;
   const requested = target;
@@ -128,7 +129,7 @@ async function pick() {
   const candidate = select(requested, phase, recent, last);
   try {
     await prepare(candidate);
-    if (requested !== target || drag) { repick = true; return; }
+    if (requested !== target || drag?.moved) { repick = true; return; }
     block = candidate;
     renderedTarget = requested;
     recent = [block.look ?? block.clip, ...recent].slice(0, 4);
@@ -148,13 +149,14 @@ function setAngle(value: number) {
   surface.setAttribute('aria-valuenow', String(target));
   surface.setAttribute('aria-valuetext', label(target));
   if (ready && changed) {
+    if (drag) drag.moved = true;
     draw();
-    if (!drag) void pick();
+    if (!drag?.moved) void pick();
   }
 }
 surface.addEventListener('pointerdown', event => {
   if (!ready || !event.isPrimary || (event.pointerType === 'mouse' && event.button !== 0)) return;
-  drag = { id: event.pointerId, x: event.clientX, start: target };
+  drag = { id: event.pointerId, x: event.clientX, start: target, moved: false };
   surface.dataset.dragging = 'true';
   surface.setPointerCapture(event.pointerId);
 });
@@ -165,10 +167,11 @@ surface.addEventListener('pointermove', event => {
 });
 function endDrag(event: PointerEvent) {
   if (drag?.id !== event.pointerId) return;
+  const moved = drag.moved;
   drag = undefined;
   surface.dataset.dragging = 'false';
   persist();
-  void pick();
+  if (moved) void pick();
 }
 surface.addEventListener('pointerup', endDrag);
 surface.addEventListener('pointercancel', endDrag);
@@ -188,7 +191,10 @@ surface.addEventListener('keydown', event => {
   }
 });
 window.addEventListener('blur', () => {
-  if (drag) { drag = undefined; surface.dataset.dragging = 'false'; void pick(); }
+  const moved = drag?.moved;
+  drag = undefined;
+  surface.dataset.dragging = 'false';
+  if (moved) void pick();
 });
 document.addEventListener('visibilitychange', () => { lastTime = 0; carry = 0; });
 function tick(time: number) {
@@ -197,7 +203,7 @@ function tick(time: number) {
     while (carry >= 1 / data.fps) {
       carry -= 1 / data.fps; clock++; phase = (phase + 1 / 30) % 1;
       offset = Math.min(offset + 1, data.holdFrames);
-      if (!drag && !switching && offset === data.holdFrames) void pick();
+      if (!drag?.moved && !switching && offset === data.holdFrames) void pick();
       draw();
     }
   }
