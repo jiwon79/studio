@@ -50,11 +50,11 @@ test('a turn must match the requested direction for the entire three-frame hold'
   expect(chooseBlock(buildBlocks(frames),-38,0).clip).toBe('compatible');
 });
 
-test('reviewed directions retain eight outfits except the documented seven-outfit side view', () => {
+test('all selectable five-degree views retain eight outfits and consecutive source frames', () => {
   const blocks = buildBlocks(data.frames);
-  for (let yaw=-90; yaw<=90; yaw++) {
+  for (let yaw=-90; yaw<=90; yaw+=5) {
     const coverage = directionCoverage(data.frames,blocks,yaw,data.holdFrames);
-    expect(coverage.outfits, `outfits at ${yaw}`).toBeGreaterThanOrEqual(yaw===86 ? 7 : 8);
+    expect(coverage.outfits, `outfits at ${yaw}`).toBeGreaterThanOrEqual(8);
     expect(coverage.frames, `frames at ${yaw}`).toBeGreaterThanOrEqual(30);
   }
 });
@@ -301,4 +301,36 @@ test('newly identified spectator fragments and partial silhouettes stay excluded
   for(const [clip,indices] of Object.entries(excluded)) {
     expect(data.frames.some(frame=>frame.clip===clip && indices.includes(frame.sourceFrame)),clip).toBe(false);
   }
+});
+test('foot position takes priority over a closer phase with visibly displaced ankles', () => {
+  const previous=[.4,.65,.6,.65,.3,.85,.65,.9];
+  const candidates=[
+    {start:0,yaw:-15,phase:0,clip:'jumping-feet',gait:[.4,.65,.6,.65,.39,.85,.74,.9]},
+    {start:3,yaw:-15,phase:.06,clip:'aligned-feet',gait:previous},
+  ];
+  expect(chooseBlock(candidates,-15,0,[],previous).clip).toBe('aligned-feet');
+});
+test('a changed anatomical leg label cannot outweigh the same visible foot positions and motion', () => {
+  const previous=[.4,.65,.6,.65,.3,.85,.65,.9], velocity=[.01,0,-.01,0,.02,0,-.02,0];
+  const candidates=[
+    {start:0,yaw:-15,phase:0,clip:'displaced',gait:[.4,.65,.6,.65,.45,.85,.8,.9],gaitVelocity:velocity},
+    {start:3,yaw:-15,phase:.5,clip:'same-pixels',gait:[.59,.65,.41,.65,.63,.9,.32,.85],gaitVelocity:[-.01,0,.01,0,-.02,0,.02,0]},
+  ];
+  expect(chooseBlock(candidates,-15,0,[],previous,velocity).clip).toBe('same-pixels');
+});
+test('minus fifteen degree walking keeps the cut-to-cut foot displacement small', () => {
+  const candidates=directionCandidates(buildBlocks(data.frames),-15);
+  const swap=(g: readonly number[])=>[g[6],g[7],g[4],g[5]];
+  let phase=0,recent: string[]=[],last: AngleFrame|undefined;
+  const jumps: number[]=[];
+  for(let cut=0;cut<150;cut++) {
+    const next=chooseBlock(candidates,-15,phase,recent,last?.gait,last?.gaitVelocity);
+    const start=data.frames[next.start];
+    if(last?.gait)jumps.push(Math.min(gaitDistance(start.gait.slice(4),last.gait.slice(4)),gaitDistance(swap(start.gait),last.gait.slice(4))));
+    last=data.frames[next.start+2];phase=(last.phase+1/30)%1;
+    recent=[next.look??next.clip,...recent].slice(0,4);
+  }
+  jumps.sort((a,b)=>a-b);
+  expect(jumps.reduce((sum,jump)=>sum+jump,0)/jumps.length).toBeLessThan(.025);
+  expect(jumps[Math.floor(jumps.length*.95)]).toBeLessThan(.05);
 });

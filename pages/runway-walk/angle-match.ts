@@ -21,6 +21,10 @@ export function gaitDistance(a?: readonly number[], b?: readonly number[]) {
   if (!a?.length || a.length !== b?.length) return 0;
   return Math.sqrt(a.reduce((sum, value, index) => sum + (value - b[index]) ** 2, 0) / a.length);
 }
+function swapLegs(values?: readonly number[]) {
+  if (values?.length !== 8) return values;
+  return [values[2],values[3],values[0],values[1],values[6],values[7],values[4],values[5]];
+}
 export function directionCandidates(blocks: readonly AngleBlock[], yaw: number) {
   if (!blocks.length) return [];
   const error = (block: AngleBlock) => Math.max(Math.abs((block.minYaw ?? block.yaw) - yaw), Math.abs((block.maxYaw ?? block.yaw) - yaw));
@@ -46,16 +50,31 @@ export function chooseCandidate(eligible: readonly AngleBlock[], yaw: number, ph
   // allowed one three-frame block to loop, visibly rewinding the moving foot.
   const different = eligible.filter(block => (block.look ?? block.clip) !== recent[0]);
   const candidates = different.length ? different : eligible;
-  const bestPhase = Math.min(...candidates.map(block => phaseDistance(block.phase,phase)));
-  // Match the next joint position and its motion, so two similar-looking poses
-  // with opposite swing directions cannot make a foot suddenly reverse.
+  // These shallow Prada/Hermès left turns have ambiguous leg labels. Preserve
+  // the established phase matching for the other reviewed camera views.
+  const shallowLeft = yaw >= -25 && yaw <= -5;
+  // Anatomical left/right labels can differ between identities. Compare both
+  // pairings, keeping joint positions, velocity and half-cycle phase together.
+  // Screen-space ankle continuity matters more than knees or outfit novelty.
   const predicted = previousGait?.map((v,i) => v + (previousVelocity?.[i] ?? 0));
-  const scored = candidates.map(block => ({ block, cost:
-    phaseDistance(block.phase, phase) * 2 + gaitDistance(block.gait, predicted) * 12 +
-    gaitDistance(block.gaitVelocity, previousVelocity) * 12 + Math.abs(block.yaw - yaw) / 12,
-  }));
+  const scored = candidates.map(block => {
+    const cost = (swap: boolean) => {
+      const gait = swap ? swapLegs(block.gait) : block.gait;
+      const velocity = swap ? swapLegs(block.gaitVelocity) : block.gaitVelocity;
+      return phaseDistance((block.phase + (swap ? .5 : 0)) % 1, phase) +
+        gaitDistance(gait?.slice(0,4), predicted?.slice(0,4)) * 4 +
+        gaitDistance(gait?.slice(4), predicted?.slice(4)) * 24 +
+        gaitDistance(velocity, previousVelocity) * 16 + Math.abs(block.yaw-yaw) / 12;
+    };
+    return { block, cost: shallowLeft
+      ? Math.min(cost(false), previousGait ? cost(true) : Infinity)
+      : phaseDistance(block.phase, phase) * 2 + gaitDistance(block.gait, predicted) * 12 +
+        gaitDistance(block.gaitVelocity, previousVelocity) * 12 + Math.abs(block.yaw-yaw) / 12 };
+  });
   const bestCost = Math.min(...scored.map(s => s.cost));
+  const bestPhase = Math.min(...candidates.map(block=>phaseDistance(block.phase,phase)));
   const fresh = scored.filter(({ block, cost }) => !recent.includes(block.look ?? block.clip) &&
-    cost <= bestCost + 0.6 && phaseDistance(block.phase,phase) <= bestPhase + 0.12);
+    cost <= bestCost + (shallowLeft ? .4 : .6) &&
+    (shallowLeft || phaseDistance(block.phase,phase) <= bestPhase + .12));
   return (fresh.length ? fresh : scored).reduce((best,s) => s.cost < best.cost ? s : best).block;
 }
