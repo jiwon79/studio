@@ -54,6 +54,7 @@ let ready = false;
 let playing = !matchMedia('(prefers-reduced-motion: reduce)').matches;
 let phase = 0, clock = 0, offset = 0;
 let block = chooseBlock(blocks, target, phase);
+let renderedTarget = target;
 let recent: string[] = [];
 let lastTime = 0, carry = 0;
 function draw() {
@@ -62,6 +63,7 @@ function draw() {
   if (!image) { void prepare(block).then(draw).catch(failed); return; }
   context.clearRect(0, 0, canvas.width, canvas.height);
   context.drawImage(image, (row.tile % data.columns) * data.tileWidth, Math.floor(row.tile / data.columns) * data.tileHeight, data.tileWidth, data.tileHeight, 0, 0, canvas.width, canvas.height);
+  direction.value = label(renderedTarget);
   canvas.dataset.sourceFrame = String(row.sourceFrame);
   canvas.dataset.clip = row.clip;
   canvas.dataset.actualYaw = String(row.yaw);
@@ -96,6 +98,7 @@ async function pick() {
     // A drag can change direction while a network page is arriving.
     if (requested !== target) { repick = true; return; }
     block = candidate;
+    renderedTarget = requested;
     recent = [block.look ?? block.clip, ...recent].slice(0, 4);
     offset = 0;
     draw();
@@ -110,7 +113,6 @@ function setAngle(value: number) {
   const next = Math.round(clamp(value));
   const changed = next !== target;
   target = next;
-  direction.value = label(target);
   surface.setAttribute('aria-valuenow', String(target));
   surface.setAttribute('aria-valuetext', label(target));
   if (ready && changed) void pick();
