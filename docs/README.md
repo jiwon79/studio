@@ -89,6 +89,9 @@ Concept는 다음 중 하나를 만족할 때 독립 문서로 둔다.
 
 ## Research
 
+- [`enrico-tartarotti-channel-research.md`](./research/enrico-tartarotti-channel-research.md) - Enrico Tartarotti 공개 영상 111편의 분류, 확인 범위와 조사 출처
+- [`enrico-tartarotti-carousel-candidates.md`](./research/enrico-tartarotti-carousel-candidates.md) - 익숙한 기능의 숨은 작동을 다룰 카드뉴스 후보 36개, 영상 구간과 추가 검증 항목
+- [`enrico-tartarotti-video-inventory.csv`](./research/enrico-tartarotti-video-inventory.csv) - 긴 영상 87편·쇼츠 24편의 URL, 게시일, 길이, 확인 수준과 요약
 - [`guseul-liquid-glass.md`](./research/guseul-liquid-glass.md) - liquid glass 레퍼런스와 외부 구현 조사
 
 ## External Records
