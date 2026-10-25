@@ -77,5 +77,29 @@
     "fps": 25,
     "originalFps": 50,
     "sourceOffset": 0
+  },
+  {
+    "id": "hermes24",
+    "file": "hermes-ss24.mp4",
+    "poseFile": "hermes-ss24.mp4",
+    "originalFile": "hermes-ss24-original.mp4",
+    "roiScale": 1,
+    "url": "https://www.youtube.com/watch?v=cN12oPqe3Qc",
+    "title": "Hermès Men's Summer 2024",
+    "fps": 25,
+    "originalFps": 30,
+    "sourceOffset": 0
+  },
+  {
+    "id": "hermes25",
+    "file": "hermes-ss25.mp4",
+    "poseFile": "hermes-ss25.mp4",
+    "originalFile": "hermes-ss25-original.mp4",
+    "roiScale": 1,
+    "url": "https://www.youtube.com/watch?v=cZdY5tQkNIo",
+    "title": "Hermès Men's Summer 2025",
+    "fps": 25,
+    "originalFps": 30,
+    "sourceOffset": 0
   }
 ]

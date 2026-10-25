@@ -115,6 +115,6 @@ for start in range(0,len(all_rows),36):
   frames.append({k:row[k] for k in ['clip','look','source','sourceFrame','yaw','phase']}|{'atlas':atlas,'tile':i})
  if not args.manifest_only:sheet.save(media/filename,'WEBP',quality=88,method=4)
  atlases.append(filename)
-manifest={'fps':25,'holdFrames':3,'yawRange':[-75,0],'tileWidth':256,'tileHeight':384,'columns':6,'angleType':'reviewed camera-relative torso anchors with pose-guided interpolation','sources':[source for source in catalog if source['id'] in {row['source'] for row in all_rows}],'clips':clip_info,'atlases':atlases,'frames':frames}
+manifest={'fps':25,'holdFrames':3,'yawRange':[-90,90],'tileWidth':256,'tileHeight':384,'columns':6,'angleType':'reviewed camera-relative torso anchors with pose-guided interpolation','sources':[source for source in catalog if source['id'] in {row['source'] for row in all_rows}],'clips':clip_info,'atlases':atlases,'frames':frames}
 (args.output/'angles.json').write_text(json.dumps(manifest,separators=(',',':'))+'\n')
 print('Exported',len(frames),'frames /',len(atlases),'atlases',flush=True)
