@@ -149,7 +149,7 @@ async function fillBuffer() {
       if (epoch !== generation) return;
       upcoming.push(candidate); planned = []; retainPages();
     }
-  } catch { failed(); }
+  } catch { if (epoch === generation) failed(); }
   finally { if (filling === epoch) filling = undefined; }
 }
 function failed() {

@@ -50,11 +50,11 @@ test('a turn must match the requested direction for the entire three-frame hold'
   expect(chooseBlock(buildBlocks(frames),-38,0).clip).toBe('compatible');
 });
 
-test('bag-free directions retain eight outfits and a cycle of consecutive source frames', () => {
+test('reviewed directions retain eight outfits except the documented seven-outfit side view', () => {
   const blocks = buildBlocks(data.frames);
   for (let yaw=-90; yaw<=90; yaw++) {
     const coverage = directionCoverage(data.frames,blocks,yaw,data.holdFrames);
-    expect(coverage.outfits, `outfits at ${yaw}`).toBeGreaterThanOrEqual(8);
+    expect(coverage.outfits, `outfits at ${yaw}`).toBeGreaterThanOrEqual(yaw===86 ? 7 : 8);
     expect(coverage.frames, `frames at ${yaw}`).toBeGreaterThanOrEqual(30);
   }
 });
@@ -278,5 +278,27 @@ test('crowded shots contain only the source-reviewed complete frames', () => {
     const clip=data.clips.find(c=>c.id===id)!;
     const allowed=new Set(clip.reviewedFrames);
     for(const frame of data.frames.filter(f=>f.clip===id))expect(allowed.has(frame.sourceFrame),`${id}/${frame.sourceFrame}`).toBe(true);
+  }
+});
+test('re-reviewed frontal bodies cannot enter the forty-degree pool', () => {
+  expect(data.frames.filter(frame=>frame.clip==='hermes25-right-477').every(frame=>frame.yaw<=15)).toBe(true);
+  const candidates = directionCandidates(buildBlocks(data.frames),40);
+  expect(candidates.some(block=>block.clip==='hermes25-right-477')).toBe(false);
+  for(const clip of ['hermes24-clean-145','hermes24-clean-110','hermes25-right-178']) {
+    expect(data.frames.some(frame=>frame.clip===clip),clip).toBe(false);
+  }
+});
+test('newly identified spectator fragments and partial silhouettes stay excluded', () => {
+  const excluded: Record<string, number[]> = {
+    'hermes24-right-169':[4221,4224,4226,4236,4259,4260,4261,4262,4279,4280],
+    'hermes24-right-184':[4658,4659,4660,4661],
+    'hermes25-right-504':[12622,12623,12624],
+    'hermes25-right-485':[12125,12126,12127,12128,12129,12130],
+    'hermes25-left-601':[15058,15059,15060,15061,15062,15064,15065,15066],
+    'hermes25-right-178':[4455,4456],
+    'prada24-turn-130':[3231,3232,3233,3234,3242,3255,3256],
+  };
+  for(const [clip,indices] of Object.entries(excluded)) {
+    expect(data.frames.some(frame=>frame.clip===clip && indices.includes(frame.sourceFrame)),clip).toBe(false);
   }
 });

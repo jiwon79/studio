@@ -16,7 +16,8 @@ width,height,columns,rows=160,240,6,8
 blocks=[]
 for i,f in enumerate(frames):
     block=frames[i:i+hold]
-    if len(block)==hold and all(r['clip']==f['clip'] and r['sourceFrame']==f['sourceFrame']+j for j,r in enumerate(block)):
+    stable=all(max(abs(a-b) for a,b in zip(before['gait'],after['gait']))<=.12 for before,after in zip(block,block[1:]))
+    if stable and len(block)==hold and all(r['clip']==f['clip'] and r['sourceFrame']==f['sourceFrame']+j for j,r in enumerate(block)):
         blocks.append((i,min(r['yaw'] for r in block),max(r['yaw'] for r in block),sum(r['yaw'] for r in block)/hold))
 lookup=[];selected=[];indices={}
 for yaw in range(manifest['yawRange'][0],manifest['yawRange'][1]+1):
