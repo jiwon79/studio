@@ -5,6 +5,9 @@ export function buildBlocks(frames: readonly AngleFrame[], hold = 3): AngleBlock
     for (let offset = 1; offset < hold; offset++) {
       const next = frames[start + offset];
       if (!next || next.clip !== f.clip || next.sourceFrame !== f.sourceFrame + offset) return [];
+      // A detector swapping the two legs must not steer the next identity cut.
+      const previous = frames[start + offset - 1];
+      if (next.gait?.some((value, index) => Math.abs(value - (previous.gait?.[index] ?? value)) > .12)) return [];
     }
     const yaws = frames.slice(start, start + hold).map(frame => frame.yaw);
     return [{ start, yaw: yaws.reduce((sum,value)=>sum+value,0)/hold, minYaw: Math.min(...yaws), maxYaw: Math.max(...yaws), phase: f.phase, clip: f.clip, look: f.look ?? f.clip, gait: f.gait, gaitVelocity: f.gaitVelocity }];
@@ -39,13 +42,17 @@ export function chooseBlock(blocks: readonly AngleBlock[], yaw: number, phase: n
 /** Score a direction's indexed pool without scanning the entire source library. */
 export function chooseCandidate(eligible: readonly AngleBlock[], yaw: number, phase: number, recent: readonly string[] = [], previousGait?: readonly number[], previousVelocity?: readonly number[]) {
   if (!eligible.length) throw new Error('No direction candidates available');
-  const bestPhase = Math.min(...eligible.map(block => phaseDistance(block.phase,phase)));
+  // Never replay the same photographed stride immediately. Soft novelty alone
+  // allowed one three-frame block to loop, visibly rewinding the moving foot.
+  const different = eligible.filter(block => (block.look ?? block.clip) !== recent[0]);
+  const candidates = different.length ? different : eligible;
+  const bestPhase = Math.min(...candidates.map(block => phaseDistance(block.phase,phase)));
   // Match the next joint position and its motion, so two similar-looking poses
   // with opposite swing directions cannot make a foot suddenly reverse.
   const predicted = previousGait?.map((v,i) => v + (previousVelocity?.[i] ?? 0));
-  const scored = eligible.map(block => ({ block, cost:
+  const scored = candidates.map(block => ({ block, cost:
     phaseDistance(block.phase, phase) * 2 + gaitDistance(block.gait, predicted) * 12 +
-    gaitDistance(block.gaitVelocity, previousVelocity) * 12 + Math.abs(block.yaw - yaw) / 90,
+    gaitDistance(block.gaitVelocity, previousVelocity) * 12 + Math.abs(block.yaw - yaw) / 12,
   }));
   const bestCost = Math.min(...scored.map(s => s.cost));
   const fresh = scored.filter(({ block, cost }) => !recent.includes(block.look ?? block.clip) &&

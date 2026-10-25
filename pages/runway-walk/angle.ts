@@ -10,6 +10,7 @@ const canvas = document.querySelector<HTMLCanvasElement>('#person')!;
 const context = canvas.getContext('2d')!;
 const direction = document.querySelector<HTMLOutputElement>('#direction')!;
 const status = document.querySelector<HTMLElement>('#status')!;
+const loading = document.querySelector<HTMLElement>('#loading')!;
 const [minYaw, maxYaw] = data.yawRange;
 surface.setAttribute('aria-valuemin', String(minYaw));
 surface.setAttribute('aria-valuemax', String(maxYaw));
@@ -47,34 +48,52 @@ async function fetchPage(name: string, version: string) {
     }
   }
 }
+// Fetch every photograph before playback. Keeping WebP blobs is substantially
+// smaller than retaining all 4.2 GB of decoded HD pixels on a phone.
 const compressed = new Map<number, Blob>();
 const images = new AtlasPool(async index => {
-  let blob = compressed.get(index);
-  if (blob) compressed.delete(index);
-  else blob = await fetchPage(data.atlases[index], data.assetVersion);
-  compressed.set(index, blob);
-  while (compressed.size > 24) compressed.delete(compressed.keys().next().value!);
+  const blob = compressed.get(index);
+  if (!blob) throw new Error('Playback started before the complete download');
   return createImageBitmap(blob);
-}, 5);
+}, 12);
 // These small pages cover every angle/phase before input is enabled. Dragging
-// needs no fetch/decode; full-resolution pages remain in the five-page LRU.
+// needs no fetch/decode; full-resolution pages remain in the bounded HD pool.
 const dragImages: ImageBitmap[] = [];
+let downloaded = 0;
+function downloadedPage() {
+  downloaded++;
+  loading.style.setProperty('--loaded', `${downloaded / (data.atlases.length + previews.atlases.length) * 100}%`);
+  surface.dataset.loadedPages = String(downloaded);
+}
+async function loadPhotographs() {
+  let next = 0;
+  await Promise.all(Array.from({ length: 6 }, async () => {
+    while (next < data.atlases.length) {
+      const index = next++;
+      compressed.set(index, await fetchPage(data.atlases[index], data.assetVersion));
+      downloadedPage();
+    }
+  }));
+}
 async function loadPreviews() {
   let next = 0;
   await Promise.all([0, 1].map(async () => {
     while (next < previews.atlases.length) {
       const index = next++;
       dragImages[index] = await createImageBitmap(await fetchPage(previews.atlases[index], previews.assetVersion));
+      downloadedPage();
     }
   }));
 }
 context.imageSmoothingQuality = 'high';
-let switching = false, repick = false, ready = false;
+let ready = false;
 let playing = !matchMedia('(prefers-reduced-motion: reduce)').matches;
 let phase = 0, clock = 0, offset = 0;
 let block = select(target, phase);
 let renderedTarget = target;
 let recent: string[] = [];
+let upcoming: AngleBlock[] = [], planned: AngleBlock[] = [];
+let generation = 0, filling: number | undefined;
 let lastTime = 0, carry = 0;
 let drag: { id: number; x: number; start: number; moved: boolean } | undefined;
 function paint(image: ImageBitmap, tile: number, columns: number, width: number, height: number, row: AngleFrame, yaw: number, quality: string) {
@@ -90,6 +109,7 @@ function paint(image: ImageBitmap, tile: number, columns: number, width: number,
   canvas.dataset.decodedPages = String(images.size);
   canvas.dataset.compressedPages = String(compressed.size);
   canvas.dataset.previewPages = String(dragImages.length);
+  canvas.dataset.bufferedFrames = String(upcoming.length * data.holdFrames);
 }
 function drawPreview() {
   const slot = Math.round(phase * previews.phases) % previews.phases;
@@ -108,11 +128,29 @@ async function prepare(candidate: typeof block) {
   const pages = new Set(frames.slice(candidate.start, candidate.start + data.holdFrames).map(row => row.atlas));
   await Promise.all([...pages].map(index => images.load(index)));
 }
-function warmNext() {
-  if (drag?.moved) return;
-  const last = frames[block.start + data.holdFrames - 1];
-  const candidate = select(target, (phase + (data.holdFrames - offset) / 30) % 1, recent, last);
-  void prepare(candidate).catch(() => { /* Foreground decoding retries a failed prefetch. */ });
+function retainPages() {
+  images.retain([block, ...upcoming, ...planned].flatMap(candidate =>
+    frames.slice(candidate.start, candidate.start + data.holdFrames).map(row => row.atlas)));
+}
+function after(candidate: AngleBlock) { return frames[candidate.start + data.holdFrames - 1]; }
+function nextPhase(row: AngleFrame) { return (row.phase + 1 / 30) % 1; }
+/** Decode three future cuts while the current cut is still being displayed. */
+async function fillBuffer() {
+  const epoch = generation;
+  if (filling === epoch || renderedTarget !== target || drag?.moved) return;
+  filling = epoch;
+  try {
+    while (upcoming.length < 3 && epoch === generation) {
+      const last = after(upcoming[upcoming.length - 1] ?? block);
+      const history = [...upcoming].reverse().map(item => item.look ?? item.clip).concat(recent).slice(0, 4);
+      const candidate = select(target, nextPhase(last), history, last);
+      planned = [candidate]; retainPages();
+      await prepare(candidate);
+      if (epoch !== generation) return;
+      upcoming.push(candidate); planned = []; retainPages();
+    }
+  } catch { failed(); }
+  finally { if (filling === epoch) filling = undefined; }
 }
 function failed() {
   playing = false;
@@ -120,27 +158,32 @@ function failed() {
   surface.setAttribute('aria-busy', 'false');
   status.textContent = '프레임을 불러오지 못했어요. 새로고침해 주세요.';
 }
-async function pick() {
+/** Replace the direction only after its first four cuts have decoded. */
+async function startDirection() {
   if (drag?.moved) return;
-  if (switching) { repick = true; return; }
-  switching = true;
-  const requested = target;
-  const last = ready ? frames[block.start + Math.min(offset, data.holdFrames - 1)] : undefined;
-  const candidate = select(requested, phase, recent, last);
+  const epoch = ++generation, requested = target;
+  let last = ready ? frames[block.start + offset] : undefined;
+  let desiredPhase = phase;
+  let history = recent;
+  const sequence: AngleBlock[] = [];
+  upcoming = [];
+  for (let index = 0; index < 4; index++) {
+    const candidate = select(requested, desiredPhase, history, last);
+    sequence.push(candidate);
+    history = [candidate.look ?? candidate.clip, ...history].slice(0, 4);
+    last = after(candidate); desiredPhase = nextPhase(last);
+  }
+  planned = sequence; retainPages();
   try {
-    await prepare(candidate);
-    if (requested !== target || drag?.moved) { repick = true; return; }
-    block = candidate;
+    await Promise.all(sequence.map(prepare));
+    if (epoch !== generation || requested !== target || drag?.moved) return;
+    block = sequence[0]; upcoming = sequence.slice(1); planned = [];
     renderedTarget = requested;
     recent = [block.look ?? block.clip, ...recent].slice(0, 4);
-    offset = 0;
-    draw();
-    warmNext();
-  } catch { failed(); }
-  finally {
-    switching = false;
-    if (repick) { repick = false; void pick(); }
-  }
+    offset = 0; phase = frames[block.start].phase;
+    carry = 0; lastTime = 0; retainPages();
+    if (ready) draw();
+  } catch (error) { if (epoch === generation) throw error; }
 }
 function setAngle(value: number) {
   const next = Math.round(clamp(value));
@@ -149,9 +192,10 @@ function setAngle(value: number) {
   surface.setAttribute('aria-valuenow', String(target));
   surface.setAttribute('aria-valuetext', label(target));
   if (ready && changed) {
+    generation++; upcoming = []; planned = [];
     if (drag) drag.moved = true;
     draw();
-    if (!drag?.moved) void pick();
+    if (!drag?.moved) void startDirection().catch(failed);
   }
 }
 surface.addEventListener('pointerdown', event => {
@@ -171,7 +215,7 @@ function endDrag(event: PointerEvent) {
   drag = undefined;
   surface.dataset.dragging = 'false';
   persist();
-  if (moved) void pick();
+  if (moved) void startDirection().catch(failed);
 }
 surface.addEventListener('pointerup', endDrag);
 surface.addEventListener('pointercancel', endDrag);
@@ -194,16 +238,27 @@ window.addEventListener('blur', () => {
   const moved = drag?.moved;
   drag = undefined;
   surface.dataset.dragging = 'false';
-  if (moved) void pick();
+  if (moved) void startDirection().catch(failed);
 });
 document.addEventListener('visibilitychange', () => { lastTime = 0; carry = 0; });
 function tick(time: number) {
   if (ready && playing && !document.hidden) {
     carry += lastTime ? Math.min((time - lastTime) / 1000, 0.12) : 0;
     while (carry >= 1 / data.fps) {
-      carry -= 1 / data.fps; clock++; phase = (phase + 1 / 30) % 1;
-      offset = Math.min(offset + 1, data.holdFrames);
-      if (!drag?.moved && !switching && offset === data.holdFrames) void pick();
+      carry -= 1 / data.fps;
+      if (drag?.moved || renderedTarget !== target) {
+        phase = (phase + 1 / 30) % 1;
+      } else if (offset + 1 < data.holdFrames) {
+        offset++; phase = frames[block.start + offset].phase;
+      } else {
+        const next = upcoming.shift();
+        // Slow decoding never advances the clock behind a repeated still.
+        if (!next) { carry = 0; void fillBuffer(); break; }
+        block = next; offset = 0; phase = frames[block.start].phase;
+        recent = [block.look ?? block.clip, ...recent].slice(0, 4);
+        retainPages(); void fillBuffer();
+      }
+      clock++;
       draw();
     }
   }
@@ -212,11 +267,15 @@ function tick(time: number) {
 }
 async function load() {
   try {
-    await Promise.all([pick(), loadPreviews()]);
+    surface.dataset.playing = 'false';
+    surface.dataset.totalPages = String(data.atlases.length + previews.atlases.length);
+    await Promise.all([loadPhotographs(), loadPreviews()]);
+    await startDirection();
     if (!images.get(frames[block.start].atlas)) throw new Error('Initial frame decode failed');
     ready = true;
     draw();
     surface.setAttribute('aria-busy', 'false');
+    loading.hidden = true;
     surface.dataset.playing = String(playing);
     requestAnimationFrame(tick);
   } catch { failed(); }

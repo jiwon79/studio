@@ -89,6 +89,39 @@ test('avoid recent outfits when another outfit has a nearby gait in the same dir
   ];
   expect(chooseBlock(blocks,-45,0,['a','b']).clip).toBe('c');
 });
+test('an excellent phase match cannot immediately replay the same photographed stride', () => {
+  const blocks = [
+    { start: 0, yaw: 22, phase: 0, clip: 'looping-stride' },
+    { start: 3, yaw: 22, phase: .48, clip: 'other-outfit' },
+  ];
+  expect(chooseBlock(blocks, 22, 0, ['looping-stride']).clip).toBe('other-outfit');
+});
+test('blocks with a detector leg swap cannot drive the gait transition', () => {
+  const frames = [
+    {...f('swap', 10), gait: [.2,.7,.8,.7]},
+    {...f('swap', 11), gait: [.8,.7,.2,.7]},
+    {...f('swap', 12), gait: [.79,.7,.21,.7]},
+    {...f('clean', 20), gait: [.2,.7,.8,.7]},
+    {...f('clean', 21), gait: [.21,.7,.79,.7]},
+    {...f('clean', 22), gait: [.22,.7,.78,.7]},
+  ];
+  expect(buildBlocks(frames).map(block => block.clip)).toEqual(['clean']);
+});
+test('no direction immediately rewinds an outfit during several walking cycles', () => {
+  const blocks = buildBlocks(data.frames);
+  for (let yaw=-90; yaw<=90; yaw++) {
+    let recent: string[] = [], last: AngleFrame | undefined, phase = 0;
+    const candidates = directionCandidates(blocks, yaw);
+    for (let cut=0; cut<60; cut++) {
+      const next = chooseBlock(candidates, yaw, phase, recent, last?.gait, last?.gaitVelocity);
+      const look = next.look ?? next.clip;
+      expect(look, `immediate replay at ${yaw}`).not.toBe(recent[0]);
+      last = data.frames[next.start + 2];
+      phase = (last.phase + 1/30) % 1;
+      recent = [look, ...recent].slice(0,4);
+    }
+  }
+});
 test('each representative direction visits several compatible outfits during playback', () => {
   const blocks = buildBlocks(data.frames);
   for (const yaw of [-90,-75,-60,-38,-35,-30,-20,-15,-10,-5,0,15,30,45,60,75,90]) {
