@@ -1,7 +1,7 @@
 import data from './angles.json';
 import poses from './debug-poses.json';
 import './debug.css';
-import {createWalkState,clockPhase} from './reference-clock';
+import {clockPhase} from './reference-clock';
 import { ReferenceSequencer, type ReferenceCut } from './reference-sequencer';
 import referenceMatches from './reference-matches.json';
 import { AtlasPool } from './atlas-pool';
@@ -9,6 +9,8 @@ import { snapYaw } from './direction-step';
 import { audits, frameAudits, heldForTarget } from './review-policy';
 import { categories, frameKey, validateFeedback, type Feedback } from './review-model';
 import { inspectTransition, postureTransition, transitionWarning } from './posture-match';
+import {auditSequence,type MeasuredTransition} from './sequence-audit';
+import {MOTION_LIMITS} from './motion-quality';
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const angleInput = $<HTMLSelectElement>('angle'), scopeInput = $<HTMLSelectElement>('scope');
@@ -393,34 +395,33 @@ $('export').addEventListener('click',async()=> {
 window.addEventListener('focus',()=>void refreshFeedback());
 setInterval(()=>{ if (!document.hidden && !saving) void refreshFeedback(); },5000);
 $('scan').addEventListener('click',async()=> {
-  pause(); const button=$<HTMLButtonElement>('scan'); button.disabled=true;
-  const warnings=new Map<string,{target:number;from:number;to:number;lean:number;foot:number;score:number;swapped:boolean;previousSwapped:boolean;halfCycle:boolean}>();
+  pause();const button=$<HTMLButtonElement>('scan');button.disabled=true;
+  const list=$('scan-results');list.replaceChildren();let passing=0;
+  const table=element('table'),head=element('thead'),body=element('tbody');
+  head.innerHTML='<tr><th>각도</th><th>발 P95 / 최대 px</th><th>기울기 P95 / 최대 °</th><th>등장 프레임</th><th>결과</th></tr>';
+  table.append(head,body);list.append(table);
+  const warnings:({target:number}&MeasuredTransition)[]=[];
   try {
-    for(let yaw=-90;yaw<=90;yaw+=5) {
-      let state=createWalkState();
-      for(let index=0;index<120;index++) {
-        const cut=sequencer.plan(yaw,state);
-        if(state.last) {
-          const from=state.last.index;
-          const metrics=postureTransition(data.frames[from].posture,data.frames[cut.start].posture);
-          if(transitionWarning(metrics) || cut.relaxed) warnings.set(`${yaw}:${from}:${cut.start}`,{target:yaw,from,to:cut.start,lean:metrics.leanDelta,foot:metrics.footRms,score:(metrics.leanReliable?metrics.leanDelta/4:0)+metrics.footRms/32,swapped:cut.swapped,previousSwapped:state.last.swapped,halfCycle:cut.halfCycle});
-        }
-        state=cut.after;
-      }
-      $('scan-state').textContent=`${(yaw+90)/5+1} / 37 각도 점검 중 · 주의 전환 ${warnings.size}개`;
+    for(let yaw=-90;yaw<=90;yaw+=5){
+      const tr=element('tr');
+      try{
+        const report=auditSequence(sequencer,data.frames,yaw),q=report.quality;if(q.pass)passing++;
+        [signed(yaw),`${q.footP95.toFixed(1)} / ${q.footMax.toFixed(1)}`,`${q.leanP95.toFixed(1)} / ${q.leanMax.toFixed(1)}`,`${q.minRun}–${q.maxRun}`,q.pass?'통과':'미달'].forEach(value=>tr.append(element('td',value)));
+        tr.className=q.pass?'pass':'warning';
+        warnings.push(...report.transitions.filter(m=>m.footResidual>MOTION_LIMITS.footP95||m.leanResidual>MOTION_LIMITS.leanP95||m.torsoResidual>MOTION_LIMITS.torsoP95).map(m=>({target:yaw,...m})));
+      }catch(error){tr.append(element('td',signed(yaw)),element('td',error instanceof Error?error.message:'연결 실패'));tr.className='warning';}
+      body.append(tr);$('scan-state').textContent=`${(yaw+90)/5+1} / 37 각도 · ${passing}개 통과`;
       await new Promise(resolve=>setTimeout(resolve,0));
     }
-    const list=$('scan-results'); list.replaceChildren();
-    [...warnings.values()].sort((a,b)=>b.score-a.score).slice(0,30).forEach(row=> {
-      const link=element('button',`${signed(row.target)} · ${frameKey(data.frames[row.from])} → ${frameKey(data.frames[row.to])}\n몸통 차이 ${row.lean.toFixed(1)}° · 발 차이 ${row.foot.toFixed(1)}px`);
-      link.addEventListener('click',()=> {
-        pause(); walk=[]; target=row.target; angleInput.value=String(target);scopeInput.value='angle'; search.value='';ghost.checked=true;
-        void renderPhoto(row.to,row.from).then(()=>{manualSwap=row.swapped;previousSwap=row.previousSwapped;manualHalfCycle=row.halfCycle;renderMetadata();updateURL();}); updateRows();
-      }); list.append(link);
+    warnings.sort((a,b)=>b.footResidual-a.footResidual).slice(0,30).forEach(row=>{
+      const link=element('button',`${signed(row.target)} · ${frameKey(data.frames[row.from])} → ${frameKey(data.frames[row.to])}\n예상 걸음 대비 발 오차 ${row.footResidual.toFixed(1)}px · 기울기 오차 ${row.leanResidual.toFixed(1)}°`);
+      link.addEventListener('click',()=>{
+        pause();walk=[];target=row.target;angleInput.value=String(target);scopeInput.value='angle';search.value='';ghost.checked=true;
+        void renderPhoto(row.to,row.from).then(()=>{manualSwap=false;previousSwap=false;manualHalfCycle=false;renderMetadata();updateURL();});updateRows();
+      });list.append(link);
     });
-    $('scan-state').textContent=`37개 각도 점검 완료 · 주의 전환 ${warnings.size}개 중 차이가 큰 30개 표시. 사진을 눌러 직접 확인하세요.`;
-  } catch(error) { $('scan-state').textContent=`점검 중단 · ${error instanceof Error?error.message:'소스 연결 실패'}`; }
-  finally { button.disabled=false; }
+    $('scan-state').textContent=`${passing} / 37 각도 통과 · 각 300프레임(12초), 주기 경계와 인물 내부 전환 포함. 미달한 연결은 개선 대상이며, 점수 통과가 누끼·실제 방향 검수를 대신하지 않습니다.`;
+  }finally{button.disabled=false;}
 });
 if (!params.has('frame')) selected=candidates()[0]?.start ?? 0;
 if (Math.abs(data.frames[selected].yaw-target)>5) scopeInput.value='all';
