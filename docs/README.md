@@ -100,6 +100,9 @@ Concept는 다음 중 하나를 만족할 때 독립 문서로 둔다.
 
 ## Research
 
+- [`enrico-tartarotti-channel-research.md`](./research/enrico-tartarotti-channel-research.md) - Enrico Tartarotti 공개 영상 111편의 분류, 확인 범위와 조사 출처
+- [`enrico-tartarotti-carousel-candidates.md`](./research/enrico-tartarotti-carousel-candidates.md) - 익숙한 기능의 숨은 작동을 다룰 카드뉴스 후보 36개, 영상 구간과 추가 검증 항목
+- [`enrico-tartarotti-video-inventory.csv`](./research/enrico-tartarotti-video-inventory.csv) - 긴 영상 87편·쇼츠 24편의 URL, 게시일, 길이, 확인 수준과 요약
 - [`guseul-liquid-glass.md`](./research/guseul-liquid-glass.md) - liquid glass 레퍼런스와 외부 구현 조사
 
 ## External Records
@@ -109,6 +112,13 @@ Concept는 다음 중 하나를 만족할 때 독립 문서로 둔다.
 ### 내부 운영
 
 - [Instagram DM 답변 규칙](https://app.notion.com/p/3e7a89f7e31a815b8b60c3ead057bf0a) - 요청 유형별 문구, 메시지 분할, 대화별 승인 및 전송 확인 기준. 답변하거나 자동 답변 로직을 수정하기 전에 최신 내용을 확인한다.
+
+### 카드뉴스
+
+- [Menu Aim · 메뉴 뒤의 보이지 않는 삼각형](https://app.notion.com/p/405a89f7e31a81b59536fe23259e27f1) - 본편 12장 초안, 카드별 원고·피그마 링크·자료 출처와 표현 범위.
+- [카드뉴스 레퍼런스 · 제목과 카드별 텍스트](https://app.notion.com/p/403a89f7e31a81c8bf04d1c08f8f58de) - 피그마에 수집한 10편·168장의 제목, 카드별 본문, 캡션과 전개 메모. 제목·원고·표지를 만들거나 수정하기 전에 확인한다.
+- [Pull to Refresh · 당겨서 새로고침의 시작](https://app.notion.com/p/403a89f7e31a81d4a7fdd6b66ed26de5) - 카드별 원고, 표지 후보와 조사 출처.
+- [피그마 · 복붙 하나 만드는 데 783시간이라고?](https://app.notion.com/p/3fda89f7e31a81f69a86d76463a7e989) - 기존 복붙 편 원고와 제작 기록.
 
 ### 작품별 기록
 
