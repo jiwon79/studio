@@ -12,8 +12,8 @@ import { demoBaseline } from './body-demo';
 export function createCoatDemo() {
   const element = document.createElement('section'); element.id = 'coat-demo'; element.className = 'interactive-demo soft-demo';
   element.setAttribute('aria-labelledby', 'coat-demo-title');
-  element.innerHTML = `<div class="demo-heading"><h3 id="coat-demo-title">몸체 → 두께 → 가닥 순서로 쌓기</h3><p>버튼으로 다음 표현을 더하고, 그림을 끌어 돌려 보세요.</p></div>
-    <div class="coat-scene"></div><output class="coat-stage" aria-live="polite"></output><button type="button" class="soft-action"></button><p class="soft-key">작품의 실제 몸체·셸·리본 셰이더를 사용합니다.</p>`;
+  element.innerHTML = `<div class="demo-heading"><h3 id="coat-demo-title">몸체·셸·리본의 단계별 구성</h3><p>버튼으로 단계를 진행하고, 드래그로 시점을 바꾼다.</p></div>
+    <div class="coat-scene"></div><output class="coat-stage" aria-live="polite"></output><button type="button" class="soft-action"></button><p class="soft-key">작품의 실제 몸체·셸·리본 셰이더 사용</p>`;
   const host = element.querySelector<HTMLElement>('.coat-scene')!; let renderer: THREE.WebGLRenderer;
   try { renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); }
   catch { host.textContent = '털 데모를 보려면 WebGL을 지원하는 브라우저가 필요합니다.'; element.querySelector('button')!.remove(); return element; }
@@ -37,7 +37,7 @@ export function createCoatDemo() {
   }));
   const fur = new FurRenderer(geometry, directions, uniforms, rig, demoBaseline); fur.update(rig, 0, new TouchReaction(), positions.array as Float32Array); character.add(body, fur.group);
   let stage = 0;
-  const labels = ['① 몸체: 색과 기본 형태를 만듭니다.', '② 셸: 몸체 밖의 두께를 채웁니다.', '③ 리본: 외곽에 개별 가닥이 보입니다.'];
+  const labels = ['① 몸체: 기본 형상과 표면색', '② 셸 추가: 몸체 밖의 두께', '③ 리본 추가: 외곽의 개별 가닥'];
   const draw = () => renderer.render(scene, camera);
   const update = () => {
     fur.group.children.forEach(mesh => { mesh.visible = stage >= 1 && (mesh.renderOrder < FUR_RENDER_ORDER || stage >= 2); });

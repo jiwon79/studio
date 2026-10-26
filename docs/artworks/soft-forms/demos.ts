@@ -59,8 +59,8 @@ function point(ctx: CanvasRenderingContext2D, p: Point, radius = 3) {
 }
 
 export function createShellDemo(): HTMLElement {
-  const element = section('shell-demo', '01 / SHELL', '몸체 밖에 얇은 층을 겹치기',
-    '층을 고르고 안쪽·바깥쪽 배치 밀도를 바꿔 보세요.');
+  const element = section('shell-demo', '01 / SHELL', '셸의 단면과 배치 간격',
+    '선택한 층의 위치와 안쪽·바깥쪽 배치 밀도를 표시한다.');
   element.insertAdjacentHTML('beforeend', `<div class="demo-figure">
     <canvas role="img" aria-label="몸체 단면 위의 셸 13개. 선택한 층은 붉은 실선, 나머지 층은 점선으로 표시됩니다."></canvas>
     <p class="figure-caption">위쪽은 몸체 바깥 · 거리를 일정 배율로 확대 · 곡선은 설명용 표면</p>
@@ -107,7 +107,7 @@ export function createShellDemo(): HTMLElement {
     const index = number(element, 'shell-layer'), exponent = number(element, 'shell-exponent');
     setText(element, 'shell-layer-value', index < 4 ? '안쪽' : index < 9 ? '중간' : '바깥쪽');
     setText(element, 'shell-exponent-value', exponent === 1 ? '고르게' : exponent > 1 ? '안쪽' : '바깥쪽');
-    setText(element, 'shell-observation', exponent === 1 ? '층을 고르게 배치한 모습입니다.' : exponent > 1 ? '몸체 가까이에 층이 모여 있습니다. 안쪽의 두께를 촘촘히 채우는 배치입니다.' : '바깥쪽에 층이 모여 있습니다. 안쪽으로 갈수록 층 사이가 넓어집니다.');
+    setText(element, 'shell-observation', exponent === 1 ? '층 사이의 간격이 일정하다.' : exponent > 1 ? '안쪽 간격이 좁아져 몸체 가까이에 층이 집중된다.' : '바깥쪽 간격이 좁아져 외곽에 층이 집중된다.');
     paint();
   };
   element.addEventListener('input', update);
@@ -121,8 +121,8 @@ export function createShellDemo(): HTMLElement {
 }
 
 export function createRibbonDemo(): HTMLElement {
-  const element = section('ribbon-demo', '02 / RIBBON', '가느다란 띠로 한 가닥 만들기',
-    '굵기·휨·기울기를 바꾸며 가닥의 형태를 비교하세요.');
+  const element = section('ribbon-demo', '02 / RIBBON', '리본의 형상과 화면 투영',
+    '굵기·휨·기울기에 따른 가닥의 투영 결과를 표시한다.');
   element.insertAdjacentHTML('beforeend', `<div class="demo-figure">
     <canvas role="img" aria-label="화면을 향해 펼친 털 리본. 뿌리에서 끝으로 갈수록 좁아지는 모습입니다."></canvas>
     <p class="figure-caption">붉은 면은 가닥의 폭 · 파란 선은 가닥의 중심 · 설명을 위해 확대</p>
@@ -173,8 +173,8 @@ export function createRibbonDemo(): HTMLElement {
     setText(element, 'ribbon-bend-value', Math.abs(bend) < 0.1 ? '곧게' : bend > 0 ? '왼쪽으로' : '오른쪽으로');
     setText(element, 'ribbon-angle-value', angle < 30 ? '옆으로' : angle < 75 ? '비스듬히' : '카메라를 향해');
     setText(element, 'ribbon-observation', result.fallback
-      ? '가닥이 카메라를 똑바로 향하면 뿌리와 끝이 겹쳐 보여 길이가 사라집니다. 이런 가닥 사이의 빈 공간은 셸이 채워줍니다.'
-      : '가닥이 카메라를 향할수록 화면에서 보이는 길이는 짧아집니다. 하지만 폭은 화면 쪽으로 펼치므로 함께 줄어들지 않습니다.');
+      ? '가닥이 카메라를 향하면 뿌리와 끝이 겹쳐 투영 길이가 0에 가까워진다. 셸은 가닥 사이의 부피를 유지한다.'
+      : '가닥이 카메라를 향할수록 투영 길이는 짧아진다. 폭은 화면에서 펼쳐지므로 기울기에 따라 줄어들지 않는다.');
     paint();
   };
   element.addEventListener('input', update);

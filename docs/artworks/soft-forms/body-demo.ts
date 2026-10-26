@@ -8,8 +8,8 @@ export const demoBaseline = Float32Array.from(motionFrames[0].radii, (_, i) =>
 export function createBodyDemo() {
   const element = document.createElement('section'); element.id = 'body-demo'; element.className = 'interactive-demo soft-demo';
   element.setAttribute('aria-labelledby', 'body-demo-title');
-  element.innerHTML = `<div class="demo-heading"><h3 id="body-demo-title">기준점으로 몸체 움직이기</h3><p>점 하나를 잡아 옮겨 보세요. 주변 표면이 함께 따라옵니다.</p></div>
-    <canvas tabindex="0" role="img" aria-label="몸체의 중심과 둘레에 놓인 13개 기준점. 점을 드래그하거나 방향키로 선택한 점을 움직이세요."></canvas>
+  element.innerHTML = `<div class="demo-heading"><h3 id="body-demo-title">기준점 이동과 표면 변형</h3><p>기준점을 드래그하면 주변 표면의 변형이 표시된다.</p></div>
+    <canvas tabindex="0" role="img" aria-label="몸체의 중심과 둘레에 놓인 13개 기준점. 드래그 또는 방향키로 선택한 기준점을 이동한다."></canvas>
     <p class="soft-key">점선: 원래 외곽 · 파란 선: 움직인 외곽 · 붉은 점: 선택한 기준점</p>
     <button class="reset-button" type="button">원래 모양으로</button><output class="soft-readout" aria-live="polite"></output>`;
   const canvas = element.querySelector('canvas')!, ctx = canvas.getContext('2d')!, rig = new DeformationRig('star');
@@ -45,7 +45,7 @@ export function createBodyDemo() {
       ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.strokeStyle = '#235c9a66'; ctx.lineWidth = 1; ctx.stroke();
     }
     rig.definitions.forEach((_, i) => { const [x, y] = rig.controlPosition(i); point(x, y, i === selected ? '#b64e3c' : '#235c9a', i === selected ? 6 : 4); });
-    element.querySelector('output')!.textContent = `${rig.definitions[selected].name} 기준점 선택 · 가까운 표면은 많이, 먼 표면은 조금 움직입니다.`;
+    element.querySelector('output')!.textContent = `${rig.definitions[selected].name} 기준점 선택 · 기준점에 가까울수록 표면 이동량이 크다.`;
   };
   let drag: { id: number; x: number; y: number; dx: number; dy: number } | null = null;
   const local = (event: PointerEvent) => {

@@ -7,10 +7,10 @@ import { demoBaseline } from './body-demo';
 export function createBindingDemo() {
   const element = document.createElement('section'); element.id = 'binding-demo'; element.className = 'interactive-demo soft-demo';
   element.setAttribute('aria-labelledby', 'binding-demo-title');
-  element.innerHTML = `<div class="demo-heading"><h3 id="binding-demo-title">표면·뿌리·끝이 함께 반응하기</h3><p>누른 상태와 손을 놓은 뒤의 반동을 비교해 보세요.</p></div>
-    <canvas role="img" aria-label="몸체를 옆에서 자른 확대 그림. 파란 점은 털 뿌리, 붉은 점은 털끝입니다. 누르면 뿌리는 표면을 따라 들어가고 끝은 조금 덜 들어갑니다."></canvas>
+  element.innerHTML = `<div class="demo-heading"><h3 id="binding-demo-title">몸체·뿌리·끝의 접촉 반응</h3><p>누르기와 해제에 따른 이동량·반동을 표시한다.</p></div>
+    <canvas role="img" aria-label="몸체의 측면 단면. 파란 점은 털 뿌리, 붉은 점은 털끝이다. 누르면 뿌리는 표면을 따라 이동하고 끝은 더 적게 이동한다."></canvas>
     <p class="soft-key">몸체 단면을 확대 · 파란 점: 뿌리 · 붉은 점: 끝</p>
-    <button type="button" class="soft-action">누르기</button><output class="soft-readout" aria-live="polite">몸체와 털이 같은 접촉점에 반응합니다.</output>
+    <button type="button" class="soft-action">누르기</button><output class="soft-readout" aria-live="polite">몸체와 털은 같은 접촉 위치·법선을 사용한다.</output>
     <div class="binding-values"><span>뿌리 이동 <output data-root>0.0</output></span><span>끝 이동 <output data-tip>0.0</output></span></div>`;
   const canvas = element.querySelector('canvas')!, ctx = canvas.getContext('2d')!, button = element.querySelector('button')!;
   const rig = new DeformationRig('star'), directions = Float32Array.from(Array.from({ length: 41 }, (_, i) => { const x = (i - 20) / 20; return [x, 0, Math.sqrt(Math.max(0, 1 - x * x))]; }).flat());
@@ -56,7 +56,7 @@ export function createBindingDemo() {
     if (held) { reaction = new TouchReaction(); reaction.begin(contact, normal); }
     else reaction.end(performance.now());
     button.textContent = held ? '손 놓기' : '다시 누르기';
-    element.querySelector('.soft-readout')!.textContent = held ? '뿌리는 표면을 따라 들어가고, 끝은 그 이동의 72%를 따라갑니다.' : '손을 놓으면 눌림이 줄고 짧은 반동이 주변으로 퍼집니다.';
+    element.querySelector('.soft-readout')!.textContent = held ? '뿌리는 표면을 따라 이동하고, 끝에는 그 이동량의 72%를 적용한다.' : '접촉 해제 후 눌림이 감소하고 반동이 주변으로 전파된다.';
     if (reduced.matches) { for (let i = 0; i < (held ? 72 : 120); i++) reaction.advance(1 / 60); draw(); }
     else frame = requestAnimationFrame(animate);
   });

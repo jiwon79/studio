@@ -14,11 +14,11 @@ export function createTouchDemo(): HTMLElement {
   element.id = 'touch-demo'; element.className = 'interactive-demo';
   element.setAttribute('aria-labelledby', 'touch-demo-title');
   element.innerHTML = `<div class="demo-heading"><p class="eyebrow">TOUCH · 직접 조작하기</p>
-    <h3 id="touch-demo-title">누른 화면에서 몸체까지 광선 보내기</h3>
-    <p>왼쪽을 누르면 오른쪽에서 광선과 접촉점을 볼 수 있습니다.</p></div>
+    <h3 id="touch-demo-title">화면 좌표와 3D 접촉점</h3>
+    <p>왼쪽 입력 위치에 대응하는 광선·접촉점을 오른쪽에 표시한다.</p></div>
     <div class="touch-views">
-      <div class="demo-figure"><h4>① 화면을 누르기</h4><div class="touch-front"></div><p class="figure-caption">손가락·마우스로 누르거나 끌어 보세요.</p></div>
-      <div class="demo-figure"><h4>② 옆에서 경로 보기</h4><div class="touch-side"></div><p class="figure-caption">네모는 화면 · 파란 선은 광선 · 붉은 점은 접촉점</p></div>
+      <div class="demo-figure"><h4>① 정면: 입력 위치</h4><div class="touch-front"></div><p class="figure-caption">누르기·드래그로 입력 위치 변경</p></div>
+      <div class="demo-figure"><h4>② 측면: 광선 경로</h4><div class="touch-side"></div><p class="figure-caption">네모: 화면 · 파란 선: 광선 · 붉은 점: 접촉점</p></div>
     </div>
     <div class="touch-presets"><button type="button" data-point="center">가운데 누르기</button><button type="button" data-point="edge">옆면 누르기</button><button type="button" data-point="miss">몸체 밖 누르기</button></div>
     <p class="demo-note touch-result" aria-live="polite"></p>
@@ -79,8 +79,8 @@ export function createTouchDemo(): HTMLElement {
     contact.visible = Boolean(result.hit);
     if (result.hit) contact.position.copy(result.hit.point);
     element.querySelector('.touch-result')!.textContent = result.hit
-      ? '광선이 몸체의 앞쪽 표면에 닿았습니다. 붉은 점이 눌림 반응을 시작할 3D 위치입니다.'
-      : '광선이 몸체와 만나지 않았습니다. 화면을 눌렀지만 몸체를 누른 것으로 처리하지 않습니다.';
+      ? '교점 있음 · 붉은 점의 3D 위치에서 접촉 반응을 시작한다.'
+      : '교점 없음 · 몸체 밖 입력에는 접촉 반응을 적용하지 않는다.';
     render();
   };
   new ResizeObserver(() => {

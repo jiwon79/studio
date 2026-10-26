@@ -16,9 +16,9 @@ test('the architecture renders its diagram and embeds demos beneath the relevant
   expect(html).toContain('<!-- interactive-demo: touch -->');
   for (const name of ['body', 'coat', 'binding']) expect(html).toContain(`<!-- interactive-demo: ${name} -->`);
   expect(html).not.toContain('**');
-  expect(html.indexOf('interactive-demo: touch')).toBeLessThan(html.indexOf('2. 몸체 전체'));
+  expect(html.indexOf('interactive-demo: touch')).toBeLessThan(html.indexOf('2. 몸체 형상과 변형'));
   expect(html).not.toContain('\\[');
-  expect(html.indexOf('interactive-demo: shells')).toBeLessThan(html.indexOf('리본: 외곽에서 한 가닥이 보이게 하기'));
+  expect(html.indexOf('interactive-demo: shells')).toBeLessThan(html.indexOf('리본에 의한 개별 가닥 표현'));
 });
 
 test('screen picks hit the first visible mesh surface and miss empty space', () => {
