@@ -14,6 +14,8 @@ test('the architecture renders its diagram and embeds demos beneath the relevant
   expect(html).toContain('<!-- interactive-demo: shells -->');
   expect(html).toContain('<!-- interactive-demo: ribbons -->');
   expect(html).toContain('<!-- interactive-demo: touch -->');
+  for (const name of ['body', 'coat', 'binding']) expect(html).toContain(`<!-- interactive-demo: ${name} -->`);
+  expect(html).not.toContain('**');
   expect(html.indexOf('interactive-demo: touch')).toBeLessThan(html.indexOf('2. 몸체 전체'));
   expect(html).not.toContain('\\[');
   expect(html.indexOf('interactive-demo: shells')).toBeLessThan(html.indexOf('리본: 외곽에서 한 가닥이 보이게 하기'));
