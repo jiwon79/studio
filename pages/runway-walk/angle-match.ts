@@ -1,5 +1,6 @@
+import { blockHeld } from './review-policy';
 export type AngleFrame = { clip: string; look?: string; source: string; sourceFrame: number; yaw: number; phase: number; atlas: number; tile: number; gait?: readonly number[]; gaitVelocity?: readonly number[] };
-export type AngleBlock = { start: number; yaw: number; minYaw?: number; maxYaw?: number; phase: number; clip: string; look?: string; gait?: readonly number[]; gaitVelocity?: readonly number[] };
+export type AngleBlock = { start: number; yaw: number; minYaw?: number; maxYaw?: number; phase: number; clip: string; look?: string; sourceFrame?: number; lastSourceFrame?: number; gait?: readonly number[]; gaitVelocity?: readonly number[] };
 export function buildBlocks(frames: readonly AngleFrame[], hold = 3): AngleBlock[] {
   return frames.flatMap((f, start) => {
     for (let offset = 1; offset < hold; offset++) {
@@ -10,7 +11,7 @@ export function buildBlocks(frames: readonly AngleFrame[], hold = 3): AngleBlock
       if (next.gait?.some((value, index) => Math.abs(value - (previous.gait?.[index] ?? value)) > .12)) return [];
     }
     const yaws = frames.slice(start, start + hold).map(frame => frame.yaw);
-    return [{ start, yaw: yaws.reduce((sum,value)=>sum+value,0)/hold, minYaw: Math.min(...yaws), maxYaw: Math.max(...yaws), phase: f.phase, clip: f.clip, look: f.look ?? f.clip, gait: f.gait, gaitVelocity: f.gaitVelocity }];
+    return [{ start, yaw: yaws.reduce((sum,value)=>sum+value,0)/hold, minYaw: Math.min(...yaws), maxYaw: Math.max(...yaws), phase: f.phase, clip: f.clip, look: f.look ?? f.clip, sourceFrame: f.sourceFrame, lastSourceFrame: f.sourceFrame+hold-1, gait: f.gait, gaitVelocity: f.gaitVelocity }];
   });
 }
 export function phaseDistance(a: number, b: number) {
@@ -26,6 +27,7 @@ function swapLegs(values?: readonly number[]) {
   return [values[2],values[3],values[0],values[1],values[6],values[7],values[4],values[5]];
 }
 export function directionCandidates(blocks: readonly AngleBlock[], yaw: number) {
+  blocks = blocks.filter(b => !blockHeld(b.clip,b.sourceFrame ?? -1,b.lastSourceFrame ?? -1,yaw));
   if (!blocks.length) return [];
   const error = (block: AngleBlock) => Math.max(Math.abs((block.minYaw ?? block.yaw) - yaw), Math.abs((block.maxYaw ?? block.yaw) - yaw));
   const nearest = Math.min(...blocks.map(error));

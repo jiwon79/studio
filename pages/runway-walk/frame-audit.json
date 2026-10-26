@@ -1,0 +1,47 @@
+[
+  {
+    "id": "review-hermes25-right-477",
+    "clip": "hermes25-right-477",
+    "fromFrame": 11930,
+    "toFrame": 11952,
+    "targets": [
+      5,
+      10,
+      15
+    ],
+    "category": "angle",
+    "note": "검은 반소매 착장. 몸통은 정면에 가깝지만 발이 화면 오른쪽으로 크게 뻗어, 정면 보행 컷과 연결할 때 진행 방향이 튑니다. 원본과 누끼를 함께 확인했습니다. 정확한 각도 재분류 전에는 얕은 오른쪽 재생에서 보류합니다.",
+    "action": "hold",
+    "reviewedAt": "2026-10-26"
+  },
+  {
+    "id": "review-hermes25-right-504",
+    "clip": "hermes25-right-504",
+    "fromFrame": 12620,
+    "toFrame": 12639,
+    "targets": [
+      5,
+      10,
+      15
+    ],
+    "category": "angle",
+    "note": "어두운 열린 셔츠 착장. +10도에 섞이는 구간에서도 양발의 진행 방향이 오른쪽으로 크게 열려 있습니다. 등록 각도와 시각적 보행 방향의 불일치를 확인해 얕은 오른쪽 재생에서 보류합니다.",
+    "action": "hold",
+    "reviewedAt": "2026-10-26"
+  },
+  {
+    "id": "review-hermes24-right-285",
+    "clip": "hermes24-right-285",
+    "fromFrame": 7115,
+    "toFrame": 7199,
+    "targets": [
+      5,
+      10,
+      15
+    ],
+    "category": "scale",
+    "note": "회색 셔츠 / 검은 바지 착장. 원본부터 몸이 화면 오른쪽으로 기울어 있고 발이 겹치는 턴 구간입니다. 수직으로 걷는 다른 소스와 연결할 때 기울기가 갑자기 변합니다. 얕은 오른쪽 재생에서 보류합니다.",
+    "action": "hold",
+    "reviewedAt": "2026-10-26"
+  }
+]

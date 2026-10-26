@@ -9,9 +9,14 @@ from PIL import Image
 
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--output',type=Path,required=True)
+parser.add_argument('--reviews',type=Path,default=Path(__file__).resolve().parents[2]/'pages/runway-walk/frame-audit.json')
 args=parser.parse_args()
 manifest=json.loads((args.output/'angles.json').read_text())
 frames=manifest['frames'];hold=manifest['holdFrames'];phases=8;step=5
+audits=json.loads(args.reviews.read_text())
+def held(block,yaw):
+    return any(a['action']=='hold' and yaw in a['targets'] and a['clip']==block[0]['clip'] and
+               a['fromFrame']<=block[-1]['sourceFrame'] and a['toFrame']>=block[0]['sourceFrame'] for a in audits)
 blocks=[]
 for i,f in enumerate(frames):
     block=frames[i:i+hold]
@@ -20,7 +25,7 @@ for i,f in enumerate(frames):
         blocks.append((i,min(r['yaw'] for r in block),max(r['yaw'] for r in block),sum(r['yaw'] for r in block)/hold))
 lookup=[];selected=[];indices={}
 for yaw in range(manifest['yawRange'][0],manifest['yawRange'][1]+1,step):
-    candidates=[b for b in blocks if max(abs(b[1]-yaw),abs(b[2]-yaw))<=5]
+    candidates=[b for b in blocks if max(abs(b[1]-yaw),abs(b[2]-yaw))<=5 and not held(frames[b[0]:b[0]+hold],yaw)]
     if not candidates:raise ValueError(f'No reviewed drag frame for {yaw}')
     direction=[]
     for phase in range(phases):
