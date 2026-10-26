@@ -4,11 +4,12 @@ import poses from './debug-poses.json';
 import matches from './reference-matches.json';
 import { referencePose, referenceFeatures, legFeatures, REFERENCE_VERSION } from './gait-reference';
 import { ReferenceSequencer } from './reference-sequencer';
-import { createWalkState, WalkCoverageError } from './walk-sequencer';
+import {WalkCoverageError} from './walk-sequencer';
+import {createWalkState,CYCLE_FRAMES} from './reference-clock';
 const planner = new ReferenceSequencer(data.frames);
 const key = (i: number) => `${data.frames[i].source}:${data.frames[i].sourceFrame}`;
 const swap = (f: number[]) => [...f.slice(2, 4), ...f.slice(0, 2), ...f.slice(6, 8), ...f.slice(4, 6), ...f.slice(10, 12), ...f.slice(8, 10), ...f.slice(14, 16), ...f.slice(12, 14)];
-test('the 3D cycle preserves anatomical legs, alternates support and keeps stance soles on the ground', () => {
+test('the imported cycle preserves anatomical legs and its original heel-to-toe contacts', () => {
     for (let i = 0; i < 120; i++) {
         const phase = i / 120, p = referencePose(phase), opposite = referencePose(phase + .5);
         expect(p.leftSupport || p.rightSupport).toBe(true);
@@ -17,12 +18,10 @@ test('the 3D cycle preserves anatomical legs, alternates support and keeps stanc
         for (const j of [29, 30, 31, 32])
             expect(p.points[j][1]).toBeGreaterThanOrEqual(-1e-8);
         if (p.leftSupport) {
-            expect(p.points[29][1]).toBe(0);
-            expect(p.points[31][1]).toBe(0);
+            expect(Math.min(p.points[29][1],p.points[31][1])).toBeLessThan(.04);
         }
         if (p.rightSupport) {
-            expect(p.points[30][1]).toBe(0);
-            expect(p.points[32][1]).toBe(0);
+            expect(Math.min(p.points[30][1],p.points[32][1])).toBeLessThan(.04);
         }
         expect(p.points[27][0]).toBeGreaterThan(p.points[28][0]);
     }
@@ -49,7 +48,7 @@ for (let yaw = -90; yaw <= 90; yaw += 5)
         let state = createWalkState();
         const used = new Map<string, number>();
         let count = 0;
-        while (state.tick < 1800) {
+        while (state.tick < Math.ceil(CYCLE_FRAMES*60)) {
             const cut = planner.plan(yaw, state);
             expect(cut.swapped).toBe(false);
             expect(cut.halfCycle).toBe(false);
@@ -63,7 +62,7 @@ for (let yaw = -90; yaw <= 90; yaw += 5)
                 expect(frame.sourceFrame).toBe(data.frames[cut.start].sourceFrame + i);
                 const last = used.get(key(index));
                 if (last !== undefined)
-                    expect(tick - last).toBeGreaterThanOrEqual(30);
+                    expect(tick - last).toBeGreaterThanOrEqual(CYCLE_FRAMES);
                 used.set(key(index), tick);
             }
             expect(cut.after.tick).toBe(state.tick + cut.count);
@@ -71,7 +70,7 @@ for (let yaw = -90; yaw <= 90; yaw += 5)
             state = cut.after;
             count++;
         }
-        expect(count).toBeGreaterThanOrEqual(600);
+        expect(count).toBeGreaterThanOrEqual(Math.ceil(CYCLE_FRAMES*60/3));
     }, 20000);
 test('discarded future reference cuts never enter displayed-photo history', () => {
     const cut = planner.plan(10, createWalkState()), shown = planner.afterFrames(cut, 1);

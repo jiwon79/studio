@@ -3,7 +3,8 @@ import previews from './drag.json';
 import { AtlasPool } from './atlas-pool';
 import { ANGLE_STEP, snapYaw } from './direction-step';
 import type { AngleFrame } from './angle-match';
-import { WalkCoverageError, clockPhase, createWalkState, rebaseWalkState } from './walk-sequencer';
+import {WalkCoverageError,rebaseWalkState} from './walk-sequencer';
+import {clockPhase,createWalkState} from './reference-clock';
 import { ReferenceSequencer, type ReferenceCut } from './reference-sequencer';
 import referenceMatches from './reference-matches.json';
 

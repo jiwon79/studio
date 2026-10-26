@@ -1,9 +1,11 @@
 /** Fit each filmed clip to one advancing, anatomical 3D gait. Never swap feet. */
 import {createServer} from 'vite';import fs from 'node:fs';import crypto from 'node:crypto';import path from 'node:path';
 const directory=path.resolve(process.argv[2]??'pages/runway-walk');
+const motion=JSON.parse(fs.readFileSync(path.join(directory,'reference-motion.json')));
 const server=await createServer({configFile:false,optimizeDeps:{noDiscovery:true},server:{middlewareMode:true}});
 try {
- const {referenceFeatures,legFeatures,legError,REFERENCE_JOINTS,REFERENCE_VERSION,suspectedFootRelabel}=await server.ssrLoadModule('/pages/runway-walk/gait-reference.ts');
+ const {referenceFeatures,legFeatures,legError,REFERENCE_JOINTS,REFERENCE_VERSION,REFERENCE_MODEL_HASH,REFERENCE_DURATION,suspectedFootRelabel}=await server.ssrLoadModule('/pages/runway-walk/gait-reference.ts');
+ if(motion.modelHash!==REFERENCE_MODEL_HASH||motion.duration!==REFERENCE_DURATION)throw Error('Install the same imported reference model before fitting another output directory');
  const data=JSON.parse(fs.readFileSync(path.join(directory,'angles.json')));const poses=JSON.parse(fs.readFileSync(path.join(directory,'debug-poses.json')));
  const lookup=new Map(poses.frames.map(p=>[p.key,p.points]));const bins=120;
  const rows=data.frames.map(frame=>{
@@ -34,7 +36,7 @@ try {
  }
  if(!Array.from(frames).every(row=>row&&Number.isFinite(row.error)&&Number.isFinite(row.phase)))throw Error('Incomplete reference export');
  const digest=crypto.createHash('sha256').update(JSON.stringify({frames,version:REFERENCE_VERSION})).digest('hex').slice(0,12);
- const output={version:REFERENCE_VERSION,assetVersion:data.assetVersion,matchVersion:digest,phaseConvention:'0 left heel strike, 0.5 right heel strike; anatomical identity fixed',features:'hip-relative 2D knees ankles heels toes; one time-linear fit per source clip',frames,clips};
+ const output={version:REFERENCE_VERSION,referenceModelHash:motion.modelHash,referenceDuration:motion.duration,assetVersion:data.assetVersion,matchVersion:digest,phaseConvention:'0 imported Walk_Formal_Loop start, 0.5 opposite contact; anatomical identity fixed',features:'hip-relative 2D knees ankles heels toes; one time-linear fit per source clip',frames,clips};
  fs.writeFileSync(path.join(directory,'reference-matches.json'),JSON.stringify(output)+'\n');
  console.log('Fitted',frames.length,'photos /',clips.length,'source clips',digest);
  console.log('Worst clip fits',clips.sort((a,b)=>b.cost-a.cost).slice(0,8));

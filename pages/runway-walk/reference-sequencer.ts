@@ -1,8 +1,10 @@
 import { buildBlocks, directionCandidates, type AngleBlock, type AngleFrame } from './angle-match';
 import matches from './reference-matches.json';
+import motion from './reference-motion.json';
 import { postureTransition } from './posture-match';
-import { clockPhase, createWalkState, WalkCoverageError, type WalkState } from './walk-sequencer';
-import { legError, referenceFeatures } from './gait-reference';
+import {WalkCoverageError,type WalkState} from './walk-sequencer';
+import {clockPhase,createWalkState,CYCLE_FRAMES} from './reference-clock';
+import { legError, referenceFeatures, referencePose } from './gait-reference';
 export type ReferenceCut = AngleBlock & {
     count: number;
     before: WalkState;
@@ -32,6 +34,7 @@ export class ReferenceSequencer {
     private targets = new Map<string, number[]>();
     readonly blocks: AngleBlock[];
     constructor(readonly frames: readonly AngleFrame[], readonly hold = 3, readonly fitted: readonly Match[] = matches.frames) {
+        if(fitted===matches.frames&&(matches.referenceModelHash!==motion.modelHash||matches.referenceDuration!==motion.duration))throw new Error('Photograph fits are for a different reference animation');
         if (frames.length !== fitted.length)
             throw new Error('Reference poses do not match the photograph library');
         this.blocks = buildBlocks(frames, hold);
@@ -63,24 +66,24 @@ export class ReferenceSequencer {
         const direct = legError(source.features, target, source.confidence), opposite = legError(exchange(source.features), target, source.confidence.map((_, i) => source.confidence[i ^ 1]));
         const separation = Math.hypot(target[4] - target[6], target[5] - target[7]);
         const oppositeFits = separation > .10 && direct > opposite + .025 && direct > opposite * 1.15;
-        const phase = clockPhase(tick, origin), leftSupport = phase < .6, rightSupport = (phase + .5) % 1 < .6;
+        const phase = clockPhase(tick, origin), {leftSupport,rightSupport} = referencePose(phase);
         const supportConflict = source.stance === 'left' && !leftSupport || source.stance === 'right' && !rightSupport;
         return { direct, opposite, oppositeFits, supportConflict };
     }
-    seed(index: number, tick = 0): WalkState { const phase = this.fitted[index].phase; return { ...createWalkState(phase + 1 / 30, tick), last: { index, swapped: false, halfCycle: false }, used: [{ key: key(this.frames[index]), tick: tick - 1 }], cuts: [{ start: index, look: this.frames[index].look ?? this.frames[index].clip, tick: tick - 1 }] }; }
+    seed(index: number, tick = 0): WalkState { const phase = this.fitted[index].phase; return { ...createWalkState(phase + 1 / CYCLE_FRAMES, tick), last: { index, swapped: false, halfCycle: false }, used: [{ key: key(this.frames[index]), tick: tick - 1 }], cuts: [{ start: index, look: this.frames[index].look ?? this.frames[index].clip, tick: tick - 1 }] }; }
     afterFrames(cut: ReferenceCut, count = cut.count): WalkState {
         count = Math.max(0, Math.min(cut.count, count));
         if (!count)
             return cut.before;
         const tick = cut.before.tick, rows = this.frames.slice(cut.start, cut.start + count);
-        return { ...cut.before, tick: tick + count, observedEnd: cut.before.origin + (tick + count - 1) / 30, last: { index: cut.start + count - 1, swapped: false, halfCycle: false }, used: cut.before.used.filter(r => tick - r.tick < 120).concat(rows.map((row, i) => ({ key: key(row), tick: tick + i }))), cuts: cut.before.cuts.filter(r => tick - r.tick < 120).concat({ start: cut.start, look: cut.look ?? cut.clip, tick }) };
+        return { ...cut.before, tick: tick + count, observedEnd: cut.before.origin + (tick + count - 1) / CYCLE_FRAMES, last: { index: cut.start + count - 1, swapped: false, halfCycle: false }, used: cut.before.used.filter(r => tick - r.tick < CYCLE_FRAMES*4).concat(rows.map((row, i) => ({ key: key(row), tick: tick + i }))), cuts: cut.before.cuts.filter(r => tick - r.tick < CYCLE_FRAMES*4).concat({ start: cut.start, look: cut.look ?? cut.clip, tick }) };
     }
-    plan(yaw: number, state: WalkState): ReferenceCut {
+    plan(yaw: number, state: WalkState, lookahead = 5): ReferenceCut {
         for (let count = this.hold; count >= 1; count--) {
             const used = new Map(state.used.map(r => [r.key, r.tick])), last = state.last ? this.frames[state.last.index] : undefined;
             const options = this.candidates(yaw, count).flatMap(block => {
                 const first = this.frames[block.start], look = block.look ?? block.clip;
-                if (this.frames.slice(block.start, block.start + count).some((f, i) => state.tick + i - (used.get(key(f)) ?? -1000) < 30))
+                if (this.frames.slice(block.start, block.start + count).some((f, i) => state.tick + i - (used.get(key(f)) ?? -1000) < CYCLE_FRAMES))
                     return [];
                 const continuation = !!last && first.clip === last.clip && first.sourceFrame === last.sourceFrame + 1;
                 if (state.cuts[state.cuts.length - 1]?.look === look && !continuation)
@@ -112,10 +115,16 @@ export class ReferenceSequencer {
                 continue;
             const safe = options.filter(o => !o.transition || ((!o.transition.leanReliable || o.transition.leanDelta <= 4) && (!o.transition.usableSoles || o.transition.footRms <= 32)));
             const pool = safe.length ? safe : options;
-            const best = pool.reduce((a, b) => a.cost < b.cost ? a : b);
-            const cut: ReferenceCut = { ...best.block, count, before: state, after: state, swapped: false, halfCycle: false, phaseError: best.phaseError, phaseGap: 1 / 30, relaxed: false, sourceContinuation: best.continuation, referenceError: best.direct, oppositeError: best.opposite, identityRejected: false };
-            cut.after = this.afterFrames(cut);
-            return cut;
+            // A locally closest three-frame run can consume the only photo
+            // needed just afterwards. Reserve a viable short future instead of
+            // reaching a dead end and repeating or reversing the same stride.
+            const ranked=[...pool].sort((a,b)=>a.cost-b.cost);
+            for(const best of ranked){
+                const cut: ReferenceCut = { ...best.block, count, before: state, after: state, swapped: false, halfCycle: false, phaseError: best.phaseError, phaseGap: 1 / CYCLE_FRAMES, relaxed: false, sourceContinuation: best.continuation, referenceError: best.direct, oppositeError: best.opposite, identityRejected: false };
+                cut.after = this.afterFrames(cut);
+                if(lookahead){try{this.plan(yaw,cut.after,lookahead-1);}catch(error){if(error instanceof WalkCoverageError)continue;throw error;}}
+                return cut;
+            }
         }
         throw new WalkCoverageError(`No anatomically compatible photograph for ${yaw}° at phase ${clockPhase(state.tick, state.origin).toFixed(2)}`);
     }

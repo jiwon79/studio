@@ -1,7 +1,7 @@
 import data from './angles.json';
 import poses from './debug-poses.json';
 import './debug.css';
-import { createWalkState, clockPhase } from './walk-sequencer';
+import {createWalkState,clockPhase} from './reference-clock';
 import { ReferenceSequencer, type ReferenceCut } from './reference-sequencer';
 import referenceMatches from './reference-matches.json';
 import { AtlasPool } from './atlas-pool';
@@ -148,9 +148,9 @@ function renderMetadata() {
   state.className = heldForTarget(frame,target)||referenceMatches.frames[selected].uncertain?'held':'';
   const metadata = $('metadata'); metadata.replaceChildren();
   const compared=comparisonIndex();
-  const values = { '사진 ID':frameKey(frame), '착장':frame.clip, '재생 각도':signed(target), '각도 차이':`${Math.abs(frame.yaw-target).toFixed(1)}°`, '몸통 기울기':signed(frame.posture.lean,1), '전신축 기울기':signed(frame.posture.axis,1), '보행 위상':frame.phase.toFixed(3), '관절':joint===null?'선택 안 함':`${joint} ${poses.names[joint]}`, '이전 사진':compared===undefined?'—':frameKey(data.frames[compared]) };
+  const values = { '사진 ID':frameKey(frame), '착장':frame.clip, '재생 각도':signed(target), '각도 차이':`${Math.abs(frame.yaw-target).toFixed(1)}°`, '몸통 기울기':signed(frame.posture.lean,1), '전신축 기울기':signed(frame.posture.axis,1), '보행 위상':referenceMatches.frames[selected].phase.toFixed(3), '관절':joint===null?'선택 안 함':`${joint} ${poses.names[joint]}`, '이전 사진':compared===undefined?'—':frameKey(data.frames[compared]) };
   const info=currentInfo();
-  if(info) Object.assign(values,{'연속 보행 시계':info.phase.toFixed(3),'대응 보행 위상':referenceMatches.frames[selected].phase.toFixed(3),'3D 맞춤 오차':info.cut?info.cut.referenceError.toFixed(3):'시작 사진','발 대응':'왼발과 오른발 고정','구간':info.cut?.sourceContinuation?'같은 원본의 다음 구간':`${info.cut?.count??1}프레임 교체`});
+  if(info) Object.assign(values,{'연속 보행 시계':info.phase.toFixed(3),'3D 맞춤 오차':info.cut?info.cut.referenceError.toFixed(3):'시작 사진','발 대응':'왼발과 오른발 고정','구간':info.cut?.sourceContinuation?'같은 원본의 다음 구간':`${info.cut?.count??1}프레임 교체`});
   Object.entries(values).forEach(([key,value]) => metadata.append(element('dt',key),element('dd',value)));
   renderComparison();
   $('feedback-photo').textContent = `저장 대상: ${frameKey(frame)} · ${signed(target)}`;
