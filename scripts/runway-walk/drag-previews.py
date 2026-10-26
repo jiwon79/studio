@@ -3,39 +3,29 @@
 Only empty transparent margins are trimmed. Visible pixels are copied from the
 published HD pages without resizing and saved as lossless RGBA WebP.
 """
-import argparse, functools, hashlib, json
+import argparse, functools, hashlib, json, subprocess, tempfile
 from pathlib import Path
 from PIL import Image
 
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--output',type=Path,required=True)
-parser.add_argument('--reviews',type=Path,default=Path(__file__).resolve().parents[2]/'pages/runway-walk/frame-audit.json')
 args=parser.parse_args()
 manifest=json.loads((args.output/'angles.json').read_text())
-frames=manifest['frames'];hold=manifest['holdFrames'];phases=8;step=5
-audits=json.loads(args.reviews.read_text())
-def held(block,yaw):
-    return any(a['action']=='hold' and yaw in a['targets'] and a['clip']==block[0]['clip'] and
-               a['fromFrame']<=block[-1]['sourceFrame'] and a['toFrame']>=block[0]['sourceFrame'] for a in audits)
-blocks=[]
-for i,f in enumerate(frames):
-    block=frames[i:i+hold]
-    stable=all(max(abs(a-b) for a,b in zip(before['gait'],after['gait']))<=.12 for before,after in zip(block,block[1:]))
-    if stable and len(block)==hold and all(r['clip']==f['clip'] and r['sourceFrame']==f['sourceFrame']+j for j,r in enumerate(block)):
-        blocks.append((i,min(r['yaw'] for r in block),max(r['yaw'] for r in block),sum(r['yaw'] for r in block)/hold))
-lookup=[];selected=[];indices={}
-for yaw in range(manifest['yawRange'][0],manifest['yawRange'][1]+1,step):
-    candidates=[b for b in blocks if max(abs(b[1]-yaw),abs(b[2]-yaw))<=5 and not held(frames[b[0]:b[0]+hold],yaw)]
-    if not candidates:raise ValueError(f'No reviewed drag frame for {yaw}')
-    direction=[]
-    for phase in range(phases):
-        def score(b):
-            delta=abs(frames[b[0]]['phase']-phase/phases)%1
-            return min(delta,1-delta)*2+abs(b[3]-yaw)/90
-        index=min(candidates,key=score)[0]
+frames=manifest['frames']
+# Use the same anatomical 3D selector as HD playback. Never select an opposite
+# foot just because its screen position is closer, including while dragging.
+with tempfile.TemporaryDirectory(prefix='runway-reference-drag-') as temporary:
+    selection_path=Path(temporary)/'selection.json'
+    subprocess.run(['node',str(Path(__file__).with_name('select-reference-drag.mjs')),str(args.output),str(selection_path)],check=True)
+    selection=json.loads(selection_path.read_text())
+assert selection['sourceAssetVersion']==manifest['assetVersion']
+phases=selection['phases'];step=selection['step'];lookup=[];selected=[];indices={}
+for direction in selection['frames']:
+    slots=[]
+    for index in direction:
         if index not in indices:indices[index]=len(selected);selected.append(index)
-        direction.append(indices[index])
-    lookup.append(direction)
+        slots.append(indices[index])
+    lookup.append(slots)
 
 media=args.output/'media/angles';media.mkdir(parents=True,exist_ok=True)
 @functools.lru_cache(maxsize=4)
@@ -95,6 +85,7 @@ asset_version=hashlib.sha256(b''.join((media/name).read_bytes() for name in atla
 result={'sourceAssetVersion':manifest['assetVersion'],'assetVersion':asset_version,
         'tileWidth':manifest['tileWidth'],'tileHeight':manifest['tileHeight'],
         'yawStep':step,'phases':phases,'yawRange':manifest['yawRange'],
+        'selector':selection['selector'],'referenceMatchVersion':selection['referenceMatchVersion'],
         'quality':'lossless-original-pixels','atlases':atlases,'pages':pages,'tiles':tiles,'lookup':lookup}
 (args.output/'drag.json').write_text(json.dumps(result,separators=(',',':'))+'\n')
 print(len(tiles),'original-resolution frames;',len(atlases),'pages;',

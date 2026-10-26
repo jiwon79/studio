@@ -50,6 +50,8 @@ function phaseSpan(first: AngleFrame, last: AngleFrame) { return wrap(last.phase
  * and the photos actually displayed. Its first view may establish a new foot
  * correspondence; later cuts must continue that correspondence and gait. */
 export function rebaseWalkState(state: WalkState, tick: number): WalkState { return { ...state, tick, observedEnd: undefined, used: state.used.filter(row => row.tick < tick), cuts: state.cuts.filter(row => row.tick < tick) }; }
+/** @deprecated v30 comparison baseline only. It permits cross-person foot
+ * relabeling. Artwork and review playback must use ReferenceSequencer. */
 export class WalkSequencer {
     readonly blocks: AngleBlock[];
     private directions = new Map<number, AngleBlock[]>();

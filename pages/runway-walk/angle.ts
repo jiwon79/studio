@@ -3,10 +3,13 @@ import previews from './drag.json';
 import { AtlasPool } from './atlas-pool';
 import { ANGLE_STEP, snapYaw } from './direction-step';
 import type { AngleFrame } from './angle-match';
-import { WalkCoverageError, WalkSequencer, clockPhase, createWalkState, rebaseWalkState, orientedPhase, type WalkCut } from './walk-sequencer';
+import { WalkCoverageError, clockPhase, createWalkState, rebaseWalkState } from './walk-sequencer';
+import { ReferenceSequencer, type ReferenceCut } from './reference-sequencer';
+import referenceMatches from './reference-matches.json';
 
 const frames: AngleFrame[] = data.frames;
-const sequencer = new WalkSequencer(frames, data.holdFrames);
+const sequencer = new ReferenceSequencer(frames, data.holdFrames);
+const frameIndices=new Map(frames.map((frame,index)=>[frame,index]));
 const surface = document.querySelector<HTMLElement>('#surface')!;
 const canvas = document.querySelector<HTMLCanvasElement>('#person')!;
 const context = canvas.getContext('2d')!;
@@ -85,7 +88,7 @@ let playing = !matchMedia('(prefers-reduced-motion: reduce)').matches;
 let phase = 0, clock = 0, offset = 0;
 let block = sequencer.plan(target, createWalkState());
 let renderedTarget = target;
-let upcoming: WalkCut[] = [], planned: WalkCut[] = [];
+let upcoming: ReferenceCut[] = [], planned: ReferenceCut[] = [];
 let directionLoading: number | undefined;
 let generation = 0, filling: number | undefined;
 let lastTime = 0, carry = 0;
@@ -103,7 +106,9 @@ function paintRegion(image: ImageBitmap, x: number, y: number, width: number, he
   canvas.dataset.actualYaw = String(row.yaw);
   canvas.dataset.phase = String(phase);
   const hd=quality==='hd';
-  canvas.dataset.sourcePhase = String(orientedPhase(row, hd&&block.halfCycle));
+  canvas.dataset.sourcePhase = String(referenceMatches.frames[frameIndices.get(row)!].phase);
+  canvas.dataset.referenceError = hd?String(block.referenceError):'';
+  canvas.dataset.selector = referenceMatches.version;
   canvas.dataset.phaseError = hd?String(block.phaseError):'';
   canvas.dataset.swapped = String(hd&&block.swapped);
   canvas.dataset.halfCycle = String(hd&&block.halfCycle);
@@ -115,7 +120,7 @@ function paintRegion(image: ImageBitmap, x: number, y: number, width: number, he
   canvas.dataset.decodedPages = String(images.size);
   canvas.dataset.compressedPages = String(compressed.size);
   canvas.dataset.previewPages = String(dragImages.length);
-  canvas.dataset.bufferedFrames = String(upcoming.length * data.holdFrames);
+  canvas.dataset.bufferedFrames = String(upcoming.reduce((sum,cut)=>sum+cut.count,0));
   canvas.dataset.pixelScale = '1';
 }
 function drawPreview() {
@@ -126,18 +131,18 @@ function drawPreview() {
 }
 function draw() {
   if (drag?.moved || renderedTarget !== target) { drawPreview(); return; }
-  const row = frames[block.start + Math.min(offset, data.holdFrames - 1)];
+  const row = frames[block.start + Math.min(offset, block.count - 1)];
   const image = images.get(row.atlas);
   if (image) paint(image, row.tile, data.columns, data.tileWidth, data.tileHeight, row, renderedTarget, 'hd');
   else drawPreview();
 }
 async function prepare(candidate: typeof block) {
-  const pages = new Set(frames.slice(candidate.start, candidate.start + data.holdFrames).map(row => row.atlas));
+  const pages = new Set(frames.slice(candidate.start, candidate.start + candidate.count).map(row => row.atlas));
   await Promise.all([...pages].map(index => images.load(index)));
 }
 function retainPages() {
   images.retain([block, ...upcoming, ...planned].flatMap(candidate =>
-    frames.slice(candidate.start, candidate.start + data.holdFrames).map(row => row.atlas)));
+    frames.slice(candidate.start, candidate.start + candidate.count).map(row => row.atlas)));
 }
 /** Decode three future cuts while the current cut is still being displayed. */
 async function fillBuffer() {
@@ -168,7 +173,7 @@ async function startDirection() {
   directionLoading = epoch;
   // Only displayed photos enter history. Cancelled, predecoded cuts never do.
   let state = ready ? rebaseWalkState(sequencer.afterFrames(block, offset + 1), clock) : createWalkState(0, clock);
-  const sequence: WalkCut[] = [];
+  const sequence: ReferenceCut[] = [];
   upcoming = [];
   try {
     for (let index = 0; index < 4; index++) {
@@ -251,7 +256,7 @@ function tick(time: number) {
         // Drag uses the same independent gait clock as normal playback.
       } else if (directionLoading !== undefined || renderedTarget !== target) {
         carry = 0; break;
-      } else if (offset + 1 < data.holdFrames) {
+      } else if (offset + 1 < block.count) {
         offset++;
       } else {
         const next = upcoming.shift();

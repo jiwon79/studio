@@ -36,3 +36,15 @@ test('all decoded drag pages stay within the mobile preview memory budget', () =
     expect(page.height).toBeLessThanOrEqual(2048);
   }
 });
+
+test('drag photographs use the same fixed anatomical 3D reference as HD playback',async()=> {
+  const {ReferenceSequencer}=await import('./reference-sequencer');
+  const {default:matches}=await import('./reference-matches.json');
+  const planner=new ReferenceSequencer(data.frames);
+  expect(previews.selector).toBe(matches.version);
+  expect(previews.referenceMatchVersion).toBe(matches.matchVersion);
+  previews.lookup.forEach((slots,direction)=>slots.forEach((slot,phase)=> {
+    const tile=previews.tiles[slot];
+    expect(planner.inspect(tile.frame,0,direction*5-90,phase/previews.phases).oppositeFits).toBe(false);
+  }));
+});

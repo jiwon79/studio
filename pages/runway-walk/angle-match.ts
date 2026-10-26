@@ -47,7 +47,7 @@ export function choosePoseBlock(blocks: readonly AngleBlock[], yaw: number, phas
   return choosePoseCandidate(directionCandidates(blocks, yaw), yaw, phase, recent, previousGait, previousVelocity,previousPosture);
 }
 /** Score a direction's indexed pool without scanning the entire source library. */
-/** Static pose comparison only. Video playback must use WalkSequencer, which
+/** Static pose comparison only. Video playback must use ReferenceSequencer, which
  * retains the gait clock, foot correspondence and source-frame history. */
 export function choosePoseCandidate(eligible: readonly AngleBlock[], yaw: number, phase: number, recent: readonly string[] = [], previousGait?: readonly number[], previousVelocity?: readonly number[], previousPosture?: Posture) {
   if (!eligible.length) throw new Error('No direction candidates available');

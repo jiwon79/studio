@@ -68,6 +68,7 @@ for (const name of pageEntries) {
 // Vite가 번들에 포함한 파일은 JS에서도 new URL(..., import.meta.url)로 참조한다.
 input['runway-walk-angle'] = resolve(pagesDir, 'runway-walk/angle.html');
 input['runway-walk-debug'] = resolve(pagesDir, 'runway-walk/debug.html');
+input['runway-walk-reference'] = resolve(pagesDir, 'runway-walk/reference.html');
 
 const assetDirectories = pageEntries
   .filter(name => existsSync(resolve(pagesDir, name, 'assets')))
