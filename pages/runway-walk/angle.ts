@@ -32,7 +32,7 @@ const directions = new Map<number, AngleBlock[]>();
 function select(yaw: number, phase: number, recent: readonly string[] = [], last?: AngleFrame) {
   let eligible = directions.get(yaw);
   if (!eligible) { eligible = directionCandidates(blocks, yaw); directions.set(yaw, eligible); }
-  return chooseCandidate(eligible, yaw, phase, recent, last?.gait, last?.gaitVelocity);
+  return chooseCandidate(eligible, yaw, phase, recent, last?.gait, last?.gaitVelocity,last?.posture);
 }
 async function fetchPage(name: string, version: string) {
   const url = new URL(`./media/angles/${name}`, import.meta.url);

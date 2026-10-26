@@ -1,6 +1,7 @@
 import { blockHeld } from './review-policy';
-export type AngleFrame = { clip: string; look?: string; source: string; sourceFrame: number; yaw: number; phase: number; atlas: number; tile: number; gait?: readonly number[]; gaitVelocity?: readonly number[] };
-export type AngleBlock = { start: number; yaw: number; minYaw?: number; maxYaw?: number; phase: number; clip: string; look?: string; sourceFrame?: number; lastSourceFrame?: number; gait?: readonly number[]; gaitVelocity?: readonly number[] };
+import { postureTransition, type Posture } from './posture-match';
+export type AngleFrame = { clip: string; look?: string; source: string; sourceFrame: number; yaw: number; phase: number; atlas: number; tile: number; gait?: readonly number[]; gaitVelocity?: readonly number[]; posture?: Posture };
+export type AngleBlock = { start: number; yaw: number; minYaw?: number; maxYaw?: number; phase: number; clip: string; look?: string; sourceFrame?: number; lastSourceFrame?: number; gait?: readonly number[]; gaitVelocity?: readonly number[]; posture?: Posture };
 export function buildBlocks(frames: readonly AngleFrame[], hold = 3): AngleBlock[] {
   return frames.flatMap((f, start) => {
     for (let offset = 1; offset < hold; offset++) {
@@ -11,7 +12,7 @@ export function buildBlocks(frames: readonly AngleFrame[], hold = 3): AngleBlock
       if (next.gait?.some((value, index) => Math.abs(value - (previous.gait?.[index] ?? value)) > .12)) return [];
     }
     const yaws = frames.slice(start, start + hold).map(frame => frame.yaw);
-    return [{ start, yaw: yaws.reduce((sum,value)=>sum+value,0)/hold, minYaw: Math.min(...yaws), maxYaw: Math.max(...yaws), phase: f.phase, clip: f.clip, look: f.look ?? f.clip, sourceFrame: f.sourceFrame, lastSourceFrame: f.sourceFrame+hold-1, gait: f.gait, gaitVelocity: f.gaitVelocity }];
+    return [{ start, yaw: yaws.reduce((sum,value)=>sum+value,0)/hold, minYaw: Math.min(...yaws), maxYaw: Math.max(...yaws), phase: f.phase, clip: f.clip, look: f.look ?? f.clip, sourceFrame: f.sourceFrame, lastSourceFrame: f.sourceFrame+hold-1, gait: f.gait, gaitVelocity: f.gaitVelocity, posture:f.posture }];
   });
 }
 export function phaseDistance(a: number, b: number) {
@@ -41,17 +42,48 @@ export function directionCoverage(frames: readonly AngleFrame[], blocks: readonl
   const identities = new Set(candidates.flatMap(block => frames.slice(block.start, block.start + hold).map(frame => `${frame.source}:${frame.sourceFrame}`)));
   return { frames: identities.size, outfits: new Set(candidates.map(block => block.look ?? block.clip)).size };
 }
-export function chooseBlock(blocks: readonly AngleBlock[], yaw: number, phase: number, recent: readonly string[] = [], previousGait?: readonly number[], previousVelocity?: readonly number[]) {
+export function chooseBlock(blocks: readonly AngleBlock[], yaw: number, phase: number, recent: readonly string[] = [], previousGait?: readonly number[], previousVelocity?: readonly number[], previousPosture?: Posture) {
   if (!blocks.length) throw new Error('No consecutive source blocks available');
-  return chooseCandidate(directionCandidates(blocks, yaw), yaw, phase, recent, previousGait, previousVelocity);
+  return chooseCandidate(directionCandidates(blocks, yaw), yaw, phase, recent, previousGait, previousVelocity,previousPosture);
 }
 /** Score a direction's indexed pool without scanning the entire source library. */
-export function chooseCandidate(eligible: readonly AngleBlock[], yaw: number, phase: number, recent: readonly string[] = [], previousGait?: readonly number[], previousVelocity?: readonly number[]) {
+export function chooseCandidate(eligible: readonly AngleBlock[], yaw: number, phase: number, recent: readonly string[] = [], previousGait?: readonly number[], previousVelocity?: readonly number[], previousPosture?: Posture) {
   if (!eligible.length) throw new Error('No direction candidates available');
   // Never replay the same photographed stride immediately. Soft novelty alone
   // allowed one three-frame block to loop, visibly rewinding the moving foot.
   const different = eligible.filter(block => (block.look ?? block.clip) !== recent[0]);
   const candidates = different.length ? different : eligible;
+  if(previousPosture && candidates.some(b=>b.posture)) {
+    const predicted=previousGait?.map((v,i)=>v+(previousVelocity?.[i]??0));
+    const scored=candidates.filter(b=>b.posture).flatMap(block=> {
+      const score=(swapped: boolean)=> {
+        const metrics=postureTransition(previousPosture,block.posture!,swapped,true);
+        const gait=swapped?swapLegs(block.gait):block.gait;
+        const velocity=swapped?swapLegs(block.gaitVelocity):block.gaitVelocity;
+        const cost=phaseDistance((block.phase+(swapped?.5:0))%1,phase)*2 +
+          (metrics.leanReliable?metrics.leanDelta/6:0)+metrics.axisDelta/20+metrics.torsoRms/100+
+          metrics.footRms/40+metrics.footMotion/40+gaitDistance(gait,predicted)*12+
+          gaitDistance(velocity,previousVelocity)*12+Math.abs(block.yaw-yaw)/12+(4-metrics.usableSoles)*.08;
+        return {block,cost,metrics};
+      };
+      return Math.abs(yaw)<=30?[score(false),score(true)]:[score(false)];
+    });
+    // Outfit novelty cannot buy a visibly larger tilt or shoe displacement.
+    // If filmed coverage cannot satisfy both guards, use the closest cut and
+    // expose the residual in the review page rather than changing its angle.
+    const safe=scored.filter(s=>(!s.metrics.leanReliable || s.metrics.leanDelta<=4) && (!s.metrics.usableSoles || s.metrics.footRms<=32));
+    const pool=safe.length?safe:scored;
+    const best=pool.reduce((a,b)=>a.cost<b.cost?a:b);
+    const fresh=pool.filter(s=>!recent.includes(s.block.look??s.block.clip) &&
+      // Only trade a modest residual for variety when a safe filmed cut exists.
+      (safe.length || (s.cost<=best.cost+.25 && s.metrics.footRms<=best.metrics.footRms+3 && s.metrics.leanDelta<=best.metrics.leanDelta+1)));
+    if(fresh.length) return fresh.reduce((a,b)=>a.cost<b.cost?a:b).block;
+    if(safe.length) {
+      const oldest=Math.max(...pool.map(s=>recent.indexOf(s.block.look??s.block.clip)));
+      return pool.filter(s=>recent.indexOf(s.block.look??s.block.clip)===oldest).reduce((a,b)=>a.cost<b.cost?a:b).block;
+    }
+    return best.block;
+  }
   // These shallow Prada/Hermès left turns have ambiguous leg labels. Preserve
   // the established phase matching for the other reviewed camera views.
   const shallowLeft = yaw >= -25 && yaw <= -5;
