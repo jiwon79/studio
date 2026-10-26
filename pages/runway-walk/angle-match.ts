@@ -42,12 +42,14 @@ export function directionCoverage(frames: readonly AngleFrame[], blocks: readonl
   const identities = new Set(candidates.flatMap(block => frames.slice(block.start, block.start + hold).map(frame => `${frame.source}:${frame.sourceFrame}`)));
   return { frames: identities.size, outfits: new Set(candidates.map(block => block.look ?? block.clip)).size };
 }
-export function chooseBlock(blocks: readonly AngleBlock[], yaw: number, phase: number, recent: readonly string[] = [], previousGait?: readonly number[], previousVelocity?: readonly number[], previousPosture?: Posture) {
+export function choosePoseBlock(blocks: readonly AngleBlock[], yaw: number, phase: number, recent: readonly string[] = [], previousGait?: readonly number[], previousVelocity?: readonly number[], previousPosture?: Posture) {
   if (!blocks.length) throw new Error('No consecutive source blocks available');
-  return chooseCandidate(directionCandidates(blocks, yaw), yaw, phase, recent, previousGait, previousVelocity,previousPosture);
+  return choosePoseCandidate(directionCandidates(blocks, yaw), yaw, phase, recent, previousGait, previousVelocity,previousPosture);
 }
 /** Score a direction's indexed pool without scanning the entire source library. */
-export function chooseCandidate(eligible: readonly AngleBlock[], yaw: number, phase: number, recent: readonly string[] = [], previousGait?: readonly number[], previousVelocity?: readonly number[], previousPosture?: Posture) {
+/** Static pose comparison only. Video playback must use WalkSequencer, which
+ * retains the gait clock, foot correspondence and source-frame history. */
+export function choosePoseCandidate(eligible: readonly AngleBlock[], yaw: number, phase: number, recent: readonly string[] = [], previousGait?: readonly number[], previousVelocity?: readonly number[], previousPosture?: Posture) {
   if (!eligible.length) throw new Error('No direction candidates available');
   // Never replay the same photographed stride immediately. Soft novelty alone
   // allowed one three-frame block to loop, visibly rewinding the moving foot.

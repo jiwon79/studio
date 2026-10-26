@@ -2,10 +2,11 @@ import data from './angles.json';
 import previews from './drag.json';
 import { AtlasPool } from './atlas-pool';
 import { ANGLE_STEP, snapYaw } from './direction-step';
-import { buildBlocks, chooseCandidate, directionCandidates, type AngleFrame, type AngleBlock } from './angle-match';
+import type { AngleFrame } from './angle-match';
+import { WalkCoverageError, WalkSequencer, clockPhase, createWalkState, rebaseWalkState, orientedPhase, type WalkCut } from './walk-sequencer';
 
 const frames: AngleFrame[] = data.frames;
-const blocks = buildBlocks(frames, data.holdFrames);
+const sequencer = new WalkSequencer(frames, data.holdFrames);
 const surface = document.querySelector<HTMLElement>('#surface')!;
 const canvas = document.querySelector<HTMLCanvasElement>('#person')!;
 const context = canvas.getContext('2d')!;
@@ -27,13 +28,6 @@ function persist() {
 }
 function label(value: number) { return `${value < 0 ? '−' : value > 0 ? '+' : ''}${Math.abs(value)}°`; }
 
-// Direction pools are immutable. A pointer move never scans the whole library.
-const directions = new Map<number, AngleBlock[]>();
-function select(yaw: number, phase: number, recent: readonly string[] = [], last?: AngleFrame) {
-  let eligible = directions.get(yaw);
-  if (!eligible) { eligible = directionCandidates(blocks, yaw); directions.set(yaw, eligible); }
-  return chooseCandidate(eligible, yaw, phase, recent, last?.gait, last?.gaitVelocity,last?.posture);
-}
 async function fetchPage(name: string, version: string) {
   const url = new URL(`./media/angles/${name}`, import.meta.url);
   url.searchParams.set('v', version);
@@ -89,10 +83,10 @@ context.imageSmoothingQuality = 'high';
 let ready = false;
 let playing = !matchMedia('(prefers-reduced-motion: reduce)').matches;
 let phase = 0, clock = 0, offset = 0;
-let block = select(target, phase);
+let block = sequencer.plan(target, createWalkState());
 let renderedTarget = target;
-let recent: string[] = [];
-let upcoming: AngleBlock[] = [], planned: AngleBlock[] = [];
+let upcoming: WalkCut[] = [], planned: WalkCut[] = [];
+let directionLoading: number | undefined;
 let generation = 0, filling: number | undefined;
 let lastTime = 0, carry = 0;
 let drag: { id: number; x: number; start: number; moved: boolean } | undefined;
@@ -108,6 +102,14 @@ function paintRegion(image: ImageBitmap, x: number, y: number, width: number, he
   canvas.dataset.clip = row.clip;
   canvas.dataset.actualYaw = String(row.yaw);
   canvas.dataset.phase = String(phase);
+  const hd=quality==='hd';
+  canvas.dataset.sourcePhase = String(orientedPhase(row, hd&&block.halfCycle));
+  canvas.dataset.phaseError = hd?String(block.phaseError):'';
+  canvas.dataset.swapped = String(hd&&block.swapped);
+  canvas.dataset.halfCycle = String(hd&&block.halfCycle);
+  canvas.dataset.relaxed = String(hd&&block.relaxed);
+  canvas.dataset.continuation = String(hd&&block.sourceContinuation);
+  canvas.dataset.cutTick = hd?String(block.before.tick):'';
   canvas.dataset.clock = String(clock);
   canvas.dataset.quality = quality;
   canvas.dataset.decodedPages = String(images.size);
@@ -137,8 +139,6 @@ function retainPages() {
   images.retain([block, ...upcoming, ...planned].flatMap(candidate =>
     frames.slice(candidate.start, candidate.start + data.holdFrames).map(row => row.atlas)));
 }
-function after(candidate: AngleBlock) { return frames[candidate.start + data.holdFrames - 1]; }
-function nextPhase(row: AngleFrame) { return (row.phase + 1 / 30) % 1; }
 /** Decode three future cuts while the current cut is still being displayed. */
 async function fillBuffer() {
   const epoch = generation;
@@ -146,49 +146,45 @@ async function fillBuffer() {
   filling = epoch;
   try {
     while (upcoming.length < 3 && epoch === generation) {
-      const last = after(upcoming[upcoming.length - 1] ?? block);
-      const history = [...upcoming].reverse().map(item => item.look ?? item.clip).concat(recent).slice(0, 4);
-      const candidate = select(target, nextPhase(last), history, last);
+      const candidate = sequencer.plan(target, (upcoming[upcoming.length - 1] ?? block).after);
       planned = [candidate]; retainPages();
       await prepare(candidate);
       if (epoch !== generation) return;
       upcoming.push(candidate); planned = []; retainPages();
     }
-  } catch { if (epoch === generation) failed(); }
+  } catch(error) { if (epoch === generation) failed(error); }
   finally { if (filling === epoch) filling = undefined; }
 }
-function failed() {
+function failed(error?:unknown) {
   playing = false;
   surface.dataset.playing = 'false';
   surface.setAttribute('aria-busy', 'false');
-  status.textContent = '프레임을 불러오지 못했어요. 새로고침해 주세요.';
+  status.textContent = error instanceof WalkCoverageError?'이 각도의 보행 소스가 부족해 재생을 멈췄어요. 다른 각도를 선택해 주세요.':'프레임을 불러오지 못했어요. 새로고침해 주세요.';
 }
 /** Replace the direction only after its first four cuts have decoded. */
 async function startDirection() {
   if (drag?.moved) return;
   const epoch = ++generation, requested = target;
-  let last = ready ? frames[block.start + offset] : undefined;
-  let desiredPhase = phase;
-  let history = recent;
-  const sequence: AngleBlock[] = [];
+  directionLoading = epoch;
+  // Only displayed photos enter history. Cancelled, predecoded cuts never do.
+  let state = ready ? rebaseWalkState(sequencer.afterFrames(block, offset + 1), clock) : createWalkState(0, clock);
+  const sequence: WalkCut[] = [];
   upcoming = [];
-  for (let index = 0; index < 4; index++) {
-    const candidate = select(requested, desiredPhase, history, last);
-    sequence.push(candidate);
-    history = [candidate.look ?? candidate.clip, ...history].slice(0, 4);
-    last = after(candidate); desiredPhase = nextPhase(last);
-  }
-  planned = sequence; retainPages();
   try {
+    for (let index = 0; index < 4; index++) {
+      const candidate = sequencer.plan(requested, state);
+      sequence.push(candidate); state = candidate.after;
+    }
+    planned = sequence; retainPages();
     await Promise.all(sequence.map(prepare));
     if (epoch !== generation || requested !== target || drag?.moved) return;
     block = sequence[0]; upcoming = sequence.slice(1); planned = [];
     renderedTarget = requested;
-    recent = [block.look ?? block.clip, ...recent].slice(0, 4);
-    offset = 0; phase = frames[block.start].phase;
+    offset = 0; phase = clockPhase(clock);
     carry = 0; lastTime = 0; retainPages();
     if (ready) draw();
   } catch (error) { if (epoch === generation) throw error; }
+  finally { if (directionLoading === epoch) directionLoading = undefined; }
 }
 function setAngle(value: number) {
   const next = snapYaw(value, minYaw, maxYaw);
@@ -251,19 +247,20 @@ function tick(time: number) {
     carry += lastTime ? Math.min((time - lastTime) / 1000, 0.12) : 0;
     while (carry >= 1 / data.fps) {
       carry -= 1 / data.fps;
-      if (drag?.moved || renderedTarget !== target) {
-        phase = (phase + 1 / 30) % 1;
+      if (drag?.moved) {
+        // Drag uses the same independent gait clock as normal playback.
+      } else if (directionLoading !== undefined || renderedTarget !== target) {
+        carry = 0; break;
       } else if (offset + 1 < data.holdFrames) {
-        offset++; phase = frames[block.start + offset].phase;
+        offset++;
       } else {
         const next = upcoming.shift();
         // Slow decoding never advances the clock behind a repeated still.
         if (!next) { carry = 0; void fillBuffer(); break; }
-        block = next; offset = 0; phase = frames[block.start].phase;
-        recent = [block.look ?? block.clip, ...recent].slice(0, 4);
+        block = next; offset = 0;
         retainPages(); void fillBuffer();
       }
-      clock++;
+      clock++; phase = clockPhase(clock);
       draw();
     }
   }
@@ -283,6 +280,6 @@ async function load() {
     loading.hidden = true;
     surface.dataset.playing = String(playing);
     requestAnimationFrame(tick);
-  } catch { failed(); }
+  } catch(error) { failed(error); }
 }
 setAngle(target); void load();

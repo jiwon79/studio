@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 import data from './angles.json';
-import { buildBlocks, chooseBlock, directionCoverage, directionCandidates, phaseDistance, gaitDistance, type AngleFrame } from './angle-match';
+import { buildBlocks, choosePoseBlock, directionCoverage, directionCandidates, phaseDistance, gaitDistance, type AngleFrame } from './angle-match';
 const f = (clip: string, sourceFrame: number): AngleFrame => ({ clip, source: 'test', sourceFrame, yaw: 0, phase: 0, atlas: 0, tile: 0 });
 test('three-frame blocks cannot cross source gaps or clip boundaries', () => {
   const blocks = buildBlocks([f('a',10),f('a',11),f('a',12),f('a',14),f('a',15),f('b',16),f('b',17),f('b',18)]);
@@ -12,15 +12,15 @@ test('angle selection takes priority; phase remains continuous across the loop',
     { start: 3, yaw: 0, phase: 0.01, clip: 'front' },
     { start: 6, yaw: -70, phase: 0.5, clip: 'left-other' },
   ];
-  expect(chooseBlock(blocks,-60,0.01).start).toBe(0);
-  expect(chooseBlock(blocks,0,0.99).start).toBe(3);
+  expect(choosePoseBlock(blocks,-60,0.01).start).toBe(0);
+  expect(choosePoseBlock(blocks,0,0.99).start).toBe(3);
   expect(phaseDistance(0.99,0.01)).toBeCloseTo(0.02);
 });
 
 test('exported source atlas offers valid consecutive blocks for every stored direction', () => {
   const blocks = buildBlocks(data.frames);
   for (let yaw=data.yawRange[0]; yaw<=data.yawRange[1]; yaw++) {
-    const chosen = chooseBlock(blocks,yaw,0.25);
+    const chosen = choosePoseBlock(blocks,yaw,0.25);
     expect(Math.abs(chosen.yaw - yaw)).toBeLessThanOrEqual(5);
     const sequence = data.frames.slice(chosen.start, chosen.start+3);
     expect(sequence[2].sourceFrame - sequence[0].sourceFrame).toBe(2);
@@ -39,7 +39,7 @@ test('a matching gait cannot pull a frontal person into a diagonal direction', (
     { start: 0, yaw: -45, phase: 0.5, clip: 'diagonal' },
     { start: 3, yaw: 0, phase: 0, clip: 'frontal' },
   ];
-  expect(chooseBlock(blocks,-30,0).clip).toBe('diagonal');
+  expect(choosePoseBlock(blocks,-30,0).clip).toBe('diagonal');
 });
 
 test('a turn must match the requested direction for the entire three-frame hold', () => {
@@ -47,7 +47,7 @@ test('a turn must match the requested direction for the entire three-frame hold'
     {...f('turn-away',10),yaw:-38}, {...f('turn-away',11),yaw:-46}, {...f('turn-away',12),yaw:-54},
     {...f('compatible',20),yaw:-38}, {...f('compatible',21),yaw:-39}, {...f('compatible',22),yaw:-40},
   ];
-  expect(chooseBlock(buildBlocks(frames),-38,0).clip).toBe('compatible');
+  expect(choosePoseBlock(buildBlocks(frames),-38,0).clip).toBe('compatible');
 });
 
 test('all selectable five-degree views retain eight outfits and consecutive source frames', () => {
@@ -87,14 +87,14 @@ test('avoid recent outfits when another outfit has a nearby gait in the same dir
     {start:6,yaw:-45,phase:0.06,clip:'c'},
     {start:9,yaw:0,phase:0,clip:'wrong-direction'},
   ];
-  expect(chooseBlock(blocks,-45,0,['a','b']).clip).toBe('c');
+  expect(choosePoseBlock(blocks,-45,0,['a','b']).clip).toBe('c');
 });
 test('an excellent phase match cannot immediately replay the same photographed stride', () => {
   const blocks = [
     { start: 0, yaw: 22, phase: 0, clip: 'looping-stride' },
     { start: 3, yaw: 22, phase: .48, clip: 'other-outfit' },
   ];
-  expect(chooseBlock(blocks, 22, 0, ['looping-stride']).clip).toBe('other-outfit');
+  expect(choosePoseBlock(blocks, 22, 0, ['looping-stride']).clip).toBe('other-outfit');
 });
 test('blocks with a detector leg swap cannot drive the gait transition', () => {
   const frames = [
@@ -113,7 +113,7 @@ test('no direction immediately rewinds an outfit during several walking cycles',
     let recent: string[] = [], last: AngleFrame | undefined, phase = 0;
     const candidates = directionCandidates(blocks, yaw);
     for (let cut=0; cut<60; cut++) {
-      const next = chooseBlock(candidates, yaw, phase, recent, last?.gait, last?.gaitVelocity);
+      const next = choosePoseBlock(candidates, yaw, phase, recent, last?.gait, last?.gaitVelocity);
       const look = next.look ?? next.clip;
       expect(look, `immediate replay at ${yaw}`).not.toBe(recent[0]);
       last = data.frames[next.start + 2];
@@ -127,7 +127,7 @@ test('each representative direction visits several compatible outfits during pla
   for (const yaw of [-90,-75,-60,-38,-35,-30,-20,-15,-10,-5,0,15,30,45,60,75,90]) {
     let recent: string[]=[]; let previous: readonly number[] | undefined; let velocity: readonly number[] | undefined; const visited=new Set<string>();
     for (let cut=0; cut<120; cut++) {
-      const block=chooseBlock(blocks,yaw,(cut/10)%1,recent,previous,velocity);
+      const block=choosePoseBlock(blocks,yaw,(cut/10)%1,recent,previous,velocity);
       const look=block.look ?? block.clip; visited.add(look); recent=[look,...recent].slice(0,4);
       previous=data.frames[block.start+2].gait;
       velocity=data.frames[block.start+2].gaitVelocity;
@@ -143,13 +143,13 @@ test('an approaching foot keeps moving in the same direction across an identity 
     {start:0,yaw:-15,phase:0,clip:'reverse',gait:velocity,gaitVelocity:velocity.map(v=>-v)},
     {start:3,yaw:-15,phase:.01,clip:'forward',gait:velocity,gaitVelocity:velocity},
   ];
-  expect(chooseBlock(blocks,-15,0,[],pose,velocity).clip).toBe('forward');
+  expect(choosePoseBlock(blocks,-15,0,[],pose,velocity).clip).toBe('forward');
 });
 test('near-front directions have filmed intermediate views instead of repeating only frontal frames', () => {
   const blocks=buildBlocks(data.frames);
   for(const yaw of [-10,-15,-20]) {
     for(let step=0;step<30;step++) {
-      const block=chooseBlock(blocks,yaw,step/30);
+      const block=choosePoseBlock(blocks,yaw,step/30);
       expect(block.yaw).toBeLessThan(0);
       expect(Math.abs(block.yaw-yaw)).toBeLessThanOrEqual(5);
     }
@@ -213,7 +213,7 @@ test('prefer compatible knee and ankle positions when phase estimates are close'
     {start:3,yaw:-45,phase:.02,clip:'continuous',gait:previous},
     {start:6,yaw:0,phase:0,clip:'wrong-direction',gait:previous},
   ];
-  expect(chooseBlock(blocks,-38,0,[],previous).clip).toBe('continuous');
+  expect(choosePoseBlock(blocks,-38,0,[],previous).clip).toBe('continuous');
   expect(gaitDistance(previous,previous)).toBe(0);
 });
 
@@ -223,7 +223,7 @@ test('an available direction does not widen the absolute five-degree allowance',
     {start:3,yaw:-30,minYaw:-30,maxYaw:-30,phase:0,clip:'too-frontal'},
   ];
   expect(directionCandidates(blocks,-38).map(b=>b.clip)).toEqual(['close']);
-  expect(chooseBlock(blocks,-38,0).clip).toBe('close');
+  expect(choosePoseBlock(blocks,-38,0).clip).toBe('close');
 });
 
 test('right-facing Prada footage never enters a left-facing candidate pool', () => {
@@ -308,7 +308,7 @@ test('foot position takes priority over a closer phase with visibly displaced an
     {start:0,yaw:-15,phase:0,clip:'jumping-feet',gait:[.4,.65,.6,.65,.39,.85,.74,.9]},
     {start:3,yaw:-15,phase:.06,clip:'aligned-feet',gait:previous},
   ];
-  expect(chooseBlock(candidates,-15,0,[],previous).clip).toBe('aligned-feet');
+  expect(choosePoseBlock(candidates,-15,0,[],previous).clip).toBe('aligned-feet');
 });
 test('a changed anatomical leg label cannot outweigh the same visible foot positions and motion', () => {
   const previous=[.4,.65,.6,.65,.3,.85,.65,.9], velocity=[.01,0,-.01,0,.02,0,-.02,0];
@@ -316,7 +316,7 @@ test('a changed anatomical leg label cannot outweigh the same visible foot posit
     {start:0,yaw:-15,phase:0,clip:'displaced',gait:[.4,.65,.6,.65,.45,.85,.8,.9],gaitVelocity:velocity},
     {start:3,yaw:-15,phase:.5,clip:'same-pixels',gait:[.59,.65,.41,.65,.63,.9,.32,.85],gaitVelocity:[-.01,0,.01,0,-.02,0,.02,0]},
   ];
-  expect(chooseBlock(candidates,-15,0,[],previous,velocity).clip).toBe('same-pixels');
+  expect(choosePoseBlock(candidates,-15,0,[],previous,velocity).clip).toBe('same-pixels');
 });
 test('minus fifteen degree walking keeps the cut-to-cut foot displacement small', () => {
   const candidates=directionCandidates(buildBlocks(data.frames),-15);
@@ -324,7 +324,7 @@ test('minus fifteen degree walking keeps the cut-to-cut foot displacement small'
   let phase=0,recent: string[]=[],last: AngleFrame|undefined;
   const jumps: number[]=[];
   for(let cut=0;cut<150;cut++) {
-    const next=chooseBlock(candidates,-15,phase,recent,last?.gait,last?.gaitVelocity);
+    const next=choosePoseBlock(candidates,-15,phase,recent,last?.gait,last?.gaitVelocity);
     const start=data.frames[next.start];
     if(last?.gait)jumps.push(Math.min(gaitDistance(start.gait.slice(4),last.gait.slice(4)),gaitDistance(swap(start.gait),last.gait.slice(4))));
     last=data.frames[next.start+2];phase=(last.phase+1/30)%1;
