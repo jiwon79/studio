@@ -6,6 +6,7 @@ import { AtlasPool } from './atlas-pool';
 import { snapYaw } from './direction-step';
 import { audits, frameAudits, heldForTarget } from './review-policy';
 import { categories, frameKey, validateFeedback, type Feedback } from './review-model';
+import { inspectTransition, transitionWarning } from './posture-match';
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const angleInput = $<HTMLSelectElement>('angle'), scopeInput = $<HTMLSelectElement>('scope');
@@ -24,6 +25,7 @@ let target = snapYaw(Number(params.get('angle') ?? 10));
 if (!Number.isFinite(target)) target = 10;
 let selected = Math.max(0,data.frames.findIndex(f => frameKey(f)===params.get('frame')));
 let previous: number | undefined, joint: number | null = null;
+const initialPrevious=data.frames.findIndex(f=>frameKey(f)===params.get('previous'));
 let galleryRows: number[] = [], page = 0, generation = 0, galleryGeneration = 0;
 let feedback: Feedback[] = [], connected = false, saving = false;
 let draftClientId: string | undefined;
@@ -79,15 +81,18 @@ function updatePosition() {
   $('next').setAttribute('aria-label',walk.length?'다음 연결 프레임':'다음 사진');
 }
 function retain() {
-  images.retain([selected, ...(ghost.checked && previous!==undefined ? [previous] : []), ...walk.slice(cursor,cursor+12)].map(i => data.frames[i].atlas));
+  const compared=comparisonIndex();
+  images.retain([selected, ...(ghost.checked && compared!==undefined ? [compared] : []), ...walk.slice(cursor,cursor+12)].map(i => data.frames[i].atlas));
 }
 function drawTile(image: ImageBitmap, index: number, ctx: CanvasRenderingContext2D, width = 512, height = 768) {
   const frame = data.frames[index];
   ctx.drawImage(image, frame.tile%data.columns*512, Math.floor(frame.tile/data.columns)*768,512,768,0,0,width,height);
 }
-async function renderPhoto(index: number) {
+function comparisonIndex() { return walk.length && cursor>0 ? walk[cursor-1] : previous; }
+async function renderPhoto(index: number, explicitPrevious?: number) {
   const epoch = ++generation;
   if (index!==selected) { previous=selected; selected=index; }
+  if (explicitPrevious!==undefined) previous=explicitPrevious;
   $('stage').setAttribute('aria-busy','true');
   for (const input of [category,note,suggestion,jointInput]) input.disabled=true;
   $<HTMLButtonElement>('save').disabled=true;
@@ -96,10 +101,11 @@ async function renderPhoto(index: number) {
   retain();
   try {
     const image = await images.load(data.frames[index].atlas);
-    const prior = ghost.checked && previous!==undefined ? await images.load(data.frames[previous].atlas) : undefined;
+    const compared=comparisonIndex();
+    const prior = ghost.checked && compared!==undefined ? await images.load(data.frames[compared].atlas) : undefined;
     if (epoch!==generation) return;
     context.clearRect(0,0,512,768);
-    if (prior && previous!==undefined) { context.globalAlpha=.28; drawTile(prior,previous,context); context.globalAlpha=1; }
+    if (prior && compared!==undefined) { context.globalAlpha=.28; drawTile(prior,compared,context); context.globalAlpha=1; }
     drawTile(image,index,context);
     const row = data.frames[index];
     canvas.dataset.frameKey = frameKey(row); canvas.dataset.actualYaw=String(row.yaw); canvas.dataset.target=String(target);
@@ -123,12 +129,23 @@ function renderMetadata() {
   state.textContent = `사진 ${signed(frame.yaw,1)} · 재생 ${signed(target)} · ${heldForTarget(frame,target)?'보류':used?'후보':'미사용'}`;
   state.className = heldForTarget(frame,target)?'held':'';
   const metadata = $('metadata'); metadata.replaceChildren();
-  const values = { '사진 ID':frameKey(frame), '착장':frame.clip, '재생 각도':signed(target), '각도 차이':`${Math.abs(frame.yaw-target).toFixed(1)}°`, '보행 위상':frame.phase.toFixed(3), '관절':joint===null?'선택 안 함':`${joint} ${poses.names[joint]}`, '이전 사진':previous===undefined?'—':frameKey(data.frames[previous]) };
+  const compared=comparisonIndex();
+  const values = { '사진 ID':frameKey(frame), '착장':frame.clip, '재생 각도':signed(target), '각도 차이':`${Math.abs(frame.yaw-target).toFixed(1)}°`, '몸통 기울기':signed(frame.posture.lean,1), '전신축 기울기':signed(frame.posture.axis,1), '보행 위상':frame.phase.toFixed(3), '관절':joint===null?'선택 안 함':`${joint} ${poses.names[joint]}`, '이전 사진':compared===undefined?'—':frameKey(data.frames[compared]) };
   Object.entries(values).forEach(([key,value]) => metadata.append(element('dt',key),element('dd',value)));
+  renderComparison();
   $('feedback-photo').textContent = `저장 대상: ${frameKey(frame)} · ${signed(target)}`;
   const source = data.sources.find(s => s.id===frame.source)!;
   const link = new URL(source.url); link.searchParams.set('t',String(Math.floor(source.sourceOffset+frame.sourceFrame/data.fps)));
   $<HTMLAnchorElement>('source-link').href = link.href;
+}
+function renderComparison() {
+  const compared=comparisonIndex(), state=$('transition-state'),list=$('transition-metrics'); list.replaceChildren();
+  $<HTMLButtonElement>('compare-previous').disabled=compared===undefined;
+  if(compared===undefined) { state.textContent='연결 재생하거나 목록에서 사진을 넘기면 이전 사진과 비교합니다.'; state.className='hint'; return; }
+  const metrics=inspectTransition(data.frames[compared].posture,data.frames[selected].posture,Math.abs(target)<=30);
+  state.textContent=transitionWarning(metrics)?'전환 주의 · 기울기 또는 발 위치 차이가 큼':'이전 사진과의 차이';
+  state.className=transitionWarning(metrics)?'warning':'';
+  for(const [key,value] of Object.entries({'몸통 차이':`${metrics.leanDelta.toFixed(1)}°${metrics.leanReliable?'':' (낮은 신뢰도)'}`,'전신축 차이':`${metrics.axisDelta.toFixed(1)}°`,'발 위치 차이':metrics.usableSoles?`${metrics.footRms.toFixed(1)}px · ${metrics.usableSoles}지점`:'비교 가능한 지점 부족','몸통 중심 차이':`${metrics.torsoRms.toFixed(1)}px`})) list.append(element('dt',key),element('dd',value));
 }
 function svgNode(tag: string, attributes: Record<string,string|number>) {
   const node = document.createElementNS('http://www.w3.org/2000/svg',tag);
@@ -156,6 +173,14 @@ function skeletonNodes(svg: HTMLElement | SVGElement, points: number[][], width:
 function renderPose() {
   const pose = poseByKey.get(frameKey(data.frames[selected]))!;
   skeletonNodes($('pose'),pose.points,512,768,true);
+  const compared=comparisonIndex();
+  if(skeleton.checked && ghost.checked && compared!==undefined) {
+    const prior=data.frames[compared].posture,svg=$('pose');
+    svg.append(svgNode('line',{x1:prior.center[0]*512,y1:prior.center[1]*768,x2:prior.center[2]*512,y2:prior.center[3]*768,stroke:'#ff775f','stroke-width':4,'stroke-dasharray':'8 5'}));
+    prior.soles.forEach((v,i)=>{ if(i%2===0) svg.append(svgNode('circle',{cx:v*512,cy:prior.soles[i+1]*768,r:6,fill:'none',stroke:'#ff775f','stroke-width':2})); });
+    const current=data.frames[selected].posture;
+    svg.append(svgNode('line',{x1:current.center[0]*512,y1:current.center[1]*768,x2:current.center[2]*512,y2:current.center[3]*768,stroke:'#ffe28e','stroke-width':3}));
+  }
   const table = $('joint-table'); table.replaceChildren();
   pose.points.forEach(([x,y,v],index) => {
     const tr = element('tr'); tr.className=index===joint?'selected':'';
@@ -194,7 +219,7 @@ function renderReviews() {
   const list=$('review-list'); list.replaceChildren();
   for (const audit of frameAudits(data.frames[selected])) {
     const article=element('article'); article.className='review';
-    article.append(element('b',`Codex · ${categories[audit.category as keyof typeof categories]} · 재생 보류 ${audit.targets.map(t=>signed(t)).join(' / ')}`),element('span',audit.note),element('time',`${audit.reviewedAt} · 검토 범위 #${audit.fromFrame}–${audit.toFrame}`)); list.append(article);
+    article.append(element('b',`Codex · ${categories[audit.category as keyof typeof categories]} · ${audit.action==='hold'?'재생 보류':'전환 검토'} ${audit.targets.map(t=>signed(t)).join(' / ')}`),element('span',audit.note),element('time',`${audit.reviewedAt} · 검토 범위 #${audit.fromFrame}–${audit.toFrame}`)); list.append(article);
   }
   for (const row of feedback.filter(row=>row.frameKey===frameKey(data.frames[selected]))) {
     const article=element('article'); article.className='review user';
@@ -247,6 +272,7 @@ async function renderGallery() {
 }
 function updateURL() {
   const url=new URL(location.href); url.search=''; url.searchParams.set('angle',String(target)); url.searchParams.set('frame',frameKey(data.frames[selected]));
+  const compared=comparisonIndex(); if(compared!==undefined) url.searchParams.set('previous',frameKey(data.frames[compared]));
   history.replaceState(null,'',url); $<HTMLInputElement>('share-url').value=url.href;
 }
 function pause() { playing=false; playbackEpoch++; $('play').textContent='연결 재생'; $('play').setAttribute('aria-pressed','false'); }
@@ -254,7 +280,7 @@ function makeWalk() {
   const eligible=candidates(); let last=data.frames[selected], phase=(last.phase+1/30)%1;
   let recent=[last.look]; walk=[selected]; cursor=0;
   for (let i=0;i<120;i++) {
-    const block=chooseCandidate(eligible,target,phase,recent,last.gait,last.gaitVelocity);
+    const block=chooseCandidate(eligible,target,phase,recent,last.gait,last.gaitVelocity,last.posture);
     walk.push(...Array.from({length:data.holdFrames},(_,offset)=>block.start+offset));
     recent=[block.look ?? block.clip,...recent].slice(0,4); last=data.frames[block.start+data.holdFrames-1]; phase=(last.phase+1/30)%1;
   }
@@ -290,6 +316,7 @@ $('angle-minus').addEventListener('click',()=>changeTarget(target-5)); $('angle-
 scopeInput.addEventListener('change',()=>{ pause(); walk=[]; updateRows(); }); search.addEventListener('input',()=>{ pause(); walk=[]; updateRows(); });
 $('page-previous').addEventListener('click',()=>{ page--; void renderGallery(); }); $('page-next').addEventListener('click',()=>{ page++; void renderGallery(); });
 $('previous').addEventListener('click',()=>step(-1)); $('next').addEventListener('click',()=>step(1)); $('play').addEventListener('click',()=>void play());
+$('compare-previous').addEventListener('click',()=>{ const compared=comparisonIndex(); if(compared!==undefined) { const current=selected; pause(); walk=[]; void renderPhoto(compared,current); } });
 skeleton.addEventListener('change',renderPose); numbers.addEventListener('change',renderPose); ghost.addEventListener('change',()=>void renderPhoto(selected));
 $('background').addEventListener('change',()=>{ $('stage').dataset.background=$<HTMLSelectElement>('background').value; });
 original.addEventListener('toggle',()=>{ if (original.open) { pause(); loadOriginal(); } });
@@ -305,7 +332,8 @@ $('feedback-form').addEventListener('submit',async event=> {
   const state=$('save-state'); state.className='';
   try {
     draftClientId ??= `review-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-    const draft=validateFeedback({ clientId:draftClientId,frameKey:frameKey(data.frames[selected]),target,category:category.value,note:note.value,suggestedYaw:suggestion.value===''?null:Number(suggestion.value),joint:jointInput.value===''?null:Number(jointInput.value),comparedTo:previous===undefined?null:frameKey(data.frames[previous]),assetVersion:data.assetVersion },keys);
+    const compared=comparisonIndex();
+    const draft=validateFeedback({ clientId:draftClientId,frameKey:frameKey(data.frames[selected]),target,category:category.value,note:note.value,suggestedYaw:suggestion.value===''?null:Number(suggestion.value),joint:jointInput.value===''?null:Number(jointInput.value),comparedTo:compared===undefined?null:frameKey(data.frames[compared]),assetVersion:data.assetVersion },keys);
     storeDraft(false);
     saving=true; $<HTMLButtonElement>('save').disabled=true; state.textContent='서버에 저장 중…';
     const response=await fetch('/api/runway-walk/feedback',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(draft)}).catch(()=> { throw new Error('연결이 끊겼어요. 초안은 이 기기에 보관했으니 연결 후 다시 저장해 주세요.'); });
@@ -333,6 +361,35 @@ $('export').addEventListener('click',async()=> {
 });
 window.addEventListener('focus',()=>void refreshFeedback());
 setInterval(()=>{ if (!document.hidden && !saving) void refreshFeedback(); },5000);
+$('scan').addEventListener('click',async()=> {
+  pause(); const button=$<HTMLButtonElement>('scan'); button.disabled=true;
+  const warnings=new Map<string,{target:number;from:number;to:number;lean:number;foot:number;score:number}>();
+  try {
+    for(let yaw=-90;yaw<=90;yaw+=5) {
+      const eligible=directionCandidates(blocks,yaw); let lastIndex:number|undefined,phase=0; let recent:string[]=[];
+      for(let cut=0;cut<120;cut++) {
+        const last=lastIndex===undefined?undefined:data.frames[lastIndex];
+        const block=chooseCandidate(eligible,yaw,phase,recent,last?.gait,last?.gaitVelocity,last?.posture);
+        if(last && lastIndex!==undefined) {
+          const metrics=inspectTransition(last.posture,data.frames[block.start].posture,Math.abs(yaw)<=30);
+          if(transitionWarning(metrics)) warnings.set(`${yaw}:${lastIndex}:${block.start}`,{target:yaw,from:lastIndex,to:block.start,lean:metrics.leanDelta,foot:metrics.footRms,score:(metrics.leanReliable?metrics.leanDelta/4:0)+metrics.footRms/32});
+        }
+        recent=[block.look??block.clip,...recent].slice(0,4);lastIndex=block.start+data.holdFrames-1;phase=(data.frames[lastIndex].phase+1/30)%1;
+      }
+      $('scan-state').textContent=`${(yaw+90)/5+1} / 37 각도 점검 중 · 주의 전환 ${warnings.size}개`;
+      await new Promise(resolve=>setTimeout(resolve,0));
+    }
+    const list=$('scan-results'); list.replaceChildren();
+    [...warnings.values()].sort((a,b)=>b.score-a.score).slice(0,30).forEach(row=> {
+      const link=element('button',`${signed(row.target)} · ${frameKey(data.frames[row.from])} → ${frameKey(data.frames[row.to])}\n몸통 차이 ${row.lean.toFixed(1)}° · 발 차이 ${row.foot.toFixed(1)}px`);
+      link.addEventListener('click',()=> {
+        pause(); walk=[]; target=row.target; angleInput.value=String(target);scopeInput.value='angle'; search.value='';ghost.checked=true;
+        void renderPhoto(row.to,row.from); updateRows();
+      }); list.append(link);
+    });
+    $('scan-state').textContent=`37개 각도 점검 완료 · 주의 전환 ${warnings.size}개 중 차이가 큰 30개 표시. 사진을 눌러 직접 확인하세요.`;
+  } finally { button.disabled=false; }
+});
 if (!params.has('frame')) selected=candidates()[0]?.start ?? 0;
 if (Math.abs(data.frames[selected].yaw-target)>5) scopeInput.value='all';
-updateRows(); void renderPhoto(selected); void refreshFeedback();
+updateRows(); void renderPhoto(selected,initialPrevious>=0?initialPrevious:undefined); void refreshFeedback();

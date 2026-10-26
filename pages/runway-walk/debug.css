@@ -118,3 +118,11 @@ aside{gap:12px}
 
 
 [hidden]{display:none!important}
+.comparison{background:#1a2127;border:1px solid #303b44;border-radius:10px;padding:18px}
+.comparison p{font-size:12px;line-height:1.6}
+.comparison .warning{color:#ffb18f;font-weight:600}
+.comparison button{margin-top:14px;font-size:12px}
+.scan{padding:16px;background:#1a2127;border:1px solid #303b44;border-radius:10px;margin-top:0}
+#scan-state{font-size:12px;color:#b2c6d4;line-height:1.6}
+#scan-results{display:flex;flex-direction:column;gap:8px;max-height:600px;overflow:auto}
+#scan-results button{text-align:left;white-space:pre-line;overflow-wrap:anywhere;font-size:11px;line-height:1.6}

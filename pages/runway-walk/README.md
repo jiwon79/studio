@@ -26,7 +26,7 @@
 | 오른쪽 75° | 13 | 97 |
 | 오른쪽 90° | 9 | 71 |
 
-보행 위상은 MediaPipe 3D 발목 차이를 몸의 앞 방향에 투영하고 주기 함수를 맞춰 추정한다. 얕은 사선은 가방 없는 정면 기준 `prada25-look-50`의 다리 움직임과 위상을 맞춘다. 짧은 피날레는 검토에서 남은 한 사람의 관절만으로 `phaseReference`의 주기와 비교한다. 직전 인물의 무릎·발목 위치와 속도로 다음 위치를 예상하고, 위상과 관절 위치·속도가 가까운 후보를 고른다. 조건이 가까운 후보 중 최근 네 착장을 피한다. 왼쪽 5°~25°의 얕은 방향에서는 발목 위치와 이동 속도를 더 우선한다. 서로 다른 인물의 관절 좌우 대응이 불안정할 때는 두 대응을 비교하고 속도·반주기 위상도 같은 대응으로 함께 평가한다. 한 구간에서는 실제 연속 3프레임을 순서대로 보여준다.
+보행 위상은 MediaPipe 3D 발목 차이를 몸의 앞 방향에 투영하고 주기 함수를 맞춰 추정한다. 얕은 사선은 가방 없는 정면 기준 `prada25-look-50`의 다리 움직임과 위상을 맞춘다. 짧은 피날레는 검토에서 남은 한 사람의 관절만으로 `phaseReference`의 주기와 비교한다. 직전 인물의 무릎·발목 위치와 속도로 다음 위치를 예상하고, 위상과 관절 위치·속도가 가까운 후보를 고른다. 조건이 가까운 후보 중 최근 네 착장을 피한다. 왼쪽 5°~25°의 얕은 방향에서는 발목 위치와 이동 속도를 더 우선한다. 서로 다른 인물의 관절 좌우 대응이 불안정할 때는 두 대응을 비교하고 속도·반주기 위상도 같은 대응으로 함께 평가한다. 몸통·전신축 기울기, 몸통 중심과 발뒤꿈치·발끝 위치 및 이동 속도도 함께 비교한다. 신뢰도가 낮은 발 지점은 비교에서 뺀다. 호환되는 후보가 있으면 몸통 차이 4°·예측 발 위치 차이 32px 안에서 착장을 고른다. 이 범위를 만족하는 촬영 컷이 없는 구간은 가장 가까운 후보를 사용하고 디버그 화면에 잔차를 표시한다. 이 조건 때문에 실제 재생에 쓰이는 착장은 전체 후보보다 적을 수 있다. 한 구간에서는 실제 연속 3프레임을 순서대로 보여준다.
 
 카메라 컷은 원본 RGB 변화로 분리하고, 한 쇼트 안의 전신 자세만 사용한다. [BiRefNet lite](https://huggingface.co/ZhengPeng7/BiRefNet_lite)가 각 1080p 원본 프레임의 알파를 직접 계산하고, 군중 구간은 [SAM2.1 tiny](https://huggingface.co/facebook/sam2.1-hiera-tiny)의 인물 지지 영역으로 다른 모델·관객을 제외한다. 보이는 머리·팔·무릎·발목이 사라지거나 원본 크롭 가장자리에 닿는 프레임은 제외한다. 필요한 구간에는 `reviewedFrames`, `excludedFrames`, 머리 영역과 지지 마스크 임계값을 기록한다. 얼굴·의상·가려진 신체를 생성하거나 원본 RGB를 섞지 않는다. 자동 마스크의 작은 테두리 오차와 원본 촬영 해상도의 한계는 남는다.
 
@@ -72,18 +72,19 @@ uv pip install --python .cache/runway-walk/venv/bin/python -r scripts/runway-wal
 .cache/runway-walk/venv/bin/python scripts/runway-walk/prepare-instance.py --cache .cache/runway-walk
 .cache/runway-walk/venv/bin/python scripts/runway-walk/angles.py --cache .cache/runway-walk --output .cache/runway-walk/export --manifest-only
 .cache/runway-walk/venv/bin/python scripts/runway-walk/refine-angles.py --cache .cache/runway-walk --output .cache/runway-walk/export --engine mps
+.cache/runway-walk/venv/bin/python scripts/runway-walk/debug-poses.py --cache .cache/runway-walk --output .cache/runway-walk/export
 .cache/runway-walk/venv/bin/python scripts/runway-walk/drag-previews.py --output .cache/runway-walk/export
 ```
 
-위 명령은 Git 제외 스테이징에 출력한다. 원본·누끼·재생을 확인한 다음 `angles.json`·`drag.json`과 두 매니페스트에 나열된 아틀라스만 `pages/runway-walk/`에 반영한다. 인물별 분리를 사용하는 현재 자료는 `requirements-mps.txt`의 PyTorch·Transformers가 필요하며, CPU로 실행하려면 마지막 명령의 `--engine onnx`를 사용할 수 있다.
+위 명령은 Git 제외 스테이징에 출력한다. 원본·누끼·재생을 확인한 다음 `angles.json`·`debug-poses.json`·`drag.json`과 두 이미지 매니페스트에 나열된 아틀라스만 `pages/runway-walk/`에 반영한다. 인물별 분리를 사용하는 현재 자료는 `requirements-mps.txt`의 PyTorch·Transformers가 필요하며, CPU로 실행하려면 마지막 명령의 `--engine onnx`를 사용할 수 있다.
 
 ## 사진별 검토
 
 `/runway-walk/debug.html?angle=10`에서 전체 2,502장의 등록 각도와 자동 추정 관절 33개를 검토한다. 기본 목록은 선택 각도의 ±5° 사진이며 보류 사진도 포함한다. 실제 재생 후보 수는 연속 3프레임·관절 연속성·검토 보류를 적용한 값으로 따로 표시한다. 전체 사진과 의견 있는 사진으로 범위를 바꾸거나 착장·원본 프레임 번호를 검색할 수 있다.
 
-연결 재생은 작품과 같은 `chooseCandidate`를 사용한다. 정지 후 좌우 버튼으로 실제 연결 순서를 한 장씩 되짚을 수 있다. 이전 사진 겹치기, 관절·번호 표시, 배경 변경, 관절 좌표·신뢰도 표를 제공한다. 원본 비교는 해당 원본 프레임을 서버의 FFmpeg로 읽어 관절을 원래 좌표로 돌려 표시한다. 원본 캐시가 없는 환경에서는 영상의 해당 시각 링크를 사용한다.
+연결 재생은 작품과 같은 `chooseCandidate`를 사용한다. 정지 후 좌우 버튼으로 실제 연결 순서를 한 장씩 되짚을 수 있다. 이전 사진 겹치기, 관절·번호 표시, 배경 변경, 관절 좌표·신뢰도 표를 제공한다. 몸통 기울기·전신축과 이전 사진의 발 위치 차이를 수치로 표시하고, 차이가 크면 전환 주의를 표시한다. 공유 링크의 `previous`에 비교 사진 ID도 함께 담는다. “다른 각도의 문제 전환 찾기”는 37방향의 연결을 다시 계산하고 차이가 큰 앞뒤 사진을 함께 연다. 원본 비교는 해당 원본 프레임을 서버의 FFmpeg로 읽어 관절을 원래 좌표로 돌려 표시한다. 원본 캐시가 없는 환경에서는 영상의 해당 시각 링크를 사용한다.
 
-`debug-poses.py`는 추출 캐시의 33개 관절에 검토한 XY 보정을 적용하고, 출력에 기록된 무릎·발목으로 동일 비율 등록 변환을 복원한다. `debug-poses.json`은 HD 사진 좌표와 대응하며 보간된 각도를 새 측정값으로 취급하지 않는다. 최대 등록 잔차는 0.015px 미만으로 검사한다.
+`debug-poses.py`는 추출 캐시의 33개 관절에 검토한 XY 보정을 적용하고, 출력에 기록된 무릎·발목으로 동일 비율 등록 변환을 복원한다. `debug-poses.json`은 HD 사진 좌표와 대응하며, 생성기는 같은 좌표에서 뽑은 경량 몸통·발 특징을 `angles.json`의 `posture`에도 기록한다. 이 단계는 새 사진에 대한 실제 재생 선택에도 필요하다.  보간된 각도를 새 측정값으로 취급하지 않는다. 최대 등록 잔차는 0.015px 미만으로 검사한다.
 
 사진 ID는 `source:sourceFrame`이며 공유 링크와 의견에도 유지한다. 의견에는 재생 각도, 문제 종류, 자유 의견, 선택한 관절·제안 각도·직전 사진을 기록한다. Vite 개발·미리보기 서버의 `/api/runway-walk/feedback`에서 읽고 쓰며 `.cache/runway-walk/feedback.jsonl`에 보관한다. 같은 서버를 보는 기기는 5초마다 갱신한다. 입력 초안은 기기에 임시 보관하고, 저장 뒤 서버를 다시 읽어 확인한다. 모든 의견을 JSON으로 내려받을 수 있다. 정적 배포만으로 공유 저장 기능이 생기지는 않는다.
 
