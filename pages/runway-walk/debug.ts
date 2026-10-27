@@ -398,7 +398,7 @@ $('scan').addEventListener('click',async()=> {
   pause();const button=$<HTMLButtonElement>('scan');button.disabled=true;
   const list=$('scan-results');list.replaceChildren();let passing=0;
   const table=element('table'),head=element('thead'),body=element('tbody');
-  head.innerHTML='<tr><th>각도</th><th>발 P95 / 최대 px</th><th>기울기 P95 / 최대 °</th><th>등장 프레임</th><th>결과</th></tr>';
+  head.innerHTML='<tr><th>각도</th><th>발 P95 / 최대 px</th><th>기울기 P95 / 최대 °</th><th>몸통 P95 / 최대 px</th><th>측정 충족률 발 / 몸통</th><th>등장 프레임</th><th>결과</th></tr>';
   table.append(head,body);list.append(table);
   const warnings:({target:number}&MeasuredTransition)[]=[];
   try {
@@ -406,15 +406,33 @@ $('scan').addEventListener('click',async()=> {
       const tr=element('tr');
       try{
         const report=auditSequence(sequencer,data.frames,yaw),q=report.quality;if(q.pass)passing++;
-        [signed(yaw),`${q.footP95.toFixed(1)} / ${q.footMax.toFixed(1)}`,`${q.leanP95.toFixed(1)} / ${q.leanMax.toFixed(1)}`,`${q.minRun}–${q.maxRun}`,q.pass?'통과':'미달'].forEach(value=>tr.append(element('td',value)));
+        const format=(value:number)=>Number.isFinite(value)?value.toFixed(1):'측정 불가';
+        [signed(yaw),`${format(q.footP95)} / ${format(q.footMax)}`,`${format(q.leanP95)} / ${format(q.leanMax)}`,`${format(q.torsoP95)} / ${format(q.torsoMax)}`,`${(q.coverage*100).toFixed(0)}% / ${(q.leanCoverage*100).toFixed(0)}%`,`${q.minRun}–${q.maxRun}`,q.pass?'통과':'미달'].forEach(value=>tr.append(element('td',value)));
         tr.className=q.pass?'pass':'warning';
-        warnings.push(...report.transitions.filter(m=>m.footResidual>MOTION_LIMITS.footP95||m.leanResidual>MOTION_LIMITS.leanP95||m.torsoResidual>MOTION_LIMITS.torsoP95).map(m=>({target:yaw,...m})));
+        warnings.push(...report.transitions.filter(m=>!m.leanReliable||m.footResidual>MOTION_LIMITS.footP95||m.leanResidual>MOTION_LIMITS.leanP95||m.torsoResidual>MOTION_LIMITS.torsoP95).map(m=>({target:yaw,...m})));
       }catch(error){tr.append(element('td',signed(yaw)),element('td',error instanceof Error?error.message:'연결 실패'));tr.className='warning';}
       body.append(tr);$('scan-state').textContent=`${(yaw+90)/5+1} / 37 각도 · ${passing}개 통과`;
       await new Promise(resolve=>setTimeout(resolve,0));
     }
-    warnings.sort((a,b)=>b.footResidual-a.footResidual).slice(0,30).forEach(row=>{
-      const link=element('button',`${signed(row.target)} · ${frameKey(data.frames[row.from])} → ${frameKey(data.frames[row.to])}\n예상 걸음 대비 발 오차 ${row.footResidual.toFixed(1)}px · 기울기 오차 ${row.leanResidual.toFixed(1)}°`);
+    // Show each direction, rather than letting repeated uncertain landmarks
+    // occupy every review link. Keep uncertain measurements explicitly visible.
+    const severity=(row:MeasuredTransition)=>Math.max(row.footResidual/MOTION_LIMITS.footP95,row.leanResidual/MOTION_LIMITS.leanP95,row.torsoResidual/MOTION_LIMITS.torsoP95);
+    const selectedWarnings:typeof warnings=[];
+    for(let yaw=-90;yaw<=90;yaw+=5){
+      const unique=new Map<string,typeof warnings[number]>();
+      for(const row of warnings.filter(r=>r.target===yaw)){
+        const key=`${row.from}:${row.to}`,old=unique.get(key);
+        if(!old||severity(row)>severity(old))unique.set(key,row);
+      }
+      const rows=[...unique.values()].sort((a,b)=>severity(b)-severity(a));
+      const uncertain=rows.find(row=>!Number.isFinite(row.footResidual)||!row.leanReliable);
+      if(uncertain)selectedWarnings.push(uncertain);
+      selectedWarnings.push(...rows.filter(row=>Number.isFinite(row.footResidual)&&row.leanReliable).slice(0,3));
+    }
+    selectedWarnings.forEach(row=>{
+      const feet=Number.isFinite(row.footResidual)?`발 오차 ${row.footResidual.toFixed(1)}px`:'발 측정 불확실';
+      const lean=row.leanReliable?`기울기 오차 ${row.leanResidual.toFixed(1)}°`:'기울기 측정 불확실';
+      const link=element('button',`${signed(row.target)} · ${frameKey(data.frames[row.from])} → ${frameKey(data.frames[row.to])}\n예상 걸음 대비 ${feet} · ${lean} · 몸통 오차 ${row.torsoResidual.toFixed(1)}px`);
       link.addEventListener('click',()=>{
         pause();walk=[];target=row.target;angleInput.value=String(target);scopeInput.value='angle';search.value='';ghost.checked=true;
         void renderPhoto(row.to,row.from).then(()=>{manualSwap=false;previousSwap=false;manualHalfCycle=false;renderMetadata();updateURL();});updateRows();
