@@ -136,5 +136,29 @@
     "fps": 25,
     "originalFps": 25,
     "sourceOffset": 0
+  },
+  {
+    "id": "homme25",
+    "file": "homme-ss25.mp4",
+    "poseFile": "homme-ss25.mp4",
+    "originalFile": "homme-ss25-original.mp4",
+    "roiScale": 1,
+    "url": "https://www.youtube.com/watch?v=UqwJoK0Ve78",
+    "title": "Homme Pliss\u00e9 Issey Miyake Spring Summer 2025",
+    "fps": 25,
+    "originalFps": 30,
+    "sourceOffset": 0
+  },
+  {
+    "id": "ysl24",
+    "file": "ysl-fw24.mp4",
+    "poseFile": "ysl-fw24.mp4",
+    "originalFile": "ysl-fw24-original.mp4",
+    "roiScale": 1,
+    "url": "https://www.youtube.com/watch?v=ZdLgU-pAU0c",
+    "title": "Saint Laurent Men's Winter 2024",
+    "fps": 25,
+    "originalFps": 30,
+    "sourceOffset": 0
   }
 ]

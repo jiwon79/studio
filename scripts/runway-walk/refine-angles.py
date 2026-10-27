@@ -320,6 +320,13 @@ def leg_template(phase,reference):
 for clip in manifest['clips']:
     reference_id=clip.get('phaseReference') or ('prada25-look-50' if 0<abs(clip['yaw'])<=20 else None)
     if not reference_id:continue
+    if reference_id not in by_clip:
+        if clip.get('phaseReference'):
+            raise ValueError(f'Explicit phase reference {reference_id} is missing for {clip["id"]}')
+        # A staged direction-only export need not contain the old frontal
+        # calibration clip. The anatomical fitter runs after libraries merge.
+        print(clip['id'], 'retains native phase; refit anatomical reference after merging', flush=True)
+        continue
     reference=by_clip[reference_id]
     rows=by_clip[clip['id']];phase=np.array([r['phase'] for r in rows]);legs=leg_difference(rows)
     if clip.get('phaseReference'):
