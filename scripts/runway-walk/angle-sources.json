@@ -61,7 +61,7 @@
     "originalFile": "hermes-ss26-original.mp4",
     "roiScale": 1,
     "url": "https://www.youtube.com/watch?v=eQUau2GefuA",
-    "title": "Herm\u00e8s Men's Summer 2026",
+    "title": "Hermès Men's Summer 2026",
     "fps": 25,
     "originalFps": 60,
     "sourceOffset": 0
@@ -85,7 +85,7 @@
     "originalFile": "hermes-ss24-original.mp4",
     "roiScale": 1,
     "url": "https://www.youtube.com/watch?v=cN12oPqe3Qc",
-    "title": "Herm\u00e8s Men's Summer 2024",
+    "title": "Hermès Men's Summer 2024",
     "fps": 25,
     "originalFps": 30,
     "sourceOffset": 0
@@ -97,7 +97,7 @@
     "originalFile": "hermes-ss25-original.mp4",
     "roiScale": 1,
     "url": "https://www.youtube.com/watch?v=cZdY5tQkNIo",
-    "title": "Herm\u00e8s Men's Summer 2025",
+    "title": "Hermès Men's Summer 2025",
     "fps": 25,
     "originalFps": 30,
     "sourceOffset": 0
@@ -109,7 +109,7 @@
     "originalFile": "hermes-fw25-original.mp4",
     "roiScale": 1,
     "url": "https://www.youtube.com/watch?v=UtEVDZp-tCo",
-    "title": "Herm\u00e8s Men's Winter 2025",
+    "title": "Hermès Men's Winter 2025",
     "fps": 25,
     "originalFps": 30,
     "sourceOffset": 0
@@ -132,7 +132,7 @@
     "poseFile": "hermes-ss23-original.mp4",
     "roiScale": 1,
     "url": "https://www.youtube.com/watch?v=jwpspO5b6tw",
-    "title": "Herm\u00e8s Men's Summer 2023",
+    "title": "Hermès Men's Summer 2023",
     "fps": 25,
     "originalFps": 25,
     "sourceOffset": 0
@@ -144,7 +144,7 @@
     "originalFile": "homme-ss25-original.mp4",
     "roiScale": 1,
     "url": "https://www.youtube.com/watch?v=UqwJoK0Ve78",
-    "title": "Homme Pliss\u00e9 Issey Miyake Spring Summer 2025",
+    "title": "Homme Plissé Issey Miyake Spring Summer 2025",
     "fps": 25,
     "originalFps": 30,
     "sourceOffset": 0
@@ -167,7 +167,7 @@
     "poseFile": "hermes-ss22-original.mp4",
     "roiScale": 1,
     "url": "https://www.youtube.com/watch?v=J_H_1wyT_Kg",
-    "title": "Herm\u00e8s Men's Summer 2022",
+    "title": "Hermès Men's Summer 2022",
     "fps": 25,
     "originalFps": 25,
     "sourceOffset": 0
@@ -178,7 +178,7 @@
     "poseFile": "hermes-fw23-original.mp4",
     "roiScale": 1,
     "url": "https://www.youtube.com/watch?v=7Rth_LgBA60",
-    "title": "Herm\u00e8s Men's Winter 2023",
+    "title": "Hermès Men's Winter 2023",
     "fps": 25,
     "originalFps": 25,
     "sourceOffset": 0
@@ -189,7 +189,7 @@
     "poseFile": "hermes-fw22-original.mp4",
     "roiScale": 1,
     "url": "https://www.youtube.com/watch?v=RQwsBYau6uE",
-    "title": "Herm\u00e8s Men's Winter 2022",
+    "title": "Hermès Men's Winter 2022",
     "fps": 25,
     "originalFps": 25,
     "sourceOffset": 0
@@ -235,6 +235,53 @@
     "roiScale": 1,
     "url": "https://www.youtube.com/watch?v=yEZxQghyZcs",
     "title": "Lanvin Menswear Spring Summer 2017",
+    "fps": 25,
+    "originalFps": 25,
+    "sourceOffset": 0
+  },
+  {
+    "id": "homme23",
+    "file": "homme-ss23-hd.mp4",
+    "poseFile": "homme-ss23-hd.mp4",
+    "originalFile": "homme-ss23-hd-original.mp4",
+    "roiScale": 1,
+    "url": "https://www.youtube.com/watch?v=osKw9Te8mak",
+    "title": "Homme Plissé Issey Miyake Spring Summer 2023",
+    "fps": 25,
+    "originalFps": 50,
+    "sourceOffset": 0
+  },
+  {
+    "id": "dunhill25",
+    "file": "dunhill-ss25-original.mp4",
+    "poseFile": "dunhill-ss25-original.mp4",
+    "roiScale": 1,
+    "url": "https://www.youtube.com/watch?v=G3uqrAR-gIg",
+    "title": "Dunhill Spring Summer 2025",
+    "fps": 25,
+    "originalFps": 25,
+    "sourceOffset": 0
+  },
+  {
+    "id": "pradafw12",
+    "file": "prada-fw12.mp4",
+    "poseFile": "prada-fw12.mp4",
+    "originalFile": "prada-fw12-original.mp4",
+    "roiScale": 1,
+    "url": "https://www.youtube.com/watch?v=xzD4gm01TMk",
+    "title": "Prada Menswear Fall Winter 2012",
+    "fps": 25,
+    "originalFps": 29.97002997003,
+    "sourceOffset": 0
+  },
+  {
+    "id": "pradafw13",
+    "file": "prada-fw13-official-original.mp4",
+    "poseFile": "prada-fw13-official-original.mp4",
+    "originalFile": "prada-fw13-official-original.mp4",
+    "roiScale": 1,
+    "url": "https://www.prada.com/fr/fr/pradasphere/fashion-shows/2013/fw-menswear.html",
+    "title": "Prada Fall Winter 2013 Menswear — official archive",
     "fps": 25,
     "originalFps": 25,
     "sourceOffset": 0
