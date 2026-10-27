@@ -5,8 +5,9 @@ import { ANGLE_STEP, snapYaw } from './direction-step';
 import type { AngleFrame } from './angle-match';
 import {WalkCoverageError,rebaseWalkState} from './walk-sequencer';
 import {clockPhase,createWalkState} from './reference-clock';
-import { ReferenceSequencer, type ReferenceCut } from './reference-sequencer';
+import { ReferenceSequencer,cutIndex,cutIndices, type ReferenceCut } from './reference-sequencer';
 import referenceMatches from './reference-matches.json';
+import {photoTransform,applyPhotoTransform,IDENTITY_PHOTO} from './photo-registration';
 
 const frames: AngleFrame[] = data.frames;
 const sequencer = new ReferenceSequencer(frames, data.holdFrames);
@@ -102,7 +103,11 @@ function paint(image: ImageBitmap, tile: number, columns: number, width: number,
 }
 function paintRegion(image: ImageBitmap, x: number, y: number, width: number, height: number, dx: number, dy: number, row: AngleFrame, yaw: number, quality: string) {
   context.clearRect(0, 0, canvas.width, canvas.height);
+  const aligned=quality==='hd'?!!block.registered:sequencer.usesRegistration(yaw);
+  const transform=aligned&&row.posture?photoTransform(row.posture,phase,yaw):IDENTITY_PHOTO;
+  context.save();applyPhotoTransform(context,transform);
   context.drawImage(image, x, y, width, height, dx, dy, width, height);
+  context.restore();canvas.dataset.photoTransform=JSON.stringify(transform);
   direction.value = label(yaw);
   canvas.dataset.sourceFrame = String(row.sourceFrame);
   canvas.dataset.clip = row.clip;
@@ -135,18 +140,18 @@ function drawPreview() {
 }
 function draw() {
   if (drag?.moved || renderedTarget !== target) { drawPreview(); return; }
-  const row = frames[block.start + Math.min(offset, block.count - 1)];
+  const row = frames[cutIndex(block,Math.min(offset, block.count - 1))];
   const image = images.get(row.atlas);
   if (image) paint(image, row.tile, data.columns, data.tileWidth, data.tileHeight, row, renderedTarget, 'hd');
   else drawPreview();
 }
 async function prepare(candidate: typeof block) {
-  const pages = new Set(frames.slice(candidate.start, candidate.start + candidate.count).map(row => row.atlas));
+  const pages = new Set(cutIndices(candidate).map(i => frames[i].atlas));
   await Promise.all([...pages].map(index => images.load(index)));
 }
 function retainPages() {
   images.retain([block, ...upcoming, ...planned].flatMap(candidate =>
-    frames.slice(candidate.start, candidate.start + candidate.count).map(row => row.atlas)));
+    cutIndices(candidate).map(i => frames[i].atlas)));
 }
 /** Decode three future cuts while the current cut is still being displayed. */
 async function fillBuffer() {

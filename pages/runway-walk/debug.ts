@@ -1,8 +1,9 @@
+import {photoTransform,applyPhotoTransform,transformPhotoPoint,transformPosture,IDENTITY_PHOTO,type PhotoTransform} from './photo-registration';
 import data from './angles.json';
 import poses from './debug-poses.json';
 import './debug.css';
 import {clockPhase} from './reference-clock';
-import { ReferenceSequencer, type ReferenceCut } from './reference-sequencer';
+import { ReferenceSequencer,cutIndex, type ReferenceCut } from './reference-sequencer';
 import referenceMatches from './reference-matches.json';
 import { AtlasPool } from './atlas-pool';
 import { snapYaw } from './direction-step';
@@ -97,9 +98,15 @@ function retain() {
   const compared=comparisonIndex();
   images.retain([selected, ...(ghost.checked && compared!==undefined ? [compared] : []), ...walk.slice(cursor,cursor+12)].map(i => data.frames[i].atlas));
 }
-function drawTile(image: ImageBitmap, index: number, ctx: CanvasRenderingContext2D, width = 512, height = 768) {
+function photoState(index:number,info?:WalkInfo){
+ const posture=data.frames[index].posture,transform=info?.cut?.registered?photoTransform(posture,info.phase,target):IDENTITY_PHOTO;
+ return {transform,posture:transformPosture(posture,transform)};
+}
+function previousInfo(){return walk.length&&cursor>0?walkInfo[cursor-1]:undefined;}
+function drawTile(image: ImageBitmap, index: number, ctx: CanvasRenderingContext2D, width = 512, height = 768,transform:PhotoTransform=IDENTITY_PHOTO) {
   const frame = data.frames[index];
-  ctx.drawImage(image, frame.tile%data.columns*512, Math.floor(frame.tile/data.columns)*768,512,768,0,0,width,height);
+  ctx.save();ctx.scale(width/512,height/768);applyPhotoTransform(ctx,transform);
+  ctx.drawImage(image, frame.tile%data.columns*512, Math.floor(frame.tile/data.columns)*768,512,768,0,0,512,768);ctx.restore();
 }
 function comparisonIndex() { return walk.length && cursor>0 ? walk[cursor-1] : previous; }
 async function renderPhoto(index: number, explicitPrevious?: number) {
@@ -118,8 +125,8 @@ async function renderPhoto(index: number, explicitPrevious?: number) {
     const prior = ghost.checked && compared!==undefined ? await images.load(data.frames[compared].atlas) : undefined;
     if (epoch!==generation) return;
     context.clearRect(0,0,512,768);
-    if (prior && compared!==undefined) { context.globalAlpha=.28; drawTile(prior,compared,context); context.globalAlpha=1; }
-    drawTile(image,index,context);
+    if (prior && compared!==undefined) { context.globalAlpha=.28; drawTile(prior,compared,context,512,768,photoState(compared,previousInfo()).transform); context.globalAlpha=1; }
+    drawTile(image,index,context,512,768,photoState(index,currentInfo()).transform);
     const row = data.frames[index];
     canvas.dataset.frameKey = frameKey(row); canvas.dataset.actualYaw=String(row.yaw); canvas.dataset.target=String(target);
     const info=currentInfo();
@@ -150,7 +157,7 @@ function renderMetadata() {
   state.className = heldForTarget(frame,target)||referenceMatches.frames[selected].uncertain?'held':'';
   const metadata = $('metadata'); metadata.replaceChildren();
   const compared=comparisonIndex();
-  const values = { '사진 ID':frameKey(frame), '착장':frame.clip, '재생 각도':signed(target), '각도 차이':`${Math.abs(frame.yaw-target).toFixed(1)}°`, '몸통 기울기':signed(frame.posture.lean,1), '전신축 기울기':signed(frame.posture.axis,1), '보행 위상':referenceMatches.frames[selected].phase.toFixed(3), '관절':joint===null?'선택 안 함':`${joint} ${poses.names[joint]}`, '이전 사진':compared===undefined?'—':frameKey(data.frames[compared]) };
+  const values = { '사진 ID':frameKey(frame), '착장':frame.clip, '재생 각도':signed(target), '각도 차이':`${Math.abs(frame.yaw-target).toFixed(1)}°`, '몸통 기울기':signed(photoState(selected,currentInfo()).posture.lean,1), '전신축 기울기':signed(photoState(selected,currentInfo()).posture.axis,1), '보행 위상':referenceMatches.frames[selected].phase.toFixed(3), '관절':joint===null?'선택 안 함':`${joint} ${poses.names[joint]}`, '이전 사진':compared===undefined?'—':frameKey(data.frames[compared]) };
   const info=currentInfo();
   if(info) Object.assign(values,{'연속 보행 시계':info.phase.toFixed(3),'3D 맞춤 오차':info.cut?info.cut.referenceError.toFixed(3):'시작 사진','발 대응':'왼발과 오른발 고정','구간':info.cut?.sourceContinuation?'같은 원본의 다음 구간':`${info.cut?.count??1}프레임 교체`});
   Object.entries(values).forEach(([key,value]) => metadata.append(element('dt',key),element('dd',value)));
@@ -165,7 +172,7 @@ function renderComparison() {
   $<HTMLButtonElement>('compare-previous').disabled=compared===undefined;
   if(compared===undefined) { state.textContent='연결 재생하거나 목록에서 사진을 넘기면 이전 사진과 비교합니다.'; state.className='hint'; return; }
   const metrics=walk.length || manualSwap!==undefined
-    ?postureTransition(data.frames[compared].posture,data.frames[selected].posture)
+    ?postureTransition(photoState(compared,previousInfo()).posture,photoState(selected,currentInfo()).posture)
     :inspectTransition(data.frames[compared].posture,data.frames[selected].posture,false);
   const timing=currentInfo()?.cut;
   state.textContent=timing?.relaxed?'보행 시계 주의 · 해당 각도 소스 보충 필요':transitionWarning(metrics)?'전환 주의 · 기울기 또는 발 위치 차이가 큼':'이전 사진과의 차이';
@@ -197,17 +204,18 @@ function skeletonNodes(svg: HTMLElement | SVGElement, points: number[][], width:
 }
 function renderPose() {
   const pose = poseByKey.get(frameKey(data.frames[selected]))!;
-  skeletonNodes($('pose'),pose.points,512,768,true);
+  const displayedPoints=pose.points.map(point=>transformPhotoPoint(point,photoState(selected,currentInfo()).transform));
+  skeletonNodes($('pose'),displayedPoints,512,768,true);
   const compared=comparisonIndex();
   if(skeleton.checked && ghost.checked && compared!==undefined) {
-    const prior=data.frames[compared].posture,svg=$('pose');
+    const prior=photoState(compared,previousInfo()).posture,svg=$('pose');
     svg.append(svgNode('line',{x1:prior.center[0]*512,y1:prior.center[1]*768,x2:prior.center[2]*512,y2:prior.center[3]*768,stroke:'#ff775f','stroke-width':4,'stroke-dasharray':'8 5'}));
     prior.soles.forEach((v,i)=>{ if(i%2===0) svg.append(svgNode('circle',{cx:v*512,cy:prior.soles[i+1]*768,r:6,fill:'none',stroke:'#ff775f','stroke-width':2})); });
-    const current=data.frames[selected].posture;
+    const current=photoState(selected,currentInfo()).posture;
     svg.append(svgNode('line',{x1:current.center[0]*512,y1:current.center[1]*768,x2:current.center[2]*512,y2:current.center[3]*768,stroke:'#ffe28e','stroke-width':3}));
   }
   const table = $('joint-table'); table.replaceChildren();
-  pose.points.forEach(([x,y,v],index) => {
+  displayedPoints.forEach(([x,y,v],index) => {
     const tr = element('tr'); tr.className=index===joint?'selected':'';
     [`${index} ${poses.names[index]}`,(x*512).toFixed(1),(y*768).toFixed(1),`${(v*100).toFixed(0)}%`].forEach(value => tr.append(element('td',value)));
     table.append(tr);
@@ -311,7 +319,7 @@ function makeWalk() {
   for (let i=0;i<120;i++) {
     const cut=sequencer.plan(target,state);
     for(let offset=0;offset<cut.count;offset++) {
-      walk.push(cut.start+offset);
+      walk.push(cutIndex(cut,offset));
       walkInfo.push({swapped:cut.swapped,halfCycle:cut.halfCycle,phase:clockPhase(state.tick+offset,state.origin),cut});
     }
     state=cut.after;

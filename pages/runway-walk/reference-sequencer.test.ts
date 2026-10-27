@@ -5,7 +5,7 @@ import matches from './reference-matches.json';
 import schedule from './reference-schedule.json';
 import {auditSequence} from './sequence-audit';
 import { referencePose, referenceFeatures, legFeatures, REFERENCE_VERSION } from './gait-reference';
-import { ReferenceSequencer } from './reference-sequencer';
+import { ReferenceSequencer,cutIndex } from './reference-sequencer';
 import {WalkCoverageError} from './walk-sequencer';
 import {createWalkState,CYCLE_FRAMES} from './reference-clock';
 const planner = new ReferenceSequencer(data.frames);
@@ -58,10 +58,10 @@ for (let yaw = -90; yaw <= 90; yaw += 5)
             expect(cut.count).toBeGreaterThanOrEqual(1);
             expect(cut.count).toBeLessThanOrEqual(3);
             for (let i = 0; i < cut.count; i++) {
-                const index = cut.start + i, tick = state.tick + i, frame = data.frames[index], check = planner.inspect(index, tick, yaw);
+                const index = cutIndex(cut,i), tick = state.tick + i, frame = data.frames[index], check = planner.inspect(index, tick, yaw);
                 expect(check.oppositeFits).toBe(false);expect(matches.frames[index].uncertain).toBe(false);
                 expect(Math.abs(frame.yaw - yaw)).toBeLessThanOrEqual(5);
-                if(i){const step=frame.sourceFrame-data.frames[index-1].sourceFrame;expect(step).toBeGreaterThan(0);expect(step).toBeLessThanOrEqual(cut.qualityVerified?schedule.maxSourceStep:1);}
+                if(i){const step=frame.sourceFrame-data.frames[cutIndex(cut,i-1)].sourceFrame;expect(step).toBeGreaterThan(0);expect(step).toBeLessThanOrEqual(cut.qualityVerified?schedule.maxSourceStep:1);}
                 const last = used.get(key(index));
                 if (last !== undefined)
                     expect(tick - last).toBeGreaterThanOrEqual(CYCLE_FRAMES);

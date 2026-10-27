@@ -8,8 +8,15 @@ import { legError, referenceFeatures, referencePose } from './gait-reference';
 import schedule from './reference-schedule.json';
 import {audits,blockHeld} from './review-policy';
 import {measureMotion,MOTION_LIMITS} from './motion-quality';
+import {PHOTO_REGISTRATION_VERSION,registeredPosture} from './photo-registration';
+type CompiledSchedule=Omit<typeof schedule,'directions'> & {directions:Record<string,(number|number[])[]>;registration?:{version:string;yaws:number[]}};
+const compiled:CompiledSchedule=schedule;
+export const cutIndex=(cut:ReferenceCut,offset:number)=>cut.indices?.[offset]??cut.start+offset;
+export const cutIndices=(cut:ReferenceCut,count=cut.count)=>Array.from({length:count},(_,i)=>cutIndex(cut,i));
 export type ReferenceCut = AngleBlock & {
     qualityVerified?: boolean;
+    registered?: boolean;
+    indices?: readonly number[];
     count: number;
     before: WalkState;
     after: WalkState;
@@ -43,8 +50,9 @@ export class ReferenceSequencer {
         if (frames.length !== fitted.length)
             throw new Error('Reference poses do not match the photograph library');
         this.blocks = buildBlocks(frames, hold);
-        this.verifiedSchedule=fitted===matches.frames&&hold===3&&schedule.assetVersion===matches.assetVersion&&schedule.matchVersion===matches.matchVersion&&schedule.cycleFrames===CYCLE_FRAMES&&JSON.stringify(schedule.reviewPolicy)===JSON.stringify(audits);
+        this.verifiedSchedule=(!compiled.registration||compiled.registration.version===PHOTO_REGISTRATION_VERSION)&&fitted===matches.frames&&hold===3&&schedule.assetVersion===matches.assetVersion&&schedule.matchVersion===matches.matchVersion&&schedule.cycleFrames===CYCLE_FRAMES&&JSON.stringify(schedule.reviewPolicy)===JSON.stringify(audits);
     }
+    usesRegistration(yaw:number){return this.verifiedSchedule&&!!compiled.registration?.yaws.includes(yaw);}
     candidates(yaw: number, count = this.hold) {
         const id = `${yaw}:${count}`;
         let pool = this.pools.get(id);
@@ -81,33 +89,36 @@ export class ReferenceSequencer {
         count = Math.max(0, Math.min(cut.count, count));
         if (!count)
             return cut.before;
-        const tick = cut.before.tick, rows = this.frames.slice(cut.start, cut.start + count);
-        return { ...cut.before, tick: tick + count, observedEnd: cut.before.origin + (tick + count - 1) / CYCLE_FRAMES, last: { index: cut.start + count - 1, swapped: false, halfCycle: false }, used: cut.before.used.filter(r => tick - r.tick < CYCLE_FRAMES*4).concat(rows.map((row, i) => ({ key: key(row), tick: tick + i }))), cuts: cut.before.cuts.filter(r => tick - r.tick < CYCLE_FRAMES*4).concat({ start: cut.start, look: cut.look ?? cut.clip, tick }) };
+        const tick = cut.before.tick, rows = cutIndices(cut,count).map(i=>this.frames[i]);
+        return { ...cut.before, tick: tick + count, observedEnd: cut.before.origin + (tick + count - 1) / CYCLE_FRAMES, last: { index: cutIndex(cut,count-1), swapped: false, halfCycle: false }, used: cut.before.used.filter(r => tick - r.tick < CYCLE_FRAMES*4).concat(rows.map((row, i) => ({ key: key(row), tick: tick + i }))), cuts: cut.before.cuts.filter(r => tick - r.tick < CYCLE_FRAMES*4).concat({ start: cut.start, look: cut.look ?? cut.clip, tick }) };
     }
     /** Offline paths include the loop boundary and fixed three-frame appearances.
      * The clock remains the imported clip's native clock. A drag may enter the
      * middle of a cut; only that initial partial cut can be shorter than three. */
     private scheduled(yaw:number,state:WalkState):ReferenceCut|undefined {
         if(!this.verifiedSchedule||state.origin!==0)return;
-        const starts=(schedule.directions as Record<string,number[]>)[String(yaw)];if(!starts?.length)return;
+        const starts=compiled.directions[String(yaw)];if(!starts?.length)return;
+        const registered=this.usesRegistration(yaw);
         const preferred=state.referenceSchedule?.yaw===yaw?state.referenceSchedule.shift:0;
         const shifts=[preferred,...[0,100,200].filter(s=>s!==preferred)];
         const used=new Map(state.used.map(r=>[r.key,r.tick]));
         for(const shift of shifts){
             const position=((state.tick+shift)%schedule.periodFrames+schedule.periodFrames)%schedule.periodFrames;
-            const offset=position%3,start=starts[Math.floor(position/3)]+offset,count=3-offset;
-            const rows=this.frames.slice(start,start+count),first=rows[0];
-            if(rows.length!==count||rows.some((f,i)=>f.clip!==first.clip||(i>0&&(f.sourceFrame<=rows[i-1].sourceFrame||f.sourceFrame-rows[i-1].sourceFrame>(schedule.maxSourceStep??1)))||Math.abs(f.yaw-yaw)>5||this.fitted[start+i].uncertain||state.tick+i-(used.get(key(f))??-1000)<CYCLE_FRAMES)||blockHeld(first.clip,first.sourceFrame,rows[count-1].sourceFrame,yaw))continue;
-            const checks=rows.map((_,i)=>this.inspect(start+i,state.tick+i,yaw));if(checks.some(c=>c.oppositeFits))continue;
+            const offset=position%3,entry=starts[Math.floor(position/3)];
+            const indices=(typeof entry==='number'?[entry,entry+1,entry+2]:entry).slice(offset),start=indices[0],count=3-offset;
+            const rows=indices.map(i=>this.frames[i]),first=rows[0];
+            if(rows.length!==count||rows.some((f,i)=>f.clip!==first.clip||(i>0&&(f.sourceFrame<=rows[i-1].sourceFrame||f.sourceFrame-rows[i-1].sourceFrame>(schedule.maxSourceStep??1)))||Math.abs(f.yaw-yaw)>5||this.fitted[indices[i]].uncertain||state.tick+i-(used.get(key(f))??-1000)<CYCLE_FRAMES)||blockHeld(first.clip,first.sourceFrame,rows[count-1].sourceFrame,yaw))continue;
+            const checks=rows.map((_,i)=>this.inspect(indices[i],state.tick+i,yaw));if(checks.some(c=>c.oppositeFits))continue;
             const direct=checks.reduce((s,c)=>s+c.direct,0)/count;if(direct>.4)continue;
             if(state.last&&state.referenceSchedule?.yaw===yaw){
                 const a=this.frames[state.last.index].posture,b=first.posture;
                 if(!a||!b)continue;
-                const m=measureMotion(a,b,clockPhase(state.tick-1),clockPhase(state.tick),yaw);
+                const pa=clockPhase(state.tick-1),pb=clockPhase(state.tick);
+                const m=measureMotion(registeredPosture(a,pa,yaw,registered),registeredPosture(b,pb,yaw,registered),pa,pb,yaw);
                 if(m.footResidual>MOTION_LIMITS.footMax||m.leanResidual>MOTION_LIMITS.leanMax||m.torsoResidual>MOTION_LIMITS.torsoMax)continue;
             }
             const before={...state,referenceSchedule:{yaw,shift}};
-            const cut:ReferenceCut={start,yaw:rows.reduce((s,f)=>s+f.yaw,0)/count,phase:first.phase,clip:first.clip,look:first.look??first.clip,sourceFrame:first.sourceFrame,lastSourceFrame:rows[count-1].sourceFrame,count,before,after:before,swapped:false,halfCycle:false,phaseError:Math.abs(((this.fitted[start].phase-clockPhase(state.tick)+.5)%1+1)%1-.5),phaseGap:1/CYCLE_FRAMES,relaxed:false,sourceContinuation:false,referenceError:direct,oppositeError:checks.reduce((s,c)=>s+c.opposite,0)/count,identityRejected:false,qualityVerified:true};
+            const cut:ReferenceCut={start,indices,registered,yaw:rows.reduce((s,f)=>s+f.yaw,0)/count,phase:first.phase,clip:first.clip,look:first.look??first.clip,sourceFrame:first.sourceFrame,lastSourceFrame:rows[count-1].sourceFrame,count,before,after:before,swapped:false,halfCycle:false,phaseError:Math.abs(((this.fitted[start].phase-clockPhase(state.tick)+.5)%1+1)%1-.5),phaseGap:1/CYCLE_FRAMES,relaxed:false,sourceContinuation:false,referenceError:direct,oppositeError:checks.reduce((s,c)=>s+c.opposite,0)/count,identityRejected:false,qualityVerified:true};
             cut.after=this.afterFrames(cut);return cut;
         }
     }

@@ -7,14 +7,19 @@ import {createServer} from 'vite';
 
 const root=path.resolve(process.argv[2]??'pages/runway-walk');
 const output=path.resolve(process.argv[3]??path.join(root,'reference-schedule.json'));
-const requested=process.argv.slice(4).map(Number);
+const register=process.argv.slice(4).includes('--register');
+const requested=process.argv.slice(4).filter(v=>v!=='--register').map(Number);
 if(requested.some(y=>!Number.isInteger(y)||y< -90||y>90||y%5))throw Error('Directions must be 5-degree steps from -90 to 90');
-const server=await createServer({configFile:false,optimizeDeps:{noDiscovery:true},server:{middlewareMode:true}});
+const server=await createServer({configFile:false,optimizeDeps:{noDiscovery:true},server:{middlewareMode:true,hmr:false}});
 try {
  const {buildBlocks,directionCandidates}=await server.ssrLoadModule('/pages/runway-walk/angle-match.ts');
  const {ReferenceSequencer}=await server.ssrLoadModule('/pages/runway-walk/reference-sequencer.ts');
  const {clockPhase,CYCLE_FRAMES}=await server.ssrLoadModule('/pages/runway-walk/reference-clock.ts');
- const {measureMotion,summarizeMotion,MOTION_LIMITS:L}=await server.ssrLoadModule('/pages/runway-walk/motion-quality.ts');
+ const {measureMotion:rawMeasure,summarizeMotion,MOTION_LIMITS:L}=await server.ssrLoadModule('/pages/runway-walk/motion-quality.ts');
+ const {registeredPosture,PHOTO_REGISTRATION_VERSION}=await server.ssrLoadModule('/pages/runway-walk/photo-registration.ts');
+ const cache=new WeakMap();
+ const posture=(p,phase,yaw)=>{if(!register)return p;let rows=cache.get(p);if(!rows){rows=new Map();cache.set(p,rows);}const key=`${yaw}:${phase.toFixed(6)}`;if(!rows.has(key))rows.set(key,registeredPosture(p,phase,yaw,true));return rows.get(key);};
+ const measureMotion=(a,b,pa,pb,yaw)=>rawMeasure(posture(a,pa,yaw),posture(b,pb,yaw),pa,pb,yaw);
  const data=JSON.parse(fs.readFileSync(path.join(root,'angles.json')));
  const fits=JSON.parse(fs.readFileSync(path.join(root,'reference-matches.json')));
  if(data.assetVersion!==fits.assetVersion)throw Error('Refit the current photograph library first');
@@ -105,7 +110,7 @@ try {
   else failed.push(yaw);
  }
  const reviewPolicy=JSON.parse(fs.readFileSync('pages/runway-walk/frame-audit.json'));
- const compiled={version:'fixed-cadence-v1',assetVersion:data.assetVersion,matchVersion:fits.matchVersion,periodFrames:period,cycleFrames:CYCLE_FRAMES,holdFrames:3,maxSourceStep:2,reviewPolicy,directions};
+ const compiled={version:register?'fixed-cadence-v2':'fixed-cadence-v1',...(register?{registration:{version:PHOTO_REGISTRATION_VERSION,yaws:Object.keys(directions).map(Number)}}:{}),assetVersion:data.assetVersion,matchVersion:fits.matchVersion,periodFrames:period,cycleFrames:CYCLE_FRAMES,holdFrames:3,maxSourceStep:2,reviewPolicy,directions};
  console.log('Qualified angles:',Object.keys(directions).join(', '));
  if(failed.length){console.error('Missing coverage:',failed.join(', '));process.exitCode=1;}
  const liveOutput=output===path.resolve('pages/runway-walk/reference-schedule.json');
@@ -116,7 +121,7 @@ try {
  }else{
   if(liveOutput&&fs.existsSync(output)&&requested.length){
    const previous=JSON.parse(fs.readFileSync(output));
-   const bindings=['version','assetVersion','matchVersion','periodFrames','cycleFrames','holdFrames','maxSourceStep','reviewPolicy'];
+   const bindings=['version','assetVersion','matchVersion','periodFrames','cycleFrames','holdFrames','maxSourceStep','reviewPolicy','registration'];
    if(bindings.some(key=>JSON.stringify(previous[key])!==JSON.stringify(compiled[key])))throw Error('A subset cannot replace a schedule with different library, clock or review bindings; export and review the complete replacement separately');
    compiled.directions={...previous.directions,...directions};
   }

@@ -1,3 +1,4 @@
+import {photoTransform,applyPhotoTransform,transformPhotoPoint,IDENTITY_PHOTO} from './photo-registration';
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import data from './angles.json';
@@ -5,7 +6,7 @@ import poses from './debug-poses.json';
 import referenceMatches from './reference-matches.json';
 import motion from './reference-motion.json';
 import {createWalkState,clockPhase,CYCLE_FRAMES} from './reference-clock';
-import {ReferenceSequencer,type ReferenceCut} from './reference-sequencer';
+import {ReferenceSequencer,cutIndex,type ReferenceCut} from './reference-sequencer';
 import {referencePose,REFERENCE_HEIGHT} from './gait-reference';
 import {AtlasPool} from './atlas-pool';
 const $=<T extends HTMLElement>(id:string)=>document.getElementById(id) as T;
@@ -59,7 +60,8 @@ function model(){
 }
 function skeleton(index:number){
     const svg=$('new-pose');svg.replaceChildren();if(!$<HTMLInputElement>('joints').checked)return;
-    const frame=data.frames[index],p=sourcePoses.get(`${frame.source}:${frame.sourceFrame}`)!;
+    const frame=data.frames[index],transform=path[tick]?.cut.registered?photoTransform(frame.posture,clockPhase(tick),yaw):IDENTITY_PHOTO;
+    const p=sourcePoses.get(`${frame.source}:${frame.sourceFrame}`)!.map(point=>transformPhotoPoint(point,transform));
     for(const [ids,color,label] of [[[23,25,27,29,31],'#32c0ff','L'],[[24,26,28,30,32],'#ff995b','R']] as const){
         const line=document.createElementNS('http://www.w3.org/2000/svg','polyline');
         line.setAttribute('points',ids.map(j=>`${p[j][0]*512},${p[j][1]*768}`).join(' '));line.setAttribute('fill','none');line.setAttribute('stroke',color);line.setAttribute('stroke-width','3');
@@ -76,7 +78,8 @@ async function draw(){
     // Change both views together, after the photograph has decoded.
     model();phase.value=String(Math.round(clockPhase(tick)*119));$('phase-value').textContent=`${Math.round(clockPhase(tick)*100)}%`;
     const canvas=$<HTMLCanvasElement>('new'),ctx=canvas.getContext('2d')!;ctx.clearRect(0,0,512,768);
-    ctx.drawImage(image,frame.tile%data.columns*512,Math.floor(frame.tile/data.columns)*768,512,768,0,0,512,768);skeleton(row.index);
+    const transform=row.cut.registered?photoTransform(frame.posture,clockPhase(tick),yaw):IDENTITY_PHOTO;
+    ctx.save();applyPhotoTransform(ctx,transform);ctx.drawImage(image,frame.tile%data.columns*512,Math.floor(frame.tile/data.columns)*768,512,768,0,0,512,768);ctx.restore();skeleton(row.index);
     canvas.dataset.frame=`${frame.source}:${frame.sourceFrame}`;canvas.dataset.tick=String(tick);canvas.dataset.swapped='false';canvas.dataset.reference=motion.version;
     const error=planner.inspect(row.index,tick,yaw);
     $('new-info').textContent=`${frame.source}:${frame.sourceFrame} · 사진 ${frame.yaw.toFixed(1)}°\n관절 오차 ${error.direct.toFixed(3)} · 좌우 대응 고정`;
@@ -93,7 +96,7 @@ async function prepare(){
     pause();epoch++;const current=epoch;tick=0;path=[];$('state').textContent='모델과 사진 준비 중…';$('state').className='';controls(false);
     let state=createWalkState();
     try{
-        for(let i=0;i<120;i++){const cut=planner.plan(yaw,state);for(let j=0;j<cut.count;j++)path.push({index:cut.start+j,cut});state=cut.after;}
+        for(let i=0;i<120;i++){const cut=planner.plan(yaw,state);for(let j=0;j<cut.count;j++)path.push({index:cutIndex(cut,j),cut});state=cut.after;}
         const pages=[...new Set(path.map(row=>data.frames[row.index].atlas))];let index=0;
         await Promise.all([imported,...Array.from({length:6},async()=>{while(index<pages.length)await blob(pages[index++]);})]);
         if(current!==epoch)return;
@@ -113,7 +116,7 @@ phase.addEventListener('input',()=>{pause();tick=Math.min(path.length-1,Math.rou
 $('scan').addEventListener('click',async()=>{
     pause();const button=$<HTMLButtonElement>('scan');button.disabled=true;$('scan-results').replaceChildren();let wrong=0,completed=0;
     for(let direction=-90;direction<=90;direction+=5){let next=createWalkState(),cuts=0,maxError=0;
-        try{for(;cuts<120;cuts++){const cut=planner.plan(direction,next);maxError=Math.max(maxError,cut.referenceError);for(let i=0;i<cut.count;i++)if(planner.inspect(cut.start+i,next.tick+i,direction).oppositeFits)wrong++;next=cut.after;}completed++;}catch{/* Visible missing coverage. */}
+        try{for(;cuts<120;cuts++){const cut=planner.plan(direction,next);maxError=Math.max(maxError,cut.referenceError);for(let i=0;i<cut.count;i++)if(planner.inspect(cutIndex(cut,i),next.tick+i,direction).oppositeFits)wrong++;next=cut.after;}completed++;}catch{/* Visible missing coverage. */}
         const link=document.createElement('a');link.href=`?angle=${direction}`;link.textContent=`${direction>0?'+':''}${direction}° · ${cuts}/120구간 · 최대 ${maxError.toFixed(2)}`;if(cuts<120)link.className='warning';$('scan-results').append(link);$('scan-state').textContent=`${(direction+90)/5+1}/37 방향 검사 중`;await new Promise(resolve=>setTimeout(resolve,0));
     }
     $('scan-state').textContent=`${completed}/37 방향 완료 · 반대 발 대응이 더 유리한 선택 ${wrong}건. 실제 사진의 좌우 추정과 전환 품질은 별도 확인이 필요합니다.`;button.disabled=false;
