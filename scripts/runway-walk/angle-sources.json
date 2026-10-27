@@ -160,5 +160,27 @@
     "fps": 25,
     "originalFps": 30,
     "sourceOffset": 0
+  },
+  {
+    "id": "hermes22",
+    "file": "hermes-ss22-original.mp4",
+    "poseFile": "hermes-ss22-original.mp4",
+    "roiScale": 1,
+    "url": "https://www.youtube.com/watch?v=J_H_1wyT_Kg",
+    "title": "Herm\u00e8s Men's Summer 2022",
+    "fps": 25,
+    "originalFps": 25,
+    "sourceOffset": 0
+  },
+  {
+    "id": "hermesfw23",
+    "file": "hermes-fw23-original.mp4",
+    "poseFile": "hermes-fw23-original.mp4",
+    "roiScale": 1,
+    "url": "https://www.youtube.com/watch?v=7Rth_LgBA60",
+    "title": "Herm\u00e8s Men's Winter 2023",
+    "fps": 25,
+    "originalFps": 25,
+    "sourceOffset": 0
   }
 ]
