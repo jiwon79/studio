@@ -2,17 +2,18 @@ import { blockHeld } from './review-policy';
 import { postureTransition, type Posture } from './posture-match';
 export type AngleFrame = { clip: string; look?: string; source: string; sourceFrame: number; yaw: number; phase: number; atlas: number; tile: number; gait?: readonly number[]; gaitVelocity?: readonly number[]; posture?: Posture };
 export type AngleBlock = { start: number; yaw: number; minYaw?: number; maxYaw?: number; phase: number; clip: string; look?: string; sourceFrame?: number; lastSourceFrame?: number; gait?: readonly number[]; gaitVelocity?: readonly number[]; posture?: Posture };
-export function buildBlocks(frames: readonly AngleFrame[], hold = 3): AngleBlock[] {
+export function buildBlocks(frames: readonly AngleFrame[], hold = 3, maxSourceStep = 1): AngleBlock[] {
   return frames.flatMap((f, start) => {
     for (let offset = 1; offset < hold; offset++) {
       const next = frames[start + offset];
-      if (!next || next.clip !== f.clip || next.sourceFrame !== f.sourceFrame + offset) return [];
+      if (!next || next.clip !== f.clip) return [];
       // A detector swapping the two legs must not steer the next identity cut.
       const previous = frames[start + offset - 1];
+      if(next.sourceFrame<=previous.sourceFrame||next.sourceFrame-previous.sourceFrame>maxSourceStep)return [];
       if (next.gait?.some((value, index) => Math.abs(value - (previous.gait?.[index] ?? value)) > .12)) return [];
     }
     const yaws = frames.slice(start, start + hold).map(frame => frame.yaw);
-    return [{ start, yaw: yaws.reduce((sum,value)=>sum+value,0)/hold, minYaw: Math.min(...yaws), maxYaw: Math.max(...yaws), phase: f.phase, clip: f.clip, look: f.look ?? f.clip, sourceFrame: f.sourceFrame, lastSourceFrame: f.sourceFrame+hold-1, gait: f.gait, gaitVelocity: f.gaitVelocity, posture:f.posture }];
+    return [{ start, yaw: yaws.reduce((sum,value)=>sum+value,0)/hold, minYaw: Math.min(...yaws), maxYaw: Math.max(...yaws), phase: f.phase, clip: f.clip, look: f.look ?? f.clip, sourceFrame: f.sourceFrame, lastSourceFrame:frames[start+hold-1].sourceFrame, gait: f.gait, gaitVelocity: f.gaitVelocity, posture:f.posture }];
   });
 }
 export function phaseDistance(a: number, b: number) {

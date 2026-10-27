@@ -7,6 +7,7 @@ export class WalkCoverageError extends Error {
 export type WalkState = {
     tick: number;
     origin: number;
+    referenceSchedule?: { yaw:number; shift:number };
     observedEnd?: number;
     last?: {
         index: number;

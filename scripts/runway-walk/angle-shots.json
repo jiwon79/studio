@@ -3857,5 +3857,876 @@
     "instanceThreshold": -2.2,
     "phaseReference": "lv-look-410",
     "carriedItems": "none"
+  },
+  {
+    "id": "hermes25-profile-cream-brown",
+    "lookId": "hermes25-cream-brown",
+    "source": "hermes25",
+    "start": 737.4,
+    "end": 738.55,
+    "yawKeys": [
+      [
+        737.4,
+        82
+      ],
+      [
+        737.9749999999999,
+        90
+      ],
+      [
+        738.55,
+        98
+      ]
+    ],
+    "roi": [
+      300,
+      20,
+      1300,
+      1060
+    ],
+    "targetXKeys": [
+      [
+        737.4,
+        0.2
+      ],
+      [
+        738.55,
+        0.8076923076923077
+      ]
+    ],
+    "minPoseHeight": 0.4,
+    "instance": true,
+    "carriedItems": "none",
+    "reviewedFrames": [
+      18438,
+      18439,
+      18440,
+      18441,
+      18442,
+      18443,
+      18444,
+      18445,
+      18446,
+      18447,
+      18448,
+      18449,
+      18450,
+      18451,
+      18452,
+      18453,
+      18454,
+      18455,
+      18456,
+      18457,
+      18458,
+      18459,
+      18460,
+      18461,
+      18462,
+      18463
+    ],
+    "yaw": 90
+  },
+  {
+    "id": "hermes25-profile-tan-shorts",
+    "lookId": "hermes25-tan-shorts",
+    "source": "hermes25",
+    "start": 738.7,
+    "end": 739.85,
+    "yawKeys": [
+      [
+        738.7,
+        82
+      ],
+      [
+        739.2750000000001,
+        90
+      ],
+      [
+        739.85,
+        98
+      ]
+    ],
+    "roi": [
+      300,
+      20,
+      1300,
+      1060
+    ],
+    "targetXKeys": [
+      [
+        738.7,
+        0.13076923076923078
+      ],
+      [
+        739.85,
+        0.7846153846153846
+      ]
+    ],
+    "minPoseHeight": 0.4,
+    "instance": true,
+    "carriedItems": "none",
+    "yaw": 90,
+    "excludedFrames": [
+      18468,
+      18469,
+      18470,
+      18471,
+      18472
+    ]
+  },
+  {
+    "id": "hermes25-profile-blue-trousers",
+    "lookId": "hermes25-look-341",
+    "source": "hermes25",
+    "start": 748.5,
+    "end": 749.7,
+    "yawKeys": [
+      [
+        748.5,
+        82
+      ],
+      [
+        749.1,
+        90
+      ],
+      [
+        749.7,
+        98
+      ]
+    ],
+    "roi": [
+      300,
+      20,
+      1300,
+      1060
+    ],
+    "targetXKeys": [
+      [
+        748.5,
+        0.3153846153846154
+      ],
+      [
+        749.7,
+        0.823076923076923
+      ]
+    ],
+    "minPoseHeight": 0.4,
+    "instance": true,
+    "carriedItems": "none",
+    "yaw": 90
+  },
+  {
+    "id": "hermes25-profile-pink-shirt",
+    "lookId": "hermes25-pink-shirt",
+    "source": "hermes25",
+    "start": 754.45,
+    "end": 755.7,
+    "yawKeys": [
+      [
+        754.45,
+        82
+      ],
+      [
+        755.075,
+        90
+      ],
+      [
+        755.7,
+        98
+      ]
+    ],
+    "roi": [
+      300,
+      20,
+      1300,
+      1060
+    ],
+    "targetXKeys": [
+      [
+        754.45,
+        0.2
+      ],
+      [
+        755.7,
+        0.7923076923076923
+      ]
+    ],
+    "minPoseHeight": 0.4,
+    "instance": true,
+    "carriedItems": "none",
+    "reviewedFrames": [
+      18864,
+      18865,
+      18866,
+      18867,
+      18868,
+      18869,
+      18870,
+      18871,
+      18872,
+      18873,
+      18874,
+      18875,
+      18876,
+      18877,
+      18878,
+      18879,
+      18880,
+      18881,
+      18882,
+      18883,
+      18884,
+      18885,
+      18886,
+      18887,
+      18888,
+      18889,
+      18890,
+      18891
+    ],
+    "yaw": 90
+  },
+  {
+    "id": "hermes25-profile-white-shorts",
+    "lookId": "hermes25-look-485",
+    "source": "hermes25",
+    "start": 760.1,
+    "end": 761.35,
+    "yawKeys": [
+      [
+        760.1,
+        82
+      ],
+      [
+        760.725,
+        90
+      ],
+      [
+        761.35,
+        98
+      ]
+    ],
+    "roi": [
+      300,
+      20,
+      1300,
+      1060
+    ],
+    "targetXKeys": [
+      [
+        760.1,
+        0.24615384615384617
+      ],
+      [
+        761.35,
+        0.8384615384615385
+      ]
+    ],
+    "minPoseHeight": 0.4,
+    "instance": true,
+    "carriedItems": "none",
+    "yaw": 90
+  },
+  {
+    "id": "hermes25-profile-navy-shirt",
+    "lookId": "hermes25-navy-shirt",
+    "source": "hermes25",
+    "start": 761.3,
+    "end": 762.6,
+    "yawKeys": [
+      [
+        761.3,
+        82
+      ],
+      [
+        761.95,
+        90
+      ],
+      [
+        762.6,
+        98
+      ]
+    ],
+    "roi": [
+      300,
+      20,
+      1300,
+      1060
+    ],
+    "targetXKeys": [
+      [
+        761.3,
+        0.2
+      ],
+      [
+        762.6,
+        0.8
+      ]
+    ],
+    "minPoseHeight": 0.4,
+    "instance": true,
+    "carriedItems": "none",
+    "reviewedFrames": [
+      19037,
+      19038,
+      19039,
+      19040,
+      19041,
+      19042,
+      19043,
+      19044,
+      19045,
+      19046,
+      19047,
+      19048,
+      19049,
+      19050,
+      19051,
+      19052,
+      19053,
+      19054,
+      19055,
+      19056,
+      19057,
+      19058
+    ],
+    "yaw": 90
+  },
+  {
+    "id": "hermes25-profile-blue-print",
+    "lookId": "hermes25-blue-print-trousers",
+    "source": "hermes25",
+    "start": 762.1,
+    "end": 763.4,
+    "yawKeys": [
+      [
+        762.1,
+        82
+      ],
+      [
+        762.75,
+        90
+      ],
+      [
+        763.4,
+        98
+      ]
+    ],
+    "roi": [
+      300,
+      20,
+      1300,
+      1060
+    ],
+    "targetXKeys": [
+      [
+        762.1,
+        0.2076923076923077
+      ],
+      [
+        763.4,
+        0.823076923076923
+      ]
+    ],
+    "minPoseHeight": 0.4,
+    "instance": true,
+    "carriedItems": "none",
+    "yaw": 90,
+    "excludedFrames": [
+      19052,
+      19053,
+      19054,
+      19055,
+      19056,
+      19057,
+      19058
+    ]
+  },
+  {
+    "id": "hermesfw25-profile-37",
+    "lookId": "hermesfw25-look-37",
+    "source": "hermesfw25",
+    "start": 36.5,
+    "end": 39.7,
+    "yaw": 90,
+    "yawKeys": [
+      [
+        36.5,
+        75
+      ],
+      [
+        38.3,
+        85
+      ],
+      [
+        39.7,
+        90
+      ]
+    ],
+    "roi": [
+      100,
+      0,
+      1720,
+      1080
+    ],
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermesfw25-profile-90",
+    "lookId": "hermesfw25-look-90",
+    "source": "hermesfw25",
+    "start": 89.7,
+    "end": 93.7,
+    "yaw": 90,
+    "yawKeys": [
+      [
+        89.7,
+        80
+      ],
+      [
+        91.5,
+        90
+      ],
+      [
+        93.7,
+        85
+      ]
+    ],
+    "roi": [
+      100,
+      0,
+      1720,
+      1080
+    ],
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermesfw25-profile-179",
+    "lookId": "hermesfw25-look-179",
+    "source": "hermesfw25",
+    "start": 178.6,
+    "end": 180.8,
+    "yaw": 90,
+    "yawKeys": [
+      [
+        178.6,
+        85
+      ],
+      [
+        179.5,
+        90
+      ],
+      [
+        180.8,
+        90
+      ]
+    ],
+    "roi": [
+      100,
+      0,
+      1720,
+      1080
+    ],
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermesfw25-profile-278",
+    "lookId": "hermesfw25-look-278",
+    "source": "hermesfw25",
+    "start": 276.7,
+    "end": 279,
+    "yaw": 90,
+    "yawKeys": [
+      [
+        276.7,
+        85
+      ],
+      [
+        279,
+        90
+      ]
+    ],
+    "roi": [
+      100,
+      0,
+      1720,
+      1080
+    ],
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermesfw25-profile-348",
+    "lookId": "hermesfw25-look-348",
+    "source": "hermesfw25",
+    "start": 346.5,
+    "end": 348.8,
+    "yaw": 90,
+    "yawKeys": [
+      [
+        346.5,
+        90
+      ],
+      [
+        348.8,
+        90
+      ]
+    ],
+    "roi": [
+      100,
+      0,
+      1720,
+      1080
+    ],
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermesfw25-profile-366",
+    "lookId": "hermesfw25-look-366",
+    "source": "hermesfw25",
+    "start": 365.4,
+    "end": 367.5,
+    "yaw": 90,
+    "yawKeys": [
+      [
+        365.4,
+        85
+      ],
+      [
+        367.5,
+        90
+      ]
+    ],
+    "roi": [
+      100,
+      0,
+      1720,
+      1080
+    ],
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "excludedFrames": [
+      9135,
+      9136,
+      9137,
+      9138,
+      9139,
+      9140,
+      9141,
+      9142,
+      9143,
+      9144,
+      9145,
+      9146,
+      9147,
+      9148,
+      9149
+    ]
+  },
+  {
+    "id": "hermesfw25-profile-388",
+    "lookId": "hermesfw25-look-388",
+    "source": "hermesfw25",
+    "start": 385.6,
+    "end": 388.7,
+    "yaw": 90,
+    "yawKeys": [
+      [
+        385.6,
+        80
+      ],
+      [
+        387.5,
+        85
+      ],
+      [
+        388.7,
+        95
+      ]
+    ],
+    "roi": [
+      100,
+      0,
+      1720,
+      1080
+    ],
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermesfw25-profile-435",
+    "lookId": "hermesfw25-look-435",
+    "source": "hermesfw25",
+    "start": 433.5,
+    "end": 435.8,
+    "yaw": 90,
+    "yawKeys": [
+      [
+        433.96,
+        85
+      ],
+      [
+        435.8,
+        95
+      ]
+    ],
+    "roi": [
+      100,
+      0,
+      1720,
+      1080
+    ],
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      10850,
+      10851,
+      10852,
+      10853,
+      10854,
+      10855,
+      10856,
+      10857,
+      10858,
+      10859,
+      10860,
+      10861,
+      10862,
+      10863,
+      10864,
+      10865,
+      10866,
+      10867,
+      10868,
+      10869,
+      10870,
+      10871,
+      10872,
+      10873,
+      10874,
+      10875,
+      10876,
+      10877,
+      10878,
+      10879,
+      10880,
+      10881,
+      10882,
+      10883,
+      10884,
+      10885,
+      10886,
+      10887,
+      10888,
+      10889,
+      10890,
+      10891,
+      10892,
+      10893,
+      10894,
+      10895
+    ]
+  },
+  {
+    "id": "hermesfw25-profile-480",
+    "lookId": "hermesfw25-look-480",
+    "source": "hermesfw25",
+    "start": 477.8,
+    "end": 481.7,
+    "yaw": 90,
+    "yawKeys": [
+      [
+        477.8,
+        80
+      ],
+      [
+        479.8,
+        85
+      ],
+      [
+        481.7,
+        90
+      ]
+    ],
+    "roi": [
+      100,
+      0,
+      1720,
+      1080
+    ],
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "excludedFrames": [
+      11945,
+      11946,
+      11947,
+      11948,
+      11949,
+      11950,
+      11951,
+      11952,
+      11953,
+      11954,
+      11955,
+      11956,
+      11957,
+      11958,
+      11959,
+      11960,
+      11961,
+      11962,
+      11963,
+      11964,
+      11965,
+      11966,
+      11967,
+      11968,
+      11969,
+      11970,
+      11971,
+      11972,
+      11973,
+      11974,
+      11975,
+      11976,
+      11977,
+      11978,
+      11979,
+      11980,
+      11981,
+      11982,
+      11983,
+      11984,
+      11985,
+      11986,
+      11987,
+      11988,
+      11989
+    ]
+  },
+  {
+    "id": "hermesfw25-left-130",
+    "lookId": "hermesfw25-look-130",
+    "source": "hermesfw25",
+    "start": 128.1,
+    "end": 130.7,
+    "yaw": -50,
+    "yawKeys": [
+      [
+        128.1,
+        -15
+      ],
+      [
+        129.2,
+        -25
+      ],
+      [
+        130.7,
+        -55
+      ]
+    ],
+    "roi": [
+      100,
+      0,
+      1720,
+      1080
+    ],
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermesfw25-left-162",
+    "lookId": "hermesfw25-look-162",
+    "source": "hermesfw25",
+    "start": 161.5,
+    "end": 162.8,
+    "yaw": -50,
+    "yawKeys": [
+      [
+        161.5,
+        -50
+      ],
+      [
+        162.8,
+        -70
+      ]
+    ],
+    "roi": [
+      100,
+      0,
+      1720,
+      1080
+    ],
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermesfw25-left-495",
+    "lookId": "hermesfw25-look-495",
+    "source": "hermesfw25",
+    "start": 493.6,
+    "end": 495.9,
+    "yaw": -50,
+    "yawKeys": [
+      [
+        493.6,
+        -40
+      ],
+      [
+        494.8,
+        -55
+      ],
+      [
+        495.9,
+        -65
+      ]
+    ],
+    "roi": [
+      100,
+      0,
+      1720,
+      1080
+    ],
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermesfw25-left-506",
+    "lookId": "hermesfw25-look-506",
+    "source": "hermesfw25",
+    "start": 503,
+    "end": 506.8,
+    "yaw": -50,
+    "yawKeys": [
+      [
+        503,
+        -15
+      ],
+      [
+        504,
+        -35
+      ],
+      [
+        505,
+        -55
+      ],
+      [
+        506.8,
+        -65
+      ]
+    ],
+    "roi": [
+      100,
+      0,
+      1720,
+      1080
+    ],
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso"
   }
 ]

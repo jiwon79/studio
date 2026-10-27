@@ -18,6 +18,9 @@ parser.add_argument('--cache', type=Path, required=True)
 parser.add_argument('--output', type=Path, required=True)
 args = parser.parse_args()
 manifest = json.loads((args.output/'angles.json').read_text())
+keys = [(f['source'], f['sourceFrame']) for f in manifest['frames']]
+if len(set(keys)) != len(keys):
+    raise ValueError('Two subject crops share a source-frame key; review overlapping shots before exporting joints')
 clips = {c['id']: c for c in manifest['clips']}
 sources = {s['id']: s for s in manifest['sources']}
 poses = {}

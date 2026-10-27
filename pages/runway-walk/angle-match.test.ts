@@ -6,6 +6,15 @@ test('three-frame blocks cannot cross source gaps or clip boundaries', () => {
   const blocks = buildBlocks([f('a',10),f('a',11),f('a',12),f('a',14),f('a',15),f('b',16),f('b',17),f('b',18)]);
   expect(blocks.map(b => b.start)).toEqual([0,5]);
 });
+test('offline matching can skip one rejected source frame but never reverse, repeat, or cross a clip', () => {
+  const frames=[f('a',10),f('a',12),f('a',13),f('a',13),f('a',12),f('a',16),f('b',17),f('b',18)];
+  expect(buildBlocks(frames,3,2).map(b=>[b.start,b.lastSourceFrame])).toEqual([[0,13]]);
+  expect(buildBlocks(frames)).toEqual([]);
+});
+test('each photograph has one pose identity even when source shots overlap', () => {
+  const keys=data.frames.map(f=>`${f.source}:${f.sourceFrame}`);
+  expect(new Set(keys).size).toBe(keys.length);
+});
 test('angle selection takes priority; phase remains continuous across the loop', () => {
   const blocks = [
     { start: 0, yaw: -70, phase: 0.99, clip: 'left' },

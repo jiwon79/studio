@@ -2,6 +2,8 @@ import { test, expect } from 'vitest';
 import data from './angles.json';
 import poses from './debug-poses.json';
 import matches from './reference-matches.json';
+import schedule from './reference-schedule.json';
+import {auditSequence} from './sequence-audit';
 import { referencePose, referenceFeatures, legFeatures, REFERENCE_VERSION } from './gait-reference';
 import { ReferenceSequencer } from './reference-sequencer';
 import {WalkCoverageError} from './walk-sequencer';
@@ -59,7 +61,7 @@ for (let yaw = -90; yaw <= 90; yaw += 5)
                 const index = cut.start + i, tick = state.tick + i, frame = data.frames[index], check = planner.inspect(index, tick, yaw);
                 expect(check.oppositeFits).toBe(false);expect(matches.frames[index].uncertain).toBe(false);
                 expect(Math.abs(frame.yaw - yaw)).toBeLessThanOrEqual(5);
-                expect(frame.sourceFrame).toBe(data.frames[cut.start].sourceFrame + i);
+                if(i){const step=frame.sourceFrame-data.frames[index-1].sourceFrame;expect(step).toBeGreaterThan(0);expect(step).toBeLessThanOrEqual(cut.qualityVerified?schedule.maxSourceStep:1);}
                 const last = used.get(key(index));
                 if (last !== undefined)
                     expect(tick - last).toBeGreaterThanOrEqual(CYCLE_FRAMES);
@@ -82,6 +84,13 @@ test('discarded future reference cuts never enter displayed-photo history', () =
     expect(shown.last!.swapped).toBe(false);
     expect(shown.last!.halfCycle).toBe(false);
 });
+for(const yaw of Object.keys(schedule.directions).map(Number))
+ test(`${yaw}° compiled edit meets every fixed motion gate through four closed loops`,()=>{
+  let state=createWalkState();
+  while(state.tick<1200){const cut=planner.plan(yaw,state);expect(cut.qualityVerified).toBe(true);expect(cut.count).toBe(3);state=cut.after;}
+  const audit=auditSequence(planner,data.frames,yaw,1200);
+  expect(audit.quality.pass,JSON.stringify(audit.quality)).toBe(true);
+ });
 test('angle changes and drag ticks keep the anatomical reference clock and displayed-only history', async () => {
     const { rebaseWalkState } = await import('./walk-sequencer');
     let state = createWalkState();

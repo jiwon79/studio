@@ -118,6 +118,7 @@ function paintRegion(image: ImageBitmap, x: number, y: number, width: number, he
   canvas.dataset.cutTick = hd?String(block.before.tick):'';
   canvas.dataset.clock = String(clock);
   canvas.dataset.quality = quality;
+  canvas.dataset.motionVerified = String(hd && !!block.qualityVerified);
   canvas.dataset.decodedPages = String(images.size);
   canvas.dataset.compressedPages = String(compressed.size);
   canvas.dataset.previewPages = String(dragImages.length);

@@ -7,6 +7,8 @@ try {
  const {referenceFeatures,legFeatures,legError,REFERENCE_JOINTS,REFERENCE_VERSION,REFERENCE_MODEL_HASH,REFERENCE_DURATION,suspectedFootRelabel}=await server.ssrLoadModule('/pages/runway-walk/gait-reference.ts');
  if(motion.modelHash!==REFERENCE_MODEL_HASH||motion.duration!==REFERENCE_DURATION)throw Error('Install the same imported reference model before fitting another output directory');
  const data=JSON.parse(fs.readFileSync(path.join(directory,'angles.json')));const poses=JSON.parse(fs.readFileSync(path.join(directory,'debug-poses.json')));
+ const keys=data.frames.map(f=>`${f.source}:${f.sourceFrame}`);
+ if(new Set(keys).size!==keys.length||new Set(poses.frames.map(p=>p.key)).size!==poses.frames.length)throw Error('Duplicate photograph identity: review overlapping source shots before fitting');
  const lookup=new Map(poses.frames.map(p=>[p.key,p.points]));const bins=120;
  const rows=data.frames.map(frame=>{
   const points=lookup.get(`${frame.source}:${frame.sourceFrame}`),features=legFeatures(points),confidence=REFERENCE_JOINTS.map(j=>points[j][2]);
