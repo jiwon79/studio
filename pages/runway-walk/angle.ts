@@ -27,6 +27,8 @@ try {
   if (stored && typeof stored === 'object') saved = stored;
   if (typeof saved.angle === 'number' && Number.isFinite(saved.angle)) target = snapYaw(saved.angle, minYaw, maxYaw);
 } catch { /* Storage is optional. */ }
+const linkedAngle = new URLSearchParams(location.search).get('angle');
+if (linkedAngle?.trim() && Number.isFinite(Number(linkedAngle))) target = snapYaw(Number(linkedAngle), minYaw, maxYaw);
 function persist() {
   try { localStorage.setItem(storageKey, JSON.stringify({ ...saved, angle: target })); } catch { /* Optional local persistence. */ }
 }

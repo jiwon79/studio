@@ -105,7 +105,23 @@ try {
   else failed.push(yaw);
  }
  const reviewPolicy=JSON.parse(fs.readFileSync('pages/runway-walk/frame-audit.json'));
- fs.writeFileSync(output,JSON.stringify({version:'fixed-cadence-v1',assetVersion:data.assetVersion,matchVersion:fits.matchVersion,periodFrames:period,cycleFrames:CYCLE_FRAMES,holdFrames:3,maxSourceStep:2,reviewPolicy,directions})+'\n');
+ const compiled={version:'fixed-cadence-v1',assetVersion:data.assetVersion,matchVersion:fits.matchVersion,periodFrames:period,cycleFrames:CYCLE_FRAMES,holdFrames:3,maxSourceStep:2,reviewPolicy,directions};
  console.log('Qualified angles:',Object.keys(directions).join(', '));
  if(failed.length){console.error('Missing coverage:',failed.join(', '));process.exitCode=1;}
+ const liveOutput=output===path.resolve('pages/runway-walk/reference-schedule.json');
+ if(liveOutput&&failed.length){
+  // A diagnostic run must never erase a previously accepted edit. Partial
+  // searches can be inspected through an explicit non-production output path.
+  console.error('Keeping the installed schedule: one or more requested directions failed.');
+ }else{
+  if(liveOutput&&fs.existsSync(output)&&requested.length){
+   const previous=JSON.parse(fs.readFileSync(output));
+   const bindings=['version','assetVersion','matchVersion','periodFrames','cycleFrames','holdFrames','maxSourceStep','reviewPolicy'];
+   if(bindings.some(key=>JSON.stringify(previous[key])!==JSON.stringify(compiled[key])))throw Error('A subset cannot replace a schedule with different library, clock or review bindings; export and review the complete replacement separately');
+   compiled.directions={...previous.directions,...directions};
+  }
+  const temporary=`${output}.tmp`;
+  fs.writeFileSync(temporary,JSON.stringify(compiled)+'\n');
+  fs.renameSync(temporary,output);
+ }
 } finally {await server.close();}
