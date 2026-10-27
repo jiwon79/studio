@@ -1,14 +1,15 @@
 import {expect,test} from 'vitest';
 import data from './angles.json';
 import poses from './debug-poses.json';
+import schedule from './reference-schedule.json';
 import {ReferenceSequencer,cutIndex} from './reference-sequencer';
 import {createWalkState,clockPhase} from './reference-clock';
 import {cutPhotoTransform,validPhotoTransforms} from './photo-registration';
 import {alignedFace,measureFace,summarizeUpperBody} from './upper-body-quality';
 import {auditSequence} from './sequence-audit';
 
-test('accepted profile and corrected 30 and 80 degree edits keep face movement within the accepted profile envelope',()=>{
- for(const yaw of [30,80,85]){
+test('every stabilized direction keeps face movement within the accepted profile envelope',()=>{
+ for(const yaw of [...new Set([...Object.keys(schedule.registration.photoTransforms).map(Number),85])]){
   const planner=new ReferenceSequencer(data.frames);let state=createWalkState();
   const faces:ReturnType<typeof alignedFace>[]=[],transforms=[];
   while(state.tick<600){const cut=planner.plan(yaw,state);expect(cut.qualityVerified).toBe(true);
