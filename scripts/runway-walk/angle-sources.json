@@ -182,5 +182,61 @@
     "fps": 25,
     "originalFps": 25,
     "sourceOffset": 0
+  },
+  {
+    "id": "hermesfw22",
+    "file": "hermes-fw22-original.mp4",
+    "poseFile": "hermes-fw22-original.mp4",
+    "roiScale": 1,
+    "url": "https://www.youtube.com/watch?v=RQwsBYau6uE",
+    "title": "Herm\u00e8s Men's Winter 2022",
+    "fps": 25,
+    "originalFps": 25,
+    "sourceOffset": 0
+  },
+  {
+    "id": "dries24",
+    "file": "dries-ss24-original.mp4",
+    "poseFile": "dries-ss24-original.mp4",
+    "roiScale": 1,
+    "url": "https://www.youtube.com/watch?v=PLD5QtEpo2A",
+    "title": "Dries Van Noten Men's Spring Summer 2024",
+    "fps": 25,
+    "originalFps": 25,
+    "sourceOffset": 0
+  },
+  {
+    "id": "issey19",
+    "file": "issey-ss19.mp4",
+    "poseFile": "issey-ss19.mp4",
+    "originalFile": "issey-ss19-original.mp4",
+    "roiScale": 1,
+    "url": "https://www.youtube.com/watch?v=oQQXyEFYADI",
+    "title": "Issey Miyake Men Spring Summer 2019",
+    "fps": 25,
+    "originalFps": 50,
+    "sourceOffset": 0
+  },
+  {
+    "id": "lv23",
+    "file": "lv-ss23-original.mp4",
+    "poseFile": "lv-ss23-original.mp4",
+    "roiScale": 1,
+    "url": "https://www.youtube.com/watch?v=6SX50BOmArI",
+    "title": "Louis Vuitton Men's Spring Summer 2023",
+    "fps": 25,
+    "originalFps": 25,
+    "sourceOffset": 0
+  },
+  {
+    "id": "lanvin17",
+    "file": "lanvin-ss17-original.mp4",
+    "poseFile": "lanvin-ss17-original.mp4",
+    "roiScale": 1,
+    "url": "https://www.youtube.com/watch?v=yEZxQghyZcs",
+    "title": "Lanvin Menswear Spring Summer 2017",
+    "fps": 25,
+    "originalFps": 25,
+    "sourceOffset": 0
   }
 ]
