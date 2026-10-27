@@ -103,15 +103,20 @@ export function choosePoseCandidate(eligible: readonly AngleBlock[], yaw: number
         gaitDistance(gait?.slice(4), predicted?.slice(4)) * 24 +
         gaitDistance(velocity, previousVelocity) * 16 + Math.abs(block.yaw-yaw) / 12;
     };
-    return { block, cost: shallowLeft
+    const footJump = previousGait ? Math.min(gaitDistance(block.gait?.slice(4), previousGait.slice(4)),
+      shallowLeft ? gaitDistance(swapLegs(block.gait)?.slice(4), previousGait.slice(4)) : Infinity) : 0;
+    return { block, footJump, cost: shallowLeft
       ? Math.min(cost(false), previousGait ? cost(true) : Infinity)
       : phaseDistance(block.phase, phase) * 2 + gaitDistance(block.gait, predicted) * 12 +
         gaitDistance(block.gaitVelocity, previousVelocity) * 12 + Math.abs(block.yaw-yaw) / 12 };
   });
-  const bestCost = Math.min(...scored.map(s => s.cost));
+  // Phase and velocity scores must not trade away an available nearby foot pose.
+  const nearby = scored.filter(s => s.footJump < .05);
+  const pool = previousGait && nearby.length ? nearby : scored;
+  const bestCost = Math.min(...pool.map(s => s.cost));
   const bestPhase = Math.min(...candidates.map(block=>phaseDistance(block.phase,phase)));
-  const fresh = scored.filter(({ block, cost }) => !recent.includes(block.look ?? block.clip) &&
+  const fresh = pool.filter(({ block, cost }) => !recent.includes(block.look ?? block.clip) &&
     cost <= bestCost + (shallowLeft ? .4 : .6) &&
     (shallowLeft || phaseDistance(block.phase,phase) <= bestPhase + .12));
-  return (fresh.length ? fresh : scored).reduce((best,s) => s.cost < best.cost ? s : best).block;
+  return (fresh.length ? fresh : pool).reduce((best,s) => s.cost < best.cost ? s : best).block;
 }
