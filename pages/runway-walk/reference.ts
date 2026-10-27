@@ -1,4 +1,4 @@
-import {photoTransform,applyPhotoTransform,transformPhotoPoint,IDENTITY_PHOTO} from './photo-registration';
+import {cutPhotoTransform,applyPhotoTransform,transformPhotoPoint,IDENTITY_PHOTO} from './photo-registration';
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import data from './angles.json';
@@ -60,7 +60,7 @@ function model(){
 }
 function skeleton(index:number){
     const svg=$('new-pose');svg.replaceChildren();if(!$<HTMLInputElement>('joints').checked)return;
-    const frame=data.frames[index],transform=path[tick]?.cut.registered?photoTransform(frame.posture,clockPhase(tick),yaw):IDENTITY_PHOTO;
+    const frame=data.frames[index],cut=path[tick]?.cut,transform=cut?cutPhotoTransform(cut,tick-cut.before.tick,frame.posture,clockPhase(tick),yaw):IDENTITY_PHOTO;
     const p=sourcePoses.get(`${frame.source}:${frame.sourceFrame}`)!.map(point=>transformPhotoPoint(point,transform));
     for(const [ids,color,label] of [[[23,25,27,29,31],'#32c0ff','L'],[[24,26,28,30,32],'#ff995b','R']] as const){
         const line=document.createElementNS('http://www.w3.org/2000/svg','polyline');
@@ -78,7 +78,7 @@ async function draw(){
     // Change both views together, after the photograph has decoded.
     model();phase.value=String(Math.round(clockPhase(tick)*119));$('phase-value').textContent=`${Math.round(clockPhase(tick)*100)}%`;
     const canvas=$<HTMLCanvasElement>('new'),ctx=canvas.getContext('2d')!;ctx.clearRect(0,0,512,768);
-    const transform=row.cut.registered?photoTransform(frame.posture,clockPhase(tick),yaw):IDENTITY_PHOTO;
+    const transform=cutPhotoTransform(row.cut,tick-row.cut.before.tick,frame.posture,clockPhase(tick),yaw);
     ctx.save();applyPhotoTransform(ctx,transform);ctx.drawImage(image,frame.tile%data.columns*512,Math.floor(frame.tile/data.columns)*768,512,768,0,0,512,768);ctx.restore();skeleton(row.index);
     canvas.dataset.frame=`${frame.source}:${frame.sourceFrame}`;canvas.dataset.tick=String(tick);canvas.dataset.swapped='false';canvas.dataset.reference=motion.version;
     const error=planner.inspect(row.index,tick,yaw);

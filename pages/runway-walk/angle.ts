@@ -7,7 +7,7 @@ import {WalkCoverageError,rebaseWalkState} from './walk-sequencer';
 import {clockPhase,createWalkState} from './reference-clock';
 import { ReferenceSequencer,cutIndex,cutIndices, type ReferenceCut } from './reference-sequencer';
 import referenceMatches from './reference-matches.json';
-import {photoTransform,applyPhotoTransform,IDENTITY_PHOTO} from './photo-registration';
+import {photoTransform,cutPhotoTransform,applyPhotoTransform,IDENTITY_PHOTO} from './photo-registration';
 
 const frames: AngleFrame[] = data.frames;
 const sequencer = new ReferenceSequencer(frames, data.holdFrames);
@@ -104,7 +104,7 @@ function paint(image: ImageBitmap, tile: number, columns: number, width: number,
 function paintRegion(image: ImageBitmap, x: number, y: number, width: number, height: number, dx: number, dy: number, row: AngleFrame, yaw: number, quality: string) {
   context.clearRect(0, 0, canvas.width, canvas.height);
   const aligned=quality==='hd'?!!block.registered:sequencer.usesRegistration(yaw);
-  const transform=aligned&&row.posture?photoTransform(row.posture,phase,yaw):IDENTITY_PHOTO;
+  const transform=row.posture?(quality==='hd'?cutPhotoTransform(block,offset,row.posture,phase,yaw):aligned?photoTransform(row.posture,phase,yaw):IDENTITY_PHOTO):IDENTITY_PHOTO;
   context.save();applyPhotoTransform(context,transform);
   context.drawImage(image, x, y, width, height, dx, dy, width, height);
   context.restore();canvas.dataset.photoTransform=JSON.stringify(transform);

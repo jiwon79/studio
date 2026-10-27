@@ -6,6 +6,15 @@ import {projectReference,referencePose} from './gait-reference';
 export const PHOTO_REGISTRATION_VERSION='whole-photo-v1';
 export type PhotoTransform={scale:number;rotation:number;dx:number;dy:number};
 export const IDENTITY_PHOTO:PhotoTransform={scale:1,rotation:0,dx:0,dy:0};
+/** Baked cut transforms keep size and rotation constant during an appearance. */
+export function cutPhotoTransform(cut:{registered?:boolean;photoTransforms?:readonly PhotoTransform[]},offset:number,p:Posture,phase:number,yaw:number):PhotoTransform{
+ return cut.photoTransforms?.[offset]??(cut.registered?photoTransform(p,phase,yaw):IDENTITY_PHOTO);
+}
+export function validPhotoTransforms(transforms:readonly PhotoTransform[],length:number):boolean{
+ return transforms.length===length&&transforms.every((t,i)=>
+  [t.scale,t.rotation,t.dx,t.dy].every(Number.isFinite)&&t.scale>=.94&&t.scale<=1.06&&Math.abs(t.rotation)<=Math.PI/72&&Math.abs(t.dx)<=10&&Math.abs(t.dy)<=10&&
+  (i%3===0||(t.scale===transforms[i-1].scale&&t.rotation===transforms[i-1].rotation)));
+}
 const anchor=[256,420],targets=new Map<string,{center:number[];soles:number[]}>();
 const clamp=(v:number,min:number,max:number)=>Math.max(min,Math.min(max,v));
 

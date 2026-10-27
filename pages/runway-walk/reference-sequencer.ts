@@ -8,14 +8,15 @@ import { legError, referenceFeatures, referencePose } from './gait-reference';
 import schedule from './reference-schedule.json';
 import {audits,blockHeld} from './review-policy';
 import {measureMotion,MOTION_LIMITS} from './motion-quality';
-import {PHOTO_REGISTRATION_VERSION,registeredPosture} from './photo-registration';
-type CompiledSchedule=Omit<typeof schedule,'directions'> & {directions:Record<string,(number|number[])[]>;registration?:{version:string;yaws:number[]}};
+import {PHOTO_REGISTRATION_VERSION,photoTransform,transformPosture,IDENTITY_PHOTO,validPhotoTransforms,type PhotoTransform} from './photo-registration';
+type CompiledSchedule=Omit<typeof schedule,'directions'|'registration'> & {directions:Record<string,(number|number[])[]>;registration?:{version:string;yaws:number[];photoTransforms?:Record<string,PhotoTransform[]>}};
 const compiled:CompiledSchedule=schedule;
 export const cutIndex=(cut:ReferenceCut,offset:number)=>cut.indices?.[offset]??cut.start+offset;
 export const cutIndices=(cut:ReferenceCut,count=cut.count)=>Array.from({length:count},(_,i)=>cutIndex(cut,i));
 export type ReferenceCut = AngleBlock & {
     qualityVerified?: boolean;
     registered?: boolean;
+    photoTransforms?: readonly PhotoTransform[];
     indices?: readonly number[];
     count: number;
     before: WalkState;
@@ -50,7 +51,8 @@ export class ReferenceSequencer {
         if (frames.length !== fitted.length)
             throw new Error('Reference poses do not match the photograph library');
         this.blocks = buildBlocks(frames, hold);
-        this.verifiedSchedule=(!compiled.registration||compiled.registration.version===PHOTO_REGISTRATION_VERSION)&&fitted===matches.frames&&hold===3&&schedule.assetVersion===matches.assetVersion&&schedule.matchVersion===matches.matchVersion&&schedule.cycleFrames===CYCLE_FRAMES&&JSON.stringify(schedule.reviewPolicy)===JSON.stringify(audits);
+        const validTransforms=Object.entries(compiled.registration?.photoTransforms??{}).every(([yaw,rows])=>compiled.registration?.yaws.includes(+yaw)&&!!compiled.directions[yaw]&&validPhotoTransforms(rows,schedule.periodFrames));
+        this.verifiedSchedule=validTransforms&&(!compiled.registration||compiled.registration.version===PHOTO_REGISTRATION_VERSION)&&fitted===matches.frames&&hold===3&&schedule.assetVersion===matches.assetVersion&&schedule.matchVersion===matches.matchVersion&&schedule.cycleFrames===CYCLE_FRAMES&&JSON.stringify(schedule.reviewPolicy)===JSON.stringify(audits);
     }
     usesRegistration(yaw:number){return this.verifiedSchedule&&!!compiled.registration?.yaws.includes(yaw);}
     candidates(yaw: number, count = this.hold) {
@@ -99,6 +101,7 @@ export class ReferenceSequencer {
         if(!this.verifiedSchedule||state.origin!==0)return;
         const starts=compiled.directions[String(yaw)];if(!starts?.length)return;
         const registered=this.usesRegistration(yaw);
+        const registeredRows=compiled.registration?.photoTransforms?.[String(yaw)];
         const preferred=state.referenceSchedule?.yaw===yaw?state.referenceSchedule.shift:0;
         const shifts=[preferred,...[0,100,200].filter(s=>s!==preferred)];
         const used=new Map(state.used.map(r=>[r.key,r.tick]));
@@ -114,11 +117,16 @@ export class ReferenceSequencer {
                 const a=this.frames[state.last.index].posture,b=first.posture;
                 if(!a||!b)continue;
                 const pa=clockPhase(state.tick-1),pb=clockPhase(state.tick);
-                const m=measureMotion(registeredPosture(a,pa,yaw,registered),registeredPosture(b,pb,yaw,registered),pa,pb,yaw);
+                const lastShift=state.referenceSchedule.shift;
+                const lastPosition=((state.tick-1+lastShift)%schedule.periodFrames+schedule.periodFrames)%schedule.periodFrames;
+                const ta=registeredRows?.[lastPosition]??(registered?photoTransform(a,pa,yaw):IDENTITY_PHOTO);
+                const tb=registeredRows?.[position]??(registered?photoTransform(b,pb,yaw):IDENTITY_PHOTO);
+                const m=measureMotion(transformPosture(a,ta),transformPosture(b,tb),pa,pb,yaw);
                 if(m.footResidual>MOTION_LIMITS.footMax||m.leanResidual>MOTION_LIMITS.leanMax||m.torsoResidual>MOTION_LIMITS.torsoMax)continue;
             }
             const before={...state,referenceSchedule:{yaw,shift}};
             const cut:ReferenceCut={start,indices,registered,yaw:rows.reduce((s,f)=>s+f.yaw,0)/count,phase:first.phase,clip:first.clip,look:first.look??first.clip,sourceFrame:first.sourceFrame,lastSourceFrame:rows[count-1].sourceFrame,count,before,after:before,swapped:false,halfCycle:false,phaseError:Math.abs(((this.fitted[start].phase-clockPhase(state.tick)+.5)%1+1)%1-.5),phaseGap:1/CYCLE_FRAMES,relaxed:false,sourceContinuation:false,referenceError:direct,oppositeError:checks.reduce((s,c)=>s+c.opposite,0)/count,identityRejected:false,qualityVerified:true};
+            if(registeredRows)cut.photoTransforms=registeredRows.slice(position,position+count);
             cut.after=this.afterFrames(cut);return cut;
         }
     }

@@ -1,4 +1,4 @@
-import {photoTransform,applyPhotoTransform,transformPhotoPoint,transformPosture,IDENTITY_PHOTO,type PhotoTransform} from './photo-registration';
+import {cutPhotoTransform,applyPhotoTransform,transformPhotoPoint,transformPosture,IDENTITY_PHOTO,type PhotoTransform} from './photo-registration';
 import data from './angles.json';
 import poses from './debug-poses.json';
 import './debug.css';
@@ -35,7 +35,7 @@ let galleryRows: number[] = [], page = 0, generation = 0, galleryGeneration = 0;
 let feedback: Feedback[] = [], connected = false, saving = false;
 let draftClientId: string | undefined;
 let playing = false, walk: number[] = [], cursor = 0, playbackEpoch = 0;
-type WalkInfo={swapped:boolean;halfCycle:boolean;phase:number;cut?:ReferenceCut};
+type WalkInfo={swapped:boolean;halfCycle:boolean;phase:number;offset?:number;cut?:ReferenceCut};
 let walkInfo:WalkInfo[]=[];
 let manualSwap:boolean|undefined=undefined;
 let previousSwap=false;
@@ -99,7 +99,7 @@ function retain() {
   images.retain([selected, ...(ghost.checked && compared!==undefined ? [compared] : []), ...walk.slice(cursor,cursor+12)].map(i => data.frames[i].atlas));
 }
 function photoState(index:number,info?:WalkInfo){
- const posture=data.frames[index].posture,transform=info?.cut?.registered?photoTransform(posture,info.phase,target):IDENTITY_PHOTO;
+ const posture=data.frames[index].posture,transform=info?.cut?cutPhotoTransform(info.cut,info.offset??0,posture,info.phase,target):IDENTITY_PHOTO;
  return {transform,posture:transformPosture(posture,transform)};
 }
 function previousInfo(){return walk.length&&cursor>0?walkInfo[cursor-1]:undefined;}
@@ -320,7 +320,7 @@ function makeWalk() {
     const cut=sequencer.plan(target,state);
     for(let offset=0;offset<cut.count;offset++) {
       walk.push(cutIndex(cut,offset));
-      walkInfo.push({swapped:cut.swapped,halfCycle:cut.halfCycle,phase:clockPhase(state.tick+offset,state.origin),cut});
+      walkInfo.push({swapped:cut.swapped,halfCycle:cut.halfCycle,phase:clockPhase(state.tick+offset,state.origin),offset,cut});
     }
     state=cut.after;
   }
