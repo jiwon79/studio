@@ -3,7 +3,7 @@ import poses from './debug-poses.json';
 import {applyPhotoTransform,transformPhotoPoint} from './photo-registration';
 import {reviewSequence,reviewTick,type ReviewFrame} from './sequence-model';
 import {snapYaw} from './direction-step';
-import {frameKey} from './review-model';
+import {frameKey,categories,type Feedback} from './review-model';
 
 const $=<T extends HTMLElement>(id:string)=>document.getElementById(id) as T;
 const angle=$<HTMLSelectElement>('angle'),density=$<HTMLSelectElement>('density');
@@ -14,6 +14,7 @@ const params=new URL(location.href).searchParams;
 const requestedAngle=Number(params.get('angle')??-25);
 let target=Number.isFinite(requestedAngle)?snapYaw(requestedAngle):-25;
 let rows:ReviewFrame[]=[],selected=0,generation=0,detailGeneration=0;
+let feedback:Feedback[]=[];
 const poseByKey=new Map(poses.frames.map(p=>[p.key,p]));
 const compressed=new Map<number,Promise<Blob>>();
 type Tile={row:ReviewFrame;photo:HTMLCanvasElement;bones:HTMLCanvasElement;button:HTMLButtonElement};
@@ -23,7 +24,7 @@ function element<K extends keyof HTMLElementTagNameMap>(tag:K,text=''){
  const node=document.createElement(tag);node.textContent=text;return node;
 }
 function pageURL(file:string,tick?:number){
- const url=new URL(file,location.href);url.searchParams.set('v','45');url.searchParams.set('angle',String(target));
+ const url=new URL(file,location.href);url.searchParams.set('v','46');url.searchParams.set('angle',String(target));
  if(tick!==undefined)url.searchParams.set('tick',String(tick));return url;
 }
 function updateURL(detail=false){
@@ -74,6 +75,32 @@ function updateLinks(){
  $<HTMLAnchorElement>('artwork').href=pageURL('./angle.html').href;
  $<HTMLAnchorElement>('debug').href=pageURL('./debug.html',selected).href;
 }
+function frameReviews(index:number){
+ const key=frameKey(data.frames[index]);
+ return feedback.filter(r=>r.frameKey===key&&(r.category!=='angle'||r.target===target));
+}
+function renderReviewNotes(){
+ const notes=frameReviews(rows[selected].index),root=$('review-notes');root.replaceChildren();
+ for(const row of notes){
+  const article=element('article');article.className='review-note';
+  article.append(element('b',`${row.author==='codex'?'Codex':'사용자'} · ${categories[row.category]} · ${signed(row.target)}`),element('p',row.note||categories[row.category]));root.append(article);
+ }
+}
+function updateReviewBadges(){
+ let count=0;
+ for(const tile of tiles){
+  tile.button.querySelector('.review-badge')?.remove();
+  const notes=frameReviews(tile.row.index);if(!notes.length)continue;count++;
+  const badge=element('small',notes.some(r=>r.author==='codex')?'Codex 검토 의견':'사용자 의견');badge.className='review-badge';tile.button.querySelector('.frame-text')!.append(badge);
+ }
+ $('review-status').textContent=`검토 의견이 있는 순번 ${count}개 · 표시가 없다고 검토를 통과한 것은 아닙니다.`;
+ if(dialog.open)renderReviewNotes();
+}
+async function refreshReviews(){
+ try{const response=await fetch('/api/runway-walk/feedback',{cache:'no-store'});if(!response.ok)throw Error();
+  const body=await response.json();if(!Array.isArray(body.records))throw Error();feedback=body.records;updateReviewBadges();
+ }catch{$('review-status').textContent='검토 의견을 불러오지 못했어요. 사진과 관절은 계속 볼 수 있습니다.';}
+}
 function showLoadState(){
  const loaded=tiles.filter(t=>t.button.dataset.loaded==='true').length,failed=tiles.filter(t=>t.button.dataset.error==='true').length;
  $('loaded').textContent=`사진 ${loaded} / ${rows.length}장 준비됨${failed?` · ${failed}장 로딩 실패`:loaded===rows.length?' · 전체 순서 준비 완료':''}`;
@@ -123,7 +150,7 @@ function renderAngle(){
   text.append(element('b',`${row.tick+1}번`),element('span',`추정 ${signed(f.yaw,1)}`),element('small',`원본 #${f.sourceFrame}`));
   button.append(box,text);button.onclick=()=>void showDetail(row.tick);frames!.append(button);tiles.push({row,photo,bones,button});
  }
- $('sequence').replaceChildren(fragment);highlight(0);updateLinks();updateURL();void loadTiles(epoch);
+ $('sequence').replaceChildren(fragment);highlight(0);updateLinks();updateURL();updateReviewBadges();void loadTiles(epoch);
 }
 async function showDetail(tick:number){
  highlight(tick);updateLinks();updateURL(true);const epoch=++detailGeneration,angleEpoch=generation;
@@ -139,7 +166,7 @@ async function showDetail(tick:number){
   figure.dataset.tick=String(neighbor.tick);return {neighbor,figure,photo};
  });
  $('neighbors').replaceChildren(...list.map(t=>t.figure));source.hidden=true;source.removeAttribute('src');$('source-state').textContent='';
- if(!dialog.open)dialog.showModal();if(original.open)loadOriginal();
+ if(!dialog.open)dialog.showModal();renderReviewNotes();if(original.open)loadOriginal();
  let failures=0;
  for(const t of list){let image:ImageBitmap|undefined;
   try{const contents=await blob(data.frames[t.neighbor.index].atlas);if(epoch!==detailGeneration||angleEpoch!==generation)return;
@@ -174,3 +201,4 @@ $('copy').onclick=async()=>{
 };
 setJoints(true);renderAngle();
 if(params.has('tick'))void showDetail(Number(params.get('tick')));
+void refreshReviews();window.addEventListener('focus',()=>void refreshReviews());

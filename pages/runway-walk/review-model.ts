@@ -1,7 +1,7 @@
 export const categories = { angle: '방향 / 각도', matte: '누끼 / 잔상', pose: '관절 추정', gait: '발 / 걸음 연결', scale: '크기 / 기울기', ok: '괜찮음', other: '기타' } as const;
 export type Category = keyof typeof categories;
 export type FeedbackDraft = { clientId: string; frameKey: string; target: number; category: Category; note: string; suggestedYaw: number | null; joint: number | null; comparedTo: string | null; assetVersion: string };
-export type Feedback = FeedbackDraft & { id: string; author: 'user'; createdAt: string };
+export type Feedback = FeedbackDraft & { id: string; author: 'user'|'codex'; createdAt: string };
 export function frameKey(frame: { source: string; sourceFrame: number }) { return `${frame.source}:${frame.sourceFrame}`; }
 export function validateFeedback(input: unknown, keys: ReadonlySet<string>): FeedbackDraft {
   if (!input || typeof input !== 'object') throw new TypeError('의견 형식이 올바르지 않아요.');

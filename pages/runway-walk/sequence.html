@@ -13,6 +13,7 @@
 <main>
  <div class="intro"><p id="summary" role="status">순서를 불러오는 중</p><p>왼쪽 → 오른쪽, 위 → 아래 순서 · 한 묶음은 같은 사람의 3프레임 · 사진을 누르면 앞뒤 사진과 비교합니다.</p><p class="legend"><span class="left">● 인물의 왼쪽</span><span class="right">● 인물의 오른쪽</span><span class="uncertain">● 인식 불확실</span><span>각도·관절은 추정값입니다. 사진의 실제 방향·발 위치와 비교해 주세요.</span></p></div>
  <div class="load-status"><span id="loaded" role="status"></span><button id="retry" hidden>사진 다시 불러오기</button></div>
+ <p id="review-status" role="status">검토 의견을 불러오는 중</p>
  <div id="sequence" aria-label="실제 재생 순서 전체"></div>
  <p class="loop-note">마지막 300번 다음에는 다시 1번으로 이어집니다.</p>
 </main>
@@ -20,6 +21,7 @@
  <div class="detail-heading"><h2 id="detail-title">사진 비교</h2><button id="close" aria-label="사진 비교 닫기">닫기 ✕</button></div>
  <div class="detail-tools"><button id="previous">← 이전 사진</button><label class="check"><input type="checkbox" id="detail-joints" checked>관절</label><button id="next">다음 사진 →</button></div>
  <div id="neighbors"></div><p id="detail-meta"></p><p id="detail-state" role="status"></p>
+ <div id="review-notes" aria-label="이 사진의 검토 의견"></div>
  <div class="detail-actions"><a id="feedback-link" href="./debug.html">이 사진의 관절 확인·의견 남기기 ↗</a><button id="copy">이 사진 링크 복사</button></div>
  <input id="share" aria-label="선택한 순번의 공유 링크" readonly>
  <details id="original"><summary>원본 영상의 같은 사진 보기</summary><p id="source-state" role="status"></p><img id="source-photo" alt="원본 영상의 선택한 프레임" hidden></details>

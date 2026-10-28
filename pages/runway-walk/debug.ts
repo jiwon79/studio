@@ -152,7 +152,7 @@ async function renderPhoto(index: number, explicitPrevious?: number) {
 function renderMetadata() {
   const frame = data.frames[selected], used = eligibleIndices().has(selected);
   $<HTMLAnchorElement>('reference-link').href=`./reference.html?angle=${target}`;
-  $<HTMLAnchorElement>('sequence-link').href=`./sequence.html?v=45&angle=${target}${walk.length?`&tick=${cursor}`:''}`;
+  $<HTMLAnchorElement>('sequence-link').href=`./sequence.html?v=46&angle=${target}${walk.length?`&tick=${cursor}`:''}`;
   $('actual-angle').textContent = signed(frame.yaw,1);
   const state = $('photo-state');
   state.textContent = `사진 ${signed(frame.yaw,1)} · 재생 ${signed(target)} · ${referenceMatches.frames[selected].uncertain?'다리 추정 주의 · 재생 제외':heldForTarget(frame,target)?'보류':used?'후보':'미사용'}`;
@@ -265,7 +265,7 @@ function renderReviews() {
   }
   for (const row of feedback.filter(row=>row.frameKey===frameKey(data.frames[selected]))) {
     const article=element('article'); article.className='review user';
-    article.append(element('b',`사용자 · ${categories[row.category]} · 재생 ${signed(row.target)}`),element('span',row.note || categories[row.category]));
+    article.append(element('b',`${row.author==='codex'?'Codex':'사용자'} · ${categories[row.category]} · 재생 ${signed(row.target)}`),element('span',row.note || categories[row.category]));
     if (row.suggestedYaw!==null) article.append(element('p',`각도 제안 ${signed(row.suggestedYaw)}`));
     if (row.joint!==null) article.append(element('p',`관련 관절 ${row.joint} ${poses.names[row.joint]}`));
     if (row.comparedTo) article.append(element('p',`이전 사진 ${row.comparedTo}`));
