@@ -15,6 +15,7 @@ try {
  const {buildBlocks,directionCandidates}=await server.ssrLoadModule('/pages/runway-walk/angle-match.ts');
  const {ReferenceSequencer}=await server.ssrLoadModule('/pages/runway-walk/reference-sequencer.ts');
  const {clockPhase,CYCLE_FRAMES}=await server.ssrLoadModule('/pages/runway-walk/reference-clock.ts');
+ const {measureAppearanceProgress}=await server.ssrLoadModule('/pages/runway-walk/gait-progress.ts');
  const {measureMotion:rawMeasure,summarizeMotion,MOTION_LIMITS:L}=await server.ssrLoadModule('/pages/runway-walk/motion-quality.ts');
  const {registeredPosture,PHOTO_REGISTRATION_VERSION}=await server.ssrLoadModule('/pages/runway-walk/photo-registration.ts');
  const cache=new WeakMap();
@@ -48,6 +49,9 @@ try {
     if(checks.some(c=>c.oppositeFits)||checks.reduce((s,c)=>s+c.direct,0)/3>.4)continue;
     const rows=[1,2].map(j=>measureMotion(data.frames[block.start+j-1].posture,data.frames[block.start+j].posture,clockPhase(tick+j-1),clockPhase(tick+j),yaw));
     if(!rows.every(hard))continue;
+    const phases=[0,1,2].map(j=>clockPhase(tick+j));
+    const progress=measureAppearanceProgress([0,1,2].map(j=>posture(data.frames[block.start+j].posture,phases[j],yaw)),phases,yaw);
+    if(['reverse','stall','unmeasurable'].includes(progress.status))continue;
     nodes.push({...block,keys:keys.slice(block.start,block.start+3),rows,bad:[0,1,2].map(a=>rows.reduce((s,m)=>s+fail(m)[a],0)),score:rows.reduce((s,m)=>s+cost(m)+fail(m).reduce((a,b)=>a+b,0)*100,0)+checks.reduce((s,c)=>s+c.direct,0)});
    }
    pools.push(nodes);

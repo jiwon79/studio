@@ -30,6 +30,13 @@ test('reviewed frontal shots cannot return to shallow-angle playback or dragging
     {clip:'prada24-turn-49',sourceFrame:1210,target:-10},
     {clip:'prada24-turn-81',sourceFrame:2024,target:-10},
     {clip:'prada24-turn-208',sourceFrame:5200,target:-10},
+    {clip:'prada24-turn-208',sourceFrame:5206,target:-10},
+    {clip:'prada24-turn-81',sourceFrame:2031,target:-10},
+    {clip:'prada24-turn-99',sourceFrame:2478,target:-10},
+    {clip:'hermes24-shallow-126',sourceFrame:3138,target:-10},
+    {clip:'hermes-side-475',sourceFrame:11890,target:-20},
+    {clip:'issey19-left-38',sourceFrame:952,target:-25},
+    {clip:'dries24-right-113',sourceFrame:2825,target:20},
   ];
   for(const frame of rejected) {
     expect(heldForTarget(frame,frame.target)).toBe(true);

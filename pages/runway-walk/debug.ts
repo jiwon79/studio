@@ -2,7 +2,7 @@ import {cutPhotoTransform,applyPhotoTransform,transformPhotoPoint,transformPostu
 import data from './angles.json';
 import poses from './debug-poses.json';
 import './debug.css';
-import {clockPhase} from './reference-clock';
+import {clockPhase,createWalkState} from './reference-clock';
 import { ReferenceSequencer,cutIndex, type ReferenceCut } from './reference-sequencer';
 import referenceMatches from './reference-matches.json';
 import { AtlasPool } from './atlas-pool';
@@ -12,6 +12,7 @@ import { categories, frameKey, validateFeedback, type Feedback } from './review-
 import { inspectTransition, postureTransition, transitionWarning } from './posture-match';
 import {auditSequence,type MeasuredTransition} from './sequence-audit';
 import {MOTION_LIMITS} from './motion-quality';
+import {measureAppearanceProgress} from './gait-progress';
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const angleInput = $<HTMLSelectElement>('angle'), scopeInput = $<HTMLSelectElement>('scope');
@@ -43,7 +44,7 @@ let manualHalfCycle=false;
 function currentHalfCycle() { return currentInfo()?.halfCycle??manualHalfCycle; }
 function currentInfo() { return walk.length?walkInfo[cursor]:undefined; }
 function currentSwap() { return currentInfo()?.swapped??manualSwap??false; }
-function comparedSwap() { return walk.length && cursor>0?walkInfo[cursor-1].swapped:previousSwap; }
+function comparedSwap() { return walk.length?walkInfo[(cursor+walk.length-1)%walk.length].swapped:previousSwap; }
 const pageSize = 24;
 const compressed = new Map<number,Promise<Blob>>();
 function blob(index: number) {
@@ -102,13 +103,13 @@ function photoState(index:number,info?:WalkInfo){
  const posture=data.frames[index].posture,transform=info?.cut?cutPhotoTransform(info.cut,info.offset??0,posture,info.phase,target):IDENTITY_PHOTO;
  return {transform,posture:transformPosture(posture,transform)};
 }
-function previousInfo(){return walk.length&&cursor>0?walkInfo[cursor-1]:undefined;}
+function previousInfo(){return walk.length?walkInfo[(cursor+walk.length-1)%walk.length]:undefined;}
 function drawTile(image: ImageBitmap, index: number, ctx: CanvasRenderingContext2D, width = 512, height = 768,transform:PhotoTransform=IDENTITY_PHOTO) {
   const frame = data.frames[index];
   ctx.save();ctx.scale(width/512,height/768);applyPhotoTransform(ctx,transform);
   ctx.drawImage(image, frame.tile%data.columns*512, Math.floor(frame.tile/data.columns)*768,512,768,0,0,512,768);ctx.restore();
 }
-function comparisonIndex() { return walk.length && cursor>0 ? walk[cursor-1] : previous; }
+function comparisonIndex() { return walk.length ? walk[(cursor+walk.length-1)%walk.length] : previous; }
 async function renderPhoto(index: number, explicitPrevious?: number) {
   const epoch = ++generation;
   if (index!==selected) { previous=selected; previousSwap=manualSwap??false; manualSwap=undefined; manualHalfCycle=false; selected=index; }
@@ -160,6 +161,12 @@ function renderMetadata() {
   const values = { '사진 ID':frameKey(frame), '착장':frame.clip, '재생 각도':signed(target), '각도 차이':`${Math.abs(frame.yaw-target).toFixed(1)}°`, '몸통 기울기':signed(photoState(selected,currentInfo()).posture.lean,1), '전신축 기울기':signed(photoState(selected,currentInfo()).posture.axis,1), '보행 위상':referenceMatches.frames[selected].phase.toFixed(3), '관절':joint===null?'선택 안 함':`${joint} ${poses.names[joint]}`, '이전 사진':compared===undefined?'—':frameKey(data.frames[compared]) };
   const info=currentInfo();
   if(info) Object.assign(values,{'연속 보행 시계':info.phase.toFixed(3),'3D 맞춤 오차':info.cut?info.cut.referenceError.toFixed(3):'시작 사진','발 대응':'왼발과 오른발 고정','구간':info.cut?.sourceContinuation?'같은 원본의 다음 구간':`${info.cut?.count??1}프레임 교체`});
+  if(info?.cut?.count===3){
+    const cut=info.cut,phases=[clockPhase(cut.before.tick),clockPhase(cut.before.tick+1),clockPhase(cut.before.tick+2)] as const;
+    const m=measureAppearanceProgress([photoState(cutIndex(cut,0),{...info,phase:phases[0],offset:0}).posture,photoState(cutIndex(cut,1),{...info,phase:phases[1],offset:1}).posture,photoState(cutIndex(cut,2),{...info,phase:phases[2],offset:2}).posture],phases,target);
+    const labels={forward:'진행',reverse:'역방향 후보',stall:'정체 후보','small-motion':'기준 동작이 작음',unmeasurable:'양발 인식 불확실'};
+    Object.assign(values,{'3프레임 진행':labels[m.status],'발 이동 / 기준':`${m.actual.toFixed(1)} / ${m.expected.toFixed(1)}px (골반 기준)`});
+  }
   Object.entries(values).forEach(([key,value]) => metadata.append(element('dt',key),element('dd',value)));
   renderComparison();
   $('feedback-photo').textContent = `저장 대상: ${frameKey(frame)} · ${signed(target)}`;
@@ -309,14 +316,16 @@ function updateURL() {
   const url=new URL(location.href); url.search=''; url.searchParams.set('angle',String(target)); url.searchParams.set('frame',frameKey(data.frames[selected]));
   const compared=comparisonIndex(); if(compared!==undefined) url.searchParams.set('previous',frameKey(data.frames[compared]));
   if(walk.length || manualSwap!==undefined) {url.searchParams.set('swapped',String(currentSwap()));url.searchParams.set('halfCycle',String(currentHalfCycle()));url.searchParams.set('previousSwapped',String(comparedSwap()));}
+  const info=currentInfo();if(info?.cut)url.searchParams.set('tick',String(info.cut.before.tick+(info.offset??0)));
   history.replaceState(null,'',url); $<HTMLInputElement>('share-url').value=url.href;
 }
 function pause() { playing=false; playbackEpoch++; $('play').textContent='연결 재생'; $('play').setAttribute('aria-pressed','false'); }
-function makeWalk() {
-  const swapped=currentSwap(),halfCycle=currentHalfCycle();
-  let state=sequencer.seed(selected);
-  walk=[selected]; walkInfo=[{swapped,halfCycle,phase:clockPhase(-1,state.origin)}]; cursor=0;
-  for (let i=0;i<120;i++) {
+function makeWalk(tick?:number) {
+  // Review the same compiled timeline as the artwork. Seeding a new walk from a
+  // gallery photograph previously invoked a different fallback edit entirely.
+  let state=createWalkState();
+  walk=[];walkInfo=[];
+  while(state.tick<600) {
     const cut=sequencer.plan(target,state);
     for(let offset=0;offset<cut.count;offset++) {
       walk.push(cutIndex(cut,offset));
@@ -324,6 +333,7 @@ function makeWalk() {
     }
     state=cut.after;
   }
+  cursor=tick===undefined?Math.max(0,walk.indexOf(selected)):Math.max(0,Math.min(walk.length-1,Math.floor(tick)));
 }
 async function play() {
   if (playing) { pause(); return; }
@@ -406,16 +416,18 @@ $('scan').addEventListener('click',async()=> {
   pause();const button=$<HTMLButtonElement>('scan');button.disabled=true;
   const list=$('scan-results');list.replaceChildren();let passing=0;
   const table=element('table'),head=element('thead'),body=element('tbody');
-  head.innerHTML='<tr><th>각도</th><th>발 P95 / 최대 px</th><th>기울기 P95 / 최대 °</th><th>몸통 P95 / 최대 px</th><th>측정 충족률 발 / 몸통</th><th>등장 프레임</th><th>결과</th></tr>';
+  head.innerHTML='<tr><th>각도</th><th>발 P95 / 최대 px</th><th>기울기 P95 / 최대 °</th><th>몸통 P95 / 최대 px</th><th>측정 충족률 발 / 몸통</th><th>등장 프레임</th><th>역행 / 정체 / 양발 불확실</th><th>기존 이동량 검사</th></tr>';
   table.append(head,body);list.append(table);
   const warnings:({target:number}&MeasuredTransition)[]=[];
+  const progressWarnings:{target:number;tick:number;status:string}[]=[];
   try {
     for(let yaw=-90;yaw<=90;yaw+=5){
       const tr=element('tr');
       try{
         const report=auditSequence(sequencer,data.frames,yaw),q=report.quality;if(q.pass)passing++;
         const format=(value:number)=>Number.isFinite(value)?value.toFixed(1):'측정 불가';
-        [signed(yaw),`${format(q.footP95)} / ${format(q.footMax)}`,`${format(q.leanP95)} / ${format(q.leanMax)}`,`${format(q.torsoP95)} / ${format(q.torsoMax)}`,`${(q.coverage*100).toFixed(0)}% / ${(q.leanCoverage*100).toFixed(0)}%`,`${q.minRun}–${q.maxRun}`,q.pass?'통과':'미달'].forEach(value=>tr.append(element('td',value)));
+        [signed(yaw),`${format(q.footP95)} / ${format(q.footMax)}`,`${format(q.leanP95)} / ${format(q.leanMax)}`,`${format(q.torsoP95)} / ${format(q.torsoMax)}`,`${(q.coverage*100).toFixed(0)}% / ${(q.leanCoverage*100).toFixed(0)}%`,`${q.minRun}–${q.maxRun}`,`${report.progress.reverse} / ${report.progress.stall} / ${report.progress.unmeasurable}`,q.pass?'통과':'미달'].forEach(value=>tr.append(element('td',value)));
+        progressWarnings.push(...report.appearances.filter(r=>['reverse','stall','unmeasurable'].includes(r.status)).slice(0,4).map(r=>({target:yaw,tick:r.tick,status:r.status})));
         tr.className=q.pass?'pass':'warning';
         warnings.push(...report.transitions.filter(m=>!m.leanReliable||m.footResidual>MOTION_LIMITS.footP95||m.leanResidual>MOTION_LIMITS.leanP95||m.torsoResidual>MOTION_LIMITS.torsoP95).map(m=>({target:yaw,...m})));
       }catch(error){tr.append(element('td',signed(yaw)),element('td',error instanceof Error?error.message:'연결 실패'));tr.className='warning';}
@@ -437,6 +449,11 @@ $('scan').addEventListener('click',async()=> {
       if(uncertain)selectedWarnings.push(uncertain);
       selectedWarnings.push(...rows.filter(row=>Number.isFinite(row.footResidual)&&row.leanReliable).slice(0,3));
     }
+    for(const row of progressWarnings){
+      const label=row.status==='reverse'?'역방향 후보':row.status==='stall'?'정체 후보':'양발 인식 불확실';
+      const link=element('button',`${signed(row.target)} · 재생 ${row.tick}–${row.tick+2} · ${label}`);
+      link.addEventListener('click',()=>{pause();target=row.target;angleInput.value=String(target);scopeInput.value='angle';search.value='';ghost.checked=false;makeWalk(row.tick);void renderPhoto(walk[cursor]);updateRows();});list.append(link);
+    }
     selectedWarnings.forEach(row=>{
       const feet=Number.isFinite(row.footResidual)?`발 오차 ${row.footResidual.toFixed(1)}px`:'발 측정 불확실';
       const lean=row.leanReliable?`기울기 오차 ${row.leanResidual.toFixed(1)}°`:'기울기 측정 불확실';
@@ -446,9 +463,10 @@ $('scan').addEventListener('click',async()=> {
         void renderPhoto(row.to,row.from).then(()=>{manualSwap=false;previousSwap=false;manualHalfCycle=false;renderMetadata();updateURL();});updateRows();
       });list.append(link);
     });
-    $('scan-state').textContent=`${passing} / 37 각도 통과 · 각 300프레임(12초), 주기 경계와 인물 내부 전환 포함. 미달한 연결은 개선 대상이며, 점수 통과가 누끼·실제 방향 검수를 대신하지 않습니다.`;
+    $('scan-state').textContent=`기존 이동량 검사 ${passing} / 37 각도 통과 · 각 300프레임(12초). 역행·정체·양발 인식 불확실은 별도 검토 대상입니다. 작은 기준 동작은 역행으로 단정하지 않습니다. 수치 검사는 누끼·실제 방향 검수를 대신하지 않습니다.`;
   }finally{button.disabled=false;}
 });
 if (!params.has('frame')) selected=candidates()[0]?.start ?? 0;
 if (Math.abs(data.frames[selected].yaw-target)>5) scopeInput.value='all';
+if(params.has('tick')&&Number.isFinite(Number(params.get('tick')))){makeWalk(Number(params.get('tick')));selected=walk[cursor];}
 updateRows(); void renderPhoto(selected,initialPrevious>=0?initialPrevious:undefined); void refreshFeedback();

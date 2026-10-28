@@ -238,5 +238,116 @@
     "action": "hold",
     "reviewedAt": "2026-10-28",
     "note": "-10° 실제 재생 및 같은 착장의 앞뒤 사진을 비교했습니다. 가슴과 골반이 거의 정면인 구간이 돌아선 착장 사이에 삽입되어 방향이 튑니다. 원본 각도 재분류 전에는 이 구간을 해당 재생 각도에서 제외합니다."
+  },
+  {
+    "id": "review-v44-hermes-side-475",
+    "clip": "hermes-side-475",
+    "fromFrame": 11860,
+    "toFrame": 11906,
+    "targets": [
+      -25,
+      -20,
+      -10
+    ],
+    "category": "angle",
+    "action": "hold",
+    "reviewedAt": "2026-10-28",
+    "note": "사용자 피드백과 실제 누끼의 얼굴·몸통 방향을 비교했습니다. 등록된 각도에 비해 정면에 가까운 컷이 갑자기 끼어드는 대상 각도에서 제외합니다."
+  },
+  {
+    "id": "review-v44-issey19-left-38",
+    "clip": "issey19-left-38",
+    "fromFrame": 950,
+    "toFrame": 955,
+    "targets": [
+      -25,
+      -20
+    ],
+    "category": "angle",
+    "action": "hold",
+    "reviewedAt": "2026-10-28",
+    "note": "사용자 피드백과 실제 누끼의 얼굴·몸통 방향을 비교했습니다. 등록된 각도에 비해 정면에 가까운 컷이 갑자기 끼어드는 대상 각도에서 제외합니다."
+  },
+  {
+    "id": "review-v44-prada24-turn-99",
+    "clip": "prada24-turn-99",
+    "fromFrame": 2475,
+    "toFrame": 2488,
+    "targets": [
+      -25,
+      -20,
+      -10
+    ],
+    "category": "angle",
+    "action": "hold",
+    "reviewedAt": "2026-10-28",
+    "note": "사용자 피드백과 실제 누끼의 얼굴·몸통 방향을 비교했습니다. 등록된 각도에 비해 정면에 가까운 컷이 갑자기 끼어드는 대상 각도에서 제외합니다."
+  },
+  {
+    "id": "review-v44-prada24-turn-208",
+    "clip": "prada24-turn-208",
+    "fromFrame": 5205,
+    "toFrame": 5207,
+    "targets": [
+      -10
+    ],
+    "category": "angle",
+    "action": "hold",
+    "reviewedAt": "2026-10-28",
+    "note": "사용자 피드백과 실제 누끼의 얼굴·몸통 방향을 비교했습니다. 등록된 각도에 비해 정면에 가까운 컷이 갑자기 끼어드는 대상 각도에서 제외합니다."
+  },
+  {
+    "id": "review-v44-issey19-left-355",
+    "clip": "issey19-left-355",
+    "fromFrame": 8875,
+    "toFrame": 8877,
+    "targets": [
+      -10
+    ],
+    "category": "angle",
+    "action": "hold",
+    "reviewedAt": "2026-10-28",
+    "note": "사용자 피드백과 실제 누끼의 얼굴·몸통 방향을 비교했습니다. 등록된 각도에 비해 정면에 가까운 컷이 갑자기 끼어드는 대상 각도에서 제외합니다."
+  },
+  {
+    "id": "review-v44-dries24-right-113",
+    "clip": "dries24-right-113",
+    "fromFrame": 2824,
+    "toFrame": 2825,
+    "targets": [
+      15,
+      20,
+      25
+    ],
+    "category": "matte",
+    "action": "hold",
+    "reviewedAt": "2026-10-28",
+    "note": "원본에서 관객의 모자가 앞발을 가립니다. 누끼는 가려진 발을 복원할 수 없으므로 이 프레임을 사용하지 않습니다."
+  },
+  {
+    "id": "review-v44-prada24-turn-81",
+    "clip": "prada24-turn-81",
+    "fromFrame": 2029,
+    "toFrame": 2033,
+    "targets": [
+      -10
+    ],
+    "category": "angle",
+    "action": "hold",
+    "reviewedAt": "2026-10-28",
+    "note": "실제 연속 사진에서 얼굴과 상체가 정면에 가까운 구간을 확인했습니다. 이전 보류 경계 뒤에 남아 있던 정면 컷을 -10도 재생에서 추가 제외합니다."
+  },
+  {
+    "id": "review-v44-hermes24-shallow-126",
+    "clip": "hermes24-shallow-126",
+    "fromFrame": 3134,
+    "toFrame": 3140,
+    "targets": [
+      -10
+    ],
+    "category": "angle",
+    "action": "hold",
+    "reviewedAt": "2026-10-28",
+    "note": "실제 연속 사진에서 얼굴과 상체가 정면에 가까운 구간을 확인했습니다. 이전 보류 경계 뒤에 남아 있던 정면 컷을 -10도 재생에서 추가 제외합니다."
   }
 ]

@@ -4,6 +4,8 @@ import {cutPhotoTransform,transformPosture,IDENTITY_PHOTO} from './photo-registr
 import {clockPhase,createWalkState} from './reference-clock';
 import {measureMotion,summarizeMotion,type MotionQuality} from './motion-quality';
 import {alignedFace,measureFace,summarizeUpperBody} from './upper-body-quality';
+import {measureAppearanceProgress} from './gait-progress';
+import type {Posture} from './posture-match';
 
 export type MeasuredTransition = MotionQuality & {from:number;to:number;tick:number};
 /** Inspect displayed frames, including within-person steps and the next cycle's
@@ -12,8 +14,14 @@ export function auditSequence(planner:ReferenceSequencer,frames:readonly AngleFr
  let state=createWalkState(),last:number|undefined,lastTransform=IDENTITY_PHOTO;
  const transitions:MeasuredTransition[]=[],runs:{look:string;count:number}[]=[],indices:number[]=[];
  const faceTransitions:(ReturnType<typeof measureFace>&{cut:boolean})[]=[];
+ const appearances:(ReturnType<typeof measureAppearanceProgress>&{tick:number;from:number;to:number})[]=[];
  while(state.tick<=ticks){
   const cut=planner.plan(yaw,state);
+  if(cut.count===3&&state.tick+2<=ticks){
+   const phases=[0,1,2].map(j=>clockPhase(state.tick+j)) as [number,number,number];
+   const postures=[0,1,2].map(j=>{const p=frames[cutIndex(cut,j)].posture;if(!p)throw Error('Missing appearance landmarks');return transformPosture(p,cutPhotoTransform(cut,j,p,phases[j],yaw));}) as [Posture,Posture,Posture];
+   appearances.push({tick:state.tick,from:cutIndex(cut,0),to:cutIndex(cut,2),...measureAppearanceProgress(postures,phases,yaw)});
+  }
   for(let j=0;j<cut.count&&state.tick+j<=ticks;j++){
    const index=cutIndex(cut,j),tick=state.tick+j,frame=frames[index],look=frame.look??frame.clip;
    const transform=frame.posture?cutPhotoTransform(cut,j,frame.posture,clockPhase(tick),yaw):IDENTITY_PHOTO;
@@ -28,5 +36,6 @@ export function auditSequence(planner:ReferenceSequencer,frames:readonly AngleFr
   }
   state=cut.after;
  }
- return {yaw,indices,transitions,runs,quality:summarizeMotion(transitions,runs.slice(0,-1).map(r=>r.count)),...(poses?{upperBody:summarizeUpperBody(faceTransitions)}:{})};
+ const progress={appearances:appearances.length,reverse:appearances.filter(r=>r.status==='reverse').length,stall:appearances.filter(r=>r.status==='stall').length,unmeasurable:appearances.filter(r=>r.status==='unmeasurable').length,smallMotion:appearances.filter(r=>r.status==='small-motion').length};
+ return {yaw,indices,transitions,runs,appearances,progress,quality:summarizeMotion(transitions,runs.slice(0,-1).map(r=>r.count)),...(poses?{upperBody:summarizeUpperBody(faceTransitions)}:{})};
 }
