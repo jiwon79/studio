@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import logging
 import os
+import random
 import re
 import secrets
 import threading
+import time
 from datetime import UTC, datetime, timedelta
 from typing import Any, Iterator
 from urllib.parse import urlencode
@@ -23,9 +26,18 @@ from .db import (add_delivery, claim_dm_send_item, create_dm_send_items, dm_send
 GRAPH_BASE = "https://graph.instagram.com/" + os.getenv("INSTAGRAM_GRAPH_VERSION", "v25.0")
 SCOPES = "instagram_business_basic,instagram_business_manage_comments,instagram_business_manage_messages"
 HALT_CODES = {4, 17, 32, 368, 613}
+GET_ATTEMPTS = 6
+DM_PAGE_SIZE = 20
+# Reactions and shares are required to reconcile existing records accurately.
+DM_MESSAGE_FIELDS = "id,created_time,from{id,username},message,reactions,shares{link}"
+logger = logging.getLogger(__name__)
 
 
 class InstagramAssistantError(RuntimeError):
+    pass
+
+
+class MetaConnectionError(InstagramAssistantError):
     pass
 
 
@@ -35,7 +47,10 @@ class InstagramHaltedError(InstagramAssistantError):
 
 class MetaApiError(InstagramAssistantError):
     def __init__(self, *, status: int, code: Any, subcode: Any,
-                 error_type: Any, trace_id: Any, message: str, method: str, path: str) -> None:
+                 error_type: Any, trace_id: Any, message: str, method: str, path: str,
+                 is_transient: bool = False) -> None:
+        self.is_transient = is_transient
+        self.reduce_data = code == 1 and "reduce the amount of data" in message.lower()
         self.status = status
         self.code = code
         self.subcode = subcode
@@ -56,6 +71,43 @@ class GraphClient:
 
     def request(self, method: str, path: str, *, params: dict | None = None,
                 data: dict | None = None, json_body: dict | None = None) -> dict:
+        # Only reads are safe to replay. A failed send may already have reached Meta.
+        method = method.upper()
+        query = dict(params or {})
+        attempts = GET_ATTEMPTS if method == "GET" else 1
+        for attempt in range(attempts):
+            try:
+                return self._request_once(method, path, params=query,
+                                          data=data, json_body=json_body)
+            except (MetaApiError, MetaConnectionError) as exc:
+                if attempt + 1 == attempts:
+                    raise
+                if isinstance(exc, MetaApiError):
+                    if exc.reduce_data:
+                        page_size = query.get("limit")
+                        if isinstance(page_size, int) and page_size > 1:
+                            query["limit"] = max(1, page_size // 2)
+                        else:
+                            # The initial conversation detail embeds its message page.
+                            fields = str(query.get("fields") or "")
+                            match = re.search(r"messages\.limit\((\d+)\)", fields)
+                            if not match or int(match[1]) <= 1:
+                                raise
+                            size = max(1, int(match[1]) // 2)
+                            query["fields"] = (fields[:match.start()] + f"messages.limit({size})"
+                                               + fields[match.end():])
+                        # Keep the cursor and all data fields intact.
+                    elif not (exc.status >= 500 or exc.is_transient or exc.code in {1, 2}):
+                        raise
+                delay = 2 ** attempt + random.uniform(0, 1)
+                logger.warning("Retrying Meta GET attempt=%s/%s status=%s code=%s limit=%s delay=%.2fs",
+                               attempt + 2, attempts, getattr(exc, "status", None),
+                               getattr(exc, "code", None), query.get("limit"), delay)
+                time.sleep(delay)
+        raise AssertionError("unreachable")
+
+    def _request_once(self, method: str, path: str, *, params: dict | None = None,
+                      data: dict | None = None, json_body: dict | None = None) -> dict:
         if not path.startswith("/") or "//" in path or ".." in path:
             raise InstagramAssistantError("잘못된 Graph API 경로입니다.")
         try:
@@ -63,9 +115,18 @@ class GraphClient:
                 response = http.request(method, GRAPH_BASE + path,
                     headers={"Authorization": f"Bearer {self.token}"},
                     params=params, data=data, json=json_body)
-            payload = response.json()
-        except (httpx.HTTPError, ValueError) as exc:
+        except httpx.TransportError as exc:
+            raise MetaConnectionError("Meta Graph API 응답을 확인하지 못했습니다.") from exc
+        except httpx.HTTPError as exc:
             raise InstagramAssistantError("Meta Graph API 응답을 확인하지 못했습니다.") from exc
+        try:
+            payload = response.json()
+        except ValueError as exc:
+            if response.status_code >= 500:
+                raise MetaApiError(status=response.status_code, code=None, subcode=None,
+                    error_type=None, trace_id=None, message="Meta returned a non-JSON server error",
+                    method=method, path=path) from exc
+            raise InstagramAssistantError("Meta Graph API 응답 형식이 올바르지 않습니다.") from exc
         if not isinstance(payload, dict):
             raise InstagramAssistantError("Meta Graph API 응답 형식이 올바르지 않습니다.")
         if response.is_error or "error" in payload:
@@ -85,7 +146,7 @@ class GraphClient:
             raise MetaApiError(status=response.status_code, code=code,
                 subcode=error.get("error_subcode"), error_type=error.get("type"),
                 trace_id=error.get("fbtrace_id"), message=message,
-                method=method, path=path)
+                method=method, path=path, is_transient=error.get("is_transient") is True)
         return payload
 
     def pages(self, path: str, *, params: dict | None = None, limit: int = 50) -> Iterator[dict]:
@@ -114,7 +175,7 @@ class GraphClient:
             query["after"] = after
 
     def nested_pages(self, path: str, nested: dict[str, Any], *, fields: str,
-                     limit: int = 1000000) -> Iterator[dict]:
+                     limit: int = 1000000, page_size: int = 50) -> Iterator[dict]:
         count = 0
         for item in nested.get("data") or []:
             if isinstance(item, dict):
@@ -125,7 +186,7 @@ class GraphClient:
         paging = nested.get("paging") or {}
         after = (paging.get("cursors") or {}).get("after")
         if paging.get("next") and after:
-            yield from self.pages(path, params={"fields": fields, "limit": 50,
+            yield from self.pages(path, params={"fields": fields, "limit": page_size,
                                                   "after": after}, limit=limit - count)
 
 
@@ -395,7 +456,7 @@ class InstagramService:
                         except ValueError:
                             pass
                     detail = client.request("GET", f"/{thread_id}", params={
-                        "fields": "participants{id,username},messages{id,created_time,from,to,message,reactions,shares{link}}"})
+                        "fields": f"participants{{id,username}},messages.limit({DM_PAGE_SIZE}){{{DM_MESSAGE_FIELDS}}}"})
                     participants = (detail.get("participants") or {}).get("data") or []
                     own_messaging_ids = {
                         str(person["id"])
@@ -414,7 +475,7 @@ class InstagramService:
                     }
                     messages = (client.nested_pages(f"/{thread_id}/messages",
                         detail.get("messages") or {},
-                        fields="id,created_time,from,to,message,reactions,shares{link}") if full else
+                        fields=DM_MESSAGE_FIELDS, page_size=DM_PAGE_SIZE) if full else
                         (detail.get("messages") or {}).get("data") or [])
                     for message in messages:
                         sender = message.get("from") or {}
