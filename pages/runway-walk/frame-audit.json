@@ -111,7 +111,8 @@
     "fromFrame": 2050,
     "toFrame": 2076,
     "targets": [
-      10
+      10,
+      15
     ],
     "category": "angle",
     "action": "hold",
@@ -124,7 +125,8 @@
     "fromFrame": 1775,
     "toFrame": 1792,
     "targets": [
-      10
+      10,
+      15
     ],
     "category": "angle",
     "action": "hold",
@@ -137,7 +139,8 @@
     "fromFrame": 4388,
     "toFrame": 4436,
     "targets": [
-      10
+      10,
+      15
     ],
     "category": "angle",
     "action": "hold",
@@ -150,7 +153,8 @@
     "fromFrame": 14068,
     "toFrame": 14084,
     "targets": [
-      10
+      10,
+      15
     ],
     "category": "angle",
     "action": "hold",
