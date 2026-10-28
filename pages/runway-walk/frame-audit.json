@@ -104,5 +104,135 @@
     "note": "원본 39.36~40.4초에서 확인한 검은 재킷 회전 구간. 머리가 먼저 옆으로 돌아가고 두 발이 정면에서 방향을 바꾸는 중이라 얕은 왼쪽 직진 보행에 섞이면 방향이 갑자기 튑니다. −10°를 포함한 얕은 왼쪽 재생에서 제외하고 원본·디버그 사진은 검토용으로 유지합니다.",
     "action": "hold",
     "reviewedAt": "2026-10-26"
+  },
+  {
+    "id": "review-front-leak-prada25-nearfront-83",
+    "clip": "prada25-nearfront-83",
+    "fromFrame": 2050,
+    "toFrame": 2076,
+    "targets": [
+      10
+    ],
+    "category": "angle",
+    "action": "hold",
+    "reviewedAt": "2026-10-28",
+    "note": "+10° 실제 재생 및 같은 착장의 앞뒤 사진을 비교했습니다. 가슴과 골반이 거의 정면인 구간이 돌아선 착장 사이에 삽입되어 방향이 튑니다. 원본 각도 재분류 전에는 이 구간을 해당 재생 각도에서 제외합니다."
+  },
+  {
+    "id": "review-front-leak-prada25-curve-70",
+    "clip": "prada25-curve-70",
+    "fromFrame": 1775,
+    "toFrame": 1792,
+    "targets": [
+      10
+    ],
+    "category": "angle",
+    "action": "hold",
+    "reviewedAt": "2026-10-28",
+    "note": "+10° 실제 재생 및 같은 착장의 앞뒤 사진을 비교했습니다. 가슴과 골반이 거의 정면인 구간이 돌아선 착장 사이에 삽입되어 방향이 튑니다. 원본 각도 재분류 전에는 이 구간을 해당 재생 각도에서 제외합니다."
+  },
+  {
+    "id": "review-front-leak-hermes24-clean-175",
+    "clip": "hermes24-clean-175",
+    "fromFrame": 4388,
+    "toFrame": 4436,
+    "targets": [
+      10
+    ],
+    "category": "angle",
+    "action": "hold",
+    "reviewedAt": "2026-10-28",
+    "note": "+10° 실제 재생 및 같은 착장의 앞뒤 사진을 비교했습니다. 가슴과 골반이 거의 정면인 구간이 돌아선 착장 사이에 삽입되어 방향이 튑니다. 원본 각도 재분류 전에는 이 구간을 해당 재생 각도에서 제외합니다."
+  },
+  {
+    "id": "review-front-leak-hermes24-clean-563",
+    "clip": "hermes24-clean-563",
+    "fromFrame": 14068,
+    "toFrame": 14084,
+    "targets": [
+      10
+    ],
+    "category": "angle",
+    "action": "hold",
+    "reviewedAt": "2026-10-28",
+    "note": "+10° 실제 재생 및 같은 착장의 앞뒤 사진을 비교했습니다. 가슴과 골반이 거의 정면인 구간이 돌아선 착장 사이에 삽입되어 방향이 튑니다. 원본 각도 재분류 전에는 이 구간을 해당 재생 각도에서 제외합니다."
+  },
+  {
+    "id": "review-front-leak-prada25-curve-130",
+    "clip": "prada25-curve-130",
+    "fromFrame": 3264,
+    "toFrame": 3268,
+    "targets": [
+      -10
+    ],
+    "category": "angle",
+    "action": "hold",
+    "reviewedAt": "2026-10-28",
+    "note": "-10° 실제 재생 및 같은 착장의 앞뒤 사진을 비교했습니다. 가슴과 골반이 거의 정면인 구간이 돌아선 착장 사이에 삽입되어 방향이 튑니다. 원본 각도 재분류 전에는 이 구간을 해당 재생 각도에서 제외합니다."
+  },
+  {
+    "id": "review-front-leak-prada24-turn-49",
+    "clip": "prada24-turn-49",
+    "fromFrame": 1208,
+    "toFrame": 1217,
+    "targets": [
+      -10
+    ],
+    "category": "angle",
+    "action": "hold",
+    "reviewedAt": "2026-10-28",
+    "note": "-10° 실제 재생 및 같은 착장의 앞뒤 사진을 비교했습니다. 가슴과 골반이 거의 정면인 구간이 돌아선 착장 사이에 삽입되어 방향이 튑니다. 원본 각도 재분류 전에는 이 구간을 해당 재생 각도에서 제외합니다."
+  },
+  {
+    "id": "review-front-leak-prada24-turn-81",
+    "clip": "prada24-turn-81",
+    "fromFrame": 2018,
+    "toFrame": 2028,
+    "targets": [
+      -10
+    ],
+    "category": "angle",
+    "action": "hold",
+    "reviewedAt": "2026-10-28",
+    "note": "-10° 실제 재생 및 같은 착장의 앞뒤 사진을 비교했습니다. 가슴과 골반이 거의 정면인 구간이 돌아선 착장 사이에 삽입되어 방향이 튑니다. 원본 각도 재분류 전에는 이 구간을 해당 재생 각도에서 제외합니다."
+  },
+  {
+    "id": "review-front-leak-prada24-turn-208",
+    "clip": "prada24-turn-208",
+    "fromFrame": 5192,
+    "toFrame": 5204,
+    "targets": [
+      -10
+    ],
+    "category": "angle",
+    "action": "hold",
+    "reviewedAt": "2026-10-28",
+    "note": "-10° 실제 재생 및 같은 착장의 앞뒤 사진을 비교했습니다. 가슴과 골반이 거의 정면인 구간이 돌아선 착장 사이에 삽입되어 방향이 튑니다. 원본 각도 재분류 전에는 이 구간을 해당 재생 각도에서 제외합니다."
+  },
+  {
+    "id": "review-front-leak-prada24-turn-297",
+    "clip": "prada24-turn-297",
+    "fromFrame": 7405,
+    "toFrame": 7408,
+    "targets": [
+      -10
+    ],
+    "category": "angle",
+    "action": "hold",
+    "reviewedAt": "2026-10-28",
+    "note": "-10° 실제 재생 및 같은 착장의 앞뒤 사진을 비교했습니다. 가슴과 골반이 거의 정면인 구간이 돌아선 착장 사이에 삽입되어 방향이 튑니다. 원본 각도 재분류 전에는 이 구간을 해당 재생 각도에서 제외합니다."
+  },
+  {
+    "id": "review-front-leak-prada24-turn-312",
+    "clip": "prada24-turn-312",
+    "fromFrame": 7792,
+    "toFrame": 7797,
+    "targets": [
+      -10
+    ],
+    "category": "angle",
+    "action": "hold",
+    "reviewedAt": "2026-10-28",
+    "note": "-10° 실제 재생 및 같은 착장의 앞뒤 사진을 비교했습니다. 가슴과 골반이 거의 정면인 구간이 돌아선 착장 사이에 삽입되어 방향이 튑니다. 원본 각도 재분류 전에는 이 구간을 해당 재생 각도에서 제외합니다."
   }
 ]

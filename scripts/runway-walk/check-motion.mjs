@@ -7,7 +7,7 @@ try{
  const {MOTION_LIMITS}=await server.ssrLoadModule('/pages/runway-walk/motion-quality.ts');
  const data=JSON.parse(fs.readFileSync('pages/runway-walk/angles.json')),poses=JSON.parse(fs.readFileSync('pages/runway-walk/debug-poses.json')),planner=new ReferenceSequencer(data.frames),reports=[];
  for(let yaw=-90;yaw<=90;yaw+=5){
-  try{const r=auditSequence(planner,data.frames,yaw,1200,poses.frames);reports.push({yaw,...r.quality,upperBody:r.upperBody,worst:r.transitions.sort((a,b)=>b.footResidual-a.footResidual).slice(0,10)});}
+  try{const r=auditSequence(planner,data.frames,yaw,1200,poses.frames),displayed=r.indices.map(i=>data.frames[i]);reports.push({yaw,...r.quality,displayedPhotos:new Set(displayed.map(f=>`${f.source}:${f.sourceFrame}`)).size,displayedOutfits:new Set(displayed.map(f=>f.look??f.clip)).size,upperBody:r.upperBody,worst:r.transitions.sort((a,b)=>b.footResidual-a.footResidual).slice(0,10)});}
   catch(error){reports.push({yaw,pass:false,error:String(error)});}
  }
  console.table(reports.map(({worst,upperBody,...row})=>({...row,upperBodyPass:upperBody?.pass,faceWithinP95:upperBody?.withinP95,faceCutP95:upperBody?.cutP95})));

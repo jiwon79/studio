@@ -309,5 +309,28 @@
     "fps": 25,
     "originalFps": 25,
     "sourceOffset": 0
+  },
+  {
+    "id": "pradass15",
+    "file": "prada-ss15-official-original.mp4",
+    "poseFile": "prada-ss15-official-original.mp4",
+    "originalFile": "prada-ss15-official-original.mp4",
+    "roiScale": 1,
+    "url": "https://www.prada.com/nl/en/pradasphere/fashion-shows/2015/ss-menswear.html",
+    "title": "Prada Spring Summer 2015 Menswear \u2014 official archive",
+    "fps": 25,
+    "originalFps": 25,
+    "sourceOffset": 0
+  },
+  {
+    "id": "pradass16",
+    "file": "prada-ss16-original.mp4",
+    "poseFile": "prada-ss16-original.mp4",
+    "roiScale": 1,
+    "url": "https://www.youtube.com/watch?v=CKocT8AiGNU",
+    "title": "Prada Spring Summer 2016 Menswear and Womenswear Full Show - FF Channel",
+    "fps": 25,
+    "originalFps": 25,
+    "sourceOffset": 0
   }
 ]

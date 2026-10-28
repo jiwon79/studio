@@ -19,7 +19,8 @@ test('every stabilized direction keeps face movement within the accepted profile
    }state=cut.after;
   }
   expect(validPhotoTransforms(transforms,600)).toBe(true);
-  const rows=faces.slice(1).map((f,i)=>({...measureFace(faces[i],f,clockPhase(i),clockPhase(i+1),yaw),cut:(i+1)%3===0}));
+  // Include the last-to-first transition so this measures complete closed loops.
+  const rows=faces.map((f,i)=>({...measureFace(faces[(i+faces.length-1)%faces.length],f,clockPhase(i-1),clockPhase(i),yaw),cut:i%3===0}));
   expect(summarizeUpperBody(rows).pass,JSON.stringify({yaw,quality:summarizeUpperBody(rows)})).toBe(true);
   expect(auditSequence(planner,data.frames,yaw).quality.pass).toBe(true);
  }

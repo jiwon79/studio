@@ -3,6 +3,8 @@ import data from './angles.json';
 import poses from './debug-poses.json';
 import { buildBlocks,choosePoseCandidate,directionCandidates,type AngleBlock } from './angle-match';
 import { inspectTransition,postureTransition,type Posture } from './posture-match';
+import { ReferenceSequencer } from './reference-sequencer';
+import { auditSequence } from './sequence-audit';
 
 const posture:Posture={lean:0,axis:0,confidence:1,center:[.5,.3,.5,.5],soles:[.4,.9,.42,.92,.6,.9,.62,.92],visibility:[1,1,1,1],velocity:Array(8).fill(0)};
 test('outfit novelty and a perfect phase cannot override a large torso tilt when a compatible cut exists',()=> {
@@ -35,14 +37,10 @@ test('the reported 179th cut chooses a compatible replacement for the tilted gra
   expect(newGap.footRms).toBeLessThan(oldGap.footRms*.5);
 });
 test('repeated +10-degree walking cycles keep body tilt and shoe displacement bounded',()=> {
-  const eligible=directionCandidates(buildBlocks(data.frames),10);let last:typeof data.frames[number]|undefined,phase=0;let recent:string[]=[];const looks=new Set<string>();
-  for(let cut=0;cut<120;cut++) {
-    const next=choosePoseCandidate(eligible,10,phase,recent,last?.gait,last?.gaitVelocity,last?.posture);
-    const first=data.frames[next.start];
-    looks.add(first.look);
-    expect(first.look).not.toBe(recent[0]);
-    if(last) { const gap=inspectTransition(last.posture,first.posture);expect(gap.leanDelta).toBeLessThanOrEqual(4);expect(gap.footRms).toBeLessThan(35); }
-    recent=[first.look,...recent].slice(0,4);last=data.frames[next.start+2];phase=(last.phase+1/30)%1;
-  }
-  expect(looks.size).toBeGreaterThanOrEqual(6);
+  // Exercise the artwork's anatomical selector and its rendered transforms;
+  // the old pose-only selector could exchange feet to make a cut look closer.
+  const audit=auditSequence(new ReferenceSequencer(data.frames),data.frames,10,1200,poses.frames);
+  expect(audit.quality.pass,JSON.stringify(audit.quality)).toBe(true);
+  expect(audit.upperBody?.pass,JSON.stringify(audit.upperBody)).toBe(true);
+  expect(new Set(audit.indices.map(i=>data.frames[i].look)).size).toBeGreaterThanOrEqual(8);
 });
