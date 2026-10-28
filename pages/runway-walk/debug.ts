@@ -152,7 +152,7 @@ async function renderPhoto(index: number, explicitPrevious?: number) {
 function renderMetadata() {
   const frame = data.frames[selected], used = eligibleIndices().has(selected);
   $<HTMLAnchorElement>('reference-link').href=`./reference.html?angle=${target}`;
-  $<HTMLAnchorElement>('sequence-link').href=`./sequence.html?v=46&angle=${target}${walk.length?`&tick=${cursor}`:''}`;
+  $<HTMLAnchorElement>('sequence-link').href=`./sequence.html?v=47&angle=${target}${walk.length?`&tick=${cursor}`:''}`;
   $('actual-angle').textContent = signed(frame.yaw,1);
   const state = $('photo-state');
   state.textContent = `사진 ${signed(frame.yaw,1)} · 재생 ${signed(target)} · ${referenceMatches.frames[selected].uncertain?'다리 추정 주의 · 재생 제외':heldForTarget(frame,target)?'보류':used?'후보':'미사용'}`;
@@ -417,19 +417,21 @@ $('scan').addEventListener('click',async()=> {
   pause();const button=$<HTMLButtonElement>('scan');button.disabled=true;
   const list=$('scan-results');list.replaceChildren();let passing=0;
   const table=element('table'),head=element('thead'),body=element('tbody');
-  head.innerHTML='<tr><th>각도</th><th>발 P95 / 최대 px</th><th>기울기 P95 / 최대 °</th><th>몸통 P95 / 최대 px</th><th>측정 충족률 발 / 몸통</th><th>등장 프레임</th><th>역행 / 정체 / 양발 불확실</th><th>기존 이동량 검사</th></tr>';
+  head.innerHTML='<tr><th>각도</th><th>발 P95 / 최대 px</th><th>기울기 P95 / 최대 °</th><th>몸통 P95 / 최대 px</th><th>측정 충족률 발 / 몸통</th><th>등장 프레임</th><th>묶음 안 역행 / 정체 / 불확실</th><th>전환 역행 / 정체 / 불확실</th><th>전환 몸 좌우 최대 px</th><th>기존 이동량 검사</th></tr>';
   table.append(head,body);list.append(table);
   const warnings:({target:number}&MeasuredTransition)[]=[];
-  const progressWarnings:{target:number;tick:number;status:string}[]=[];
+  const progressWarnings:{target:number;tick:number;status:string;boundary?:boolean}[]=[];
   try {
     for(let yaw=-90;yaw<=90;yaw+=5){
       const tr=element('tr');
       try{
         const report=auditSequence(sequencer,data.frames,yaw),q=report.quality;if(q.pass)passing++;
         const format=(value:number)=>Number.isFinite(value)?value.toFixed(1):'측정 불가';
-        [signed(yaw),`${format(q.footP95)} / ${format(q.footMax)}`,`${format(q.leanP95)} / ${format(q.leanMax)}`,`${format(q.torsoP95)} / ${format(q.torsoMax)}`,`${(q.coverage*100).toFixed(0)}% / ${(q.leanCoverage*100).toFixed(0)}%`,`${q.minRun}–${q.maxRun}`,`${report.progress.reverse} / ${report.progress.stall} / ${report.progress.unmeasurable}`,q.pass?'통과':'미달'].forEach(value=>tr.append(element('td',value)));
+        [signed(yaw),`${format(q.footP95)} / ${format(q.footMax)}`,`${format(q.leanP95)} / ${format(q.leanMax)}`,`${format(q.torsoP95)} / ${format(q.torsoMax)}`,`${(q.coverage*100).toFixed(0)}% / ${(q.leanCoverage*100).toFixed(0)}%`,`${q.minRun}–${q.maxRun}`,`${report.progress.reverse} / ${report.progress.stall} / ${report.progress.unmeasurable}`,`${report.boundaryProgress.reverse} / ${report.boundaryProgress.stall} / ${report.boundaryProgress.unmeasurable}`,format(report.boundaryProgress.hipMax),q.pass?'통과':'미달'].forEach(value=>tr.append(element('td',value)));
         progressWarnings.push(...report.appearances.filter(r=>['reverse','stall','unmeasurable'].includes(r.status)).slice(0,4).map(r=>({target:yaw,tick:r.tick,status:r.status})));
-        tr.className=q.pass?'pass':'warning';
+        progressWarnings.push(...report.boundaries.filter(r=>['reverse','stall','unmeasurable'].includes(r.status)).slice(0,4).map(r=>({target:yaw,tick:r.tick%300,status:r.status,boundary:true})));
+        const progressProblem=[report.progress,report.boundaryProgress].some(p=>p.reverse||p.stall||p.unmeasurable);
+        tr.className=q.pass&&!progressProblem?'pass':'warning';
         warnings.push(...report.transitions.filter(m=>!m.leanReliable||m.footResidual>MOTION_LIMITS.footP95||m.leanResidual>MOTION_LIMITS.leanP95||m.torsoResidual>MOTION_LIMITS.torsoP95).map(m=>({target:yaw,...m})));
       }catch(error){tr.append(element('td',signed(yaw)),element('td',error instanceof Error?error.message:'연결 실패'));tr.className='warning';}
       body.append(tr);$('scan-state').textContent=`${(yaw+90)/5+1} / 37 각도 · ${passing}개 통과`;
@@ -452,7 +454,7 @@ $('scan').addEventListener('click',async()=> {
     }
     for(const row of progressWarnings){
       const label=row.status==='reverse'?'역방향 후보':row.status==='stall'?'정체 후보':'양발 인식 불확실';
-      const link=element('button',`${signed(row.target)} · 재생 ${row.tick}–${row.tick+2} · ${label}`);
+      const link=element('button',`${signed(row.target)} · ${row.boundary?'사람 전환':'3프레임 묶음'} · 사진 ${row.tick+1}번 · ${label}`);
       link.addEventListener('click',()=>{pause();target=row.target;angleInput.value=String(target);scopeInput.value='angle';search.value='';ghost.checked=false;makeWalk(row.tick);void renderPhoto(walk[cursor]);updateRows();});list.append(link);
     }
     selectedWarnings.forEach(row=>{
@@ -464,7 +466,7 @@ $('scan').addEventListener('click',async()=> {
         void renderPhoto(row.to,row.from).then(()=>{manualSwap=false;previousSwap=false;manualHalfCycle=false;renderMetadata();updateURL();});updateRows();
       });list.append(link);
     });
-    $('scan-state').textContent=`기존 이동량 검사 ${passing} / 37 각도 통과 · 각 300프레임(12초). 역행·정체·양발 인식 불확실은 별도 검토 대상입니다. 작은 기준 동작은 역행으로 단정하지 않습니다. 수치 검사는 누끼·실제 방향 검수를 대신하지 않습니다.`;
+    $('scan-state').textContent=`기존 이동량 검사 ${passing} / 37 각도 통과 · 각 300프레임(12초). 묶음 내부와 사람 전환(마지막→처음 포함)의 역행·정체·양발 인식 불확실을 따로 검사합니다. 작은 기준 동작은 역행으로 단정하지 않습니다. 수치 검사는 누끼·실제 방향 검수를 대신하지 않습니다.`;
   }finally{button.disabled=false;}
 });
 if (!params.has('frame')) selected=candidates()[0]?.start ?? 0;

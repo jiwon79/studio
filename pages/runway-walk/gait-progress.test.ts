@@ -7,6 +7,9 @@ import schedule from './reference-schedule.json';
 import {PROGRESS_LIMITS,PROGRESS_VERSION} from './gait-progress';
 import {ReferenceSequencer} from './reference-sequencer';
 import {auditSequence} from './sequence-audit';
+import {transformPosture} from './photo-registration';
+import {clockPhase} from './reference-clock';
+import {measureMotion} from './motion-quality';
 
 function pose(phase:number,yaw=45):Posture{
  const p=projectReference(referencePose(phase,yaw));
@@ -47,5 +50,23 @@ test('feedback-qualified views reject internal rewinds, whole-cut stalls and unc
  for(const yaw of schedule.progressReview.yaws){
   const report=auditSequence(new ReferenceSequencer(data.frames),data.frames,yaw,600);
   expect(report.progress,`${yaw}°`).toMatchObject({appearances:200,reverse:0,stall:0,unmeasurable:0});
+ }
+});
+test('the reported frontal cut can pass the position gate while rewinding anatomical feet',()=>{
+ const a=data.frames.find(f=>f.source==='prada25'&&f.sourceFrame===2813)!.posture;
+ const b=data.frames.find(f=>f.source==='hermes'&&f.sourceFrame===11860)!.posture;
+ const previous=transformPosture(a,{scale:.9452822699420822,rotation:.03796707309235699,dx:-2.5626532219635156,dy:10});
+ const next=transformPosture(b,{scale:.9558177653508877,rotation:.0008519413487114277,dx:4.11301449326904,dy:10});
+ expect(measureMotion(previous,next,clockPhase(170),clockPhase(171),0).footResidual).toBeLessThan(24);
+ expect(measureGaitProgress(previous,next,clockPhase(170),clockPhase(171),0).status).toBe('reverse');
+});
+test('reviewed identity changes include the loop closure and reject anatomical rewinds',()=>{
+ expect(schedule.boundaryReview.yaws).toEqual([0,10,15,20,25]);
+ for(const yaw of schedule.boundaryReview.yaws){
+  const report=auditSequence(new ReferenceSequencer(data.frames),data.frames,yaw,600);
+  expect(report.boundaryProgress,`${yaw}°`).toMatchObject({count:200,reverse:0,stall:0,unmeasurable:0});
+  expect(report.boundaries.filter(b=>b.tick%300===0)).toHaveLength(2);
+  expect(report.boundaryProgress.hipMax).toBeLessThanOrEqual(schedule.boundaryReview.limits.hipMax);
+  expect(report.boundaryProgress.footMax).toBeLessThanOrEqual(schedule.boundaryReview.limits.footMax);
  }
 });
