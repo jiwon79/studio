@@ -7,5 +7,5 @@ export function heldForTarget(frame: { clip: string; sourceFrame: number }, targ
   return frameAudits(frame).some(a => a.action==='hold' && a.targets.includes(target));
 }
 export function blockHeld(clip: string, from: number, to: number, target: number) {
-  return audits.some(a => a.action==='hold' && a.clip===clip && a.targets.includes(target) && a.fromFrame<=to && a.toFrame>=from);
+  return audits.some(a => a.action==='hold' && a.clip===clip && a.targets.includes(target) && a.fromFrame<=Math.max(from,to) && a.toFrame>=Math.min(from,to));
 }

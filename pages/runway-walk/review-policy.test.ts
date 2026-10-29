@@ -8,6 +8,7 @@ import { createWalkState } from './reference-clock';
 
 test('review holds affect every source frame in a cut and only their reviewed target views',()=> {
   expect(blockHeld('hermes25-right-477',11929,11931,10)).toBe(true);
+  expect(blockHeld('hermes25-right-477',11931,11929,10)).toBe(true);
   expect(blockHeld('hermes25-right-477',11930,11932,20)).toBe(false);
   const blocks=buildBlocks(data.frames);
   for (let yaw=-90;yaw<=90;yaw+=5) {
@@ -57,8 +58,7 @@ test('reviewed frontal shots cannot return to shallow-angle playback or dragging
       state=cut.after;
     }
     // Count the photographs actually displayed, rather than the candidate pool.
-    // Keep the user's accepted +60° edit unchanged (89 photographs).
-    expect(photos.size,`${yaw}° displayed photographs`).toBeGreaterThanOrEqual(yaw===60?89:100);
+    expect(photos.size,`${yaw}° displayed photographs`).toBeGreaterThanOrEqual(100);
     expect(looks.size,`${yaw}° displayed outfits`).toBeGreaterThanOrEqual(8);
   }
 });

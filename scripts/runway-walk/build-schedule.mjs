@@ -7,6 +7,13 @@ import {createServer} from 'vite';
 
 const root=path.resolve(process.argv[2]??'pages/runway-walk');
 const output=path.resolve(process.argv[3]??path.join(root,'reference-schedule.json'));
+const liveOutput=output===path.resolve('pages/runway-walk/reference-schedule.json');
+// This preliminary search does not fit a fixed transform per appearance or
+// qualify anatomical progress across identity cuts. It must not overwrite an
+// edit that has passed those stronger gates, even when all old metrics pass.
+if(liveOutput&&fs.existsSync(output)&&JSON.parse(fs.readFileSync(output)).boundaryReview){
+ throw Error('Export candidates to a separate output path. The installed edit requires whole-photo, anatomical cut and rendered playback review before replacement.');
+}
 const register=process.argv.slice(4).includes('--register');
 const requested=process.argv.slice(4).filter(v=>v!=='--register').map(Number);
 if(requested.some(y=>!Number.isInteger(y)||y< -90||y>90||y%5))throw Error('Directions must be 5-degree steps from -90 to 90');
@@ -117,7 +124,6 @@ try {
  const compiled={version:register?'fixed-cadence-v2':'fixed-cadence-v1',...(register?{registration:{version:PHOTO_REGISTRATION_VERSION,yaws:Object.keys(directions).map(Number)}}:{}),assetVersion:data.assetVersion,matchVersion:fits.matchVersion,periodFrames:period,cycleFrames:CYCLE_FRAMES,holdFrames:3,maxSourceStep:2,reviewPolicy,directions};
  console.log('Qualified angles:',Object.keys(directions).join(', '));
  if(failed.length){console.error('Missing coverage:',failed.join(', '));process.exitCode=1;}
- const liveOutput=output===path.resolve('pages/runway-walk/reference-schedule.json');
  if(liveOutput&&failed.length){
   // A diagnostic run must never erase a previously accepted edit. Partial
   // searches can be inspected through an explicit non-production output path.

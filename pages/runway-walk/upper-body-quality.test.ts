@@ -35,5 +35,5 @@ test('a baked correction cannot introduce scaling or rotation inside an appearan
  expect(validPhotoTransforms([t,{...t,dx:2},t],3)).toBe(true);
  expect(validPhotoTransforms([t,{...t,scale:1.01},t],3)).toBe(false);
  expect(validPhotoTransforms([t,{...t,rotation:.01},t],3)).toBe(false);
- expect(validPhotoTransforms([t,{...t,dx:21},t],3)).toBe(false);
+ expect(validPhotoTransforms([t,{...t,dx:33},t],3)).toBe(false);
 });

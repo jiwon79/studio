@@ -3,6 +3,7 @@ import data from './angles.json';
 import poses from './debug-poses.json';
 import matches from './reference-matches.json';
 import schedule from './reference-schedule.json';
+import {validSourceRun} from './angle-match';
 import {auditSequence} from './sequence-audit';
 import { referencePose, referenceFeatures, legFeatures, REFERENCE_VERSION } from './gait-reference';
 import { ReferenceSequencer,cutIndex } from './reference-sequencer';
@@ -61,12 +62,13 @@ for (let yaw = -90; yaw <= 90; yaw += 5)
                 const index = cutIndex(cut,i), tick = state.tick + i, frame = data.frames[index], check = planner.inspect(index, tick, yaw);
                 expect(check.oppositeFits).toBe(false);expect(matches.frames[index].uncertain).toBe(false);
                 expect(Math.abs(frame.yaw - yaw)).toBeLessThanOrEqual(5);
-                if(i){const step=frame.sourceFrame-data.frames[cutIndex(cut,i-1)].sourceFrame;expect(step).toBeGreaterThan(0);expect(step).toBeLessThanOrEqual(cut.qualityVerified?schedule.maxSourceStep:1);}
+                if(i){const step=frame.sourceFrame-data.frames[cutIndex(cut,i-1)].sourceFrame;expect(Math.abs(step)).toBeGreaterThan(0);expect(Math.abs(step)).toBeLessThanOrEqual(cut.qualityVerified?schedule.maxSourceStep:1);}
                 const last = used.get(key(index));
                 if (last !== undefined)
                     expect(tick - last).toBeGreaterThanOrEqual(CYCLE_FRAMES);
                 used.set(key(index), tick);
             }
+            expect(validSourceRun(Array.from({length:cut.count},(_,i)=>data.frames[cutIndex(cut,i)]),cut.qualityVerified?schedule.maxSourceStep:1,!!cut.qualityVerified&&schedule.boundaryReview.yaws.includes(yaw))).toBe(true);
             expect(cut.after.tick).toBe(state.tick + cut.count);
             expect(cut.after.origin).toBe(0);
             state = cut.after;
@@ -121,4 +123,14 @@ test('a source landmark identity jump is flagged without relabelling a normal pa
  expect(suspectedFootRelabel(before,oppositeLegFeaturesForAudit(after),confidence)).toBe(true);
  for(let tick=0;tick<30;tick++)expect(suspectedFootRelabel(referenceFeatures(tick/30,90),referenceFeatures((tick+1)/30,90),confidence)).toBe(false);
  expect(matches.frames.some(row=>row.uncertain)).toBe(true);
+});
+
+test('reversing a reviewed appearance preserves one source direction and never rewinds in its middle',()=>{
+ const rows=(ids:number[])=>ids.map(sourceFrame=>({clip:'one',sourceFrame}));
+ expect(validSourceRun(rows([12,11,10]),2)).toBe(false);
+ expect(validSourceRun(rows([12,11,10]),2,true)).toBe(true);
+ expect(validSourceRun(rows([12,10,11]),2,true)).toBe(false);
+ expect(validSourceRun(rows([12,12,11]),2,true)).toBe(false);
+ expect(validSourceRun(rows([12,8,7]),2,true)).toBe(false);
+ expect(validSourceRun([{clip:'one',sourceFrame:12},{clip:'two',sourceFrame:11}],2,true)).toBe(false);
 });

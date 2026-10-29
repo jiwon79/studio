@@ -1,4 +1,4 @@
-import { buildBlocks, directionCandidates, type AngleBlock, type AngleFrame } from './angle-match';
+import { buildBlocks, directionCandidates, validSourceRun, type AngleBlock, type AngleFrame } from './angle-match';
 import matches from './reference-matches.json';
 import motion from './reference-motion.json';
 import { postureTransition } from './posture-match';
@@ -110,7 +110,8 @@ export class ReferenceSequencer {
             const offset=position%3,entry=starts[Math.floor(position/3)];
             const indices=(typeof entry==='number'?[entry,entry+1,entry+2]:entry).slice(offset),start=indices[0],count=3-offset;
             const rows=indices.map(i=>this.frames[i]),first=rows[0];
-            if(rows.length!==count||rows.some((f,i)=>f.clip!==first.clip||(i>0&&(f.sourceFrame<=rows[i-1].sourceFrame||f.sourceFrame-rows[i-1].sourceFrame>(schedule.maxSourceStep??1)))||Math.abs(f.yaw-yaw)>5||this.fitted[indices[i]].uncertain||state.tick+i-(used.get(key(f))??-1000)<CYCLE_FRAMES)||blockHeld(first.clip,first.sourceFrame,rows[count-1].sourceFrame,yaw))continue;
+            const allowReverse=compiled.boundaryReview.yaws.includes(yaw);
+            if(rows.length!==count||!validSourceRun(rows,schedule.maxSourceStep??1,allowReverse)||rows.some((f,i)=>Math.abs(f.yaw-yaw)>5||this.fitted[indices[i]].uncertain||state.tick+i-(used.get(key(f))??-1000)<CYCLE_FRAMES)||blockHeld(first.clip,first.sourceFrame,rows[count-1].sourceFrame,yaw))continue;
             const checks=rows.map((_,i)=>this.inspect(indices[i],state.tick+i,yaw));if(checks.some(c=>c.oppositeFits))continue;
             const direct=checks.reduce((s,c)=>s+c.direct,0)/count;if(direct>.4)continue;
             if(state.last&&state.referenceSchedule?.yaw===yaw){

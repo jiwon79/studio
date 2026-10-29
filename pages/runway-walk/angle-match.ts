@@ -2,6 +2,12 @@ import { blockHeld } from './review-policy';
 import { postureTransition, type Posture } from './posture-match';
 export type AngleFrame = { clip: string; look?: string; source: string; sourceFrame: number; yaw: number; phase: number; atlas: number; tile: number; gait?: readonly number[]; gaitVelocity?: readonly number[]; posture?: Posture };
 export type AngleBlock = { start: number; yaw: number; minYaw?: number; maxYaw?: number; phase: number; clip: string; look?: string; sourceFrame?: number; lastSourceFrame?: number; gait?: readonly number[]; gaitVelocity?: readonly number[]; posture?: Posture };
+/** An explicitly reviewed cut may run backwards, but never repeat or zigzag. */
+export function validSourceRun(frames:readonly Pick<AngleFrame,'clip'|'sourceFrame'>[],maxStep:number,allowReverse=false){
+ const direction=frames.length>1?Math.sign(frames[1].sourceFrame-frames[0].sourceFrame):1;
+ return frames.length>0&&(direction===1||(allowReverse&&direction===-1))&&frames.every((f,i)=>
+  f.clip===frames[0].clip&&(!i||(Math.sign(f.sourceFrame-frames[i-1].sourceFrame)===direction&&Math.abs(f.sourceFrame-frames[i-1].sourceFrame)<=maxStep)));
+}
 export function buildBlocks(frames: readonly AngleFrame[], hold = 3, maxSourceStep = 1): AngleBlock[] {
   return frames.flatMap((f, start) => {
     for (let offset = 1; offset < hold; offset++) {

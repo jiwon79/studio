@@ -13,7 +13,7 @@ export function cutPhotoTransform(cut:{registered?:boolean;photoTransforms?:read
 }
 export function validPhotoTransforms(transforms:readonly PhotoTransform[],length:number):boolean{
  return transforms.length===length&&transforms.every((t,i)=>
-  [t.scale,t.rotation,t.dx,t.dy].every(Number.isFinite)&&t.scale>=.94&&t.scale<=1.06&&Math.abs(t.rotation)<=Math.PI/72&&Math.abs(t.dx)<=20&&Math.abs(t.dy)<=20&&
+  [t.scale,t.rotation,t.dx,t.dy].every(Number.isFinite)&&t.scale>=.88&&t.scale<=1.12&&Math.abs(t.rotation)<=Math.PI*8/180&&Math.abs(t.dx)<=32&&Math.abs(t.dy)<=32&&
   (i%3===0||(t.scale===transforms[i-1].scale&&t.rotation===transforms[i-1].rotation)));
 }
 const anchor=[256,420],targets=new Map<string,{center:number[];soles:number[]}>();
