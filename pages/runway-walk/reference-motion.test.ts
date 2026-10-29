@@ -6,7 +6,7 @@ import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import motion from './reference-motion.json';
 import fits from './reference-matches.json';
 import {referencePose,REFERENCE_VERSION} from './gait-reference';
-import {CYCLE_FRAMES,clockPhase} from './reference-clock';
+import {CYCLE_FRAMES,MIN_REUSE_FRAMES,clockPhase} from './reference-clock';
 const file=new URL('./media/reference/quaternius-formal-walk.glb',import.meta.url);
 test('the reference comes from the downloaded skinned mannequin and an existing walk clip',async()=>{
     const bytes=fs.readFileSync(file);
@@ -37,4 +37,15 @@ test('sampling wraps continuously and turns the imported gait without exchanging
     const a=referencePose(.25),b=referencePose(.25,90),c=referencePose(.25,-90);
     for(const j of [25,26,27,28,29,30,31,32]){expect(b.points[j][0]).toBeCloseTo(a.points[j][2],6);expect(c.points[j][0]).toBeCloseTo(-a.points[j][2],6);expect(b.points[j][1]).toBe(a.points[j][1]);}
     expect(CYCLE_FRAMES/25).toBeCloseTo(motion.duration,8);expect(clockPhase(CYCLE_FRAMES)).toBeCloseTo(0,8);
+});
+
+test('photo reuse uses the nearest sampled gait return without rounding the animation clock',()=>{
+ const error=(ticks:number)=>Math.abs(ticks-CYCLE_FRAMES);
+ expect(MIN_REUSE_FRAMES).toBe(33);
+ expect(error(MIN_REUSE_FRAMES)).toBeLessThan(error(MIN_REUSE_FRAMES-1));
+ expect(error(MIN_REUSE_FRAMES)).toBeLessThan(error(MIN_REUSE_FRAMES+1));
+ expect(error(MIN_REUSE_FRAMES)).toBeLessThanOrEqual(.5);
+ expect(clockPhase(MIN_REUSE_FRAMES)).not.toBe(0);
+ // The imported float duration closes within 0.000001 cycle at 300 ticks.
+ expect(Math.min(clockPhase(300),1-clockPhase(300))).toBeLessThan(1e-6);
 });

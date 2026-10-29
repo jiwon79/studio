@@ -3,7 +3,7 @@ import matches from './reference-matches.json';
 import motion from './reference-motion.json';
 import { postureTransition } from './posture-match';
 import {WalkCoverageError,type WalkState} from './walk-sequencer';
-import {clockPhase,createWalkState,CYCLE_FRAMES} from './reference-clock';
+import {clockPhase,createWalkState,CYCLE_FRAMES,MIN_REUSE_FRAMES} from './reference-clock';
 import { legError, referenceFeatures, referencePose } from './gait-reference';
 import schedule from './reference-schedule.json';
 import {audits,blockHeld} from './review-policy';
@@ -52,7 +52,7 @@ export class ReferenceSequencer {
             throw new Error('Reference poses do not match the photograph library');
         this.blocks = buildBlocks(frames, hold);
         const validTransforms=Object.entries(compiled.registration?.photoTransforms??{}).every(([yaw,rows])=>compiled.registration?.yaws.includes(+yaw)&&!!compiled.directions[yaw]&&validPhotoTransforms(rows,schedule.periodFrames));
-        this.verifiedSchedule=validTransforms&&(!compiled.registration||compiled.registration.version===PHOTO_REGISTRATION_VERSION)&&fitted===matches.frames&&hold===3&&schedule.assetVersion===matches.assetVersion&&schedule.matchVersion===matches.matchVersion&&schedule.cycleFrames===CYCLE_FRAMES&&JSON.stringify(schedule.reviewPolicy)===JSON.stringify(audits);
+        this.verifiedSchedule=validTransforms&&(!compiled.registration||compiled.registration.version===PHOTO_REGISTRATION_VERSION)&&fitted===matches.frames&&hold===3&&schedule.assetVersion===matches.assetVersion&&schedule.matchVersion===matches.matchVersion&&schedule.cycleFrames===CYCLE_FRAMES&&schedule.minReuseFrames===MIN_REUSE_FRAMES&&JSON.stringify(schedule.reviewPolicy)===JSON.stringify(audits);
     }
     usesRegistration(yaw:number){return this.verifiedSchedule&&!!compiled.registration?.yaws.includes(yaw);}
     candidates(yaw: number, count = this.hold) {
@@ -111,7 +111,7 @@ export class ReferenceSequencer {
             const indices=(typeof entry==='number'?[entry,entry+1,entry+2]:entry).slice(offset),start=indices[0],count=3-offset;
             const rows=indices.map(i=>this.frames[i]),first=rows[0];
             const allowReverse=compiled.boundaryReview.yaws.includes(yaw);
-            if(rows.length!==count||!validSourceRun(rows,schedule.maxSourceStep??1,allowReverse)||rows.some((f,i)=>Math.abs(f.yaw-yaw)>5||this.fitted[indices[i]].uncertain||state.tick+i-(used.get(key(f))??-1000)<CYCLE_FRAMES)||blockHeld(first.clip,first.sourceFrame,rows[count-1].sourceFrame,yaw))continue;
+            if(rows.length!==count||!validSourceRun(rows,schedule.maxSourceStep??1,allowReverse)||rows.some((f,i)=>Math.abs(f.yaw-yaw)>5||this.fitted[indices[i]].uncertain||state.tick+i-(used.get(key(f))??-1000)<MIN_REUSE_FRAMES)||blockHeld(first.clip,first.sourceFrame,rows[count-1].sourceFrame,yaw))continue;
             const checks=rows.map((_,i)=>this.inspect(indices[i],state.tick+i,yaw));if(checks.some(c=>c.oppositeFits))continue;
             const direct=checks.reduce((s,c)=>s+c.direct,0)/count;if(direct>.4)continue;
             if(state.last&&state.referenceSchedule?.yaw===yaw){
@@ -137,7 +137,7 @@ export class ReferenceSequencer {
             const used = new Map(state.used.map(r => [r.key, r.tick])), last = state.last ? this.frames[state.last.index] : undefined;
             const options = this.candidates(yaw, count).flatMap(block => {
                 const first = this.frames[block.start], look = block.look ?? block.clip;
-                if (this.frames.slice(block.start, block.start + count).some((f, i) => state.tick + i - (used.get(key(f)) ?? -1000) < CYCLE_FRAMES))
+                if (this.frames.slice(block.start, block.start + count).some((f, i) => state.tick + i - (used.get(key(f)) ?? -1000) < MIN_REUSE_FRAMES))
                     return [];
                 const continuation = !!last && first.clip === last.clip && first.sourceFrame === last.sourceFrame + 1;
                 if (state.cuts[state.cuts.length - 1]?.look === look && !continuation)

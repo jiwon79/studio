@@ -21,7 +21,7 @@ const server=await createServer({configFile:false,optimizeDeps:{noDiscovery:true
 try {
  const {buildBlocks,directionCandidates}=await server.ssrLoadModule('/pages/runway-walk/angle-match.ts');
  const {ReferenceSequencer}=await server.ssrLoadModule('/pages/runway-walk/reference-sequencer.ts');
- const {clockPhase,CYCLE_FRAMES}=await server.ssrLoadModule('/pages/runway-walk/reference-clock.ts');
+ const {clockPhase,CYCLE_FRAMES,MIN_REUSE_FRAMES}=await server.ssrLoadModule('/pages/runway-walk/reference-clock.ts');
  const {measureAppearanceProgress}=await server.ssrLoadModule('/pages/runway-walk/gait-progress.ts');
  const {measureMotion:rawMeasure,summarizeMotion,MOTION_LIMITS:L}=await server.ssrLoadModule('/pages/runway-walk/motion-quality.ts');
  const {registeredPosture,PHOTO_REGISTRATION_VERSION}=await server.ssrLoadModule('/pages/runway-walk/photo-registration.ts');
@@ -41,9 +41,9 @@ try {
  const cost=m=>(m.footResidual/L.footP95)**2+(m.leanResidual/L.leanP95)**2+(m.torsoResidual/L.torsoP95)**2;
  const phaseError=(a,b)=>Math.abs(((a-b+.5)%1+1)%1-.5);
  const blocks=buildBlocks(data.frames,3,2);
- // Use actual display times: a source frame is reusable only after a full gait,
+ // Use actual display times: a source frame is reusable at the next sampled gait return,
  // including the last-to-first boundary. Source gaps must not change identity.
- const conflicts=(a,ta,b,tb)=>a.keys.some((key,i)=>b.keys.some((other,j)=>key===other&&Math.abs(tb+j-ta-i)<CYCLE_FRAMES));
+ const conflicts=(a,ta,b,tb)=>a.keys.some((key,i)=>b.keys.some((other,j)=>key===other&&Math.abs(tb+j-ta-i)<MIN_REUSE_FRAMES));
  const directions={},failed=[];
  for(const yaw of requested.length?requested:Array.from({length:37},(_,i)=>i*5-90)) {
   const candidates=directionCandidates(blocks,yaw).filter(b=>Math.max(Math.abs(b.minYaw-yaw),Math.abs(b.maxYaw-yaw))<=5&&fits.frames.slice(b.start,b.start+3).every(f=>f.error<=.4&&!f.uncertain));
@@ -121,7 +121,7 @@ try {
   else failed.push(yaw);
  }
  const reviewPolicy=JSON.parse(fs.readFileSync('pages/runway-walk/frame-audit.json'));
- const compiled={version:register?'fixed-cadence-v2':'fixed-cadence-v1',...(register?{registration:{version:PHOTO_REGISTRATION_VERSION,yaws:Object.keys(directions).map(Number)}}:{}),assetVersion:data.assetVersion,matchVersion:fits.matchVersion,periodFrames:period,cycleFrames:CYCLE_FRAMES,holdFrames:3,maxSourceStep:2,reviewPolicy,directions};
+ const compiled={version:register?'fixed-cadence-v2':'fixed-cadence-v1',...(register?{registration:{version:PHOTO_REGISTRATION_VERSION,yaws:Object.keys(directions).map(Number)}}:{}),assetVersion:data.assetVersion,matchVersion:fits.matchVersion,periodFrames:period,cycleFrames:CYCLE_FRAMES,minReuseFrames:MIN_REUSE_FRAMES,holdFrames:3,maxSourceStep:2,reviewPolicy,directions};
  console.log('Qualified angles:',Object.keys(directions).join(', '));
  if(failed.length){console.error('Missing coverage:',failed.join(', '));process.exitCode=1;}
  if(liveOutput&&failed.length){
@@ -131,7 +131,7 @@ try {
  }else{
   if(liveOutput&&fs.existsSync(output)&&requested.length){
    const previous=JSON.parse(fs.readFileSync(output));
-   const bindings=['version','assetVersion','matchVersion','periodFrames','cycleFrames','holdFrames','maxSourceStep','reviewPolicy','registration'];
+   const bindings=['version','assetVersion','matchVersion','periodFrames','cycleFrames','minReuseFrames','holdFrames','maxSourceStep','reviewPolicy','registration'];
    if(bindings.some(key=>JSON.stringify(previous[key])!==JSON.stringify(compiled[key])))throw Error('A subset cannot replace a schedule with different library, clock or review bindings; export and review the complete replacement separately');
    compiled.directions={...previous.directions,...directions};
   }

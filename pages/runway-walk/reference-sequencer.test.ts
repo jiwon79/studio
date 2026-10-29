@@ -8,7 +8,7 @@ import {auditSequence} from './sequence-audit';
 import { referencePose, referenceFeatures, legFeatures, REFERENCE_VERSION } from './gait-reference';
 import { ReferenceSequencer,cutIndex } from './reference-sequencer';
 import {WalkCoverageError} from './walk-sequencer';
-import {createWalkState,CYCLE_FRAMES} from './reference-clock';
+import {createWalkState,CYCLE_FRAMES,MIN_REUSE_FRAMES} from './reference-clock';
 const planner = new ReferenceSequencer(data.frames);
 const key = (i: number) => `${data.frames[i].source}:${data.frames[i].sourceFrame}`;
 const swap = (f: number[]) => [...f.slice(2, 4), ...f.slice(0, 2), ...f.slice(6, 8), ...f.slice(4, 6), ...f.slice(10, 12), ...f.slice(8, 10), ...f.slice(14, 16), ...f.slice(12, 14)];
@@ -65,7 +65,7 @@ for (let yaw = -90; yaw <= 90; yaw += 5)
                 if(i){const step=frame.sourceFrame-data.frames[cutIndex(cut,i-1)].sourceFrame;expect(Math.abs(step)).toBeGreaterThan(0);expect(Math.abs(step)).toBeLessThanOrEqual(cut.qualityVerified?schedule.maxSourceStep:1);}
                 const last = used.get(key(index));
                 if (last !== undefined)
-                    expect(tick - last).toBeGreaterThanOrEqual(CYCLE_FRAMES);
+                    expect(tick - last).toBeGreaterThanOrEqual(MIN_REUSE_FRAMES);
                 used.set(key(index), tick);
             }
             expect(validSourceRun(Array.from({length:cut.count},(_,i)=>data.frames[cutIndex(cut,i)]),cut.qualityVerified?schedule.maxSourceStep:1,!!cut.qualityVerified&&schedule.boundaryReview.yaws.includes(yaw))).toBe(true);

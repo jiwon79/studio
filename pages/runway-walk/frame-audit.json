@@ -461,5 +461,32 @@
     "action": "hold",
     "reviewedAt": "2026-10-29",
     "note": "원본·누끼·관절을 비교했습니다. 왼발 발끝 31이 실제 신발 앞 빈 바닥에 찍혀 발 이동을 과대평가합니다. 해당 사진을 연결 후보에서 제외합니다."
+  },
+  {
+    "id": "review-v48-pradafw14-11726-alpha",
+    "clip": "pradafw14-left-468",
+    "fromFrame": 11726,
+    "toFrame": 11726,
+    "targets": [
+      -85,
+      -80
+    ],
+    "category": "mask",
+    "action": "hold",
+    "reviewedAt": "2026-10-29",
+    "note": "원본과 실제 재생을 비교했을 때 뒤쪽 신발 일부가 누끼에서 지워져 발이 갑자기 짧아집니다. 이 사진을 연결 후보에서 제외합니다."
+  },
+  {
+    "id": "review-v52-prada24-81-shadow",
+    "clip": "prada24-turn-81",
+    "fromFrame": 2027,
+    "toFrame": 2036,
+    "targets": [
+      -15
+    ],
+    "category": "mask",
+    "action": "hold",
+    "reviewedAt": "2026-10-29",
+    "note": "모바일 드래그와 HD 사진에서 머리 왼쪽의 벽 그림자가 누끼에 남아 두 겹처럼 보입니다. 해당 −15도 구간을 재생과 미리보기에서 제외합니다."
   }
 ]
