@@ -3,6 +3,7 @@ import { resolve } from 'path';
 import { readdirSync, existsSync } from 'fs';
 import { staticPageAssets } from './scripts/static-page-assets';
 import { runwayReviewServer } from './scripts/runway-walk/review-server';
+import { runwayLatestPages } from './scripts/runway-walk/latest-pages';
 
 const root = new URL('.', import.meta.url).pathname;
 const pagesDir = resolve(root, 'pages');
@@ -83,6 +84,7 @@ export default defineConfig({
     ],
   },
   plugins: [
+    runwayLatestPages(),
     runwayReviewServer(root),
     artworkRouteFallback(pageEntries),
     {

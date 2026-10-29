@@ -152,7 +152,7 @@ async function renderPhoto(index: number, explicitPrevious?: number) {
 function renderMetadata() {
   const frame = data.frames[selected], used = eligibleIndices().has(selected);
   $<HTMLAnchorElement>('reference-link').href=`./reference.html?angle=${target}`;
-  $<HTMLAnchorElement>('sequence-link').href=`./sequence.html?v=53&angle=${target}${walk.length?`&tick=${cursor}`:''}`;
+  $<HTMLAnchorElement>('sequence-link').href=`./sequence.html?angle=${target}${walk.length?`&tick=${cursor}`:''}`;
   $('actual-angle').textContent = signed(frame.yaw,1);
   const state = $('photo-state');
   state.textContent = `사진 ${signed(frame.yaw,1)} · 재생 ${signed(target)} · ${referenceMatches.frames[selected].uncertain?'다리 추정 주의 · 재생 제외':heldForTarget(frame,target)?'보류':used?'후보':'미사용'}`;

@@ -24,7 +24,7 @@ function element<K extends keyof HTMLElementTagNameMap>(tag:K,text=''){
  const node=document.createElement(tag);node.textContent=text;return node;
 }
 function pageURL(file:string,tick?:number){
- const url=new URL(file,location.href);url.searchParams.set('v','53');url.searchParams.set('angle',String(target));
+ const url=new URL(file,location.href);url.searchParams.set('angle',String(target));
  if(tick!==undefined)url.searchParams.set('tick',String(tick));return url;
 }
 function updateURL(detail=false){
