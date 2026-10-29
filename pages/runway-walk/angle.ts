@@ -1,6 +1,7 @@
 import data from './angles.json';
 import previews from './drag.json';
 import { AtlasPool } from './atlas-pool';
+import { prepareLiveDirection } from './live-direction';
 import { ANGLE_STEP, snapYaw } from './direction-step';
 import type { AngleFrame } from './angle-match';
 import {WalkCoverageError,rebaseWalkState} from './walk-sequencer';
@@ -58,7 +59,7 @@ const images = new AtlasPool(async index => {
   return createImageBitmap(blob);
 }, 24);
 // Trimmed original-resolution pixels cover every snapped view before input is
-// enabled. Dragging needs neither a decode nor a low-resolution substitute.
+// enabled. These are only emergency stills; dragging plays the full HD edit.
 const dragImages: ImageBitmap[] = [];
 let downloaded = 0;
 function downloadedPage() {
@@ -94,11 +95,11 @@ let block = sequencer.plan(target, createWalkState());
 let renderedTarget = target;
 const LOOKAHEAD_CUTS = 8;
 let decodeWaits = 0;
-let upcoming: ReferenceCut[] = [], planned: ReferenceCut[] = [];
+let upcoming: ReferenceCut[] = [], planned: ReferenceCut[] = [], bufferPlanned: ReferenceCut[] = [];
 let directionLoading: number | undefined;
-let generation = 0, filling: number | undefined;
+let generation = 0, stream = 0, filling: number | undefined;
 let lastTime = 0, carry = 0;
-let drag: { id: number; x: number; start: number; moved: boolean } | undefined;
+let drag: { id: number; x: number; start: number } | undefined;
 function paint(image: ImageBitmap, tile: number, columns: number, width: number, height: number, row: AngleFrame, yaw: number, quality: string) {
   paintRegion(image, tile % columns * width, Math.floor(tile / columns) * height,
     width, height, 0, 0, row, yaw, quality);
@@ -133,6 +134,8 @@ function paintRegion(image: ImageBitmap, x: number, y: number, width: number, he
   canvas.dataset.previewPages = String(dragImages.length);
   canvas.dataset.bufferedFrames = String(upcoming.reduce((sum,cut)=>sum+cut.count,0));
   canvas.dataset.pixelScale = '1';
+  canvas.dataset.directionLoading = String(directionLoading !== undefined);
+  canvas.dataset.requestedYaw = String(target);
 }
 function drawPreview() {
   const slot = Math.round(phase * previews.phases) % previews.phases;
@@ -141,7 +144,6 @@ function drawPreview() {
   if (image) paintRegion(image, tile.x, tile.y, tile.width, tile.height, tile.offsetX, tile.offsetY, frames[tile.frame], target, 'drag-hd');
 }
 function draw() {
-  if (drag?.moved || renderedTarget !== target) { drawPreview(); return; }
   const row = frames[cutIndex(block,Math.min(offset, block.count - 1))];
   const image = images.get(row.atlas);
   if (image) paint(image, row.tile, data.columns, data.tileWidth, data.tileHeight, row, renderedTarget, 'hd');
@@ -152,23 +154,23 @@ async function prepare(candidate: typeof block) {
   await Promise.all([...pages].map(index => images.load(index)));
 }
 function retainPages() {
-  images.retain([block, ...upcoming, ...planned].flatMap(candidate =>
+  images.retain([block, ...upcoming, ...planned, ...bufferPlanned].flatMap(candidate =>
     cutIndices(candidate).map(i => frames[i].atlas)));
 }
 /** Keep almost a second of complete appearances decoded ahead of playback. */
 async function fillBuffer() {
-  const epoch = generation;
-  if (filling === epoch || renderedTarget !== target || drag?.moved) return;
+  const epoch = stream;
+  if (filling === epoch) return;
   filling = epoch;
   try {
-    while (upcoming.length < LOOKAHEAD_CUTS && epoch === generation) {
-      const candidate = sequencer.plan(target, (upcoming[upcoming.length - 1] ?? block).after);
-      planned = [candidate]; retainPages();
+    while (upcoming.length < LOOKAHEAD_CUTS && epoch === stream) {
+      const candidate = sequencer.plan(renderedTarget, (upcoming[upcoming.length - 1] ?? block).after);
+      bufferPlanned = [candidate]; retainPages();
       await prepare(candidate);
-      if (epoch !== generation) return;
-      upcoming.push(candidate); planned = []; retainPages();
+      if (epoch !== stream) return;
+      upcoming.push(candidate); bufferPlanned = []; retainPages();
     }
-  } catch(error) { if (epoch === generation) failed(error); }
+  } catch(error) { if (epoch === stream) failed(error); }
   finally { if (filling === epoch) filling = undefined; }
 }
 function failed(error?:unknown) {
@@ -177,28 +179,39 @@ function failed(error?:unknown) {
   surface.setAttribute('aria-busy', 'false');
   status.textContent = error instanceof WalkCoverageError?'이 각도의 보행 소스가 부족해 재생을 멈췄어요. 다른 각도를 선택해 주세요.':'프레임을 불러오지 못했어요. 새로고침해 주세요.';
 }
-/** Replace the direction only after the complete lookahead has decoded. */
+/** Decode the new view while the current HD sequence keeps playing. Only the
+ * small entry window is needed to turn; the regular buffer fills afterwards. */
 async function startDirection() {
-  if (drag?.moved) return;
   const epoch = ++generation, requested = target;
   directionLoading = epoch;
-  // Only displayed photos enter history. Cancelled, predecoded cuts never do.
-  let state = ready ? rebaseWalkState(sequencer.afterFrames(block, offset + 1), clock) : createWalkState(0, clock);
-  const sequence: ReferenceCut[] = [];
-  upcoming = [];
   try {
-    for (let index = 0; index <= LOOKAHEAD_CUTS; index++) {
-      const candidate = sequencer.plan(requested, state);
-      sequence.push(candidate); state = candidate.after;
-    }
-    planned = sequence; retainPages();
-    await Promise.all(sequence.map(prepare));
-    if (epoch !== generation || requested !== target || drag?.moved) return;
-    block = sequence[0]; upcoming = sequence.slice(1); planned = [];
+    const sequence = await prepareLiveDirection({
+      current: () => epoch === generation && requested === target,
+      plan: () => {
+        // Re-plan at the live tick after decoding. Speculative frames never
+        // become displayed history, and a slow decode cannot rewind the gait.
+        let state = ready ? rebaseWalkState(sequencer.afterFrames(block, offset + 1), clock) : createWalkState();
+        const sequence: ReferenceCut[] = [];
+        for (let index = 0; index <= (ready ? 1 : LOOKAHEAD_CUTS); index++) {
+          const candidate = sequencer.plan(requested, state);
+          sequence.push(candidate); state = candidate.after;
+        }
+        planned = sequence; retainPages();
+        return sequence;
+      },
+      available: candidate => cutIndices(candidate).every(i => !!images.get(frames[i].atlas)),
+      prepare,
+    });
+    // Await itself yields, so recheck cancellation before installing the edit.
+    if (!sequence || epoch !== generation || requested !== target) return;
+    block = sequence[0]; upcoming = sequence.slice(1);
+    planned = []; bufferPlanned = []; stream++;
     renderedTarget = requested;
+    directionLoading = undefined;
     offset = 0; phase = clockPhase(clock);
-    carry = 0; lastTime = 0; retainPages();
+    retainPages();
     if (ready) draw();
+    void fillBuffer();
   } catch (error) { if (epoch === generation) throw error; }
   finally { if (directionLoading === epoch) directionLoading = undefined; }
 }
@@ -209,15 +222,12 @@ function setAngle(value: number) {
   surface.setAttribute('aria-valuenow', String(target));
   surface.setAttribute('aria-valuetext', label(target));
   if (ready && changed) {
-    generation++; upcoming = []; planned = [];
-    if (drag) drag.moved = true;
-    draw();
-    if (!drag?.moved) void startDirection().catch(failed);
+    void startDirection().catch(failed);
   }
 }
 surface.addEventListener('pointerdown', event => {
   if (!ready || !event.isPrimary || (event.pointerType === 'mouse' && event.button !== 0)) return;
-  drag = { id: event.pointerId, x: event.clientX, start: target, moved: false };
+  drag = { id: event.pointerId, x: event.clientX, start: target };
   surface.dataset.dragging = 'true';
   surface.setPointerCapture(event.pointerId);
 });
@@ -228,11 +238,9 @@ surface.addEventListener('pointermove', event => {
 });
 function endDrag(event: PointerEvent) {
   if (drag?.id !== event.pointerId) return;
-  const moved = drag.moved;
   drag = undefined;
   surface.dataset.dragging = 'false';
   persist();
-  if (moved) void startDirection().catch(failed);
 }
 surface.addEventListener('pointerup', endDrag);
 surface.addEventListener('pointercancel', endDrag);
@@ -252,10 +260,8 @@ surface.addEventListener('keydown', event => {
   }
 });
 window.addEventListener('blur', () => {
-  const moved = drag?.moved;
   drag = undefined;
   surface.dataset.dragging = 'false';
-  if (moved) void startDirection().catch(failed);
 });
 document.addEventListener('visibilitychange', () => { lastTime = 0; carry = 0; });
 function tick(time: number) {
@@ -263,11 +269,7 @@ function tick(time: number) {
     carry += lastTime ? Math.min((time - lastTime) / 1000, 0.12) : 0;
     while (carry >= 1 / data.fps) {
       carry -= 1 / data.fps;
-      if (drag?.moved) {
-        // Drag uses the same independent gait clock as normal playback.
-      } else if (directionLoading !== undefined || renderedTarget !== target) {
-        carry = 0; break;
-      } else if (offset + 1 < block.count) {
+      if (offset + 1 < block.count) {
         offset++;
       } else {
         const next = upcoming.shift();
