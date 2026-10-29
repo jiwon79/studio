@@ -2,6 +2,7 @@ import data from './angles.json';
 import previews from './drag.json';
 import { AtlasPool } from './atlas-pool';
 import { prepareLiveDirection } from './live-direction';
+import { gptZeroTest } from './gpt-zero-test';
 import { ANGLE_STEP, snapYaw } from './direction-step';
 import type { AngleFrame } from './angle-match';
 import {WalkCoverageError,rebaseWalkState} from './walk-sequencer';
@@ -100,6 +101,7 @@ let directionLoading: number | undefined;
 let generation = 0, stream = 0, filling: number | undefined;
 let lastTime = 0, carry = 0;
 let drag: { id: number; x: number; start: number } | undefined;
+const gptTest = gptZeroTest(() => { if (ready) draw(); }, () => { if (ready) setAngle(0); });
 function paint(image: ImageBitmap, tile: number, columns: number, width: number, height: number, row: AngleFrame, yaw: number, quality: string) {
   paintRegion(image, tile % columns * width, Math.floor(tile / columns) * height,
     width, height, 0, 0, row, yaw, quality);
@@ -109,7 +111,9 @@ function paintRegion(image: ImageBitmap, x: number, y: number, width: number, he
   const aligned=quality==='hd'?!!block.registered:sequencer.usesRegistration(yaw);
   const transform=row.posture?(quality==='hd'?cutPhotoTransform(block,offset,row.posture,phase,yaw):aligned?photoTransform(row.posture,phase,yaw):IDENTITY_PHOTO):IDENTITY_PHOTO;
   context.save();applyPhotoTransform(context,transform);
-  context.drawImage(image, x, y, width, height, dx, dy, width, height);
+  const restored = quality === 'hd' ? gptTest.replacement(yaw, frameIndices.get(row)!) : undefined;
+  if (restored) context.drawImage(restored, 0, 0, restored.width, restored.height, 0, 0, data.tileWidth, data.tileHeight);
+  else context.drawImage(image, x, y, width, height, dx, dy, width, height);
   context.restore();canvas.dataset.photoTransform=JSON.stringify(transform);
   direction.value = label(yaw);
   canvas.dataset.sourceFrame = String(row.sourceFrame);
@@ -128,7 +132,8 @@ function paintRegion(image: ImageBitmap, x: number, y: number, width: number, he
   canvas.dataset.cutTick = hd?String(block.before.tick):'';
   canvas.dataset.clock = String(clock);
   canvas.dataset.quality = quality;
-  canvas.dataset.motionVerified = String(hd && !!block.qualityVerified);
+  canvas.dataset.motionVerified = String(!restored && hd && !!block.qualityVerified);
+  canvas.dataset.gptRestored = String(!!restored);
   canvas.dataset.decodedPages = String(images.size);
   canvas.dataset.compressedPages = String(compressed.size);
   canvas.dataset.previewPages = String(dragImages.length);
@@ -144,6 +149,23 @@ function drawPreview() {
   if (image) paintRegion(image, tile.x, tile.y, tile.width, tile.height, tile.offsetX, tile.offsetY, frames[tile.frame], target, 'drag-hd');
 }
 function draw() {
+  const still = gptTest.still(renderedTarget);
+  if (still) {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(still.image, 0, 0, still.image.width, still.image.height, 0, 0, data.tileWidth, data.tileHeight);
+    direction.value = label(0);
+    canvas.dataset.quality = 'quality-test-still';
+    canvas.dataset.gptRestored = String(still.edited);
+    canvas.dataset.motionVerified = 'false';
+    canvas.dataset.sourceFrame = String(frames[still.index].sourceFrame);
+    canvas.dataset.clip = frames[still.index].clip;
+    canvas.dataset.actualYaw = String(frames[still.index].yaw);
+    canvas.dataset.clock = String(clock);
+    canvas.dataset.phase = String(phase);
+    canvas.dataset.referenceError = '';
+    canvas.dataset.photoTransform = JSON.stringify(IDENTITY_PHOTO);
+    return;
+  }
   const row = frames[cutIndex(block,Math.min(offset, block.count - 1))];
   const image = images.get(row.atlas);
   if (image) paint(image, row.tile, data.columns, data.tileWidth, data.tileHeight, row, renderedTarget, 'hd');

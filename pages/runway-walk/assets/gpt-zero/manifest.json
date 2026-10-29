@@ -1,0 +1,33 @@
+{
+  "scope": "0 degree quality experiment; 3 of 114 unique playback photographs",
+  "tool": "built-in GPT image editing",
+  "background": "transparent alpha requested",
+  "frames": [
+    {
+      "index": 1088,
+      "source": "hermes",
+      "sourceFrame": 11860,
+      "original": "1088-original.png",
+      "edited": "1088.png"
+    },
+    {
+      "index": 1090,
+      "source": "hermes",
+      "sourceFrame": 11862,
+      "original": "1090-original.png",
+      "edited": "1090.png"
+    },
+    {
+      "index": 1091,
+      "source": "hermes",
+      "sourceFrame": 11863,
+      "original": "1091-original.png",
+      "edited": "1091.png"
+    }
+  ],
+  "limitations": [
+    "Generated detail may reinterpret identity, fabric and shoe geometry.",
+    "Generated photographs have not passed the original motion and pose gates.",
+    "Only the three listed photographs are replaced; all other photographs remain original."
+  ]
+}
