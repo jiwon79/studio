@@ -1,6 +1,7 @@
 import data from './angles.json';
-import previews from './drag.json';
 import { AtlasPool } from './atlas-pool';
+import { PhotoDownloads } from './photo-downloads';
+import { directionPhotos, directionPages } from './direction-photos';
 import { prepareLiveDirection } from './live-direction';
 import { gptZeroTest } from './gpt-zero-test';
 import { ANGLE_STEP, snapYaw } from './direction-step';
@@ -51,42 +52,34 @@ async function fetchPage(name: string, version: string) {
     }
   }
 }
-// Fetch every photograph before playback. Keeping WebP blobs is substantially
-// smaller than retaining all 4.2 GB of decoded HD pixels on a phone.
-const compressed = new Map<number, Blob>();
+// Complete the selected edit before playback; nearby views warm afterwards.
+const downloads = new PhotoDownloads(index => fetchPage(data.atlases[index], data.assetVersion), downloadedPage);
 const images = new AtlasPool(async index => {
-  const blob = compressed.get(index);
-  if (!blob) throw new Error('Playback started before the complete download');
+  const blob = await downloads.request(index);
+  if (!blob) throw new Error('Photograph download cancelled');
   return createImageBitmap(blob);
 }, 24);
-// Trimmed original-resolution pixels cover every snapped view before input is
-// enabled. These are only emergency stills; dragging plays the full HD edit.
-const dragImages: ImageBitmap[] = [];
-let downloaded = 0;
+let downloaded = 0, loadingPages: number[] = [], loadingGpt = false, warmGeneration = 0;
 function downloadedPage() {
   downloaded++;
-  loading.style.setProperty('--loaded', `${downloaded / (data.atlases.length + previews.atlases.length + gptTest.count) * 100}%`);
+  const complete = loadingPages.filter(index => !!downloads.get(index)).length + (loadingGpt ? gptTest.downloaded : 0);
+  const total = loadingPages.length + (loadingGpt ? gptTest.count : 0);
+  loading.style.setProperty('--loaded', `${total ? Math.min(100, complete / total * 100) : 0}%`);
   surface.dataset.loadedPages = String(downloaded);
 }
-async function loadPhotographs() {
-  let next = 0;
-  await Promise.all(Array.from({ length: 6 }, async () => {
-    while (next < data.atlases.length) {
-      const index = next++;
-      compressed.set(index, await fetchPage(data.atlases[index], data.assetVersion));
-      downloadedPage();
-    }
-  }));
+async function loadView(yaw: number, current: () => boolean) {
+  const indices = directionPhotos(yaw), restored = gptTest.covers(yaw, indices, true);
+  loadingPages = restored ? [] : directionPages(yaw); loadingGpt = restored;
+  surface.dataset.startupPages = String(loadingPages.length + (restored ? gptTest.count : 0));
+  if (restored) await gptTest.load();
+  else await Promise.all(loadingPages.map(index => downloads.request(index, current)));
 }
-async function loadPreviews() {
-  let next = 0;
-  await Promise.all([0, 1].map(async () => {
-    while (next < previews.atlases.length) {
-      const index = next++;
-      dragImages[index] = await createImageBitmap(await fetchPage(previews.atlases[index], previews.assetVersion));
-      downloadedPage();
-    }
-  }));
+function warmNeighbors() {
+  const epoch = ++warmGeneration;
+  const neighbors = [renderedTarget - ANGLE_STEP, renderedTarget + ANGLE_STEP].filter(yaw => yaw >= minYaw && yaw <= maxYaw);
+  const pages = [...new Set(neighbors.flatMap(directionPages))];
+  void Promise.all(pages.map(index => downloads.request(index, () => epoch === warmGeneration && directionLoading === undefined && !document.hidden, false)))
+    .catch(() => { /* The requested direction retries a speculative failure. */ });
 }
 context.imageSmoothingQuality = 'high';
 let ready = false;
@@ -151,17 +144,11 @@ function paintRegion(image: ImageBitmap, x: number, y: number, width: number, he
   canvas.dataset.motionVerified = String(!restored && hd && !!block.qualityVerified);
   canvas.dataset.gptRestored = String(!!restored);
   canvas.dataset.decodedPages = String(images.size);
-  canvas.dataset.compressedPages = String(compressed.size);
-  canvas.dataset.previewPages = String(dragImages.length);
+  canvas.dataset.compressedPages = String(downloads.size);
+  canvas.dataset.previewPages = '0';
   canvas.dataset.bufferedFrames = String(upcoming.reduce((sum,cut)=>sum+cut.count,0));
   canvas.dataset.directionLoading = String(directionLoading !== undefined);
   canvas.dataset.requestedYaw = String(target);
-}
-function drawPreview() {
-  const slot = Math.round(phase * previews.phases) % previews.phases;
-  const tile = previews.tiles[previews.lookup[(target - minYaw) / previews.yawStep][slot]];
-  const image = dragImages[tile.atlas];
-  if (image) paintRegion(image, tile.x, tile.y, tile.width, tile.height, tile.offsetX, tile.offsetY, frames[tile.frame], target, 'drag-hd');
 }
 function draw() {
   const still = gptTest.still(renderedTarget);
@@ -187,12 +174,14 @@ function draw() {
   }
   const row = frames[cutIndex(block,Math.min(offset, block.count - 1))];
   const image = images.get(row.atlas);
-  if (image) paint(image, row.tile, data.columns, data.tileWidth, data.tileHeight, row, renderedTarget, 'hd');
-  else drawPreview();
+  const restored = gptTest.replacement(renderedTarget, frameIndices.get(row)!);
+  if (!image && restored) paintRegion(restored, 0, 0, restored.width, restored.height, 0, 0, row, renderedTarget, 'hd');
+  else if (image) paint(image, row.tile, data.columns, data.tileWidth, data.tileHeight, row, renderedTarget, 'hd');
+
 }
-async function prepare(candidate: typeof block) {
+async function prepare(candidate: typeof block, yaw = renderedTarget, requested = false) {
   const pages = new Set(cutIndices(candidate).map(i => frames[i].atlas));
-  await Promise.all([Promise.all([...pages].map(index => images.load(index))), gptTest.prepare(cutIndices(candidate))]);
+  await Promise.all([gptTest.covers(yaw, cutIndices(candidate), requested) ? Promise.resolve() : Promise.all([...pages].map(index => images.load(index))), gptTest.prepare(yaw, cutIndices(candidate), requested)]);
 }
 function retainPages() {
   const indices = [block, ...upcoming, ...planned, ...bufferPlanned].flatMap(candidate => cutIndices(candidate));
@@ -227,6 +216,9 @@ async function startDirection() {
   const epoch = ++generation, requested = target;
   directionLoading = epoch;
   try {
+    if (ready) loading.hidden = false;
+    await loadView(requested, () => epoch === generation);
+    if (epoch !== generation) return;
     const sequence = await prepareLiveDirection({
       current: () => epoch === generation && requested === target,
       plan: () => {
@@ -241,18 +233,19 @@ async function startDirection() {
         planned = sequence; retainPages();
         return sequence;
       },
-      available: candidate => cutIndices(candidate).every(i => !!images.get(frames[i].atlas)) && gptTest.available(cutIndices(candidate)),
-      prepare,
+      available: candidate => (gptTest.covers(requested, cutIndices(candidate), true) || cutIndices(candidate).every(i => !!images.get(frames[i].atlas))) && gptTest.available(requested, cutIndices(candidate)),
+      prepare: candidate => prepare(candidate, requested, true),
     });
     // Await itself yields, so recheck cancellation before installing the edit.
     if (!sequence || epoch !== generation || requested !== target) return;
+    gptTest.activate();
     block = sequence[0]; upcoming = sequence.slice(1);
     planned = []; bufferPlanned = []; stream++;
     renderedTarget = requested;
     directionLoading = undefined;
     offset = 0; phase = clockPhase(clock);
     retainPages();
-    if (ready) draw();
+    if (ready) { draw(); loading.hidden = true; warmNeighbors(); }
     void fillBuffer();
   } catch (error) { if (epoch === generation) throw error; }
   finally { if (directionLoading === epoch) directionLoading = undefined; }
@@ -330,16 +323,18 @@ function tick(time: number) {
 async function load() {
   try {
     surface.dataset.playing = 'false';
-    surface.dataset.totalPages = String(data.atlases.length + previews.atlases.length + gptTest.count);
-    await Promise.all([loadPhotographs(), loadPreviews(), gptTest.load()]);
+    surface.dataset.totalPages = String(data.atlases.length + gptTest.count);
     await startDirection();
-    if (!images.get(frames[block.start].atlas)) throw new Error('Initial frame decode failed');
+    if (!images.get(frames[block.start].atlas) && !gptTest.replacement(target, block.start)) throw new Error('Initial frame decode failed');
     ready = true;
+    gptTest.ready();
+    surface.dataset.readyAt = String(performance.now());
     draw();
     surface.setAttribute('aria-busy', 'false');
     loading.hidden = true;
     surface.dataset.playing = String(playing);
     requestAnimationFrame(tick);
+    warmNeighbors();
   } catch(error) { failed(error); }
 }
 setAngle(target); void load();

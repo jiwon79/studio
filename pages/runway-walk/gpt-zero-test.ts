@@ -24,7 +24,7 @@ async function photograph(name: string) {
 /** Full 0° quality experiment. Download first, decode only the current/lookahead
  * window. Generated pixels never inherit the original pose-verification flag. */
 export function gptZeroTest(onChange: () => void, faceFront: () => void, onDownloaded: () => void) {
-  const options = { enabled: true, still: false, frame: 1, state: `준비 0/${frames.length}장` };
+  const options = { enabled: true, still: false, frame: 1, state: `0° 선택 시 ${frames.length}장 준비` };
   const blobs = new Map<number, Blob>();
   const edits = new AtlasPool(async index => {
     const blob = blobs.get(index);
@@ -36,6 +36,7 @@ export function gptZeroTest(onChange: () => void, faceFront: () => void, onDownl
   }, 3);
   let download: Promise<void> | undefined;
   let selection = 0;
+  let activeEnabled = options.enabled;
   let retained: number[] = [];
   const gui = new GUI({ title: '0° GPT 이미지 테스트', width: 270 });
   async function load() {
@@ -72,12 +73,17 @@ export function gptZeroTest(onChange: () => void, faceFront: () => void, onDownl
   gui.add(options, 'still').name('프레임 정지 비교').listen().onChange(() => { void change(); });
   gui.add(options, 'frame', 1, frames.length, 1).name('프레임').onChange(() => { options.still = true; void change(); });
   gui.add(options, 'state').name('적용 범위').listen().disable();
+  for (const controller of gui.controllers.slice(0, 3)) controller.disable();
   return {
+    ready() { for (const controller of gui.controllers.slice(0, 3)) controller.enable(); },
     count: frames.length,
+    get downloaded() { return blobs.size; },
+    activate() { activeEnabled = options.enabled; },
+    covers(yaw: number, indices: number[], requested = false) { return yaw === 0 && (requested ? options.enabled : activeEnabled) && indices.every(i => byIndex.has(i)); },
     isStill(yaw: number) { return yaw === 0 && options.still; },
     load,
-    async prepare(indices: number[]) {
-      if (!options.enabled) return;
+    async prepare(yaw: number, indices: number[], requested = false) {
+      if (yaw !== 0 || !(requested ? options.enabled : activeEnabled)) return;
       await load();
       await Promise.all([...new Set(indices)].filter(i => byIndex.has(i)).map(i => edits.load(i)));
     },
@@ -85,13 +91,13 @@ export function gptZeroTest(onChange: () => void, faceFront: () => void, onDownl
       retained = indices.filter(i => byIndex.has(i));
       edits.retain([...retained, ...(options.still ? [selected()] : [])]);
     },
-    available(indices: number[]) { return !options.enabled || indices.filter(i => byIndex.has(i)).every(i => !!edits.get(i)); },
+    available(yaw: number, indices: number[]) { return yaw !== 0 || !options.enabled || indices.filter(i => byIndex.has(i)).every(i => !!edits.get(i)); },
     still(yaw: number) {
       if (yaw !== 0 || !options.still) return;
       const index = selected(), image = (options.enabled ? edits : originals).get(index);
       return image ? { index, image, edited: options.enabled } : undefined;
     },
-    replacement(yaw: number, index: number) { return yaw === 0 && options.enabled ? edits.get(index) : undefined; },
+    replacement(yaw: number, index: number) { return yaw === 0 && activeEnabled ? edits.get(index) : undefined; },
     registration(index: number) { return byIndex.get(index)?.registration; },
   };
 }
