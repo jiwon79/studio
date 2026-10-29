@@ -65,7 +65,7 @@ const dragImages: ImageBitmap[] = [];
 let downloaded = 0;
 function downloadedPage() {
   downloaded++;
-  loading.style.setProperty('--loaded', `${downloaded / (data.atlases.length + previews.atlases.length) * 100}%`);
+  loading.style.setProperty('--loaded', `${downloaded / (data.atlases.length + previews.atlases.length + gptTest.count) * 100}%`);
   surface.dataset.loadedPages = String(downloaded);
 }
 async function loadPhotographs() {
@@ -101,22 +101,38 @@ let directionLoading: number | undefined;
 let generation = 0, stream = 0, filling: number | undefined;
 let lastTime = 0, carry = 0;
 let drag: { id: number; x: number; start: number } | undefined;
-const gptTest = gptZeroTest(() => { if (ready) draw(); }, () => { if (ready) setAngle(0); });
+const gptTest = gptZeroTest(() => { if (ready) { draw(); void startDirection().catch(failed); } }, () => { if (ready) setAngle(0); }, downloadedPage);
 function paint(image: ImageBitmap, tile: number, columns: number, width: number, height: number, row: AngleFrame, yaw: number, quality: string) {
   paintRegion(image, tile % columns * width, Math.floor(tile / columns) * height,
     width, height, 0, 0, row, yaw, quality);
 }
+function beginFrame(restored: boolean) {
+  const scale = restored ? 1.5 : 1;
+  if (canvas.width !== data.tileWidth * scale) {
+    canvas.width = data.tileWidth * scale;
+    canvas.height = data.tileHeight * scale;
+  }
+  context.setTransform(scale, 0, 0, scale, 0, 0);
+  context.imageSmoothingQuality = 'high';
+  context.clearRect(0, 0, data.tileWidth, data.tileHeight);
+  canvas.dataset.pixelScale = String(scale);
+}
 function paintRegion(image: ImageBitmap, x: number, y: number, width: number, height: number, dx: number, dy: number, row: AngleFrame, yaw: number, quality: string) {
-  context.clearRect(0, 0, canvas.width, canvas.height);
+  const restored = quality === 'hd' ? gptTest.replacement(yaw, frameIndices.get(row)!) : undefined;
+  beginFrame(!!restored);
   const aligned=quality==='hd'?!!block.registered:sequencer.usesRegistration(yaw);
   const transform=row.posture?(quality==='hd'?cutPhotoTransform(block,offset,row.posture,phase,yaw):aligned?photoTransform(row.posture,phase,yaw):IDENTITY_PHOTO):IDENTITY_PHOTO;
   context.save();applyPhotoTransform(context,transform);
-  const restored = quality === 'hd' ? gptTest.replacement(yaw, frameIndices.get(row)!) : undefined;
-  if (restored) context.drawImage(restored, 0, 0, restored.width, restored.height, 0, 0, data.tileWidth, data.tileHeight);
+  if (restored) {
+    context.save(); applyPhotoTransform(context, gptTest.registration(frameIndices.get(row)!) ?? IDENTITY_PHOTO);
+    context.drawImage(restored, 0, 0, restored.width, restored.height, 0, 0, data.tileWidth, data.tileHeight);
+    context.restore();
+  }
   else context.drawImage(image, x, y, width, height, dx, dy, width, height);
   context.restore();canvas.dataset.photoTransform=JSON.stringify(transform);
   direction.value = label(yaw);
   canvas.dataset.sourceFrame = String(row.sourceFrame);
+  canvas.dataset.frameIndex = String(frameIndices.get(row)!);
   canvas.dataset.clip = row.clip;
   canvas.dataset.actualYaw = String(row.yaw);
   canvas.dataset.phase = String(phase);
@@ -138,7 +154,6 @@ function paintRegion(image: ImageBitmap, x: number, y: number, width: number, he
   canvas.dataset.compressedPages = String(compressed.size);
   canvas.dataset.previewPages = String(dragImages.length);
   canvas.dataset.bufferedFrames = String(upcoming.reduce((sum,cut)=>sum+cut.count,0));
-  canvas.dataset.pixelScale = '1';
   canvas.dataset.directionLoading = String(directionLoading !== undefined);
   canvas.dataset.requestedYaw = String(target);
 }
@@ -151,13 +166,17 @@ function drawPreview() {
 function draw() {
   const still = gptTest.still(renderedTarget);
   if (still) {
-    context.clearRect(0, 0, canvas.width, canvas.height);
+    beginFrame(still.edited);
+    context.save();
+    if (still.edited) applyPhotoTransform(context, gptTest.registration(still.index) ?? IDENTITY_PHOTO);
     context.drawImage(still.image, 0, 0, still.image.width, still.image.height, 0, 0, data.tileWidth, data.tileHeight);
+    context.restore();
     direction.value = label(0);
     canvas.dataset.quality = 'quality-test-still';
     canvas.dataset.gptRestored = String(still.edited);
     canvas.dataset.motionVerified = 'false';
     canvas.dataset.sourceFrame = String(frames[still.index].sourceFrame);
+    canvas.dataset.frameIndex = String(still.index);
     canvas.dataset.clip = frames[still.index].clip;
     canvas.dataset.actualYaw = String(frames[still.index].yaw);
     canvas.dataset.clock = String(clock);
@@ -173,11 +192,12 @@ function draw() {
 }
 async function prepare(candidate: typeof block) {
   const pages = new Set(cutIndices(candidate).map(i => frames[i].atlas));
-  await Promise.all([...pages].map(index => images.load(index)));
+  await Promise.all([Promise.all([...pages].map(index => images.load(index))), gptTest.prepare(cutIndices(candidate))]);
 }
 function retainPages() {
-  images.retain([block, ...upcoming, ...planned, ...bufferPlanned].flatMap(candidate =>
-    cutIndices(candidate).map(i => frames[i].atlas)));
+  const indices = [block, ...upcoming, ...planned, ...bufferPlanned].flatMap(candidate => cutIndices(candidate));
+  images.retain(indices.map(i => frames[i].atlas));
+  gptTest.retain(indices);
 }
 /** Keep almost a second of complete appearances decoded ahead of playback. */
 async function fillBuffer() {
@@ -221,7 +241,7 @@ async function startDirection() {
         planned = sequence; retainPages();
         return sequence;
       },
-      available: candidate => cutIndices(candidate).every(i => !!images.get(frames[i].atlas)),
+      available: candidate => cutIndices(candidate).every(i => !!images.get(frames[i].atlas)) && gptTest.available(cutIndices(candidate)),
       prepare,
     });
     // Await itself yields, so recheck cancellation before installing the edit.
@@ -287,7 +307,7 @@ window.addEventListener('blur', () => {
 });
 document.addEventListener('visibilitychange', () => { lastTime = 0; carry = 0; });
 function tick(time: number) {
-  if (ready && playing && !document.hidden) {
+  if (ready && playing && !document.hidden && !gptTest.isStill(renderedTarget)) {
     carry += lastTime ? Math.min((time - lastTime) / 1000, 0.12) : 0;
     while (carry >= 1 / data.fps) {
       carry -= 1 / data.fps;
@@ -310,8 +330,8 @@ function tick(time: number) {
 async function load() {
   try {
     surface.dataset.playing = 'false';
-    surface.dataset.totalPages = String(data.atlases.length + previews.atlases.length);
-    await Promise.all([loadPhotographs(), loadPreviews()]);
+    surface.dataset.totalPages = String(data.atlases.length + previews.atlases.length + gptTest.count);
+    await Promise.all([loadPhotographs(), loadPreviews(), gptTest.load()]);
     await startDirection();
     if (!images.get(frames[block.start].atlas)) throw new Error('Initial frame decode failed');
     ready = true;
