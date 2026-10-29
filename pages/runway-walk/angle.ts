@@ -56,7 +56,7 @@ const images = new AtlasPool(async index => {
   const blob = compressed.get(index);
   if (!blob) throw new Error('Playback started before the complete download');
   return createImageBitmap(blob);
-}, 12);
+}, 24);
 // Trimmed original-resolution pixels cover every snapped view before input is
 // enabled. Dragging needs neither a decode nor a low-resolution substitute.
 const dragImages: ImageBitmap[] = [];
@@ -92,6 +92,8 @@ let playing = !matchMedia('(prefers-reduced-motion: reduce)').matches;
 let phase = 0, clock = 0, offset = 0;
 let block = sequencer.plan(target, createWalkState());
 let renderedTarget = target;
+const LOOKAHEAD_CUTS = 8;
+let decodeWaits = 0;
 let upcoming: ReferenceCut[] = [], planned: ReferenceCut[] = [];
 let directionLoading: number | undefined;
 let generation = 0, filling: number | undefined;
@@ -153,13 +155,13 @@ function retainPages() {
   images.retain([block, ...upcoming, ...planned].flatMap(candidate =>
     cutIndices(candidate).map(i => frames[i].atlas)));
 }
-/** Decode three future cuts while the current cut is still being displayed. */
+/** Keep almost a second of complete appearances decoded ahead of playback. */
 async function fillBuffer() {
   const epoch = generation;
   if (filling === epoch || renderedTarget !== target || drag?.moved) return;
   filling = epoch;
   try {
-    while (upcoming.length < 3 && epoch === generation) {
+    while (upcoming.length < LOOKAHEAD_CUTS && epoch === generation) {
       const candidate = sequencer.plan(target, (upcoming[upcoming.length - 1] ?? block).after);
       planned = [candidate]; retainPages();
       await prepare(candidate);
@@ -175,7 +177,7 @@ function failed(error?:unknown) {
   surface.setAttribute('aria-busy', 'false');
   status.textContent = error instanceof WalkCoverageError?'이 각도의 보행 소스가 부족해 재생을 멈췄어요. 다른 각도를 선택해 주세요.':'프레임을 불러오지 못했어요. 새로고침해 주세요.';
 }
-/** Replace the direction only after its first four cuts have decoded. */
+/** Replace the direction only after the complete lookahead has decoded. */
 async function startDirection() {
   if (drag?.moved) return;
   const epoch = ++generation, requested = target;
@@ -185,7 +187,7 @@ async function startDirection() {
   const sequence: ReferenceCut[] = [];
   upcoming = [];
   try {
-    for (let index = 0; index < 4; index++) {
+    for (let index = 0; index <= LOOKAHEAD_CUTS; index++) {
       const candidate = sequencer.plan(requested, state);
       sequence.push(candidate); state = candidate.after;
     }
@@ -270,7 +272,7 @@ function tick(time: number) {
       } else {
         const next = upcoming.shift();
         // Slow decoding never advances the clock behind a repeated still.
-        if (!next) { carry = 0; void fillBuffer(); break; }
+        if (!next) { canvas.dataset.decodeWaits = String(++decodeWaits); carry = 0; void fillBuffer(); break; }
         block = next; offset = 0;
         retainPages(); void fillBuffer();
       }

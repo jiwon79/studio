@@ -61,7 +61,7 @@ test('the reported frontal cut can pass the position gate while rewinding anatom
  expect(measureGaitProgress(previous,next,clockPhase(170),clockPhase(171),0).status).toBe('reverse');
 });
 test('reviewed identity changes include the loop closure and reject anatomical rewinds',()=>{
- expect(schedule.boundaryReview.yaws).toEqual([0,10,15,20,25]);
+ expect(schedule.boundaryReview.yaws).toEqual([-90,-85,-65,-60,-55,-50,-40,-35,-30,-25,-20,-15,-10,-5,0,5,10,15,20,25,30,35,40,45,55,60,65,70,75,80,85,90]);
  for(const yaw of schedule.boundaryReview.yaws){
   const report=auditSequence(new ReferenceSequencer(data.frames),data.frames,yaw,600);
   expect(report.boundaryProgress,`${yaw}°`).toMatchObject({count:200,reverse:0,stall:0,unmeasurable:0});
