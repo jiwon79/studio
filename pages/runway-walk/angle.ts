@@ -98,7 +98,7 @@ let drag: { id: number; x: number; start: number } | undefined;
 function comparisonLink(enabled: boolean) {
   const url = new URL(location.href);
   if (enabled) { url.searchParams.set('angle', '0'); url.searchParams.set('compare', '12'); }
-  else url.searchParams.delete('compare');
+  else { url.searchParams.delete('compare'); url.searchParams.delete('depth'); }
   history.replaceState(null, '', url);
 }
 const comparison12 = zeroTwelveComparison(() => { comparisonLink(false); gptTest.endComparison(); lastTime = 0; carry = 0; if (!ready) void load(); else draw(); });
