@@ -21,3 +21,9 @@ Prompt template:
 ## Comparison
 
 The page can apply exactly the same whole-photo similarity fit to both methods. It does not deform limbs, mirror images, exchange anatomical labels, or choose a more favorable correspondence. Position and temporal residuals are computed in the page from the supplied pose annotations, with low-confidence estimates marked. This is a twelve-frame partial-cycle test, not a new full-length production gait.
+
+## Head, torso and feet revision
+
+Twelve separate built-in GPT image edits use the previous model-first human cutout as edit target, the new spatial guide as constraint input and the unchanged imported model render as pose reference. The exact per-frame final prompts are in `prompts-v2.json`. Initial full re-generation variants were rejected for changed foot poses. Final selected edits request upper-body changes while preserving the prior lower-body gait; alpha is retained and delivery files are premultiplied-alpha resampled to 768×1152 lossless WebP.
+
+The mannequin has no anatomical eyes. Virtual eye anchors are explicitly attached to its Head mesh bounding box at 65% height, ±18% width and 90% depth. This calibration is recorded in the runtime manifest and is shown as a virtual guide, not a detected anatomical landmark. New playback combines the edited images with joint whole-photo registration across twelve frames. The page exposes generation-only and previous-images-plus-registration ablations. This distinction is necessary because prompt constraints alone did not guarantee exact spatial matches.
