@@ -3,6 +3,7 @@ import { AtlasPool } from './atlas-pool';
 import { PhotoDownloads } from './photo-downloads';
 import { directionPhotos, directionPages } from './direction-photos';
 import { prepareLiveDirection } from './live-direction';
+import { zeroTwelveComparison } from './zero-twelve-comparison';
 import { gptZeroTest } from './gpt-zero-test';
 import { ANGLE_STEP, snapYaw } from './direction-step';
 import type { AngleFrame } from './angle-match';
@@ -94,7 +95,14 @@ let directionLoading: number | undefined;
 let generation = 0, stream = 0, filling: number | undefined;
 let lastTime = 0, carry = 0;
 let drag: { id: number; x: number; start: number } | undefined;
-const gptTest = gptZeroTest(() => { if (ready) { draw(); void startDirection().catch(failed); } }, () => { if (ready) setAngle(0); }, downloadedPage);
+function comparisonLink(enabled: boolean) {
+  const url = new URL(location.href);
+  if (enabled) { url.searchParams.set('angle', '0'); url.searchParams.set('compare', '12'); }
+  else url.searchParams.delete('compare');
+  history.replaceState(null, '', url);
+}
+const comparison12 = zeroTwelveComparison(() => { comparisonLink(false); gptTest.endComparison(); lastTime = 0; carry = 0; if (!ready) void load(); else draw(); });
+const gptTest = gptZeroTest(() => { if (ready) { draw(); void startDirection().catch(failed); } }, () => { if (ready) setAngle(0); }, downloadedPage, enabled => { comparisonLink(enabled); if (enabled && !ready) setAngle(0); comparison12.setEnabled(enabled); lastTime = 0; carry = 0; if (!enabled) { if (!ready) void load(); else draw(); } });
 function paint(image: ImageBitmap, tile: number, columns: number, width: number, height: number, row: AngleFrame, yaw: number, quality: string) {
   paintRegion(image, tile % columns * width, Math.floor(tile / columns) * height,
     width, height, 0, 0, row, yaw, quality);
@@ -152,6 +160,7 @@ function paintRegion(image: ImageBitmap, x: number, y: number, width: number, he
   canvas.dataset.requestedYaw = String(target);
 }
 function draw() {
+  if (comparison12.active) return;
   const still = gptTest.still(renderedTarget);
   if (still) {
     beginFrame(still.edited);
@@ -302,7 +311,7 @@ window.addEventListener('blur', () => {
 });
 document.addEventListener('visibilitychange', () => { lastTime = 0; carry = 0; });
 function tick(time: number) {
-  if (ready && playing && !document.hidden && !gptTest.isStill(renderedTarget)) {
+  if (ready && playing && !document.hidden && !gptTest.isStill(renderedTarget) && !comparison12.active) {
     carry += lastTime ? Math.min((time - lastTime) / 1000, 0.12) : 0;
     while (carry >= 1 / data.fps) {
       carry -= 1 / data.fps;
@@ -325,6 +334,10 @@ function tick(time: number) {
 async function load() {
   try {
     surface.dataset.playing = 'false';
+    // A direct twelve-photo comparison needs only its own 24 images. Defer the
+    // complete artwork download until the viewer returns to the artwork.
+    if (new URLSearchParams(location.search).get('compare') === '12') { gptTest.ready(); return; }
+    gptTest.pending();
     surface.dataset.totalPages = String(data.atlases.length + gptTest.count);
     await startDirection();
     if (!images.get(frames[block.start].atlas) && !gptTest.replacement(target, block.start)) throw new Error('Initial frame decode failed');

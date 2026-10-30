@@ -24,8 +24,9 @@ async function photograph(name: string) {
 
 /** Full 0° quality experiment. Download first, decode only the current/lookahead
  * window. Generated pixels never inherit the original pose-verification flag. */
-export function gptZeroTest(onChange: () => void, faceFront: () => void, onDownloaded: () => void) {
-  const options = { enabled: true, revised: true, still: false, frame: 1, state: `0° 선택 시 ${frames.length}장 준비` };
+export function gptZeroTest(onChange: () => void, faceFront: () => void, onDownloaded: () => void, onTwelveComparison: (enabled: boolean) => void) {
+  const options = { enabled: true, revised: true, compare12: false, still: false, frame: 1, state: `0° 선택 시 ${frames.length}장 준비` };
+  let initialComparison = new URLSearchParams(location.search).get('compare') === '12';
   const blobs = new Map<number, Blob>();
   const edits = new AtlasPool(async index => {
     const blob = blobs.get(index);
@@ -87,14 +88,20 @@ export function gptZeroTest(onChange: () => void, faceFront: () => void, onDownl
   }
   gui.add(options, 'enabled').name('GPT 보정').onChange(() => { void change(); });
   gui.add(options, 'revised').name('새 자세 보정 · 12장').onChange(() => { void change(); });
+  gui.add(options, 'compare12').name('12장만 전후 비교').listen().onChange(() => { if (options.compare12) { faceFront(); gui.close(); } onTwelveComparison(options.compare12); });
   gui.add(options, 'still').name('프레임 정지 비교').listen().onChange(() => { void change(); });
   gui.add(options, 'frame', 1, frames.length, 1).name('프레임').onChange(() => { options.still = true; void change(); });
   gui.add(options, 'state').name('적용 범위').listen().disable();
   gui.add({ poseTest: () => { location.href = new URL('./pose-test.html', location.href).href; } }, 'poseTest').name('3D 자세 비교 · 12프레임');
-  for (const controller of gui.controllers.slice(0, 4)) controller.disable();
+  for (const controller of gui.controllers.slice(0, 5)) controller.disable();
   return {
-    ready() { for (const controller of gui.controllers.slice(0, 4)) controller.enable(); },
+    ready() {
+      for (const controller of gui.controllers.slice(0, 5)) controller.enable();
+      if (initialComparison) { initialComparison = false; options.compare12 = true; faceFront(); gui.close(); onTwelveComparison(true); }
+    },
+    pending() { for (const controller of gui.controllers.slice(0, 5)) controller.disable(); },
     count: frames.length,
+    endComparison() { options.compare12 = false; gui.open(); },
     get downloaded() { return frames.filter(row => blobs.has(asset(row.index, options.revised).key)).length; },
     activate() { activeEnabled = options.enabled; activeRevised = options.revised; },
     covers(yaw: number, indices: number[], requested = false) { return yaw === 0 && (requested ? options.enabled : activeEnabled) && indices.every(i => byIndex.has(i)); },
