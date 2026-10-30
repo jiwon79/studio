@@ -25,7 +25,7 @@ async function photograph(name: string) {
 /** Full 0° quality experiment. Download first, decode only the current/lookahead
  * window. Generated pixels never inherit the original pose-verification flag. */
 export function gptZeroTest(onChange: () => void, faceFront: () => void, onDownloaded: () => void, onTwelveComparison: (enabled: boolean) => void) {
-  const options = { enabled: true, revised: true, compare12: false, still: false, frame: 1, state: `0° 선택 시 ${frames.length}장 준비` };
+  const options = { enabled: true, revised: false, compare12: false, still: false, frame: 1, state: `0° 선택 시 ${frames.length}장 준비` };
   let initialComparison = new URLSearchParams(location.search).get('compare') === '12';
   const blobs = new Map<number, Blob>();
   const edits = new AtlasPool(async index => {
@@ -40,7 +40,7 @@ export function gptZeroTest(onChange: () => void, faceFront: () => void, onDownl
   let selection = 0;
   let activeEnabled = options.enabled, activeRevised = options.revised;
   let retained: number[] = [];
-  const gui = new GUI({ title: '0° GPT 이미지 테스트', width: 270 });
+  const gui = new GUI({ title: '0° GPT 화질 보정', width: 270 });
   async function load() {
     const revised = options.revised;
     let download = downloads.get(revised);
@@ -66,7 +66,7 @@ export function gptZeroTest(onChange: () => void, faceFront: () => void, onDownl
       downloads.set(revised, download);
     }
     await download;
-    if (options.revised === revised) options.state = `0° ${frames.length}장 · 새 자세 ${revised ? '12장' : 'OFF'}`;
+    if (options.revised === revised) options.state = `0° ${frames.length}장 · 화질만 보정`;
   }
   function protect(indices: number[]) {
     edits.retain(indices.flatMap(index => [asset(index, activeRevised).key, asset(index, options.revised).key]));
@@ -86,20 +86,18 @@ export function gptZeroTest(onChange: () => void, faceFront: () => void, onDownl
       if (version === selection) onChange();
     } catch { options.state = '비교 사진 로딩 실패'; }
   }
-  gui.add(options, 'enabled').name('GPT 보정').onChange(() => { void change(); });
-  gui.add(options, 'revised').name('새 자세 보정 · 12장').onChange(() => { void change(); });
+  gui.add(options, 'enabled').name('GPT 화질 보정').onChange(() => { void change(); });
   gui.add(options, 'compare12').name('12장만 전후 비교').listen().onChange(() => { if (options.compare12) { faceFront(); gui.close(); } onTwelveComparison(options.compare12); });
   gui.add(options, 'still').name('프레임 정지 비교').listen().onChange(() => { void change(); });
   gui.add(options, 'frame', 1, frames.length, 1).name('프레임').onChange(() => { options.still = true; void change(); });
   gui.add(options, 'state').name('적용 범위').listen().disable();
-  gui.add({ poseTest: () => { location.href = new URL('./pose-test.html', location.href).href; } }, 'poseTest').name('3D 자세 비교 · 12프레임');
-  for (const controller of gui.controllers.slice(0, 5)) controller.disable();
+  for (const controller of gui.controllers.slice(0, 4)) controller.disable();
   return {
     ready() {
-      for (const controller of gui.controllers.slice(0, 5)) controller.enable();
+      for (const controller of gui.controllers.slice(0, 4)) controller.enable();
       if (initialComparison) { initialComparison = false; options.compare12 = true; faceFront(); gui.close(); onTwelveComparison(true); }
     },
-    pending() { for (const controller of gui.controllers.slice(0, 5)) controller.disable(); },
+    pending() { for (const controller of gui.controllers.slice(0, 4)) controller.disable(); },
     count: frames.length,
     endComparison() { options.compare12 = false; gui.open(); },
     get downloaded() { return frames.filter(row => blobs.has(asset(row.index, options.revised).key)).length; },
