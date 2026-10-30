@@ -9,7 +9,7 @@ export function latestRunwayPage(directory: string) {
   return async (request: IncomingMessage, response: ServerResponse, next: () => void) => {
     if (request.method !== 'GET' && request.method !== 'HEAD') { next(); return; }
     const url = new URL(request.url ?? '/', 'http://localhost');
-    const route = /^\/(?:pages\/)?runway-walk\/(?:(index|angle|debug|sequence|reference)\.html)?$/.exec(url.pathname);
+    const route = /^\/(?:pages\/)?runway-walk\/(?:(index|angle|debug|sequence|reference|pose-test)\.html)?$/.exec(url.pathname);
     if (!route) { next(); return; }
     response.setHeader('Cache-Control', 'no-store');
     if (url.searchParams.has('v')) {

@@ -73,6 +73,7 @@ export function gptZeroTest(onChange: () => void, faceFront: () => void, onDownl
   gui.add(options, 'still').name('프레임 정지 비교').listen().onChange(() => { void change(); });
   gui.add(options, 'frame', 1, frames.length, 1).name('프레임').onChange(() => { options.still = true; void change(); });
   gui.add(options, 'state').name('적용 범위').listen().disable();
+  gui.add({ poseTest: () => { location.href = new URL('./pose-test.html', location.href).href; } }, 'poseTest').name('3D 자세 비교 · 12프레임');
   for (const controller of gui.controllers.slice(0, 3)) controller.disable();
   return {
     ready() { for (const controller of gui.controllers.slice(0, 3)) controller.enable(); },

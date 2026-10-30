@@ -24,7 +24,8 @@ let path:Photo[]=[],tick=0,playing=false,epoch=0,drawing=0,transport=0;
 const blobs=new Map<number,Promise<Blob>>();
 function blob(index:number){let pending=blobs.get(index);if(!pending){pending=fetch(new URL(`./media/angles/${data.atlases[index]}`,import.meta.url)).then(r=>{if(!r.ok)throw Error('사진 로딩 실패');return r.blob();}).catch(error=>{blobs.delete(index);throw error;});blobs.set(index,pending);}return pending;}
 const images=new AtlasPool(async(index)=>createImageBitmap(await blob(index)),12);
-const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
+// Export the actual imported model pixels as pose-conditioning references.
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(512,768,false);$('model').append(renderer.domElement);
 const scene=new THREE.Scene();scene.background=new THREE.Color('#adb6ba');
 const scale=660/REFERENCE_HEIGHT,viewHeight=768/scale,viewWidth=512/scale,center=(720-384)/scale;
