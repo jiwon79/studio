@@ -2,6 +2,7 @@ import { test, expect } from 'vitest';
 import pose from './assets/pose-test/manifest.json';
 import restored from './assets/gpt-zero/manifest.json';
 import { zeroTwelveFrames } from './zero-twelve-comparison';
+import { clockPhase } from './reference-clock';
 import { zeroPoseAsset } from './gpt-zero-pose-patch';
 import { transformPhotoPoint } from './photo-registration';
 
@@ -10,6 +11,8 @@ test('comparison shows exactly the same twelve artwork photos with revised poses
   for (const [tick, row] of zeroTwelveFrames.entries()) {
     const source = restored.frames.find(p => p.index === row.index)!;
     const before = zeroPoseAsset(source, false), after = zeroPoseAsset(source, true);
+    expect(row.model).toBe(`./assets/pose-test/${pose.frames[tick].model}`);
+    expect(row.phase).toBeCloseTo(clockPhase(tick), 12);
     expect(row.before).toBe(before.file);
     expect(row.after).toBe(after.file);
     const apply = (p: readonly number[], transforms: typeof row.beforeTransforms) => [...transforms].reverse().reduce((point, transform) => transformPhotoPoint(point, transform), [...p]);

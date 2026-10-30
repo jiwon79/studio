@@ -6,6 +6,8 @@ import './zero-twelve-comparison.css';
 const files = import.meta.glob<string>('./assets/{gpt-zero,pose-test}/*.{png,webp}', { eager: true, query: '?url', import: 'default' });
 export const zeroTwelveFrames = data.frames.map((row, i) => ({
   index: row.index,
+  phase: row.phase,
+  model: `./assets/pose-test/${row.model}`,
   before: `./assets/gpt-zero/${row.baseline}`,
   after: `./assets/pose-test/${row.headBody}`,
   beforeTransforms: [row.oldCut, row.oldRegistration],
@@ -13,19 +15,19 @@ export const zeroTwelveFrames = data.frames.map((row, i) => ({
 }));
 
 /** The exact first twelve artwork slots, not an invented closed gait loop.
- * Both sides share one transport and wait for all 24 decoded photographs. */
+ * All three views share one transport and wait for all 36 decoded images. */
 export function zeroTwelveComparison(onClose: () => void) {
   const root = document.createElement('section');
   root.id = 'zero-twelve'; root.hidden = true;
   root.setAttribute('aria-label', '0도 12장 보정 전후 애니메이션 비교');
   root.innerHTML = `<header><strong>0° · 12장 전후 비교</strong><button data-close>작품으로</button></header>
-    <div class="pair"><figure><figcaption>보정 전</figcaption><canvas width="768" height="1152" data-before></canvas></figure><figure><figcaption>보정 후</figcaption><canvas width="768" height="1152" data-after></canvas></figure></div>
-    <footer><div class="transport"><button data-play disabled>다시 재생</button><label>속도 <select data-speed><option value="1">1×</option><option value="0.5" selected>0.5×</option><option value="0.25">0.25×</option></select></label><output data-frame>1 / 12</output></div><input data-seek type="range" aria-label="비교 프레임" min="1" max="12" value="1" disabled><p data-status role="status">24장 준비 중…</p></footer>`;
+    <div class="pair"><figure><figcaption>보정 전</figcaption><canvas width="768" height="1152" data-before></canvas></figure><figure><figcaption>3D 인체 모델</figcaption><canvas width="768" height="1152" data-model></canvas></figure><figure><figcaption>보정 후</figcaption><canvas width="768" height="1152" data-after></canvas></figure></div>
+    <footer><div class="transport"><button data-play disabled>다시 재생</button><label>속도 <select data-speed><option value="1">1×</option><option value="0.5" selected>0.5×</option><option value="0.25">0.25×</option></select></label><output data-frame>1 / 12</output></div><input data-seek type="range" aria-label="비교 프레임" min="1" max="12" value="1" disabled><p data-status role="status">36장 준비 중…</p></footer>`;
   document.body.append(root);
   const find = <T extends HTMLElement>(selector: string) => root.querySelector<T>(selector)!;
   const playButton = find<HTMLButtonElement>('[data-play]'), slider = find<HTMLInputElement>('[data-seek]');
   const speed = find<HTMLSelectElement>('[data-speed]'), state = find('[data-status]');
-  const canvases = [find<HTMLCanvasElement>('[data-before]'), find<HTMLCanvasElement>('[data-after]')];
+  const canvases = [find<HTMLCanvasElement>('[data-before]'), find<HTMLCanvasElement>('[data-model]'), find<HTMLCanvasElement>('[data-after]')];
   const pictures = new Map<string, ImageBitmap>();
   let active = false, ready = false, playing = false, tick = 0, epoch = 0, transport = 0;
   let abort: AbortController | undefined;
@@ -33,13 +35,14 @@ export function zeroTwelveComparison(onClose: () => void) {
   function draw() {
     if (!ready || !active) return;
     const row = zeroTwelveFrames[tick];
+    const assets = [row.before, row.model, row.after], transforms = [row.beforeTransforms, [], row.afterTransforms];
     canvases.forEach((canvas, i) => {
       const ctx = canvas.getContext('2d')!;
       ctx.setTransform(1.5, 0, 0, 1.5, 0, 0); ctx.clearRect(0, 0, 512, 768); ctx.save();
-      for (const transform of i ? row.afterTransforms : row.beforeTransforms) applyPhotoTransform(ctx, transform);
-      const image = pictures.get(i ? row.after : row.before)!;
+      for (const transform of transforms[i]) applyPhotoTransform(ctx, transform);
+      const image = pictures.get(assets[i])!;
       ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, 512, 768); ctx.restore();
-      canvas.dataset.tick = String(tick); canvas.dataset.index = String(row.index);
+      canvas.dataset.tick = String(tick); canvas.dataset.index = String(row.index); canvas.dataset.phase = String(row.phase);
     });
     slider.value = String(tick + 1); find<HTMLOutputElement>('[data-frame]').value = `${tick + 1} / 12`;
     root.dataset.tick = String(tick);
@@ -75,8 +78,8 @@ export function zeroTwelveComparison(onClose: () => void) {
     pause(); ready = false; epoch++; abort?.abort(); pictures.forEach(image => image.close()); pictures.clear();
     if (!enabled) return;
     const version = epoch, controller = new AbortController(); abort = controller;
-    tick = 0; playButton.disabled = true; slider.disabled = true; state.textContent = '24장 준비 중…';
-    const wanted = [...new Set(zeroTwelveFrames.flatMap(row => [row.before, row.after]))];
+    tick = 0; playButton.disabled = true; slider.disabled = true; state.textContent = '36장 준비 중…';
+    const wanted = [...new Set(zeroTwelveFrames.flatMap(row => [row.before, row.model, row.after]))];
     let next = 0, loaded = 0;
     void Promise.all(Array.from({ length: 4 }, async () => {
       while (next < wanted.length && active && version === epoch) {
