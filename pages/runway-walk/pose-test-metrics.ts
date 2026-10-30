@@ -30,3 +30,19 @@ export function footMotionRms(before: PosePoints, after: PosePoints, targetBefor
   return Math.sqrt(feet.reduce((sum, j) => sum + ((after[j][0] - before[j][0] - targetAfter[j][0] + targetBefore[j][0]) * 512) ** 2 + ((after[j][1] - before[j][1] - targetAfter[j][1] + targetBefore[j][1]) * 768) ** 2, 0) / feet.length);
 }
 export const footConfidence = (points: PosePoints) => Math.min(...feet.map(j => points[j][2] ?? 1));
+
+const midpoint = (points: PosePoints, a: number, b: number) => [0, 1].map(k => (points[a][k] + points[b][k]) / 2);
+/** Eye midpoint is a photo landmark. The rig's Head bone is a neck-level pivot,
+ * so only its displacement, never its absolute position, is compared to eyes. */
+export const faceCenter = (points: PosePoints) => midpoint(points, 2, 5);
+export function torsoLean(points: PosePoints) {
+  const shoulders = midpoint(points, 11, 12), hips = midpoint(points, 23, 24);
+  return Math.atan2((shoulders[0] - hips[0]) * 512, (hips[1] - shoulders[1]) * 768) * 180 / Math.PI;
+}
+export function faceMotionError(before: PosePoints, after: PosePoints, targetBefore: PosePoints, targetAfter: PosePoints) {
+  const a = faceCenter(before), b = faceCenter(after);
+  return Math.hypot((b[0] - a[0] - targetAfter[0][0] + targetBefore[0][0]) * 512,
+    (b[1] - a[1] - targetAfter[0][1] + targetBefore[0][1]) * 768);
+}
+export const torsoLeanError = (points: PosePoints, target: PosePoints) => torsoLean(points) - torsoLean(target);
+export const upperConfidence = (points: PosePoints) => Math.min(...[2, 5, 11, 12, 23, 24].map(j => points[j][2] ?? 1));

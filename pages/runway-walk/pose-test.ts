@@ -1,19 +1,20 @@
 import GUI from 'lil-gui';
 import data from './assets/pose-test/manifest.json';
 import { applyPhotoTransform, transformPhotoPoint, IDENTITY_PHOTO } from './photo-registration';
-import { fitPosePhoto, alignedPose, footRms, footMotionRms, footConfidence, feet, type PosePoints } from './pose-test-metrics';
+import { fitPosePhoto, alignedPose, footRms, footMotionRms, footConfidence, faceCenter, faceMotionError, torsoLeanError, upperConfidence, feet, type PosePoints } from './pose-test-metrics';
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const frames = data.frames;
 const files = import.meta.glob<string>('./assets/{gpt-zero,pose-test}/*.{webp,png}', { eager: true, query: '?url', import: 'default' });
 const url = (group: string, name: string) => files[`./assets/${group}/${name}`];
 const bitmaps = new Map<string, ImageBitmap>();
-const options = { frame: 1, method: '3D 모델 우선', align: true, joints: true, speed: .5, play: () => play() };
+const options = { frame: 1, method: '3D 모델 우선', align: true, joints: true, previous: false, speed: .5, play: () => play() };
 const gui = new GUI({ container: $('controls'), title: '0° 비교 옵션', width: 440 });
 let ready = false, playing = false, transport = 0;
 const frameControl = gui.add(options, 'frame', 1, frames.length, 1).name('프레임').listen().onChange(() => { pause(); draw(); });
 gui.add(options, 'method', ['3D 모델 우선', '사진 우선']).name('새 보정 입력 순서').onChange(() => { metrics(); draw(); });
 gui.add(options, 'align').name('동일 기준 정렬').onChange(() => { metrics(); draw(); });
-gui.add(options, 'joints').name('발 위치 표시').onChange(draw);
+gui.add(options, 'joints').name('관절·얼굴·상체 표시').onChange(draw);
+gui.add(options, 'previous').name('이전 프레임 겹치기').onChange(draw);
 gui.add(options, 'speed', [.25, .5, 1]).name('재생 속도');
 const playControl = gui.add(options, 'play').name('한 번 재생');
 function pause() { playing = false; transport++; playControl.name('한 번 재생'); }
@@ -25,11 +26,21 @@ function points(row: typeof frames[number], baseline: boolean): PosePoints {
 function candidate(row: typeof frames[number]) { return options.method === '3D 모델 우선' ? row.modelFirst : row.photoFirst; }
 function targetMarks(ctx: CanvasRenderingContext2D, target: PosePoints, observed?: PosePoints) {
   if (!options.joints) return;
-  for (const j of feet) {
+  for (const j of [...feet, 11, 12, 23, 24]) {
     const p = target[j], color = j % 2 ? '#0088cc' : '#e36f16';
     ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 1.5;
     ctx.beginPath(); ctx.arc(p[0] * 512, p[1] * 768, 3, 0, Math.PI * 2); ctx.stroke();
     if (observed) { const q = observed[j]; ctx.beginPath(); ctx.moveTo(q[0] * 512 - 4, q[1] * 768); ctx.lineTo(q[0] * 512 + 4, q[1] * 768); ctx.moveTo(q[0] * 512, q[1] * 768 - 4); ctx.lineTo(q[0] * 512, q[1] * 768 + 4); ctx.stroke(); }
+  }
+  const axis = (p: PosePoints, color: string) => {
+    ctx.strokeStyle = color; ctx.lineWidth = 2;
+    const shoulder = [0, 1].map(k => (p[11][k] + p[12][k]) / 2), hip = [0, 1].map(k => (p[23][k] + p[24][k]) / 2);
+    ctx.beginPath(); ctx.moveTo(shoulder[0] * 512, shoulder[1] * 768); ctx.lineTo(hip[0] * 512, hip[1] * 768); ctx.stroke();
+  };
+  axis(target, '#f58025');
+  if (observed) {
+    axis(observed, '#fff');
+    const face = faceCenter(observed); ctx.strokeStyle = '#adff61'; ctx.beginPath(); ctx.arc(face[0] * 512, face[1] * 768, 7, 0, Math.PI * 2); ctx.stroke();
   }
 }
 function paint(id: string, image: ImageBitmap, row: typeof frames[number], baseline?: boolean) {
@@ -42,6 +53,16 @@ function paint(id: string, image: ImageBitmap, row: typeof frames[number], basel
     else if (baseline) { applyPhotoTransform(ctx, row.oldCut); applyPhotoTransform(ctx, row.oldRegistration); }
   } else applyPhotoTransform(ctx, IDENTITY_PHOTO);
   ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, 512, 768); ctx.restore();
+  if (baseline !== undefined && options.previous && options.frame > 1) {
+    const previous = frames[options.frame - 2], priorPoints = points(previous, baseline);
+    ctx.save(); ctx.globalAlpha = .35;
+    const raw = baseline ? previous.baselinePoints : options.method === '3D 모델 우선' ? previous.modelFirstPoints : previous.photoFirstPoints;
+    if (options.align) applyPhotoTransform(ctx, fitPosePhoto(raw, previous.target));
+    else if (baseline) { applyPhotoTransform(ctx, previous.oldCut); applyPhotoTransform(ctx, previous.oldRegistration); }
+    const bitmap = bitmaps.get(baseline ? url('gpt-zero', previous.baseline) : url('pose-test', candidate(previous)))!;
+    ctx.drawImage(bitmap, 0, 0, bitmap.width, bitmap.height, 0, 0, 512, 768); ctx.restore();
+    const face = faceCenter(priorPoints); ctx.strokeStyle = '#cf43ed'; ctx.beginPath(); ctx.arc(face[0] * 512, face[1] * 768, 7, 0, Math.PI * 2); ctx.stroke();
+  }
   targetMarks(ctx, row.target, baseline === undefined ? undefined : points(row, baseline));
   canvas.dataset.tick = String(row.tick); canvas.dataset.index = String(row.index); canvas.dataset.method = baseline === undefined ? 'model' : baseline ? 'baseline' : options.method;
 }
@@ -57,21 +78,28 @@ function draw() {
   $<HTMLImageElement>('guide').src = url('pose-test', row.guide);
   document.querySelectorAll<HTMLTableRowElement>('#rows tr').forEach((tr, i) => tr.classList.toggle('active', i === options.frame - 1));
 }
+const averageValue = (values: number[]) => values.reduce((sum, value) => sum + value, 0) / values.length;
 function metrics() {
   const sourcePoints = frames.map(row => options.method === '3D 모델 우선' ? row.modelFirstPoints : row.photoFirstPoints);
   const before = frames.map(row => points(row, true)), after = frames.map(row => points(row, false));
   const oldError = frames.map((row, i) => footRms(before[i], row.target)), newError = frames.map((row, i) => footRms(after[i], row.target));
   const oldMotion = frames.slice(1).map((row, i) => footMotionRms(before[i], before[i + 1], frames[i].target, row.target));
   const newMotion = frames.slice(1).map((row, i) => footMotionRms(after[i], after[i + 1], frames[i].target, row.target));
+  const headBefore = frames.slice(1).map((row, i) => faceMotionError(before[i], before[i + 1], frames[i].target, row.target));
+  const headAfter = frames.slice(1).map((row, i) => faceMotionError(after[i], after[i + 1], frames[i].target, row.target));
+  const leanBefore = frames.map((row, i) => torsoLeanError(before[i], row.target)), leanAfter = frames.map((row, i) => torsoLeanError(after[i], row.target));
+  const worstHead = headAfter.indexOf(Math.max(...headAfter)) + 1;
+  $('upper-summary').textContent = `얼굴 이동 차이: 기존 평균 ${averageValue(headBefore).toFixed(1)} / 최대 ${Math.max(...headBefore).toFixed(1)} → 새 평균 ${averageValue(headAfter).toFixed(1)} / 최대 ${Math.max(...headAfter).toFixed(1)} px. 새 보정의 최대 구간은 ${worstHead}→${worstHead + 1}번입니다. 상체 기울기 차이: 기존 최대 ${Math.max(...leanBefore.map(Math.abs)).toFixed(1)}° → 새 최대 ${Math.max(...leanAfter.map(Math.abs)).toFixed(1)}°. 아래 표에서 모든 전환을 확인할 수 있습니다.`;
+  $('upper-summary').dataset.faceMax = String(Math.max(...headAfter)); $('upper-summary').dataset.leanMax = String(Math.max(...leanAfter.map(Math.abs)));
   const common = frames.map((_, i) => i).filter(i => [frames[i].baselinePoints, frames[i].photoFirstPoints, frames[i].modelFirstPoints].every(p => footConfidence(p) >= .5));
-  const average = (values: number[]) => values.reduce((sum, value) => sum + value, 0) / values.length;
+  const average = averageValue;
   $('summary').textContent = `발 위치 차이(12장): 기존 ${average(oldError).toFixed(1)} → 새 ${average(newError).toFixed(1)} px · 프레임 사이 움직임 차이(11구간): ${average(oldMotion).toFixed(1)} → ${average(newMotion).toFixed(1)} px/frame. 공통 신뢰 ${common.length}/12장: ${average(common.map(i => oldError[i])).toFixed(1)} → ${average(common.map(i => newError[i])).toFixed(1)} px. 낮은 신뢰 표시는 직접 확인이 필요합니다.`;
   $('summary').dataset.oldFoot = String(average(oldError)); $('summary').dataset.newFoot = String(average(newError)); $('summary').dataset.oldMotion = String(average(oldMotion)); $('summary').dataset.newMotion = String(average(newMotion));
   const body = $('rows'); body.replaceChildren();
   frames.forEach((row, i) => {
     const tr = document.createElement('tr'), choose = document.createElement('button'); choose.textContent = String(i + 1); choose.onclick = () => { pause(); options.frame = i + 1; draw(); };
     const cell = document.createElement('td'); cell.append(choose); tr.append(cell);
-    for (const text of [`${row.source}:${row.sourceFrame}`, oldError[i].toFixed(1), newError[i].toFixed(1), Math.min(footConfidence(row.baselinePoints), footConfidence(sourcePoints[i])) < .5 ? '낮음 · 확인' : '추정 가능']) { const td = document.createElement('td'); td.textContent = text; tr.append(td); }
+    for (const text of [`${row.source}:${row.sourceFrame}`, oldError[i].toFixed(1), newError[i].toFixed(1), i ? `${headBefore[i - 1].toFixed(1)} → ${headAfter[i - 1].toFixed(1)}` : '—', `${leanBefore[i].toFixed(1)} → ${leanAfter[i].toFixed(1)}°`, upperConfidence(sourcePoints[i]) < .5 ? '상체 낮음 · 확인' : Math.min(footConfidence(row.baselinePoints), footConfidence(sourcePoints[i])) < .5 ? '낮음 · 확인' : '추정 가능']) { const td = document.createElement('td'); td.textContent = text; tr.append(td); }
     body.append(tr);
   });
 }
