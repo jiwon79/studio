@@ -1,4 +1,5 @@
 import GUI from 'lil-gui';
+import { zeroPoseAsset } from './gpt-zero-pose-patch';
 import manifest from './assets/gpt-zero/manifest.json';
 import { AtlasPool } from './atlas-pool';
 import type { PhotoTransform } from './photo-registration';
@@ -6,12 +7,12 @@ import type { PhotoTransform } from './photo-registration';
 type RestoredFrame = { index: number; original: string; edited: string; registration?: PhotoTransform };
 const frames: RestoredFrame[] = manifest.frames;
 const byIndex = new Map(frames.map(row => [row.index, row]));
-const files = import.meta.glob<string>('./assets/gpt-zero/*.{png,webp}', { eager: true, query: '?url', import: 'default' });
-const url = (name: string) => files[`./assets/gpt-zero/${name}`];
+const files = import.meta.glob<string>('./assets/{gpt-zero,pose-test}/*.{png,webp}', { eager: true, query: '?url', import: 'default' });
+const asset = (index: number, revised: boolean) => zeroPoseAsset(byIndex.get(index)!, revised);
 async function photograph(name: string) {
   for (let attempt = 0; ; attempt++) {
     try {
-      const response = await fetch(url(name));
+      const response = await fetch(files[name]);
       if (!response.ok) throw new Error(`Restoration photograph unavailable: ${name}`);
       return await response.blob();
     } catch (error) {
@@ -24,7 +25,7 @@ async function photograph(name: string) {
 /** Full 0° quality experiment. Download first, decode only the current/lookahead
  * window. Generated pixels never inherit the original pose-verification flag. */
 export function gptZeroTest(onChange: () => void, faceFront: () => void, onDownloaded: () => void) {
-  const options = { enabled: true, still: false, frame: 1, state: `0° 선택 시 ${frames.length}장 준비` };
+  const options = { enabled: true, revised: true, still: false, frame: 1, state: `0° 선택 시 ${frames.length}장 준비` };
   const blobs = new Map<number, Blob>();
   const edits = new AtlasPool(async index => {
     const blob = blobs.get(index);
@@ -32,27 +33,42 @@ export function gptZeroTest(onChange: () => void, faceFront: () => void, onDownl
     return createImageBitmap(blob);
   }, 24);
   const originals = new AtlasPool(async index => {
-    return createImageBitmap(await photograph(byIndex.get(index)!.original));
+    return createImageBitmap(await photograph(`./assets/gpt-zero/${byIndex.get(index)!.original}`));
   }, 3);
-  let download: Promise<void> | undefined;
+  const downloads = new Map<boolean, Promise<void>>(), pending = new Map<number, Promise<void>>();
   let selection = 0;
-  let activeEnabled = options.enabled;
+  let activeEnabled = options.enabled, activeRevised = options.revised;
   let retained: number[] = [];
   const gui = new GUI({ title: '0° GPT 이미지 테스트', width: 270 });
   async function load() {
-    if (!download) download = (async () => {
-      let cursor = 0, completed = 0;
-      await Promise.all(Array.from({ length: 4 }, async () => {
-        while (cursor < frames.length) {
-          const row = frames[cursor++];
-          blobs.set(row.index, await photograph(row.edited));
-          onDownloaded();
-          options.state = `준비 ${++completed}/${frames.length}장`;
-        }
-      }));
-      options.state = `0° 전체 ${frames.length}/${frames.length}장`;
-    })();
-    return download;
+    const revised = options.revised;
+    let download = downloads.get(revised);
+    if (!download) {
+      download = (async () => {
+        let cursor = 0, completed = 0;
+        await Promise.all(Array.from({ length: 4 }, async () => {
+          while (cursor < frames.length) {
+            const row = asset(frames[cursor++].index, revised);
+            if (!blobs.has(row.key)) {
+              let job = pending.get(row.key);
+              if (!job) {
+                job = photograph(row.file).then(blob => { blobs.set(row.key, blob); onDownloaded(); })
+                  .finally(() => pending.delete(row.key));
+                pending.set(row.key, job);
+              }
+              await job;
+            }
+            options.state = `준비 ${++completed}/${frames.length}장`;
+          }
+        }));
+      })().catch(error => { downloads.delete(revised); throw error; });
+      downloads.set(revised, download);
+    }
+    await download;
+    if (options.revised === revised) options.state = `0° ${frames.length}장 · 새 자세 ${revised ? '12장' : 'OFF'}`;
+  }
+  function protect(indices: number[]) {
+    edits.retain(indices.flatMap(index => [asset(index, activeRevised).key, asset(index, options.revised).key]));
   }
   const selected = () => frames[options.frame - 1].index;
   async function change() {
@@ -63,42 +79,44 @@ export function gptZeroTest(onChange: () => void, faceFront: () => void, onDownl
         await load();
         const index = selected();
         originals.retain([index]);
-        edits.retain([...retained, index]);
-        await Promise.all([originals.load(index), edits.load(index)]);
+        protect([...retained, index]);
+        await Promise.all([originals.load(index), edits.load(asset(index, options.revised).key)]);
       }
       if (version === selection) onChange();
     } catch { options.state = '비교 사진 로딩 실패'; }
   }
   gui.add(options, 'enabled').name('GPT 보정').onChange(() => { void change(); });
+  gui.add(options, 'revised').name('새 자세 보정 · 12장').onChange(() => { void change(); });
   gui.add(options, 'still').name('프레임 정지 비교').listen().onChange(() => { void change(); });
   gui.add(options, 'frame', 1, frames.length, 1).name('프레임').onChange(() => { options.still = true; void change(); });
   gui.add(options, 'state').name('적용 범위').listen().disable();
   gui.add({ poseTest: () => { location.href = new URL('./pose-test.html', location.href).href; } }, 'poseTest').name('3D 자세 비교 · 12프레임');
-  for (const controller of gui.controllers.slice(0, 3)) controller.disable();
+  for (const controller of gui.controllers.slice(0, 4)) controller.disable();
   return {
-    ready() { for (const controller of gui.controllers.slice(0, 3)) controller.enable(); },
+    ready() { for (const controller of gui.controllers.slice(0, 4)) controller.enable(); },
     count: frames.length,
-    get downloaded() { return blobs.size; },
-    activate() { activeEnabled = options.enabled; },
+    get downloaded() { return frames.filter(row => blobs.has(asset(row.index, options.revised).key)).length; },
+    activate() { activeEnabled = options.enabled; activeRevised = options.revised; },
     covers(yaw: number, indices: number[], requested = false) { return yaw === 0 && (requested ? options.enabled : activeEnabled) && indices.every(i => byIndex.has(i)); },
     isStill(yaw: number) { return yaw === 0 && options.still; },
     load,
     async prepare(yaw: number, indices: number[], requested = false) {
       if (yaw !== 0 || !(requested ? options.enabled : activeEnabled)) return;
       await load();
-      await Promise.all([...new Set(indices)].filter(i => byIndex.has(i)).map(i => edits.load(i)));
+      await Promise.all([...new Set(indices)].filter(i => byIndex.has(i)).map(i => edits.load(asset(i, requested ? options.revised : activeRevised).key)));
     },
     retain(indices: number[]) {
       retained = indices.filter(i => byIndex.has(i));
-      edits.retain([...retained, ...(options.still ? [selected()] : [])]);
+      protect([...retained, ...(options.still ? [selected()] : [])]);
     },
-    available(yaw: number, indices: number[]) { return yaw !== 0 || !options.enabled || indices.filter(i => byIndex.has(i)).every(i => !!edits.get(i)); },
+    available(yaw: number, indices: number[]) { return yaw !== 0 || !options.enabled || indices.filter(i => byIndex.has(i)).every(i => !!edits.get(asset(i, options.revised).key)); },
     still(yaw: number) {
       if (yaw !== 0 || !options.still) return;
-      const index = selected(), image = (options.enabled ? edits : originals).get(index);
+      const index = selected(), image = options.enabled ? edits.get(asset(index, options.revised).key) : originals.get(index);
       return image ? { index, image, edited: options.enabled } : undefined;
     },
-    replacement(yaw: number, index: number) { return yaw === 0 && activeEnabled ? edits.get(index) : undefined; },
-    registration(index: number) { return byIndex.get(index)?.registration; },
+    replacement(yaw: number, index: number) { return yaw === 0 && activeEnabled ? edits.get(asset(index, activeRevised).key) : undefined; },
+    registration(index: number, requested = false) { return asset(index, requested ? options.revised : activeRevised).registration; },
+    posePatched(yaw: number, index: number, requested = false) { return yaw === 0 && (requested ? options.enabled : activeEnabled) && asset(index, requested ? options.revised : activeRevised).patched; },
   };
 }

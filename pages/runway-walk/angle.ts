@@ -143,6 +143,7 @@ function paintRegion(image: ImageBitmap, x: number, y: number, width: number, he
   canvas.dataset.quality = quality;
   canvas.dataset.motionVerified = String(!restored && hd && !!block.qualityVerified);
   canvas.dataset.gptRestored = String(!!restored);
+  canvas.dataset.posePatched = String(!!restored && gptTest.posePatched(yaw, frameIndices.get(row)!));
   canvas.dataset.decodedPages = String(images.size);
   canvas.dataset.compressedPages = String(downloads.size);
   canvas.dataset.previewPages = '0';
@@ -155,12 +156,13 @@ function draw() {
   if (still) {
     beginFrame(still.edited);
     context.save();
-    if (still.edited) applyPhotoTransform(context, gptTest.registration(still.index) ?? IDENTITY_PHOTO);
+    if (still.edited) applyPhotoTransform(context, gptTest.registration(still.index, true) ?? IDENTITY_PHOTO);
     context.drawImage(still.image, 0, 0, still.image.width, still.image.height, 0, 0, data.tileWidth, data.tileHeight);
     context.restore();
     direction.value = label(0);
     canvas.dataset.quality = 'quality-test-still';
     canvas.dataset.gptRestored = String(still.edited);
+    canvas.dataset.posePatched = String(still.edited && gptTest.posePatched(0, still.index, true));
     canvas.dataset.motionVerified = 'false';
     canvas.dataset.sourceFrame = String(frames[still.index].sourceFrame);
     canvas.dataset.frameIndex = String(still.index);
