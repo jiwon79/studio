@@ -202,7 +202,8 @@ def main():
         for group in metadata['groups']:
             unique_groups.setdefault(tuple(group['indices']), group)
         metadata['groups'] = list(unique_groups.values())
-        metadata.update(frames=list(frames.values()), generated=len(frames), status='partial; not applied to main artwork')
+        metadata.update(frames=list(frames.values()), generated=len(frames),
+                        status='partial library; artwork applies only covered directions with explicit original exceptions')
         (folder / 'manifest.json').write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + '\n')
         (folder / 'prompts.json').write_text(json.dumps(list(prompts.values()), ensure_ascii=False, indent=2) + '\n')
     (CACHE / 'inventory.json').write_text(json.dumps(plan, ensure_ascii=False, indent=2) + '\n')
