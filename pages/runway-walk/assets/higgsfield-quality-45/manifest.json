@@ -1,0 +1,124 @@
+{
+  "assetVersion": "cf6c5178ec36",
+  "tool": "Higgsfield API",
+  "model": "gpt_image_2_5",
+  "purpose": "quality-only, original photograph only; no pose or angle correction",
+  "status": "3-frame trial; not applied to main artwork",
+  "additionalTarget": 3,
+  "generated": 3,
+  "groups": [
+    {
+      "id": "45",
+      "label": "+45° · Higgsfield · 사진 3821–3823",
+      "indices": [
+        3821,
+        3822,
+        3823
+      ]
+    }
+  ],
+  "frames": [
+    {
+      "index": 3821,
+      "group": 45,
+      "source": "hermesfw23",
+      "sourceFrame": 12518,
+      "original": "3821-original.webp",
+      "edited": "3821.webp",
+      "originalInputSha256": "c839437c50b558f10222f50525b3e199fef44395d849fc455b6b837a984142b9",
+      "generatedPngSha256": "c2a7c499bdaa6a83c7a12b3ef424b9e57c04b09662d6e359598967a4612d8390",
+      "editedSha256": "2a1d2f36b5b68922011a2eb90e2a44b660f252bf619c7c46c29a5458704ee8d3",
+      "qualityRegistration": {
+        "scale": 0.984180160059557,
+        "dx": 6.24137134474114,
+        "dy": 4.270798436627615
+      },
+      "jobId": "dc95de0c-8446-4224-b74d-93058fbd4d65",
+      "resultUrl": "https://d8j0ntlcm91z4.cloudfront.net/user_39umtQlc13WxAkYa623DbUhu4cM/hf_20261031_042222_dc95de0c-8446-4224-b74d-93058fbd4d65.png",
+      "dimensions": [
+        1360,
+        2048
+      ],
+      "parameters": {
+        "aspect_ratio": "2:3",
+        "background": "transparent",
+        "height": 2048,
+        "model": "flare",
+        "prompt": "Restore the supplied runway photograph only: increase photographic clarity and resolution, remove compression noise, and clean the transparent cutout edges. This is one frame from a precisely timed walking animation, not a new pose or a new camera angle. Preserve exactly the photographed silhouette, body lean, head location, face orientation, shoulder and hip angles, each hand and finger location, each knee, ankle, heel and toe location, leg overlap and depth order, and the entire framing. Do not reinterpret which leg is in front. Do not extend or shorten legs or move shoes. Keep the identical black outfit with its light trim, hairstyle, accessories and lighting. Sharpen fabric texture and natural face details conservatively without changing proportions. Preserve all empty margins and keep the person at the same normalized image coordinates. Transparent background with accurate alpha; no scenery, floor, cast shadow, halo, border, text or checkerboard. Output one image only, same portrait 2:3 composition.",
+        "quality": "high",
+        "reference_elements": [],
+        "remove_bg": false,
+        "resolution": "2k",
+        "width": 1360
+      }
+    },
+    {
+      "index": 3822,
+      "group": 45,
+      "source": "hermesfw23",
+      "sourceFrame": 12519,
+      "original": "3822-original.webp",
+      "edited": "3822.webp",
+      "originalInputSha256": "586e38a659faf0c9042f8683080451f8a8ce5daea8dd95d447601bf53a0d2247",
+      "generatedPngSha256": "727b6b255b2bdd2cd7ac779245b76e0cc369f93f40ede7e2b6533fb5e469ee35",
+      "editedSha256": "f8c41ad4e1b1e3d65d2f18c7c62b7e0811ea066f22fc64ad2ce68673d51fca97",
+      "qualityRegistration": {
+        "scale": 0.9923177815252014,
+        "dx": 3.9802003769467547,
+        "dy": 0.8330522765598971
+      },
+      "jobId": "fff36533-ffc0-4b4c-926c-e4a6f690286c",
+      "resultUrl": "https://d8j0ntlcm91z4.cloudfront.net/user_39umtQlc13WxAkYa623DbUhu4cM/hf_20261031_042304_fff36533-ffc0-4b4c-926c-e4a6f690286c.png",
+      "dimensions": [
+        1360,
+        2048
+      ],
+      "parameters": {
+        "aspect_ratio": "2:3",
+        "background": "transparent",
+        "height": 2048,
+        "model": "flare",
+        "prompt": "Restore the supplied runway photograph only: increase photographic clarity and resolution, remove compression noise, and clean the transparent cutout edges. This is one frame from a precisely timed walking animation, not a new pose or a new camera angle. Preserve exactly the photographed silhouette, body lean, head location, face orientation, shoulder and hip angles, each hand and finger location, each knee, ankle, heel and toe location, leg overlap and depth order, and the entire framing. Do not reinterpret which leg is in front. Do not extend or shorten legs or move shoes. Keep the identical black outfit with its light trim, hairstyle, accessories and lighting. Sharpen fabric texture and natural face details conservatively without changing proportions. Preserve all empty margins and keep the person at the same normalized image coordinates. Transparent background with accurate alpha; no scenery, floor, cast shadow, halo, border, text or checkerboard. Output one image only, same portrait 2:3 composition.",
+        "quality": "high",
+        "reference_elements": [],
+        "remove_bg": false,
+        "resolution": "2k",
+        "width": 1360
+      }
+    },
+    {
+      "index": 3823,
+      "group": 45,
+      "source": "hermesfw23",
+      "sourceFrame": 12520,
+      "original": "3823-original.webp",
+      "edited": "3823.webp",
+      "originalInputSha256": "0423260e54577c3b5e38c722f9c2097aeb96e5d7632fbd3c52408bb89f4d071e",
+      "generatedPngSha256": "84bdcbcf160ac0113af62b756f87a753eed5d37d107b11a219d38e98357c2120",
+      "editedSha256": "18a2eb9a88b795ee4a3100282f5c2ef80d03c66484e76c7348050c3df1d87652",
+      "qualityRegistration": {
+        "scale": 0.9878753963812722,
+        "dx": 2.141026147448372,
+        "dy": 1.2092893116955565
+      },
+      "jobId": "819bcfb7-67c9-4be5-b3ce-1ecaa5b59c01",
+      "resultUrl": "https://d8j0ntlcm91z4.cloudfront.net/user_39umtQlc13WxAkYa623DbUhu4cM/hf_20261031_042311_819bcfb7-67c9-4be5-b3ce-1ecaa5b59c01.png",
+      "dimensions": [
+        1360,
+        2048
+      ],
+      "parameters": {
+        "aspect_ratio": "2:3",
+        "background": "transparent",
+        "height": 2048,
+        "model": "flare",
+        "prompt": "Restore the supplied runway photograph only: increase photographic clarity and resolution, remove compression noise, and clean the transparent cutout edges. This is one frame from a precisely timed walking animation, not a new pose or a new camera angle. Preserve exactly the photographed silhouette, body lean, head location, face orientation, shoulder and hip angles, each hand and finger location, each knee, ankle, heel and toe location, leg overlap and depth order, and the entire framing. Do not reinterpret which leg is in front. Do not extend or shorten legs or move shoes. Keep the identical black outfit with its light trim, hairstyle, accessories and lighting. Sharpen fabric texture and natural face details conservatively without changing proportions. Preserve all empty margins and keep the person at the same normalized image coordinates. Transparent background with accurate alpha; no scenery, floor, cast shadow, halo, border, text or checkerboard. Output one image only, same portrait 2:3 composition.",
+        "quality": "high",
+        "reference_elements": [],
+        "remove_bg": false,
+        "resolution": "2k",
+        "width": 1360
+      }
+    }
+  ]
+}

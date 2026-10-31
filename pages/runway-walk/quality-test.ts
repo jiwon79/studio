@@ -1,5 +1,9 @@
-import manifest from './assets/gpt-quality/manifest.json';
-const files = import.meta.glob<string>('./assets/gpt-quality/*.webp', { eager: true, query: '?url', import: 'default' });
+import gptManifest from './assets/gpt-quality/manifest.json';
+import higgsfieldManifest from './assets/higgsfield-quality-45/manifest.json';
+const isHiggsfield = new URLSearchParams(location.search).get('provider') === 'higgsfield';
+const manifest = isHiggsfield ? higgsfieldManifest : gptManifest;
+const folder = isHiggsfield ? 'higgsfield-quality-45' : 'gpt-quality';
+const files = import.meta.glob<string>(['./assets/gpt-quality/*.webp', './assets/higgsfield-quality-45/*.webp'], { eager: true, query: '?url', import: 'default' });
 const el = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const group = el<HTMLSelectElement>('group'), speed = el<HTMLSelectElement>('speed'), seek = el<HTMLInputElement>('seek');
 const button = el<HTMLButtonElement>('play'), state = el('state');
@@ -11,7 +15,8 @@ const groups: ReviewGroup[] = (manifest as { groups?: ReviewGroup[] }).groups ??
 for (const row of groups) group.add(new Option(row.label, row.id));
 const linked = new URLSearchParams(location.search).get('group');
 if (groups.some(row => row.id === linked)) group.value = linked!;
-el('scope').textContent = `전체 추가 대상 ${manifest.additionalTarget.toLocaleString()}장 중 ${manifest.generated.toLocaleString()}장을 생성한 중간 결과입니다. 자세·각도 변경 가이드는 사용하지 않았습니다. 아직 기본 작품에 적용하지 않았습니다.`;
+el('scope').textContent = isHiggsfield ? 'Higgsfield API · GPT Image 2.5 · +45° 연속 3장 테스트입니다. 원본 사진만 입력해 화질과 누끼를 보정했습니다. 기본 작품에는 아직 적용하지 않았습니다.' : `전체 추가 대상 ${manifest.additionalTarget.toLocaleString()}장 중 ${manifest.generated.toLocaleString()}장을 생성한 중간 결과입니다. 자세·각도 변경 가이드는 사용하지 않았습니다. 아직 기본 작품에 적용하지 않았습니다.`;
+el('edited-label').textContent = isHiggsfield ? 'Higgsfield · GPT Image 2.5' : 'GPT 화질 보정';
 let tick = 0, epoch = 0, loading = 0, ready = false, playing = false;
 const rows = () => groups.find(row => row.id === group.value)!.indices.map(index => manifest.frames.find(row => row.index === index)!);
 function stop() { playing = false; epoch++; button.textContent = '다시 재생'; }
@@ -60,7 +65,7 @@ async function loadGroup() {
   const url = new URL(location.href); url.searchParams.set('group', group.value); history.replaceState(null, '', url);
   try {
     const loaded = await Promise.all(wanted.map(async file => {
-      const image = new Image(); image.src = files[`./assets/gpt-quality/${file}`];
+      const image = new Image(); image.src = files[`./assets/${folder}/${file}`];
       await image.decode(); return [file, image] as const;
     }));
     if (loading !== version) return;
