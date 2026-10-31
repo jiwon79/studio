@@ -47,7 +47,9 @@
       "angles": [
         0,
         -5
-      ]
+      ],
+      "playback": "1088-playback-playback-768.webp",
+      "playbackSha256": "44f142c45d61644fa4520b369968d601ef91bfe384d235fc91f5a1e07857e9e0"
     },
     {
       "index": 1090,
@@ -89,7 +91,9 @@
       "angles": [
         0,
         -5
-      ]
+      ],
+      "playback": "1090-playback-playback-768.webp",
+      "playbackSha256": "bcaab1cda59531b4f925886e95ca21de37f2864696557f1e678be8fbd2f5ac11"
     },
     {
       "index": 1091,
@@ -131,7 +135,9 @@
       "angles": [
         0,
         -5
-      ]
+      ],
+      "playback": "1091-playback-playback-768.webp",
+      "playbackSha256": "4142e297b8477b34d1db849ddadb37b23ca795270abe06b325d45373d4199c3d"
     },
     {
       "index": 246,
@@ -173,7 +179,9 @@
       "angles": [
         0,
         -5
-      ]
+      ],
+      "playback": "246-playback-playback-768.webp",
+      "playbackSha256": "5e0685f2f812966e09eefa71aaac2ccd7a91c31e7311dc36230bde7023e75919"
     },
     {
       "index": 247,
@@ -216,7 +224,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "247-playback-playback-768.webp",
+      "playbackSha256": "a7f510e93a91e6285ca704e73882b3a64bbf6f07a0831d707991eefdc383aa92"
     },
     {
       "index": 249,
@@ -258,7 +268,9 @@
       "angles": [
         0,
         -5
-      ]
+      ],
+      "playback": "249-playback-playback-768.webp",
+      "playbackSha256": "38f763f0b5abda27e81f9db40dce10b85e7ce417a6129c7ed129b47318a28ec3"
     },
     {
       "index": 305,
@@ -300,7 +312,9 @@
       "angles": [
         0,
         -5
-      ]
+      ],
+      "playback": "305-playback-playback-768.webp",
+      "playbackSha256": "137c9bdbe983f5ef0fcd9f757c70a1d9b30af17f4c1a4d1bd739739963642860"
     },
     {
       "index": 306,
@@ -342,7 +356,9 @@
       "angles": [
         0,
         -5
-      ]
+      ],
+      "playback": "306-playback-playback-768.webp",
+      "playbackSha256": "e612b36f8f4cf61c06d2553b6530059e9b7a85cd9b7e213a712787a88e85ecbb"
     },
     {
       "index": 308,
@@ -385,7 +401,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "308-playback-playback-768.webp",
+      "playbackSha256": "7c93f3bb8b36297983e81a41318fdc34f9cb513d93f89efe02e264cb4e91a0a4"
     },
     {
       "index": 252,
@@ -428,7 +446,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "252-playback-playback-768.webp",
+      "playbackSha256": "637bbbe507a243e78e6fec2bc49ad5caddd8eb2d2d8ed8d8c93c850f57bb76c1"
     },
     {
       "index": 253,
@@ -471,7 +491,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "253-playback-playback-768.webp",
+      "playbackSha256": "d4558dd098f602fa2f35b39a67a9830d3b32217c59bfa302900f22b64665d2ea"
     },
     {
       "index": 254,
@@ -514,7 +536,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "254-playback-playback-768.webp",
+      "playbackSha256": "3097ef78128dfd0c8bf37ad21ee09f5c57761054c57b4388575d00a5faef1775"
     },
     {
       "index": 2316,
@@ -556,7 +580,9 @@
       "angles": [
         0,
         5
-      ]
+      ],
+      "playback": "2316-playback-playback-768.webp",
+      "playbackSha256": "fd9aa7b39889f6ead56bf1f9b2f77339039bd771cae611459a50dfc034973d7a"
     },
     {
       "index": 2317,
@@ -598,7 +624,9 @@
       "angles": [
         0,
         5
-      ]
+      ],
+      "playback": "2317-playback-playback-768.webp",
+      "playbackSha256": "4fa34208c76a18537200aa1b7a099539c5320a5594c0fcac1292dc5ac4a0dee2"
     },
     {
       "index": 2318,
@@ -640,7 +668,9 @@
       "angles": [
         0,
         5
-      ]
+      ],
+      "playback": "2318-playback-playback-768.webp",
+      "playbackSha256": "8e3e51efeb83fc5bc0f7297265e2ff2ac60666df38c4c2cf7ed4868e8b11b35a"
     },
     {
       "index": 257,
@@ -682,7 +712,9 @@
       "angles": [
         0,
         -5
-      ]
+      ],
+      "playback": "257-playback-playback-768.webp",
+      "playbackSha256": "325e9b9c4b596d08ea42bd86f9ca7b6ffbf75154f4632c825709a5856442f2db"
     },
     {
       "index": 258,
@@ -724,7 +756,9 @@
       "angles": [
         0,
         -5
-      ]
+      ],
+      "playback": "258-playback-playback-768.webp",
+      "playbackSha256": "fca5f5972efa00506ad680aeb0c562a091abc561dcbd8e576aa3259531d08ae9"
     },
     {
       "index": 259,
@@ -766,7 +800,9 @@
       "angles": [
         0,
         -5
-      ]
+      ],
+      "playback": "259-playback-playback-768.webp",
+      "playbackSha256": "c4e559ab47cb3115a0febc45a7dd43b6cfd612097710cae1184b03d4d16e6ce3"
     },
     {
       "index": 283,
@@ -809,7 +845,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "283-playback-playback-768.webp",
+      "playbackSha256": "1a393a2c8ba32cca1da437038b5a9563ff6e8e20eb65a30c0254bc50f36c5c9a"
     },
     {
       "index": 284,
@@ -852,7 +890,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "284-playback-playback-768.webp",
+      "playbackSha256": "c3a25e8f64334a46f93852a69acf3352053ec86a289e2dfbfd4b4e803308bb7e"
     },
     {
       "index": 285,
@@ -895,7 +935,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "285-playback-playback-768.webp",
+      "playbackSha256": "605a9a2d919401790f7d9fff951a9b649ba693ec78228d4492ad9847ed50922b"
     },
     {
       "index": 262,
@@ -938,7 +980,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "262-playback-playback-768.webp",
+      "playbackSha256": "ade32959de2b5c92db75f1ab624d4ea50aaecb10227873281cdbba466b93a6d8"
     },
     {
       "index": 263,
@@ -980,7 +1024,9 @@
       "angles": [
         0,
         5
-      ]
+      ],
+      "playback": "263-playback-playback-768.webp",
+      "playbackSha256": "440f906dcaabbfca3c4ac987984d53629829079bd2cdf85f83baad4bdefde743"
     },
     {
       "index": 264,
@@ -1022,7 +1068,9 @@
       "angles": [
         0,
         5
-      ]
+      ],
+      "playback": "264-playback-playback-768.webp",
+      "playbackSha256": "a2528920548428bcd1e3c7fc37cf35e93984cba1c2ec787f8a6009b7043ccd2e"
     },
     {
       "index": 321,
@@ -1064,7 +1112,9 @@
       "angles": [
         0,
         -5
-      ]
+      ],
+      "playback": "321-playback-playback-768.webp",
+      "playbackSha256": "5e047af572f0da3f28dac61029449fc00dc6ca98c29787b45483e90887c82d8f"
     },
     {
       "index": 322,
@@ -1106,7 +1156,9 @@
       "angles": [
         0,
         -5
-      ]
+      ],
+      "playback": "322-playback-playback-768.webp",
+      "playbackSha256": "4ba4643dae94d5de997b04f3c44664703f44397021f9d6efad1be957ccc0fd9a"
     },
     {
       "index": 323,
@@ -1149,7 +1201,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "323-playback-playback-768.webp",
+      "playbackSha256": "4c62c90965b90026a48db1bb6999538b1accf085837c5ec8b4cd80a61456383e"
     },
     {
       "index": 265,
@@ -1192,7 +1246,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "265-playback-playback-768.webp",
+      "playbackSha256": "03dc345493eb874d2027ca453454f20be2e1d7c07ad7117e10f4f8ea946ef543"
     },
     {
       "index": 266,
@@ -1235,7 +1291,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "266-playback-playback-768.webp",
+      "playbackSha256": "2913840d74e1a971293d217f5e617fef1e493023c8fd3d9054abf52cf23f2fa5"
     },
     {
       "index": 267,
@@ -1278,7 +1336,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "267-playback-playback-768.webp",
+      "playbackSha256": "e0f1c504460a1cddb9f7c8ce380e09c8f21187c77c9ce932fe181035f318ea1b"
     },
     {
       "index": 298,
@@ -1321,7 +1381,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "298-playback-playback-768.webp",
+      "playbackSha256": "0398e8a6f80657bca0465231af2f34d4df54ac9dba55483c70e8490c640e7bf4"
     },
     {
       "index": 299,
@@ -1364,7 +1426,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "299-playback-playback-768.webp",
+      "playbackSha256": "7b65a18a9f76fcbf8000088241f29d3fb9ca6135047b9f460eadb77b9263ddeb"
     },
     {
       "index": 300,
@@ -1407,7 +1471,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "300-playback-playback-768.webp",
+      "playbackSha256": "72dd638a7d091af86bbbbb7eaf9c8ff9f69775a23eacb9283ca257954799807c"
     },
     {
       "index": 270,
@@ -1449,7 +1515,9 @@
       "angles": [
         0,
         -5
-      ]
+      ],
+      "playback": "270-playback-playback-768.webp",
+      "playbackSha256": "3e1f764506f9d70157d50da1fe1b879ce02dfed18f3cc2313fa1dc49497841af"
     },
     {
       "index": 271,
@@ -1492,7 +1560,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "271-playback-playback-768.webp",
+      "playbackSha256": "0b7cf32599b324a7f733c831c3d676890c1d190a9bc0c613a2467e6006f3dfc4"
     },
     {
       "index": 273,
@@ -1535,7 +1605,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "273-playback-playback-768.webp",
+      "playbackSha256": "65838ccc150a6d9ab5f9b01fea9bb8cc4e11ae6ba507ae992e2bd3d60ed9404d"
     },
     {
       "index": 248,
@@ -1578,7 +1650,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "248-playback-playback-768.webp",
+      "playbackSha256": "e1e3a23bf910f84c55a7989fd9ea9e19bf67ae10d0a0c73e34a18cf829e25a38"
     },
     {
       "index": 250,
@@ -1621,7 +1695,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "250-playback-playback-768.webp",
+      "playbackSha256": "b96cc332f1f6744ed0ee9d663715c5908dddc387b4287b6584d3d9147376556f"
     },
     {
       "index": 251,
@@ -1662,7 +1738,9 @@
       },
       "angles": [
         0
-      ]
+      ],
+      "playback": "251-playback-playback-768.webp",
+      "playbackSha256": "5959643bfadd2c822e04f765ba96b4afcd05d5776ff3431436c95b5e657a3917"
     },
     {
       "index": 274,
@@ -1704,7 +1782,9 @@
       "angles": [
         0,
         -5
-      ]
+      ],
+      "playback": "274-playback-playback-768.webp",
+      "playbackSha256": "efbee7bcc480e0a1f299dc3989a21af24fa50928e8e1d5e716a8bdbda337749d"
     },
     {
       "index": 276,
@@ -1746,7 +1826,9 @@
       "angles": [
         0,
         -5
-      ]
+      ],
+      "playback": "276-playback-playback-768.webp",
+      "playbackSha256": "25aed27c8118df8505ab5245be20cebc734c8f5094144569fc6230aca9cb959f"
     },
     {
       "index": 277,
@@ -1788,7 +1870,9 @@
       "angles": [
         0,
         -5
-      ]
+      ],
+      "playback": "277-playback-playback-768.webp",
+      "playbackSha256": "fc69a10b56eba338c39746c2ebec827f149af338f0b808d8634d8104b058baf2"
     },
     {
       "index": 343,
@@ -1831,7 +1915,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "343-playback-playback-768.webp",
+      "playbackSha256": "570670595a735aeec13f1c1aa6340180c15dee746a25145074478fe61fd7f792"
     },
     {
       "index": 344,
@@ -1873,7 +1959,9 @@
       "angles": [
         0,
         5
-      ]
+      ],
+      "playback": "344-playback-playback-768.webp",
+      "playbackSha256": "9d391a047ae71ffc66fe711c00e0ed9fac9c481f5a64a21bae32383fd0285400"
     },
     {
       "index": 345,
@@ -1916,7 +2004,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "345-playback-playback-768.webp",
+      "playbackSha256": "160b7ed02945dc4b83cc01c68db6b2f6f6ecbb6e0af4f14691b021a2291ddb3a"
     },
     {
       "index": 2313,
@@ -1958,7 +2048,9 @@
       "angles": [
         0,
         5
-      ]
+      ],
+      "playback": "2313-playback-playback-768.webp",
+      "playbackSha256": "a279286e8fb6d9a5de60092f47fd95d5e5c2e79cebc65a8d715829e390796f52"
     },
     {
       "index": 2314,
@@ -2000,7 +2092,9 @@
       "angles": [
         0,
         5
-      ]
+      ],
+      "playback": "2314-playback-playback-768.webp",
+      "playbackSha256": "efec5c2c194f64c8430dadd001f9d06954960db310c599ee14eefda1ebbfaf5a"
     },
     {
       "index": 346,
@@ -2042,7 +2136,9 @@
       "angles": [
         0,
         -5
-      ]
+      ],
+      "playback": "346-playback-playback-768.webp",
+      "playbackSha256": "390f13ac3c197bc3688dc6a73b151266e20fdb4ebeff23feffc2ea58cf69afe8"
     },
     {
       "index": 347,
@@ -2084,7 +2180,9 @@
       "angles": [
         0,
         -5
-      ]
+      ],
+      "playback": "347-playback-playback-768.webp",
+      "playbackSha256": "d4dc4ae74b1b73f4475967ae28c344b6d3412a10986c8e971112ec672724e08b"
     },
     {
       "index": 348,
@@ -2127,7 +2225,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "348-playback-playback-768.webp",
+      "playbackSha256": "ec8b97994e6ce6b2757ab9ee56df41b7c7e439b0e2f88af23dc4aa05c9830a84"
     },
     {
       "index": 317,
@@ -2169,7 +2269,9 @@
       "angles": [
         0,
         -5
-      ]
+      ],
+      "playback": "317-playback-playback-768.webp",
+      "playbackSha256": "6bf5cf6d8a67bf5ca218c4d7e313a160ed3c6122feaa199479fa9e1eb0ee59c3"
     },
     {
       "index": 318,
@@ -2212,7 +2314,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "318-playback-playback-768.webp",
+      "playbackSha256": "03dcd1fca523177cce73a80e595993b7d8574d69538e261c69a952c8e5274ecc"
     },
     {
       "index": 319,
@@ -2255,7 +2359,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "319-playback-playback-768.webp",
+      "playbackSha256": "7c606b1422a348b122f33ed29bed96f6c4e0adff0e6d88b325ef4c24f4405582"
     },
     {
       "index": 286,
@@ -2298,7 +2404,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "286-playback-playback-768.webp",
+      "playbackSha256": "8a65ec4c08a0b7588efc3ea8e362537a04717f897ee4fc9ed810b40dc1af16b0"
     },
     {
       "index": 287,
@@ -2341,7 +2449,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "287-playback-playback-768.webp",
+      "playbackSha256": "37506d7c4cc26bf7c99dcdaf2ac66e7361ed9962c74d357ee4d7d2f97677bcf0"
     },
     {
       "index": 1216,
@@ -2382,7 +2492,9 @@
       },
       "angles": [
         0
-      ]
+      ],
+      "playback": "1216-playback-playback-768.webp",
+      "playbackSha256": "f41659a53e2ed55d9a43c861abd893d30237bd288797fd57fe1729d0c733a3cd"
     },
     {
       "index": 1217,
@@ -2423,7 +2535,9 @@
       },
       "angles": [
         0
-      ]
+      ],
+      "playback": "1217-playback-playback-768.webp",
+      "playbackSha256": "2cc458745472408979876491a0968537c68c407bad1960f6b3aaabd197d85154"
     },
     {
       "index": 1218,
@@ -2465,7 +2579,9 @@
       "angles": [
         0,
         5
-      ]
+      ],
+      "playback": "1218-playback-playback-768.webp",
+      "playbackSha256": "f603489a8fc4171b423104bac08175b79c5979afafa1f12fc45b3211113aa966"
     },
     {
       "index": 293,
@@ -2507,7 +2623,9 @@
       "angles": [
         0,
         -5
-      ]
+      ],
+      "playback": "293-playback-playback-768.webp",
+      "playbackSha256": "63b4238902222489346a996480a1f65db105aa877ed4aefa334f8553d273ceea"
     },
     {
       "index": 294,
@@ -2549,7 +2667,9 @@
       "angles": [
         0,
         -5
-      ]
+      ],
+      "playback": "294-playback-playback-768.webp",
+      "playbackSha256": "c492a777009036373e6e8f47049465a3a4d39087f9f5d2050786a4aac1aca26c"
     },
     {
       "index": 296,
@@ -2591,7 +2711,9 @@
       "angles": [
         0,
         -5
-      ]
+      ],
+      "playback": "296-playback-playback-768.webp",
+      "playbackSha256": "707f2f6646012101c03a44660c159d9f3bf2104fd0a787ad718936edfb784b59"
     },
     {
       "index": 245,
@@ -2634,7 +2756,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "245-playback-playback-768.webp",
+      "playbackSha256": "ea58e22ee11d7bd348428e61f7cdde2c92e85b0c0827170a83e7f7c41b2b52b0"
     },
     {
       "index": 301,
@@ -2676,7 +2800,9 @@
       "angles": [
         0,
         5
-      ]
+      ],
+      "playback": "301-playback-playback-768.webp",
+      "playbackSha256": "bccca7eabc04b44e910d0ff6752437e1a3ac442bf4cd1a8cffe87284ac91d971"
     },
     {
       "index": 1198,
@@ -2719,7 +2845,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "1198-playback-playback-768.webp",
+      "playbackSha256": "3bd2f82c49ecf4a47af95b86228202b946db0ba8b30dc715e58cd6cbf8a80028"
     },
     {
       "index": 1199,
@@ -2762,7 +2890,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "1199-playback-playback-768.webp",
+      "playbackSha256": "4555712def33c57484c9b12dd71f54fca33113948371cde0b32f4e17aa3048f3"
     },
     {
       "index": 1201,
@@ -2805,7 +2935,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "1201-playback-playback-768.webp",
+      "playbackSha256": "e0b219b6581450212be9cc311391c1b254f30be078fdc43db4e97079a5aae191"
     },
     {
       "index": 309,
@@ -2848,7 +2980,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "309-playback-playback-768.webp",
+      "playbackSha256": "cc57cce18e872beffecbd8c501c135fc7e7964eeeb70ffdaf28670934822a6b5"
     },
     {
       "index": 310,
@@ -2891,7 +3025,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "310-playback-playback-768.webp",
+      "playbackSha256": "af4baf72a658f03ba532c8e23ed5f7f6bc2e99e8aaa0d30d99b76db6065aefda"
     },
     {
       "index": 311,
@@ -2934,7 +3070,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "311-playback-playback-768.webp",
+      "playbackSha256": "c0282ea78f7983ea5bed9b0d9d4ae3d9cffd738919bedc32e402135b0957c073"
     },
     {
       "index": 282,
@@ -2977,7 +3115,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "282-playback-playback-768.webp",
+      "playbackSha256": "f16207fe349f19ec3ad1b4fe311c1c28f637f150143a83a450e690af7edee41f"
     },
     {
       "index": 2319,
@@ -3019,7 +3159,9 @@
       "angles": [
         0,
         5
-      ]
+      ],
+      "playback": "2319-playback-playback-768.webp",
+      "playbackSha256": "414749557512026277f37a601df30c7c9aa2c43124a3471d79d11ff14770fd04"
     },
     {
       "index": 6057,
@@ -3060,7 +3202,9 @@
       },
       "angles": [
         0
-      ]
+      ],
+      "playback": "6057-playback-playback-768.webp",
+      "playbackSha256": "ab1cc54060065cce20aafa75fbcbf48b01bd8e1fa06e6d6667f964b007fbd4a8"
     },
     {
       "index": 6058,
@@ -3101,7 +3245,9 @@
       },
       "angles": [
         0
-      ]
+      ],
+      "playback": "6058-playback-playback-768.webp",
+      "playbackSha256": "947e2fb3e16e69fb79245b02880920e630ed9ba553b773044e21baf650e4a7f4"
     },
     {
       "index": 6059,
@@ -3143,7 +3289,9 @@
       "angles": [
         0,
         5
-      ]
+      ],
+      "playback": "6059-playback-playback-768.webp",
+      "playbackSha256": "4c3d7cf07d5082f3a8d6f02611b59977c9f697f0da191e4fd8fad1db3466d8ed"
     },
     {
       "index": 332,
@@ -3186,7 +3334,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "332-playback-playback-768.webp",
+      "playbackSha256": "0245ae970570a122dde817ad60700bd353a0e0a747bd4872f5bf685f3933e999"
     },
     {
       "index": 333,
@@ -3229,7 +3379,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "333-playback-playback-768.webp",
+      "playbackSha256": "9f39000261ba121f014a038f583c6dab6357dff3b7ec31a79ae9a9f5b0cd8380"
     },
     {
       "index": 334,
@@ -3272,7 +3424,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "334-playback-playback-768.webp",
+      "playbackSha256": "d6933aced9deb15c63ca92b33397dbe789fac6ed22ca56b35beca16224a8c73a"
     },
     {
       "index": 2326,
@@ -3314,7 +3468,9 @@
       "angles": [
         0,
         5
-      ]
+      ],
+      "playback": "2326-playback-playback-768.webp",
+      "playbackSha256": "1680ff0c7b65c46f9e22fb0d8ceb751e993dfbc03e258eac8aa79c7db43a146d"
     },
     {
       "index": 2327,
@@ -3357,7 +3513,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "2327-playback-playback-768.webp",
+      "playbackSha256": "f13091313605e33772ed28a89b2e4e78d9a403965bf24bb222d701927843a907"
     },
     {
       "index": 2328,
@@ -3399,7 +3557,9 @@
       "angles": [
         0,
         -5
-      ]
+      ],
+      "playback": "2328-playback-playback-768.webp",
+      "playbackSha256": "df0c2fd1e6758c92b19e7545e9f53b7f75612801e00e34d306b388edb4a8bc06"
     },
     {
       "index": 302,
@@ -3442,7 +3602,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "302-playback-playback-768.webp",
+      "playbackSha256": "c0cdab90e13907ffe1da8e6d19ce8be78e948aff0bd3237caa5b06e9e0bd13ff"
     },
     {
       "index": 303,
@@ -3485,7 +3647,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "303-playback-playback-768.webp",
+      "playbackSha256": "7572fa6713c66d652727ce03d4011c3b2e05d7b16478135d1989c23703eb215f"
     },
     {
       "index": 313,
@@ -3528,7 +3692,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "313-playback-playback-768.webp",
+      "playbackSha256": "778996b8474b8cb1806a2344de28422aee70486fbb0a80770edf36d10f91a948"
     },
     {
       "index": 316,
@@ -3571,7 +3737,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "316-playback-playback-768.webp",
+      "playbackSha256": "25d370b2e0975569f9544d866d246941ffd06c8c4420b7d693f97b6f9689b74d"
     },
     {
       "index": 320,
@@ -3613,7 +3781,9 @@
       "angles": [
         0,
         -5
-      ]
+      ],
+      "playback": "320-playback-playback-768.webp",
+      "playbackSha256": "d4c443afa9995f296bd419ef2d1fe573e3e5ae013f2f0a921910fec530b0f2e4"
     },
     {
       "index": 331,
@@ -3656,7 +3826,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "331-playback-playback-768.webp",
+      "playbackSha256": "3626829e31a6e4d5a8bb46324a02e1a09af02666bb0e8b34c98cbed50da39552"
     },
     {
       "index": 846,
@@ -3698,7 +3870,9 @@
       "angles": [
         0,
         -5
-      ]
+      ],
+      "playback": "846-playback-playback-768.webp",
+      "playbackSha256": "d5b8819eb9a4831f55ef223dee2fe95f0e79efba9b72ed31019f87416314e240"
     },
     {
       "index": 847,
@@ -3740,7 +3914,9 @@
       "angles": [
         0,
         -5
-      ]
+      ],
+      "playback": "847-playback-playback-768.webp",
+      "playbackSha256": "7213700b0a7bcdaebd74e4b5f9ed3f16e46f4b5b9cf4302e8674214a53da6838"
     },
     {
       "index": 849,
@@ -3781,7 +3957,9 @@
       },
       "angles": [
         0
-      ]
+      ],
+      "playback": "849-playback-playback-768.webp",
+      "playbackSha256": "aef6d9d0b230eeaf692802f7aa89b2c97781a2d197aeda38811c148ba3f7ae15"
     },
     {
       "index": 2374,
@@ -3822,7 +4000,9 @@
       },
       "angles": [
         0
-      ]
+      ],
+      "playback": "2374-playback-playback-768.webp",
+      "playbackSha256": "981a8bb3bea87b1ee557d9acddc8930cca70095d9312e96504fef7c10483d623"
     },
     {
       "index": 2375,
@@ -3864,7 +4044,9 @@
       "angles": [
         0,
         5
-      ]
+      ],
+      "playback": "2375-playback-playback-768.webp",
+      "playbackSha256": "e28a21977eb48e320a491542cc0cf8daed7118edec63367e0e936c59e187ef2e"
     },
     {
       "index": 2376,
@@ -3906,7 +4088,9 @@
       "angles": [
         0,
         5
-      ]
+      ],
+      "playback": "2376-playback-playback-768.webp",
+      "playbackSha256": "465c888b7a76103287f4cee4c388f45f8a1c343f69071b77ecd176ab00347750"
     },
     {
       "index": 278,
@@ -3949,7 +4133,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "278-playback-playback-768.webp",
+      "playbackSha256": "84db79c36f05b58fcdbbca14eca54eabf54e22612ed2de88cd6412cc7e445e59"
     },
     {
       "index": 261,
@@ -3991,7 +4177,9 @@
       "angles": [
         0,
         5
-      ]
+      ],
+      "playback": "261-playback-playback-768.webp",
+      "playbackSha256": "51adbcde7937b8981dd030ffbc2251a269e57e7cb92c858ffe9dbeeb41aad9cd"
     },
     {
       "index": 349,
@@ -4034,7 +4222,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "349-playback-playback-768.webp",
+      "playbackSha256": "5f5f821bff1a2f71a5a975c9a9b68334649a24861bbbca9c4733b1e7ca1ad2e5"
     },
     {
       "index": 6060,
@@ -4076,7 +4266,9 @@
       "angles": [
         0,
         5
-      ]
+      ],
+      "playback": "6060-playback-playback-768.webp",
+      "playbackSha256": "4068ffc29a5d532ef98aea3be8c35a6398f268f4cfb1a82225921d7ec5bc3e84"
     },
     {
       "index": 1200,
@@ -4119,7 +4311,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "1200-playback-playback-768.webp",
+      "playbackSha256": "6010c7d39e1b000d532816903dc1ab8b2228ef73a0b13cb2ad6fa7c66789f2aa"
     },
     {
       "index": 272,
@@ -4162,7 +4356,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "272-playback-playback-768.webp",
+      "playbackSha256": "580d9521e2813dd6a8f9bf491442d657cc66d1dc1b962254615137bf3d9e4fe1"
     },
     {
       "index": 275,
@@ -4204,7 +4400,9 @@
       "angles": [
         0,
         -5
-      ]
+      ],
+      "playback": "275-playback-playback-768.webp",
+      "playbackSha256": "80bd3b79a0691c261c6909d6ef3f06ed903c91fcf9f96e8257d9f5f79f40309e"
     },
     {
       "index": 2377,
@@ -4246,7 +4444,9 @@
       "angles": [
         0,
         5
-      ]
+      ],
+      "playback": "2377-playback-playback-768.webp",
+      "playbackSha256": "e3f1ff0b3de11993b36ecf9e54b2e068452bdc51553b3c9806e0370a94d8087c"
     },
     {
       "index": 279,
@@ -4288,7 +4488,9 @@
       "angles": [
         0,
         5
-      ]
+      ],
+      "playback": "279-playback-playback-768.webp",
+      "playbackSha256": "f4d48dc72b1b17fcffc2eea97e1fd927124327a7ced7f3825e396d0ec2a9225d"
     },
     {
       "index": 2325,
@@ -4330,7 +4532,9 @@
       "angles": [
         0,
         5
-      ]
+      ],
+      "playback": "2325-playback-playback-768.webp",
+      "playbackSha256": "4329e70f2ebd36ff4cfda738208a3268b6fe29e3512edc917e26d847f786e6e7"
     },
     {
       "index": 338,
@@ -4373,7 +4577,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "338-playback-playback-768.webp",
+      "playbackSha256": "e3d4eb19539c634d164252b7e187fc6923a05a882502580edf3e5f614a5fdb32"
     },
     {
       "index": 339,
@@ -4415,7 +4621,9 @@
       "angles": [
         0,
         -5
-      ]
+      ],
+      "playback": "339-playback-playback-768.webp",
+      "playbackSha256": "20f47895861e16be4ac9f9031d9ff2c718d06fff1f2bc9d991c2aa37a5b5bf48"
     },
     {
       "index": 340,
@@ -4458,7 +4666,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "340-playback-playback-768.webp",
+      "playbackSha256": "bcf498c3d016ca76c904f1bf8b595f77681c8bb088ef2609ef2c688b4db0518b"
     },
     {
       "index": 844,
@@ -4500,7 +4710,9 @@
       "angles": [
         0,
         -5
-      ]
+      ],
+      "playback": "844-playback-playback-768.webp",
+      "playbackSha256": "b217808a530adc725e08988e296723f23e45db2ef39dbbdbbc62862373d402e7"
     },
     {
       "index": 845,
@@ -4542,7 +4754,9 @@
       "angles": [
         0,
         -5
-      ]
+      ],
+      "playback": "845-playback-playback-768.webp",
+      "playbackSha256": "46e574b44dbbfc175b9834b6db0153cf1be07f920043b81a78071e88109f648e"
     },
     {
       "index": 2380,
@@ -4584,7 +4798,9 @@
       "angles": [
         0,
         5
-      ]
+      ],
+      "playback": "2380-playback-playback-768.webp",
+      "playbackSha256": "95329a953ce5bf9f69e70534458a2f2399cff821254ad42891970da67f2a33b4"
     },
     {
       "index": 2381,
@@ -4626,7 +4842,9 @@
       "angles": [
         0,
         5
-      ]
+      ],
+      "playback": "2381-playback-playback-768.webp",
+      "playbackSha256": "2239dc778ed22f3d0b0f0fd9c11bccf58bf8e615d3b43439ebf80dec89eacf32"
     },
     {
       "index": 2382,
@@ -4668,7 +4886,9 @@
       "angles": [
         0,
         5
-      ]
+      ],
+      "playback": "2382-playback-playback-768.webp",
+      "playbackSha256": "748dbc4d06e0e90b8c9a059456b7b6d493d594665d05c00759c202334384cfd9"
     },
     {
       "index": 260,
@@ -4711,7 +4931,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "260-playback-playback-768.webp",
+      "playbackSha256": "0ad272a72c78a0d8274a6c2263e5754552986775bf7caa1585d12cfae1d3923c"
     },
     {
       "index": 350,
@@ -4754,7 +4976,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "350-playback-playback-768.webp",
+      "playbackSha256": "cbae196e5b2a4740a9ab6932e8deaf74ad03d17cf35b6644810aee599f2647ef"
     },
     {
       "index": 341,
@@ -4796,7 +5020,9 @@
       "angles": [
         0,
         5
-      ]
+      ],
+      "playback": "341-playback-playback-768.webp",
+      "playbackSha256": "2674c687f227249d0228566f7683d6d9f3a0e5568ea867667236b088be0570d0"
     },
     {
       "index": 342,
@@ -4839,7 +5065,9 @@
         0,
         5,
         -5
-      ]
+      ],
+      "playback": "342-playback-playback-768.webp",
+      "playbackSha256": "240baaec1c63bf710bb49f36ef99d4fb0da733d4b234ea6ab9df52020ec2e260"
     },
     {
       "index": 6264,
@@ -4881,7 +5109,9 @@
       "angles": [
         35,
         40
-      ]
+      ],
+      "playback": "6264-playback-playback-768.webp",
+      "playbackSha256": "4ec0663c64a44002ae7ef0b0b88bcb2c84e626c5af889ba9c5a19ed60db7e408"
     },
     {
       "index": 6265,
@@ -4923,7 +5153,9 @@
       "angles": [
         35,
         40
-      ]
+      ],
+      "playback": "6265-playback-playback-768.webp",
+      "playbackSha256": "3b8f7243cbe06cc1eb47115eeb133d22ea6115abef5317f25de44c49e8744d71"
     },
     {
       "index": 6266,
@@ -4965,7 +5197,9 @@
       "angles": [
         35,
         40
-      ]
+      ],
+      "playback": "6266-playback-playback-768.webp",
+      "playbackSha256": "9f8413dddd128655ec5ec9bc55f505ccc7fcc3e70b33435da99d367799cf3e97"
     },
     {
       "index": 1449,
@@ -5007,7 +5241,9 @@
       "angles": [
         35,
         40
-      ]
+      ],
+      "playback": "1449-playback-playback-768.webp",
+      "playbackSha256": "b1b813b659329f0f1f4fa8e73ef89e5d20dd1a313954768431cece9b66a822e0"
     }
   ],
   "groups": [

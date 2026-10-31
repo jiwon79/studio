@@ -43,7 +43,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "3821-playback-playback-768.webp",
+      "playbackSha256": "adc42de39c415465c39896deec60606c4bf7a8130e140ecd90b01f5759f460ed"
     },
     {
       "index": 3822,
@@ -81,7 +83,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "3822-playback-playback-768.webp",
+      "playbackSha256": "1bec24dc7283c6e8b43a4afad7dc6a25e36b84511ca5c8faeb48a06c86da254d"
     },
     {
       "index": 3823,
@@ -119,7 +123,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "3823-playback-playback-768.webp",
+      "playbackSha256": "bf587f7e8003eff609e44fcec140207acf94e1d61be7608febaf6e9849bcfacf"
     },
     {
       "index": 1396,
@@ -157,7 +163,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1396-playback-playback-768.webp",
+      "playbackSha256": "23374ec8f0df811446a740bde99c3a4a7afc4e52e06c3ac12d532078f256af0d"
     },
     {
       "index": 1398,
@@ -195,7 +203,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1398-playback-playback-768.webp",
+      "playbackSha256": "70a9e51de0ee0557fbfb2890c9872fdbe48f08e9a24da7ec59340bf8acd9cb90"
     },
     {
       "index": 1399,
@@ -233,7 +243,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1399-playback-playback-768.webp",
+      "playbackSha256": "695fc8fdfe22e43fa5af81722f587a795c18704bf36b6a78ae91fe6f46f72f61"
     },
     {
       "index": 6268,
@@ -271,7 +283,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "6268-playback-playback-768.webp",
+      "playbackSha256": "0a73c341c6ff752249a1d300e9d3f92dedab3ae93e3e26ad53bc2c06e0ac90b5"
     },
     {
       "index": 6269,
@@ -309,7 +323,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "6269-playback-playback-768.webp",
+      "playbackSha256": "7b1ee0590ae81a8072ead8c397d841e932f7a70285b4378f0a7c6fa6648c8f81"
     },
     {
       "index": 6270,
@@ -347,7 +363,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "6270-playback-playback-768.webp",
+      "playbackSha256": "b207fa4e62f127086aeb59324abc244bd5be79ae5a28ff85184af372be8635cc"
     },
     {
       "index": 1454,
@@ -385,7 +403,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1454-playback-playback-768.webp",
+      "playbackSha256": "5d556c9d11c0bfb9505957ce65c3167b4f06c364b0e90c61ab0725479745b2a4"
     },
     {
       "index": 1455,
@@ -423,7 +443,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1455-playback-playback-768.webp",
+      "playbackSha256": "5cc5d311d89be23834bb1b5a0866d18025560e5953b234ade4a685b5911417a9"
     },
     {
       "index": 1457,
@@ -461,7 +483,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1457-playback-playback-768.webp",
+      "playbackSha256": "4ad407bf3e360da592d2ba3ca8f8892cfd0f40e3712f3ce9b1d673a82283ede9"
     },
     {
       "index": 5371,
@@ -499,7 +523,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "5371-playback-playback-768.webp",
+      "playbackSha256": "191df233f592975fd8d12e2df2332baa58bfa0d82cd1f32c483395a9d30e6c63"
     },
     {
       "index": 5372,
@@ -537,7 +563,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "5372-playback-playback-768.webp",
+      "playbackSha256": "e385437bce73a8daf98d69d04edd99d2468c488ae24f01533a40f3ff5f515d8e"
     },
     {
       "index": 5373,
@@ -575,7 +603,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "5373-playback-playback-768.webp",
+      "playbackSha256": "152320a29ca8e4d7312ad8b793748dd455e3f80f10f1d3356ef035eb61f5ef6e"
     },
     {
       "index": 1564,
@@ -613,7 +643,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1564-playback-playback-768.webp",
+      "playbackSha256": "8ea291e2426fd8e916ad26442a82e483471eddfd900e968e38979f7861bd1594"
     },
     {
       "index": 1565,
@@ -651,7 +683,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1565-playback-playback-768.webp",
+      "playbackSha256": "58ef273f4d77af92e9777268dae37cf46929c31cdfad0c1872a956d1ad5f518f"
     },
     {
       "index": 1566,
@@ -689,7 +723,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1566-playback-playback-768.webp",
+      "playbackSha256": "525668a7cdc82ab33fc4c9a815372132b376ef4e3e7787f4a7dda6dcae246a5d"
     },
     {
       "index": 3429,
@@ -727,7 +763,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "3429-playback-playback-768.webp",
+      "playbackSha256": "23ef534ec5d54869a1417508f8330afcbfaadfba0a2d973c5a701cd567b79af6"
     },
     {
       "index": 3430,
@@ -765,7 +803,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "3430-playback-playback-768.webp",
+      "playbackSha256": "48e11b5c67d6dd110f1165ad842fc3123b5f72961e94e500bfff3407facf098e"
     },
     {
       "index": 3431,
@@ -803,7 +843,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "3431-playback-playback-768.webp",
+      "playbackSha256": "f7fc8c885eab0bc9470c8155bebde743adf5883420267c41c5f923fb807f3894"
     },
     {
       "index": 1568,
@@ -841,7 +883,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1568-playback-playback-768.webp",
+      "playbackSha256": "4b2ca698fe4dcb394336b6682b4bb052f82cbc4ffef2ce2a32eb8ded224f9394"
     },
     {
       "index": 1569,
@@ -879,7 +923,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1569-playback-playback-768.webp",
+      "playbackSha256": "8c36c510a202f4415935ac3293829f99f538eded025f7cf3dd05ffd16a0445f8"
     },
     {
       "index": 1570,
@@ -917,7 +963,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1570-playback-playback-768.webp",
+      "playbackSha256": "8bdca84f84c963543efdea59551d5a6566d821aaa9be06775308fa7d19d030b0"
     },
     {
       "index": 5671,
@@ -955,7 +1003,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "5671-playback-playback-768.webp",
+      "playbackSha256": "15bb4f5bdb3f39da9f319baac9f9dc02cb4833837b3d6b0a413b5e33856b80b0"
     },
     {
       "index": 5672,
@@ -993,7 +1043,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "5672-playback-playback-768.webp",
+      "playbackSha256": "37ab0c56b1de49fb23de3c7bea9a480b5c55405c178904ae0c18aadd5cd42589"
     },
     {
       "index": 5673,
@@ -1031,7 +1083,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "5673-playback-playback-768.webp",
+      "playbackSha256": "b31575fc90f93e5bc336d919dac3e74625ad2483eea013e37a38cde077da036e"
     },
     {
       "index": 1280,
@@ -1069,7 +1123,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1280-playback-playback-768.webp",
+      "playbackSha256": "7f29cbbf858000016cebe72461c19dc6021dce1aefb28134f24804074a192aa9"
     },
     {
       "index": 1281,
@@ -1107,7 +1163,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1281-playback-playback-768.webp",
+      "playbackSha256": "97a8d149db138eb90e0340a3d85bf5d5d691abc5e76c06a091bf9eb2fe405067"
     },
     {
       "index": 1282,
@@ -1145,7 +1203,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1282-playback-playback-768.webp",
+      "playbackSha256": "140c74f63fae491d7be277cd0461be3dcefc5ea5d9c4ad280c64d15cad847d57"
     },
     {
       "index": 2229,
@@ -1183,7 +1243,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "2229-playback-playback-768.webp",
+      "playbackSha256": "b9add4308cf207258416f42a6f31a6d06ca6f1d88c33ef12dd0ca352abd3f2a8"
     },
     {
       "index": 2230,
@@ -1221,7 +1283,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "2230-playback-playback-768.webp",
+      "playbackSha256": "4c95b25783a9ab64d9d239c392fd05b2ef0edd940a90991ca07c66aec50bff24"
     },
     {
       "index": 2231,
@@ -1259,7 +1323,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "2231-playback-playback-768.webp",
+      "playbackSha256": "8615387af419328aec8b2c750a58511d2173b03ee2b57007a72e60a5b3d87677"
     },
     {
       "index": 1283,
@@ -1297,7 +1363,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1283-playback-playback-768.webp",
+      "playbackSha256": "d4870c4a745318c0be5f193a8e34df407211760ab6b4fb5836739774fb95add8"
     },
     {
       "index": 1284,
@@ -1335,7 +1403,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1284-playback-playback-768.webp",
+      "playbackSha256": "6d0a7aec423f4ea8964a4af4b0d7c66a13185e75f5956881640a4ea5c558e75a"
     },
     {
       "index": 1285,
@@ -1373,7 +1443,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1285-playback-playback-768.webp",
+      "playbackSha256": "4760e2065b595300b87dea2260d69af7dca96c26bc80635635a0753828da34ff"
     },
     {
       "index": 2232,
@@ -1411,7 +1483,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "2232-playback-playback-768.webp",
+      "playbackSha256": "e73d4e43172c76de58b0828e77418c4716255f30ddd768752c716dcc6966fd3a"
     },
     {
       "index": 2233,
@@ -1449,7 +1523,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "2233-playback-playback-768.webp",
+      "playbackSha256": "7b0324d2b24a3863541ad8bd8d7e16c85a1667671f6a76467ccb0c34861a0dda"
     },
     {
       "index": 2234,
@@ -1487,7 +1563,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "2234-playback-playback-768.webp",
+      "playbackSha256": "70552217674849b90aaa03df192675b82ac78550b340badaee276e95a4600b8a"
     },
     {
       "index": 1400,
@@ -1525,7 +1603,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1400-playback-playback-768.webp",
+      "playbackSha256": "783b2f89d2a20fb6e7c43f610196adfb27e2f20408e12bfb499dc2b48afe0a59"
     },
     {
       "index": 1453,
@@ -1563,7 +1643,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1453-playback-playback-768.webp",
+      "playbackSha256": "d2e138eb79c4cf2662dc6d8e5297a7cb63a4299beb529af157485ceeb05503a8"
     },
     {
       "index": 1456,
@@ -1601,7 +1683,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1456-playback-playback-768.webp",
+      "playbackSha256": "9e84794c143ea329c05f0f7c016907a21b1bb82f4364f0167ef8b67503203600"
     },
     {
       "index": 5874,
@@ -1639,7 +1723,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "5874-playback-playback-768.webp",
+      "playbackSha256": "c88d61d6be7ed2593fe757158c9dca2af3c91bddc0579f377177f69442e13af3"
     },
     {
       "index": 5875,
@@ -1677,7 +1763,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "5875-playback-playback-768.webp",
+      "playbackSha256": "686ae7f854784fc4532bf4790de267a57a01e21e7d98399d56db3e657fd35cd6"
     },
     {
       "index": 5876,
@@ -1715,7 +1803,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "5876-playback-playback-768.webp",
+      "playbackSha256": "a84c1e4e7e92198cc85ed54b378373c55b23fff279ae72109a432f1b13c6bdc3"
     },
     {
       "index": 1759,
@@ -1753,7 +1843,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1759-playback-playback-768.webp",
+      "playbackSha256": "4304df971b388816e30882ee17152219189f4fab71bd2347a22d3d2ffd43cdfb"
     },
     {
       "index": 1760,
@@ -1791,7 +1883,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1760-playback-playback-768.webp",
+      "playbackSha256": "7f965c4d71988a18839ae2facf7e4ea36368dc4dfb95c036b46bb231d16e3ebe"
     },
     {
       "index": 1761,
@@ -1829,7 +1923,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1761-playback-playback-768.webp",
+      "playbackSha256": "752db1d8d7a3631c4e4907653a809a0b71a8bf874738b1f64f003a72ff36804d"
     },
     {
       "index": 1322,
@@ -1867,7 +1963,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1322-playback-playback-768.webp",
+      "playbackSha256": "1ed09e29719c6edf0e3710ac71c67780b9d420016e6ef5973f7ece9648a940ac"
     },
     {
       "index": 1323,
@@ -1905,7 +2003,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1323-playback-playback-768.webp",
+      "playbackSha256": "c6fd4751b33e8dbf0a84a3305cc48845e42448e167db9dda8f0875cf4d4bc849"
     },
     {
       "index": 1324,
@@ -1943,7 +2043,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1324-playback-playback-768.webp",
+      "playbackSha256": "50ac360754777681cedf421e83ef2c8863dc819d79898f9deebe553ba7a6f50c"
     },
     {
       "index": 1567,
@@ -1981,7 +2083,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1567-playback-playback-768.webp",
+      "playbackSha256": "4ce256b716055b6d3a64180e9e2207a19decfda63768a8f9e7d809ad6147dbb7"
     },
     {
       "index": 6284,
@@ -2019,7 +2123,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "6284-playback-playback-768.webp",
+      "playbackSha256": "7c9dc897b4f222f919cc2724ae56597d042cf88ebce4ff2a49ebfac880fecf2d"
     },
     {
       "index": 6285,
@@ -2057,7 +2163,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "6285-playback-playback-768.webp",
+      "playbackSha256": "731aeceb2ee7f2a488d8f2d8705cca2aca5fe64254cae9ecc798362fe6777eea"
     },
     {
       "index": 6286,
@@ -2095,7 +2203,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "6286-playback-playback-768.webp",
+      "playbackSha256": "72108cb767e20e885440421e735f9730ca65fe109ee5f0a566b5f4e5fbac5f43"
     },
     {
       "index": 6149,
@@ -2133,7 +2243,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "6149-playback-playback-768.webp",
+      "playbackSha256": "8198eb2d2cf63c634dc8df67163c58756f81f5cb753026ea56901162266a21c7"
     },
     {
       "index": 6150,
@@ -2171,7 +2283,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "6150-playback-playback-768.webp",
+      "playbackSha256": "d99a56d5779694548bd253da4f94c51a23d3bf4b9f508105a5fd2067bfc35285"
     },
     {
       "index": 6151,
@@ -2209,7 +2323,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "6151-playback-playback-768.webp",
+      "playbackSha256": "ffac4916793742adc9d0381d8e5915b54ba427852b736b3eebd9de76b7d939fb"
     },
     {
       "index": 1250,
@@ -2247,7 +2363,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1250-playback-playback-768.webp",
+      "playbackSha256": "2471293ca99a2ff1a198703111934cc0e0382b2aef5f7b6ed76c3a7823f255d3"
     },
     {
       "index": 1251,
@@ -2285,7 +2403,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1251-playback-playback-768.webp",
+      "playbackSha256": "6dfe55c0273f0ad5569117b1fddf15d68ff8a46ae6f805a2f464e891e65aaaf0"
     },
     {
       "index": 1252,
@@ -2323,7 +2443,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1252-playback-playback-768.webp",
+      "playbackSha256": "773158c2735bca92faf217e010c68959f294c866d60e44d481811198174bf66e"
     },
     {
       "index": 3820,
@@ -2361,7 +2483,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "3820-playback-playback-768.webp",
+      "playbackSha256": "b8862b9dc6a024fbdc899791565c2e81012bbfe4aa66fd4857cea57069f68629"
     },
     {
       "index": 1286,
@@ -2399,7 +2523,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1286-playback-playback-768.webp",
+      "playbackSha256": "f7265c7c1769e07f4b20f3187ed2d2f91f51125d299fefee360741aa19542ad6"
     },
     {
       "index": 1287,
@@ -2437,7 +2563,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1287-playback-playback-768.webp",
+      "playbackSha256": "abba78e7a2cb484e5975d0bb0f3e651fffddfc2c55c750e8c12aecc120b7aa79"
     },
     {
       "index": 1397,
@@ -2475,7 +2603,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1397-playback-playback-768.webp",
+      "playbackSha256": "5ad066f7d2c8b30045d6e90f63c630eb219e75e1c37341fb2951b392d2e64a20"
     },
     {
       "index": 1452,
@@ -2513,7 +2643,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1452-playback-playback-768.webp",
+      "playbackSha256": "c88999b22360457f35d52332bec463ef67eca96a3cd0a4e5ce8b309d47c07b88"
     },
     {
       "index": 1812,
@@ -2551,7 +2683,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1812-playback-playback-768.webp",
+      "playbackSha256": "d51172432bc77ab6a0f8cbd99bc11663f453970a0203f4e9f19e35ba1046ccae"
     },
     {
       "index": 1813,
@@ -2589,7 +2723,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1813-playback-playback-768.webp",
+      "playbackSha256": "aadc385492998e4ad6a77d3a227f6a995cf2c9ba27db3660b08fd5ea1a89714b"
     },
     {
       "index": 1814,
@@ -2627,7 +2763,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1814-playback-playback-768.webp",
+      "playbackSha256": "52ab80dbb27762a6591596dadfd040ce35ffc58c0d069169d8af8fc118207ace"
     },
     {
       "index": 6276,
@@ -2665,7 +2803,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "6276-playback-playback-768.webp",
+      "playbackSha256": "0fdc12959004c94aa7bad843dc72eb260d59b1b6ca4f4e09f1ccf6cfeb3f3878"
     },
     {
       "index": 6278,
@@ -2703,7 +2843,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "6278-playback-playback-768.webp",
+      "playbackSha256": "60cd43ff32d4f7428772a8978c63dab0c124625205748d990154fe2434a8d3f0"
     },
     {
       "index": 6279,
@@ -2741,7 +2883,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "6279-playback-playback-768.webp",
+      "playbackSha256": "a9d2ed93236665a4b5c73eeffa9d7c3faf39ee230f758ac64042059a2540a748"
     },
     {
       "index": 1762,
@@ -2779,7 +2923,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1762-playback-playback-768.webp",
+      "playbackSha256": "a0d3703911fbfc584a7cfd676251e1bfaaf6ee8aff9babea69a9239f7707df8f"
     },
     {
       "index": 1763,
@@ -2817,7 +2963,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1763-playback-playback-768.webp",
+      "playbackSha256": "14309afc11c3307571360f3ed28d09203843b95fb7eddb7bfd9171751841ae34"
     },
     {
       "index": 6280,
@@ -2855,7 +3003,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "6280-playback-playback-768.webp",
+      "playbackSha256": "7a98434f88670d90e122be3b233f76cd2f03cf654286d543f77ff81cedea478b"
     },
     {
       "index": 6281,
@@ -2893,7 +3043,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "6281-playback-playback-768.webp",
+      "playbackSha256": "c27e88e9bed19670a8f3f07ba5583db387b813c995cd806391b251a399f28518"
     },
     {
       "index": 6282,
@@ -2931,7 +3083,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "6282-playback-playback-768.webp",
+      "playbackSha256": "3f485bbba1bde456bde42992a99b35d064cd232e5932704728e289c2741bc482"
     },
     {
       "index": 1966,
@@ -2969,7 +3123,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1966-playback-playback-768.webp",
+      "playbackSha256": "4a16f8caa0c8def01580dc1fcb1580e2938d81ddc5c72ff97464a26adafa4c4b"
     },
     {
       "index": 1967,
@@ -3007,7 +3163,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1967-playback-playback-768.webp",
+      "playbackSha256": "43e28477ddf2b52976d9e25addda33ebb958694350491a31befae7e15865337f"
     },
     {
       "index": 1968,
@@ -3045,7 +3203,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1968-playback-playback-768.webp",
+      "playbackSha256": "3d9655f960cd793127b1b405b7ca164643024c9d9f154aa6f44cea0cfe9999a7"
     },
     {
       "index": 1903,
@@ -3083,7 +3243,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1903-playback-playback-768.webp",
+      "playbackSha256": "3836a4e9105d1cfbbd00d00521915006db577f45f2a3851e2b962da3c722e024"
     },
     {
       "index": 1904,
@@ -3121,7 +3283,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1904-playback-playback-768.webp",
+      "playbackSha256": "145ba84de41ac48530eaf09c88fe51c315a32b54a22e10b6233ba496e083b517"
     },
     {
       "index": 1905,
@@ -3159,7 +3323,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1905-playback-playback-768.webp",
+      "playbackSha256": "9a1d01c505eda0e635e34a924b59461f2999310e076c68dcb676608e48638a81"
     },
     {
       "index": 1401,
@@ -3197,7 +3363,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1401-playback-playback-768.webp",
+      "playbackSha256": "688a677e61b5b31e6b7445b6ffdd633aeb34eb3b3c0e0fc2bc2ed189be623820"
     },
     {
       "index": 1402,
@@ -3235,7 +3403,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1402-playback-playback-768.webp",
+      "playbackSha256": "f4e6a06281cdfeac3369284520d02d99e9fa2ea17952dba4856eed7ffbbb3f90"
     },
     {
       "index": 1403,
@@ -3273,7 +3443,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1403-playback-playback-768.webp",
+      "playbackSha256": "62a0e930ccf606a06785faa2699b099cbff9850855513c21b13fe12abb9259d0"
     },
     {
       "index": 1321,
@@ -3311,7 +3483,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1321-playback-playback-768.webp",
+      "playbackSha256": "ec89643aa849ea0de9368e6cc94512dc69f85bbba25f1c4fe866443c138bddde"
     },
     {
       "index": 1325,
@@ -3349,7 +3523,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1325-playback-playback-768.webp",
+      "playbackSha256": "64bc9540407d9bfa3ff3e97b8bac5aab5096325a32c34071a72a55000f083a5a"
     },
     {
       "index": 1571,
@@ -3387,7 +3563,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1571-playback-playback-768.webp",
+      "playbackSha256": "cd30abeb6e86e4458b9afec9a35e80361b9f3198ab9176447dea7c910cd90f2f"
     },
     {
       "index": 1572,
@@ -3425,7 +3603,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1572-playback-playback-768.webp",
+      "playbackSha256": "02f92b4a50abf54d4073f8c04a4579af7d0cdf9ed02d213c4545598452e492f5"
     },
     {
       "index": 5167,
@@ -3463,7 +3643,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "5167-playback-playback-768.webp",
+      "playbackSha256": "53d1f9604089408124b63eeb4953729223baf46c031d83f85783f95c6ff09ee5"
     },
     {
       "index": 5168,
@@ -3510,7 +3692,9 @@
           "prompt": "Restore only the supplied runway photograph: improve photographic clarity, remove compression noise, recover fabric and hair detail conservatively, and clean the transparent cutout edges. This is a precisely timed walking animation frame, not a new pose or camera angle. Preserve the exact original silhouette, body lean, head location and size, face orientation, shoulders, hips, hands, knees, ankles, heels and toe positions in normalized image coordinates. Preserve anatomical left/right identity, leg overlap, depth order and shoe orientation. Do not extend or shorten legs, move shoes, invent hidden limbs, straighten the body, or alter the walking phase. Keep the identical outfit, colors, garment shape, hairstyle, accessories and lighting shown in THIS photograph. Preserve all empty margins and the same person scale and framing. Genuine transparent background and accurate alpha, no scenery, floor, cast shadow, halo, border, text or checkerboard. Output one portrait 2:3 photograph. Quality restoration only.",
           "status": "superseded after source-framing review"
         }
-      ]
+      ],
+      "playback": "5168-playback-playback-768.webp",
+      "playbackSha256": "b77289c2c10a2843fcc66c50ee06e8f286dc1fdf47bb100eb6d36adaae056463"
     },
     {
       "index": 5169,
@@ -3557,7 +3741,9 @@
           "prompt": "Restore only the supplied runway photograph: improve photographic clarity, remove compression noise, recover fabric and hair detail conservatively, and clean the transparent cutout edges. This is a precisely timed walking animation frame, not a new pose or camera angle. Preserve the exact original silhouette, body lean, head location and size, face orientation, shoulders, hips, hands, knees, ankles, heels and toe positions in normalized image coordinates. Preserve anatomical left/right identity, leg overlap, depth order and shoe orientation. Do not extend or shorten legs, move shoes, invent hidden limbs, straighten the body, or alter the walking phase. Keep the identical outfit, colors, garment shape, hairstyle, accessories and lighting shown in THIS photograph. Preserve all empty margins and the same person scale and framing. Genuine transparent background and accurate alpha, no scenery, floor, cast shadow, halo, border, text or checkerboard. Output one portrait 2:3 photograph. Quality restoration only.",
           "status": "superseded after source-framing review"
         }
-      ]
+      ],
+      "playback": "5169-playback-playback-768.webp",
+      "playbackSha256": "6f4f518cf2cf2a44b3a1ce9c13f04b28d99b12b8f449dd883e09f1f4d54e37ec"
     },
     {
       "index": 5675,
@@ -3595,7 +3781,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "5675-playback-playback-768.webp",
+      "playbackSha256": "c067c47e73ec3990fdadd5aa7eed80e15944eae1df83c8c57c89e5fbcb3e4b3b"
     },
     {
       "index": 5676,
@@ -3633,7 +3821,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "5676-playback-playback-768.webp",
+      "playbackSha256": "d678d585657a18f437dfa8f344d96185fad4c7c6f0bf4f9302d6e30916c7b888"
     },
     {
       "index": 5677,
@@ -3671,7 +3861,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "5677-playback-playback-768.webp",
+      "playbackSha256": "8a61aab8390a598b5f3a9d997127f9250612951cb4bea22002b345669eb7b1e5"
     },
     {
       "index": 3824,
@@ -3709,7 +3901,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "3824-playback-playback-768.webp",
+      "playbackSha256": "93ee5264287c09c804c7bcf670bcc46b7687b5b89febc3f37e135e5dd06599ec"
     },
     {
       "index": 4962,
@@ -3747,7 +3941,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "4962-playback-playback-768.webp",
+      "playbackSha256": "3e71f8c966cf6c2f6ef9b4807dad43361249b79730dfb322ec710569b5d9abbf"
     },
     {
       "index": 4963,
@@ -3785,7 +3981,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "4963-playback-playback-768.webp",
+      "playbackSha256": "214d75dfeea48ce081def103a20ef44a725c6e2d8ce14626c71521929d043b4f"
     },
     {
       "index": 4964,
@@ -3823,7 +4021,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "4964-playback-playback-768.webp",
+      "playbackSha256": "efbfce043dac7d70ce9e06b81964b6d939442cfe289b97ebd62e87829fefe1ca"
     },
     {
       "index": 5370,
@@ -3861,7 +4061,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "5370-playback-playback-768.webp",
+      "playbackSha256": "2c3dd6e8bd1232c95b40e31c8deebf3d2412a329e30737686c07c68a75d0040b"
     },
     {
       "index": 1815,
@@ -3899,7 +4101,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1815-playback-playback-768.webp",
+      "playbackSha256": "b468459f86a6b7ac16c83f45db663c40646e510cd427f12464edb142c94a66de"
     },
     {
       "index": 1816,
@@ -3937,7 +4141,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1816-playback-playback-768.webp",
+      "playbackSha256": "db8d2e59ab6c503969625ad8d88b78fbe24a5c4633482c29b659ed283d6087fe"
     },
     {
       "index": 6277,
@@ -3975,7 +4181,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "6277-playback-playback-768.webp",
+      "playbackSha256": "cc18ad1a55e27a5b788c3ae9a07fb6c98560f941695da7f7605a0d889bdc6294"
     },
     {
       "index": 1764,
@@ -4013,7 +4221,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1764-playback-playback-768.webp",
+      "playbackSha256": "77cd969eb20b792f2c606d54d2e02def90ee61dbb56026c36304ce3e5da9986e"
     },
     {
       "index": 1326,
@@ -4051,7 +4261,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1326-playback-playback-768.webp",
+      "playbackSha256": "59447c26414d986b78f522c0c027324b8e2de13838885425d6b2f7ae7362e519"
     },
     {
       "index": 1327,
@@ -4089,7 +4301,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1327-playback-playback-768.webp",
+      "playbackSha256": "54672852e29739bb7da85d9a20b3bb462128205f1a5ef03ff4e88a6842dc548b"
     },
     {
       "index": 6015,
@@ -4127,7 +4341,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "6015-playback-playback-768.webp",
+      "playbackSha256": "294cac5507d9348639cae9b35b49af641ad2ebe24b57f3afef4c591837579924"
     },
     {
       "index": 6016,
@@ -4165,7 +4381,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "6016-playback-playback-768.webp",
+      "playbackSha256": "b52524b48a8dfbb4cf8edb688e229a8538494e7ecf1d4fdb80ed7e86fa23d72a"
     },
     {
       "index": 6017,
@@ -4203,7 +4421,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "6017-playback-playback-768.webp",
+      "playbackSha256": "fac59b6853c5819590784f80390459856d36aef1602e60804b911ce73b502a89"
     },
     {
       "index": 5674,
@@ -4241,7 +4461,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "5674-playback-playback-768.webp",
+      "playbackSha256": "cb4053e272cbea0d4906d43381855c9875cadfcd88be40cd0e95378b88042da3"
     },
     {
       "index": 2228,
@@ -4279,7 +4501,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "2228-playback-playback-768.webp",
+      "playbackSha256": "174bf2f20a050a02fd997eee6938d6c7ac2c2dfd9f1efcf93a85a88a4703f94a"
     },
     {
       "index": 1811,
@@ -4317,7 +4541,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1811-playback-playback-768.webp",
+      "playbackSha256": "d9647d5d0f4ec4d0e610f2eb5974d0179ef316b6fdce7e0b4c392a3453696ffc"
     },
     {
       "index": 6274,
@@ -4355,7 +4581,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "6274-playback-playback-768.webp",
+      "playbackSha256": "fe104a6629b3f98715892c2b3cbe69815d8079515ccc743ce89f7e43a1f2d5b0"
     },
     {
       "index": 6275,
@@ -4393,7 +4621,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "6275-playback-playback-768.webp",
+      "playbackSha256": "a2351abd884df3a3fc88bfa15ab694be4794f87a11b9e45e54e39e29154b455e"
     },
     {
       "index": 2061,
@@ -4431,7 +4661,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "2061-playback-playback-768.webp",
+      "playbackSha256": "77c7301872c5bf48940f9fee31072e9da734cbc41a5966547489d385fa49dc89"
     },
     {
       "index": 2062,
@@ -4469,7 +4701,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "2062-playback-playback-768.webp",
+      "playbackSha256": "a01512502c22a174f0e87310554cedd86e8b50e0053156684aa60294667a7b02"
     },
     {
       "index": 2063,
@@ -4507,7 +4741,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "2063-playback-playback-768.webp",
+      "playbackSha256": "04c408a391850a3fe3619336126a695b9e38516353e49d5e058654383c5484c7"
     },
     {
       "index": 1573,
@@ -4545,7 +4781,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1573-playback-playback-768.webp",
+      "playbackSha256": "e221f47f9c34b50966e75eae4105631aec3ea30861aa82a68b76a182da33d9aa"
     },
     {
       "index": 6288,
@@ -4583,7 +4821,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "6288-playback-playback-768.webp",
+      "playbackSha256": "21526db85c8acccb3a88943985aa914cc33da35ad865a4b556e4a3088fd1a534"
     },
     {
       "index": 6289,
@@ -4621,7 +4861,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "6289-playback-playback-768.webp",
+      "playbackSha256": "ce7f7c14935818aa4868c6785ee60ae35088a4cb42b9b6f2246a397d8a703182"
     },
     {
       "index": 6290,
@@ -4659,7 +4901,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "6290-playback-playback-768.webp",
+      "playbackSha256": "3f037bed07f4fb56e625d5fc32d690343d932d997c4e1bf8d5ada214f017a70d"
     },
     {
       "index": 1320,
@@ -4697,7 +4941,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1320-playback-playback-768.webp",
+      "playbackSha256": "2e0adf8bb80821626a5bef67e6f8b42e475574eef98143fb8a49877cfbaf140e"
     },
     {
       "index": 1960,
@@ -4735,7 +4981,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1960-playback-playback-768.webp",
+      "playbackSha256": "bd782a51b3b28027cc5b485664439aecf2364845c955b0beb7641daf02718e5e"
     },
     {
       "index": 1961,
@@ -4773,7 +5021,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1961-playback-playback-768.webp",
+      "playbackSha256": "832f057006acf7c2da658a997431c9bb856b4d0f8376f6f2586f319450c07429"
     },
     {
       "index": 1962,
@@ -4811,7 +5061,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1962-playback-playback-768.webp",
+      "playbackSha256": "e7fda36821227565e93eda358b8655c036c73d6970a9f4ffa7d070758f5e2e8e"
     },
     {
       "index": 6283,
@@ -4849,7 +5101,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "6283-playback-playback-768.webp",
+      "playbackSha256": "1390d2b1cdaeb979386257e6f27f30977b14ae894f55c57c20b12b03e5cd9d27"
     },
     {
       "index": 5670,
@@ -4887,7 +5141,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "5670-playback-playback-768.webp",
+      "playbackSha256": "2d6a718f60869fb5160ec197e199e7869342dc6526ef6e861085eb20a12837ba"
     },
     {
       "index": 1249,
@@ -4925,7 +5181,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "1249-playback-playback-768.webp",
+      "playbackSha256": "cc241cb7390707b1cb41bd80f7538862304b548674d9e7b32349d51bea5a4836"
     },
     {
       "index": 5369,
@@ -4963,7 +5221,9 @@
         "remove_bg": false,
         "resolution": "2k",
         "width": 1360
-      }
+      },
+      "playback": "5369-playback-playback-768.webp",
+      "playbackSha256": "b36f0a8a47c6e1e8acb163d6c98142ae8420634a9cc898aa87399662c071dc67"
     }
   ],
   "groups": [

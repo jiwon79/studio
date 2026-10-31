@@ -29,7 +29,7 @@ export function higgsfieldQuality(gui: GUI, onChange: () => void, onDownloaded: 
   const images = new AtlasPool(async index => {
     const blob = blobs.get(index);
     if (!blob) throw new Error('Higgsfield download incomplete');
-    return createImageBitmap(blob, { resizeWidth: 768, resizeHeight: 1152, resizeQuality: 'high' });
+    return createImageBitmap(blob);
   }, 24);
   const folder = gui.addFolder('사진 화질');
   folder.add(options, 'enabled').name('화질 보정 ON/OFF').onChange(onChange);
