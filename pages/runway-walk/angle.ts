@@ -6,6 +6,7 @@ import { prepareLiveDirection } from './live-direction';
 import { zeroTwelveComparison } from './zero-twelve-comparison';
 import { gptZeroTest } from './gpt-zero-test';
 import { higgsfieldQuality } from './higgsfield-quality';
+import { startupProgress } from './startup-progress';
 import { ANGLE_STEP, snapYaw } from './direction-step';
 import type { AngleFrame } from './angle-match';
 import {WalkCoverageError,rebaseWalkState} from './walk-sequencer';
@@ -23,6 +24,9 @@ const context = canvas.getContext('2d')!;
 const direction = document.querySelector<HTMLOutputElement>('#direction')!;
 const status = document.querySelector<HTMLElement>('#status')!;
 const loading = document.querySelector<HTMLElement>('#loading')!;
+const startup = startupProgress(loading);
+const allPhotoIndices = [...new Set(Array.from({ length: 37 }, (_, i) => i * 5 - 90).flatMap(directionPhotos))];
+const allPhotoPages = [...new Set(allPhotoIndices.map(i => frames[i].atlas))];
 const [minYaw, maxYaw] = data.yawRange;
 surface.setAttribute('aria-valuemin', String(minYaw));
 surface.setAttribute('aria-valuemax', String(maxYaw));
@@ -68,6 +72,21 @@ function downloadedPage() {
   const total = loadingPages.length + (loadingQuality?.count ?? 0);
   loading.style.setProperty('--loaded', `${total ? Math.min(100, complete / total * 100) : 0}%`);
   surface.dataset.loadedPages = String(downloaded);
+  if (!ready) updateStartup();
+}
+function updateStartup() {
+  const enhanced = higgsfieldTest.preloadStats, legacy = !higgsfieldTest.hasDirection(0);
+  startup.update({ originals: allPhotoIndices.filter(i => !!downloads.get(frames[i].atlas)).length,
+    originalTotal: allPhotoIndices.length,
+    enhanced: enhanced.loaded + (legacy ? gptTest.downloaded : 0), enhancedTotal: enhanced.total + (legacy ? gptTest.count : 0),
+    bytes: allPhotoPages.reduce((sum, i) => sum + (downloads.get(i)?.size ?? 0), 0) + enhanced.bytes + (legacy ? gptTest.compressedBytes : 0) });
+}
+async function preloadPhotographs() {
+  updateStartup();
+  await Promise.all(allPhotoPages.map(index => downloads.request(index, () => true, false)));
+  await higgsfieldTest.preloadAll();
+  if (!higgsfieldTest.hasDirection(0)) await gptTest.load();
+  updateStartup();
 }
 async function loadView(yaw: number, current: () => boolean) {
   const indices = directionPhotos(yaw), provider = qualityForYaw(yaw), restored = provider.covers(yaw, indices, true);
@@ -229,6 +248,11 @@ function failed(error?:unknown) {
   surface.dataset.playing = 'false';
   surface.setAttribute('aria-busy', 'false');
   status.textContent = error instanceof WalkCoverageError?'이 각도의 보행 소스가 부족해 재생을 멈췄어요. 다른 각도를 선택해 주세요.':'프레임을 불러오지 못했어요. 새로고침해 주세요.';
+  if (!ready) startup.fail();
+}
+function candidateAvailable(candidate: ReferenceCut, yaw: number, requested = false) {
+  return (qualityForYaw(yaw).covers(yaw, cutIndices(candidate), requested) || cutIndices(candidate).every(i => !!images.get(frames[i].atlas)))
+    && qualityForYaw(yaw).available(yaw, cutIndices(candidate));
 }
 /** Quality comparison keeps this exact edit and live tick, including when
  * paused. Download/decode the other variant before changing displayed pixels. */
@@ -278,10 +302,14 @@ async function startDirection() {
           sequence.push(candidate); state = candidate.after;
         }
         planned = sequence; retainPages();
+        if (!ready) startup.prepare(sequence.filter(candidate => candidateAvailable(candidate, requested, true)).length, sequence.length);
         return sequence;
       },
-      available: candidate => (qualityForYaw(requested).covers(requested, cutIndices(candidate), true) || cutIndices(candidate).every(i => !!images.get(frames[i].atlas))) && qualityForYaw(requested).available(requested, cutIndices(candidate)),
-      prepare: candidate => prepare(candidate, requested, true),
+      available: candidate => candidateAvailable(candidate, requested, true),
+      prepare: async candidate => {
+        await prepare(candidate, requested, true);
+        if (!ready && epoch === generation) startup.prepare(planned.filter(cut => candidateAvailable(cut, requested, true)).length, planned.length);
+      },
     });
     // Await itself yields, so recheck cancellation before installing the edit.
     if (!sequence || epoch !== generation || requested !== target) return;
@@ -374,9 +402,13 @@ async function load() {
     surface.dataset.playing = 'false';
     // A direct twelve-photo comparison needs only its own 24 images. Defer the
     // complete artwork download until the viewer returns to the artwork.
-    if (new URLSearchParams(location.search).get('compare') === '12') { gptTest.ready(); return; }
+    if (new URLSearchParams(location.search).get('compare') === '12') {
+      document.body.dataset.booting = 'false'; loading.hidden = true; gptTest.ready(); return;
+    }
+    document.body.dataset.booting = 'true'; loading.dataset.mode = 'startup'; loading.hidden = false;
     gptTest.pending();
     surface.dataset.totalPages = String(data.atlases.length + gptTest.count + higgsfieldTest.count);
+    await preloadPhotographs();
     await startDirection();
     if (!images.get(frames[block.start].atlas) && !qualityForYaw(target).replacement(target, block.start)) throw new Error('Initial frame decode failed');
     ready = true;
@@ -384,10 +416,11 @@ async function load() {
     surface.dataset.readyAt = String(performance.now());
     draw();
     surface.setAttribute('aria-busy', 'false');
-    loading.hidden = true;
+    startup.finish();
     surface.dataset.playing = String(playing);
     requestAnimationFrame(tick);
     warmNeighbors();
   } catch(error) { failed(error); }
 }
+document.querySelector('#loading-retry')!.addEventListener('click', () => location.reload());
 setAngle(target); void load();

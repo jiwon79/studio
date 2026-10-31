@@ -106,6 +106,7 @@ export function gptZeroTest(onChange: () => void, faceFront: () => void, onDownl
     count: frames.length,
     endComparison() { options.compare12 = false; gui.open(); },
     get downloaded() { return frames.filter(row => blobs.has(asset(row.index, options.revised).key)).length; },
+    get compressedBytes() { return [...blobs.values()].reduce((sum, blob) => sum + blob.size, 0); },
     activate() { activeEnabled = options.enabled; activeRevised = options.revised; },
     covers(yaw: number, indices: number[], requested = false) { return yaw === 0 && (requested ? options.enabled : activeEnabled) && indices.every(i => byIndex.has(i)); },
     isStill(yaw: number) { return yaw === 0 && options.still; },

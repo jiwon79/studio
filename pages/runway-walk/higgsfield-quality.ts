@@ -16,6 +16,7 @@ for (const [folder, library] of [['higgsfield-quality-45', initialManifest], ['h
   for (const row of library.frames) byIndex.set(row.index, { ...row, folder });
 }
 const completeDirections = new Set(Array.from({ length: 37 }, (_, i) => i * 5 - 90).filter(yaw => directionPhotos(yaw).every(i => byIndex.has(i))));
+const activeIndices = [...new Set([...completeDirections].flatMap(directionPhotos))];
 
 /** All requested angles share a comparison switch. A direction is promoted
  * only when every scheduled source photograph has a matching restoration. */
@@ -63,6 +64,11 @@ export function higgsfieldQuality(gui: GUI, onChange: () => void, onDownloaded: 
     get count() { return directionPhotos(selectedYaw).length; },
     get downloaded() { return directionPhotos(selectedYaw).filter(i => blobs.has(i)).length; },
     get decoded() { return images.size; },
+    get preloadStats() {
+      return { total: activeIndices.length, loaded: activeIndices.filter(i => blobs.has(i)).length,
+        bytes: activeIndices.reduce((sum, i) => sum + (blobs.get(i)?.size ?? 0), 0) };
+    },
+    async preloadAll() { await Promise.all(activeIndices.map(index => downloads.request(index, () => true, false))); },
     load,
     activate() { activeEnabled = options.enabled; },
     covers(yaw: number, indices: number[], requested = false) {
