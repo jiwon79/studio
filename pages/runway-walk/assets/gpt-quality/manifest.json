@@ -4,7 +4,7 @@
   "purpose": "quality-only, no model or pose guide",
   "status": "partial; not applied to main artwork",
   "additionalTarget": 2892,
-  "generated": 6,
+  "generated": 36,
   "frames": [
     {
       "index": 370,
@@ -71,6 +71,474 @@
       "originalInputSha256": "0020435e096fbefb040f20d203784be643840cd54a1313882177313b059724fb",
       "generatedPngSha256": "0de616e67b918a181e2785699c671b845b5ef39f5ae08d2c8b6d8807f2886d2d",
       "editedSha256": "86d1ff95241bfb17586979926b94b3927f6dc755a5627074857b75e6b03db776"
+    },
+    {
+      "index": 6045,
+      "group": 5,
+      "source": "pradass16",
+      "sourceFrame": 1788,
+      "original": "6045-original.webp",
+      "edited": "6045.webp",
+      "originalInputSha256": "11cd357b93aeeedffaefc43476922b580bd49d60c6d21efd2089c601bc65d51c",
+      "generatedPngSha256": "c3e68c9f0fc525d492845d8086ec633a990f3992cd8f65749117af64f7f2f1f8",
+      "editedSha256": "113358d872cce821e4584be59ba81b35914ee6b757a8c4e449f51486e3d4c71d"
+    },
+    {
+      "index": 6046,
+      "group": 5,
+      "source": "pradass16",
+      "sourceFrame": 1789,
+      "original": "6046-original.webp",
+      "edited": "6046-80d0cb008e73.webp",
+      "originalInputSha256": "8df01012fb8423a50e96ddaf978310eabb6db61acc8aa57386651a373022cb8f",
+      "generatedPngSha256": "80d0cb008e738014156b84074559bed939311b171b34d4fa1eddb2f733f1250c",
+      "editedSha256": "79e816e56ca7db7d04479e21a5f31a26011e6fae6aa869471946fffe5295c26f",
+      "previousVersions": [
+        {
+          "file": "6046.webp",
+          "generatedPngSha256": "80a504e756b748c659b86c517e0a0ad521abac56aac90b9c9b3c687250bdc746",
+          "prompt": "Use case: identity-preserve. Edit target: the single supplied runway photograph. Conservative high-fidelity photo restoration and upscale ONLY: clean compression artifacts and recover fabric/hair detail, clean gray cutout fringing. Preserve exact normalized full-body silhouette, person position and scale, face/head location, torso tilt, viewpoint and facing angle, anatomical left/right identities, knee/ankle/heel/toe positions, shoe orientation, leg overlap and foot placement. Do not improve posture, change gait, camera or body proportions. Retain the same outfit, colors, lighting and shoes. Do not add accessories or invent hidden anatomy. 2:3 portrait, full body. Genuine clean transparent alpha background; no shadow, floor, glow, halo, text or mannequin. Source frame ID 6046. Same dark coat, tan shirt, gray shorts, gray socks and black boots as source."
+        }
+      ]
+    },
+    {
+      "index": 6047,
+      "group": 5,
+      "source": "pradass16",
+      "sourceFrame": 1790,
+      "original": "6047-original.webp",
+      "edited": "6047.webp",
+      "originalInputSha256": "c7673a469ce50857788ae8ebcea478a22b59428dda3763fb75896c96bbe10fca",
+      "generatedPngSha256": "e8e0bcbfc3e2e3b6e72e08168c2721a02849c992eb87a4e8f29fd5bf54a3fef5",
+      "editedSha256": "2a90036292d06b5a48fb7990292fef363b42732f1d7f0958191756a00d625aaa"
+    },
+    {
+      "index": 2339,
+      "group": 5,
+      "source": "hermes24",
+      "sourceFrame": 4406,
+      "original": "2339-original.webp",
+      "edited": "2339-810db1d03859.webp",
+      "originalInputSha256": "1e670840ac1a5a0d398d159818faf08f72bf3bf2c10b2275cd090f35fa2da004",
+      "generatedPngSha256": "810db1d03859baeac432dfae839774580f22073076dce5e37ada0dd6647a5f3c",
+      "editedSha256": "9032df831e9c0c66ba3506f39ad93416d2d1356d7558e4899f31ab7630aea6cc",
+      "previousVersions": [
+        {
+          "file": "2339.webp",
+          "generatedPngSha256": "e41e24502fb0b0f01774a28b64fb046440e82629efeebc0ebe3c56d04a9595f5",
+          "prompt": "Use case: identity-preserve. Edit target: the single supplied runway photograph. Conservative high-fidelity photo restoration and upscale ONLY: clean compression artifacts and recover fabric/hair detail, clean gray cutout fringing. Preserve exact normalized full-body silhouette, person position and scale, face/head location, torso tilt, viewpoint and facing angle, anatomical left/right identities, knee/ankle/heel/toe positions, shoe orientation, leg overlap and foot placement. Do not improve posture, change gait, camera or body proportions. Retain the same outfit, colors, lighting and shoes. Do not add accessories or invent hidden anatomy. 2:3 portrait, full body. Genuine clean transparent alpha background; no shadow, floor, glow, halo, text or mannequin. Source frame ID 2339. Same white jacket, pale gray shirt and cropped trousers, black belt and black loafers as source."
+        }
+      ]
+    },
+    {
+      "index": 2341,
+      "group": 5,
+      "source": "hermes24",
+      "sourceFrame": 4408,
+      "original": "2341-original.webp",
+      "edited": "2341-7cfb3265e2d9.webp",
+      "originalInputSha256": "d9b6d6fce40c2b1401634b0792c4dba60f155e19c5917a51126a3e0ae0df845b",
+      "generatedPngSha256": "7cfb3265e2d9cf6c329346dd7a4b270c3e597cb8dd85298b2703c0db175ff123",
+      "editedSha256": "d15541deaf68df937bc014128453df3a4f0fcb1c947794348c2298e5ff90f3d1",
+      "previousVersions": [
+        {
+          "file": "2341.webp",
+          "generatedPngSha256": "0e641ce2650337bd2b9b566a0059eb77d55bb60f5cf01908a534cbc86812ab3d",
+          "prompt": "Use case: identity-preserve. Edit target: the single supplied runway photograph. Conservative high-fidelity photo restoration and upscale ONLY: clean compression artifacts and recover fabric/hair detail, clean gray cutout fringing. Preserve exact normalized full-body silhouette, person position and scale, face/head location, torso tilt, viewpoint and facing angle, anatomical left/right identities, knee/ankle/heel/toe positions, shoe orientation, leg overlap and foot placement. Do not improve posture, change gait, camera or body proportions. Retain the same outfit, colors, lighting and shoes. Do not add accessories or invent hidden anatomy. 2:3 portrait, full body. Genuine clean transparent alpha background; no shadow, floor, glow, halo, text or mannequin. Source frame ID 2341. Same white jacket, pale gray shirt and cropped trousers, black belt and black loafers as source."
+        }
+      ]
+    },
+    {
+      "index": 2343,
+      "group": 5,
+      "source": "hermes24",
+      "sourceFrame": 4410,
+      "original": "2343-original.webp",
+      "edited": "2343.webp",
+      "originalInputSha256": "7091373f394bbdccf0d30a95e35a133f1ed28662f046bc3ead3a406b0d17c44d",
+      "generatedPngSha256": "0a3fa0bf6c371467af206c1a71fe2ac7f1c4a508f33860d380039446b3cab28f",
+      "editedSha256": "a2d0182c3537a154dbabc0ffce76b3ff54df560d25631c855907535c2064a188"
+    },
+    {
+      "index": 2877,
+      "group": 85,
+      "source": "hermesfw25",
+      "sourceFrame": 6934,
+      "original": "2877-original.webp",
+      "edited": "2877.webp",
+      "originalInputSha256": "9527e7b4d644274b0a3e537146f295ff821bb98cb493a4c1daf6538362f1c2ab",
+      "generatedPngSha256": "bef416188fcb92f116fa2fba9b01dbd42fc68e2e62c633e9a33202df86684c82",
+      "editedSha256": "1a09c0b8cc44a9c40174a20458ac6540467dddce28394027f149b5e1f063a304"
+    },
+    {
+      "index": 2878,
+      "group": 85,
+      "source": "hermesfw25",
+      "sourceFrame": 6935,
+      "original": "2878-original.webp",
+      "edited": "2878.webp",
+      "originalInputSha256": "801eae621acd97db1638195d13a3a39510f1a6f9471eff86eabdb95df5921ce8",
+      "generatedPngSha256": "558ce4c01e7990b2af701165799399ae6970e5379cdf6c87d0c9c1b12367c30d",
+      "editedSha256": "cd4292d334783b61038650d56e4434a49651f96f58ace122eb9c052dc3dca1d2"
+    },
+    {
+      "index": 2879,
+      "group": 85,
+      "source": "hermesfw25",
+      "sourceFrame": 6936,
+      "original": "2879-original.webp",
+      "edited": "2879.webp",
+      "originalInputSha256": "40fd39d2f73dbef141a698a9308e0ccf221e6672459ccffc06126ab843704c10",
+      "generatedPngSha256": "ee2e3772aa62f4686ca1e8749dec882df6a6470661dde35874c1fafc85d08e6f",
+      "editedSha256": "1ff6444c92c1118f32b42bd4247b14ec11ea26bed2d7a529bf31679e9ae6cf6e"
+    },
+    {
+      "index": 4702,
+      "group": -90,
+      "source": "pradafw12",
+      "sourceFrame": 10541,
+      "original": "4702-original.webp",
+      "edited": "4702.webp",
+      "originalInputSha256": "338f1c2b0e84bb8d42484a41225ce96898b47f12d96bf916b2d8987c3df2c323",
+      "generatedPngSha256": "ec78a578920f38b62e6690d41dac06cf6848dfc9054548f8f45101159f16da18",
+      "editedSha256": "762fe81301529a72611d8571ea6a6771f72ddb305ca8979791b0764d1c2bab7d"
+    },
+    {
+      "index": 4704,
+      "group": -90,
+      "source": "pradafw12",
+      "sourceFrame": 10543,
+      "original": "4704-original.webp",
+      "edited": "4704.webp",
+      "originalInputSha256": "7e4b2a63deecdbd151e0eb113e31877ff11e5b7cb52e77d4f6952b9c2fe320f0",
+      "generatedPngSha256": "d5fbf9b33a9be1cfd8aa86028322f5a93dfecd190a76254f55bfae5ec5538f45",
+      "editedSha256": "674bcff777bc5a9cdf0dc834a81538b60e0147381e41207a1f332dd2600158f4"
+    },
+    {
+      "index": 4705,
+      "group": -90,
+      "source": "pradafw12",
+      "sourceFrame": 10544,
+      "original": "4705-original.webp",
+      "edited": "4705-b05e455a7beb.webp",
+      "originalInputSha256": "d9413e424b4efb005fb1ec3d64348cde65a01b856bbd642f4a2cfe90633d4690",
+      "generatedPngSha256": "b05e455a7bebb45591a1d9ab222521d31716205a56323510452de7bb1e7bba13",
+      "editedSha256": "34ea092624e8d40275492a7505cf3118b7c3d9a0e694446aa33b92ae9ae92e6c",
+      "previousVersions": [
+        {
+          "file": "4705.webp",
+          "generatedPngSha256": "5842305fc3bfedb3c0e3a2b7de4095077b50c7ae5c39b47fc512e38cd87d2f1b",
+          "prompt": "undefined Source frame ID 4705. Same LEFT-facing profile, white knee-length coat and shorts, dark knee-high socks and dark shoes. Keep the original long stride."
+        }
+      ]
+    },
+    {
+      "index": 5754,
+      "group": 5,
+      "source": "hermes24",
+      "sourceFrame": 9952,
+      "original": "5754-original.webp",
+      "edited": "5754.webp",
+      "originalInputSha256": "cbc36c0ea7f3509add4420707a3dbfaa0d4b7da1a546d78d7c7994dc6d8855ab",
+      "generatedPngSha256": "b3fa5034610954a4273c3283fd80f45409aeed7cbc0d4053797af0f9f0e75b11",
+      "editedSha256": "75280e01af174834446374771944d7f43158f7e7da763cd1bdb864c7d8b09cc2"
+    },
+    {
+      "index": 5755,
+      "group": 5,
+      "source": "hermes24",
+      "sourceFrame": 9953,
+      "original": "5755-original.webp",
+      "edited": "5755.webp",
+      "originalInputSha256": "5e59d49f297b206624bf9d8ce6498a631cd2c9a3093432d77ecf7b111bbf21dd",
+      "generatedPngSha256": "cd54c9d670b2b005a11c34e6cf811d01221b2e600ddb31761ac912736e63879f",
+      "editedSha256": "9ecd62a959c25bc2ba4db7d91ea1eb957509040ead4016d6a5a1d203874426d5"
+    },
+    {
+      "index": 5756,
+      "group": 5,
+      "source": "hermes24",
+      "sourceFrame": 9954,
+      "original": "5756-original.webp",
+      "edited": "5756.webp",
+      "originalInputSha256": "2f4ae1e6a61b941e1afd0db62c8c6d64d71e5e9612d9b8fa1ec29ad0b3307276",
+      "generatedPngSha256": "dfc2d0566b5ef99c0a9a17f0849ee1c5072de7136ff466a2a240d229f945372d",
+      "editedSha256": "d9c54477fc548bf8466900811922b4f5a13be9e84d95fdf49de059b7338b5f25"
+    },
+    {
+      "index": 2756,
+      "group": 85,
+      "source": "hermesfw25",
+      "sourceFrame": 2255,
+      "original": "2756-original.webp",
+      "edited": "2756.webp",
+      "originalInputSha256": "932a17dc2319cef7593a423be04fc9d99eea1d4ab771044a6db17da2e0d885d6",
+      "generatedPngSha256": "ee997e23422655fb2bce0b2ebd89e3e752ba67af628f2bcee32463b44d997383",
+      "editedSha256": "a5ce9996ab43d1666442728c7f2475e866389efb3b29be047989a06e55e8cbf0"
+    },
+    {
+      "index": 2757,
+      "group": 85,
+      "source": "hermesfw25",
+      "sourceFrame": 2256,
+      "original": "2757-original.webp",
+      "edited": "2757.webp",
+      "originalInputSha256": "6690db2eafd6d57a4248e446ab351918418b84f35dbfcb13c04cd6aa3bffa0db",
+      "generatedPngSha256": "27210958bfa25b9f23f6434c98479923a3c4d30dcc58ddd4c27148b417663000",
+      "editedSha256": "ef4f79c8d0121c0cf564f7636a9a6b149d35b65a8e22f257bac434b1fc877939"
+    },
+    {
+      "index": 2758,
+      "group": 85,
+      "source": "hermesfw25",
+      "sourceFrame": 2257,
+      "original": "2758-original.webp",
+      "edited": "2758.webp",
+      "originalInputSha256": "0bc79ac3cd100393d0707065d25f1abb72f432b3566d6318fc5f12ea98e886e1",
+      "generatedPngSha256": "95d3d9653050a1492de183ddd16a0fc4fa7072d60c818296db08dd96be713a01",
+      "editedSha256": "6ebc99a7a676bc21e44cc4846aaf448c607754f6871d5bdfafaffbf73da175d0"
+    },
+    {
+      "index": 6219,
+      "group": -90,
+      "source": "pradass13",
+      "sourceFrame": 3121,
+      "original": "6219-original.webp",
+      "edited": "6219.webp",
+      "originalInputSha256": "982c92c1aca98be9ad561a8fa0236d938793f5ea71ea8b34e18e851cc6a38ff2",
+      "generatedPngSha256": "1d257ec291b15dbc9c5e80c30577277c2dde1a08669d9941fe899063c32c491b",
+      "editedSha256": "c72070abc339a648f97647580f2bc48abb6b336b81e022de2089b06376fc0525"
+    },
+    {
+      "index": 6221,
+      "group": -90,
+      "source": "pradass13",
+      "sourceFrame": 3123,
+      "original": "6221-original.webp",
+      "edited": "6221.webp",
+      "originalInputSha256": "b92dd9ffdd65e7ef77ae9371edae14585ac29749ad02149d92e29a96fe4d1030",
+      "generatedPngSha256": "d423076aeae4d781e414da46f2cc9efe4a79eb1408b0b7d8da751f84f23ded55",
+      "editedSha256": "f8cd5d68b45e588b2fa2b56ae74668c4f697679bd13a1aaeb200f8cc2e37e5b3"
+    },
+    {
+      "index": 6222,
+      "group": -90,
+      "source": "pradass13",
+      "sourceFrame": 3124,
+      "original": "6222-original.webp",
+      "edited": "6222.webp",
+      "originalInputSha256": "892bacfbe3655343a834c0d3c15bde08a8909d1df05349a7d56d6c4ab73937e8",
+      "generatedPngSha256": "22ee689e0364f5a1e6bf7e311ab5e795a30b3368a01ddb36e678073bfa519aac",
+      "editedSha256": "54a818c507076445b8e82f7b3a7ea942fd1466f0564dcb8910b9f868a0911611"
+    },
+    {
+      "index": 2562,
+      "group": 85,
+      "source": "hermes25",
+      "sourceFrame": 18724,
+      "original": "2562-original.webp",
+      "edited": "2562.webp",
+      "originalInputSha256": "634be3c30558ac9d1e75cf424003edef901f2c76050d1b0bc8bb9f3d83d4eecf",
+      "generatedPngSha256": "3201c30c12977f56b9cc0c37d675002941c41aff88057c06f1a5ac3a5f989c89",
+      "editedSha256": "256e630e22e7cd4a65e20e7e688975ca62592a9c8999d29b74f8eda1bc335518"
+    },
+    {
+      "index": 2563,
+      "group": 85,
+      "source": "hermes25",
+      "sourceFrame": 18725,
+      "original": "2563-original.webp",
+      "edited": "2563.webp",
+      "originalInputSha256": "dcaeb83006f009a9ee0659f87215c9b33132786b908dfbe979e0aa34958f5223",
+      "generatedPngSha256": "3226487d18a64dfcf7e405625c689f3ccc1d417c4b058d2efc2c3ce06f976b7a",
+      "editedSha256": "1e6d4847c9eb9c9f63f007daddc136828cef312fcf8fe39866a246cc6ea01998"
+    },
+    {
+      "index": 2564,
+      "group": 85,
+      "source": "hermes25",
+      "sourceFrame": 18726,
+      "original": "2564-original.webp",
+      "edited": "2564.webp",
+      "originalInputSha256": "f521523cb638f49890cf8ba1b32018dd6351221c1efc0dc912d953edb5f816b6",
+      "generatedPngSha256": "dd6e733a9e3a1aa8fd133f0906e6bf361f6cc36472211c6a4a2a4234cddd456f",
+      "editedSha256": "7fea258beb712992637be5b156ca1369b752dc3cfbaa1c43c6fcb8e5e5572d4f"
+    },
+    {
+      "index": 751,
+      "group": -90,
+      "source": "prada24",
+      "sourceFrame": 2511,
+      "original": "751-original.webp",
+      "edited": "751.webp",
+      "originalInputSha256": "095ec0b69b578001f9588748629880c7e5978ddf0370df1afd4745b196ede5cc",
+      "generatedPngSha256": "96ff8abb97c8850d0d8e0da4c063b8c8ade156486bb9db6d48f18f19141937e2",
+      "editedSha256": "110b96d08634e85b118a39498e40d52ddb0a48b51aa3a9b0a4fb67fc22b05931"
+    },
+    {
+      "index": 752,
+      "group": -90,
+      "source": "prada24",
+      "sourceFrame": 2512,
+      "original": "752-original.webp",
+      "edited": "752.webp",
+      "originalInputSha256": "fed0915c940e82b1831b554d2f8534cb45e39092755a6e1fb41c2f8ae0fefb46",
+      "generatedPngSha256": "6cf897aa47c075bf7420898a24c7eb812d33cf02da53e3e12435df20680debd5",
+      "editedSha256": "e90507548d07ceb39b1c82f12adaeb994e60e7da95f2e7cc2412758410d0508a"
+    },
+    {
+      "index": 753,
+      "group": -90,
+      "source": "prada24",
+      "sourceFrame": 2513,
+      "original": "753-original.webp",
+      "edited": "753.webp",
+      "originalInputSha256": "b7de8ddccfed2758621957731772bd73ca2d5e856e07b7a87f7ad8bb945c2aa0",
+      "generatedPngSha256": "db9cb8af490a5dc989a41b86c2e8839d567a6e71fc40cdf15c62cee0708c0df7",
+      "editedSha256": "746a8f3342aba5be7ff5800a7a2330de184f85e62635a87992b4e64765e96f48"
+    },
+    {
+      "index": 365,
+      "group": 5,
+      "source": "prada25",
+      "sourceFrame": 2054,
+      "original": "365-original.webp",
+      "edited": "365.webp",
+      "originalInputSha256": "5c057ffdb22da93fbc73f8851170623778e4633351ccd10fd6d740297859e5f2",
+      "generatedPngSha256": "db26d16ead604620f16ef1f61a843ead3d4f8630e6ab63bcd88ca7fa7333a41f",
+      "editedSha256": "54cdf937a59a51c4389632e29a0b69bb670ed21ee1ef640d04fe5704bc58d589"
+    },
+    {
+      "index": 366,
+      "group": 5,
+      "source": "prada25",
+      "sourceFrame": 2055,
+      "original": "366-original.webp",
+      "edited": "366.webp",
+      "originalInputSha256": "b178deb58bdca69bb9fca8b117fc89c57bbf6766e7bab0b186f4319ad84cf060",
+      "generatedPngSha256": "8466b1af9f0c2655db03ccd4574c974d20bb74d30a3ae34e7c71d9f058e30d88",
+      "editedSha256": "65ee1837c9c4fbd72e59456dd5a4cc725b9ce3428543157e8ef8572e64550506"
+    },
+    {
+      "index": 367,
+      "group": 5,
+      "source": "prada25",
+      "sourceFrame": 2056,
+      "original": "367-original.webp",
+      "edited": "367.webp",
+      "originalInputSha256": "ced5d1125959be667cee78d017c0670f2f64f55b0214544b936bb10e9eb0593b",
+      "generatedPngSha256": "b549cb2ed81963e9864b6c6064ecbc9893398a7919367350dd10b0b0f1eeb304",
+      "editedSha256": "0b0453346ed496e76fc8c2cc0e1f309b742322424f3e37b118e7e0f89e0409b9"
+    }
+  ],
+  "groups": [
+    {
+      "id": "5",
+      "label": "+5° · 첫 구간",
+      "indices": [
+        370,
+        371,
+        372
+      ]
+    },
+    {
+      "id": "85",
+      "label": "+85° · 첫 구간",
+      "indices": [
+        1361,
+        1362,
+        1363
+      ]
+    },
+    {
+      "id": "5:6045",
+      "label": "+5° · 사진 6045",
+      "indices": [
+        6045,
+        6046,
+        6047
+      ]
+    },
+    {
+      "id": "5:2339",
+      "label": "+5° · 사진 2339",
+      "indices": [
+        2339,
+        2341,
+        2343
+      ]
+    },
+    {
+      "id": "85:2877",
+      "label": "+85° · 사진 2877",
+      "indices": [
+        2877,
+        2878,
+        2879
+      ]
+    },
+    {
+      "id": "-90:4702",
+      "label": "-90° · 사진 4702",
+      "indices": [
+        4702,
+        4704,
+        4705
+      ]
+    },
+    {
+      "id": "5:5754",
+      "label": "+5° · 사진 5754",
+      "indices": [
+        5754,
+        5755,
+        5756
+      ]
+    },
+    {
+      "id": "85:2756",
+      "label": "+85° · 사진 2756",
+      "indices": [
+        2756,
+        2757,
+        2758
+      ]
+    },
+    {
+      "id": "-90:6219",
+      "label": "-90° · 사진 6219",
+      "indices": [
+        6219,
+        6221,
+        6222
+      ]
+    },
+    {
+      "id": "85:2562",
+      "label": "+85° · 사진 2562",
+      "indices": [
+        2562,
+        2563,
+        2564
+      ]
+    },
+    {
+      "id": "-90:751",
+      "label": "-90° · 사진 751",
+      "indices": [
+        751,
+        752,
+        753
+      ]
+    },
+    {
+      "id": "5:365",
+      "label": "+5° · 사진 365",
+      "indices": [
+        365,
+        366,
+        367
+      ]
     }
   ]
 }

@@ -5,8 +5,14 @@ const group = el<HTMLSelectElement>('group'), speed = el<HTMLSelectElement>('spe
 const button = el<HTMLButtonElement>('play'), state = el('state');
 const canvases = [el<HTMLCanvasElement>('before'), el<HTMLCanvasElement>('after')];
 const images = new Map<string, HTMLImageElement>();
-let tick = 0, epoch = 0, ready = false, playing = false;
-const rows = () => manifest.frames.filter(r => r.group === Number(group.value));
+type ReviewGroup = { id: string; label: string; indices: number[] };
+const groups: ReviewGroup[] = (manifest as { groups?: ReviewGroup[] }).groups ?? [...new Set(manifest.frames.map(r => r.group))].map(angle => ({ id: String(angle), label: `${angle > 0 ? '+' : ''}${angle}°`, indices: manifest.frames.filter(r => r.group === angle).map(r => r.index) }));
+for (const row of groups) group.add(new Option(row.label, row.id));
+const linked = new URLSearchParams(location.search).get('group');
+if (groups.some(row => row.id === linked)) group.value = linked!;
+el('scope').textContent = `전체 추가 대상 ${manifest.additionalTarget.toLocaleString()}장 중 ${manifest.generated.toLocaleString()}장을 생성한 중간 결과입니다. 자세·각도 변경 가이드는 사용하지 않았습니다. 아직 기본 작품에 적용하지 않았습니다.`;
+let tick = 0, epoch = 0, loading = 0, ready = false, playing = false;
+const rows = () => groups.find(row => row.id === group.value)!.indices.map(index => manifest.frames.find(row => row.index === index)!);
 function stop() { playing = false; epoch++; button.textContent = '다시 재생'; }
 function draw() {
   const row = rows()[tick];
@@ -35,10 +41,23 @@ function play() {
 }
 button.onclick = play;
 seek.oninput = () => { stop(); tick = Number(seek.value) - 1; draw(); state.textContent = '프레임 정지 비교'; };
-group.onchange = () => { stop(); if (ready) play(); };
+group.onchange = () => { void loadGroup(); };
 speed.onchange = () => { stop(); if (ready) play(); };
-void Promise.all(manifest.frames.flatMap(row => [row.original, row.edited]).map(async file => {
-  const image = new Image(); image.src = files[`./assets/gpt-quality/${file}`];
-  await image.decode(); images.set(file, image);
-})).then(() => { ready = true; button.disabled = false; seek.disabled = false; play(); })
-  .catch(() => { state.textContent = '사진을 불러오지 못했습니다. 새로고침해 주세요.'; });
+async function loadGroup() {
+  stop(); ready = false; button.disabled = true; seek.disabled = true;
+  const version = ++loading, selected = rows(), wanted = [...new Set(selected.flatMap(row => [row.original, row.edited]))];
+  images.clear(); canvases.forEach(canvas => canvas.getContext('2d')!.clearRect(0, 0, canvas.width, canvas.height));
+  state.textContent = `${wanted.length}장 준비 중…`;
+  seek.max = String(selected.length); seek.value = '1';
+  const url = new URL(location.href); url.searchParams.set('group', group.value); history.replaceState(null, '', url);
+  try {
+    const loaded = await Promise.all(wanted.map(async file => {
+      const image = new Image(); image.src = files[`./assets/gpt-quality/${file}`];
+      await image.decode(); return [file, image] as const;
+    }));
+    if (loading !== version) return;
+    loaded.forEach(([file, image]) => images.set(file, image));
+    ready = true; button.disabled = false; seek.disabled = false; play();
+  } catch { if (loading === version) state.textContent = '사진을 불러오지 못했습니다. 새로고침해 주세요.'; }
+}
+void loadGroup();

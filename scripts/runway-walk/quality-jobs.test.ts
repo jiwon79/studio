@@ -35,3 +35,43 @@ print(json.dumps(m.inventory()[1]))
     expect(inventory).toThrow();
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
+
+test('staging preserves previous candidates and rejects changed generation bytes', () => {
+  const script = fileURLToPath(new URL('./quality-jobs.py', import.meta.url));
+  const result = execFileSync('python3', ['-c', `
+import importlib.util,json,sys,tempfile,hashlib
+from pathlib import Path
+from PIL import Image
+spec=importlib.util.spec_from_file_location('quality_jobs',sys.argv[1])
+m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+with tempfile.TemporaryDirectory() as tmp:
+ root=Path(tmp);m.PAGE=root/'page';m.CACHE=root/'cache'
+ folder=m.PAGE/'assets/gpt-quality';folder.mkdir(parents=True)
+ (m.PAGE/'assets/gpt-zero').mkdir()
+ (m.CACHE/'input').mkdir(parents=True);(m.CACHE/'jobs').mkdir()
+ def save(path,obj):path.write_text(json.dumps(obj))
+ save(m.PAGE/'angles.json',dict(assetVersion='current',atlases=['a.webp'],frames=[dict(source='s',sourceFrame=0,atlas=0,tile=0)]))
+ save(m.PAGE/'reference-schedule.json',dict(directions={'5':[[0]]}))
+ save(m.PAGE/'assets/gpt-zero/manifest.json',dict(assetVersion='current',frames=[]))
+ save(folder/'manifest.json',dict(assetVersion='current',frames=[],generated=0))
+ save(folder/'prompts.json',[])
+ original=m.CACHE/'input/0.png';Image.new('RGBA',(2,3),(0,0,0,0)).save(original)
+ out=root/'generated.png';Image.new('RGBA',(2,3),(255,0,0,0)).save(out)
+ def record(prompt):
+  save(m.CACHE/'jobs/0.json',dict(assetVersion='current',status='generated-unreviewed',source='s',sourceFrame=0,nativeOutput=str(out),originalSha256=hashlib.sha256(original.read_bytes()).hexdigest(),generatedSha256=hashlib.sha256(out.read_bytes()).hexdigest(),prompt=prompt))
+ def stage():sys.argv=['quality-jobs.py','stage','0','--angle','5'];m.main()
+ record('first prompt');stage();before=(folder/'manifest.json').read_bytes();stage()
+ assert before==(folder/'manifest.json').read_bytes()
+ Image.new('RGBA',(2,3),(0,255,0,0)).save(out);record('second prompt');stage()
+ row=json.loads((folder/'manifest.json').read_text())['frames'][0]
+ assert row['edited']!='0.webp' and (folder/'0.webp').exists()
+ assert row['previousVersions'][0]['file']=='0.webp'
+ assert row['previousVersions'][0]['prompt']=='first prompt'
+ out.write_bytes(b'corrupt')
+ try:stage()
+ except ValueError as error:assert 'changed after generation' in str(error)
+ else:raise AssertionError('Changed output was accepted')
+print('verified')
+`, script], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+  expect(result).toContain('verified');
+});
