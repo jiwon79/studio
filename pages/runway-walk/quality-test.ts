@@ -15,7 +15,8 @@ const groups: ReviewGroup[] = (manifest as { groups?: ReviewGroup[] }).groups ??
 for (const row of groups) group.add(new Option(row.label, row.id));
 const linked = new URLSearchParams(location.search).get('group');
 if (groups.some(row => row.id === linked)) group.value = linked!;
-el('scope').textContent = isHiggsfield ? 'Higgsfield API · GPT Image 2.5 · +45° 연속 3장 테스트입니다. 원본 사진만 입력해 화질과 누끼를 보정했습니다. 기본 작품에는 아직 적용하지 않았습니다.' : `전체 추가 대상 ${manifest.additionalTarget.toLocaleString()}장 중 ${manifest.generated.toLocaleString()}장을 생성한 중간 결과입니다. 자세·각도 변경 가이드는 사용하지 않았습니다. 아직 기본 작품에 적용하지 않았습니다.`;
+el('scope').textContent = isHiggsfield ? `Higgsfield API · GPT Image 2.5 · +45° 전체 ${manifest.generated}장입니다. 원본 사진만 입력해 화질과 누끼를 보정했습니다. 작품의 +45°에서 원본과 ON/OFF 비교할 수 있습니다.` : `전체 추가 대상 ${manifest.additionalTarget.toLocaleString()}장 중 ${manifest.generated.toLocaleString()}장을 생성한 중간 결과입니다. 자세·각도 변경 가이드는 사용하지 않았습니다. 아직 기본 작품에 적용하지 않았습니다.`;
+if (isHiggsfield) el<HTMLAnchorElement>('artwork').href = './angle.html?angle=45';
 el('edited-label').textContent = isHiggsfield ? 'Higgsfield · GPT Image 2.5' : 'GPT 화질 보정';
 let tick = 0, epoch = 0, loading = 0, ready = false, playing = false;
 const rows = () => groups.find(row => row.id === group.value)!.indices.map(index => manifest.frames.find(row => row.index === index)!);
@@ -45,7 +46,7 @@ function play() {
     if (!playing || run !== epoch) return;
     const elapsed = Math.floor((now - start) / duration), next = Math.min(elapsed, rows().length - 1);
     if (next !== tick) { tick = next; draw(); }
-    if (elapsed >= rows().length) { stop(); state.textContent = '구간 끝 · 반복 경계가 없는 3장 구간입니다.'; return; }
+    if (elapsed >= rows().length) { stop(); state.textContent = `구간 끝 · ${rows().length}프레임 구간입니다.`; return; }
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);

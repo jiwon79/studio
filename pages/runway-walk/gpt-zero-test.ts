@@ -40,7 +40,7 @@ export function gptZeroTest(onChange: () => void, faceFront: () => void, onDownl
   let selection = 0;
   let activeEnabled = options.enabled, activeRevised = options.revised;
   let retained: number[] = [];
-  const gui = new GUI({ title: '0° GPT 화질 보정', width: 270 });
+  const gui = new GUI({ title: '화질 비교', width: 270 });
   async function load() {
     const revised = options.revised;
     let download = downloads.get(revised);
@@ -86,13 +86,18 @@ export function gptZeroTest(onChange: () => void, faceFront: () => void, onDownl
       if (version === selection) onChange();
     } catch { options.state = '비교 사진 로딩 실패'; }
   }
-  gui.add(options, 'enabled').name('GPT 화질 보정').onChange(() => { void change(); });
+  gui.add(options, 'enabled').name('0° GPT 화질 보정').onChange(() => { void change(); });
   gui.add(options, 'compare12').name('12장만 전후 비교').listen().onChange(() => { if (options.compare12) { faceFront(); gui.close(); } onTwelveComparison(options.compare12); });
   gui.add(options, 'still').name('프레임 정지 비교').listen().onChange(() => { void change(); });
   gui.add(options, 'frame', 1, frames.length, 1).name('프레임').onChange(() => { options.still = true; void change(); });
   gui.add(options, 'state').name('적용 범위').listen().disable();
   for (const controller of gui.controllers.slice(0, 4)) controller.disable();
   return {
+    gui,
+    setDirection(yaw: number) {
+      gui.controllers.forEach(controller => controller.show(yaw === 0));
+      gui.show(yaw === 0 || yaw === 45);
+    },
     ready() {
       for (const controller of gui.controllers.slice(0, 4)) controller.enable();
       if (initialComparison) { initialComparison = false; options.compare12 = true; faceFront(); gui.close(); onTwelveComparison(true); }

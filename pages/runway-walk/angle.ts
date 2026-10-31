@@ -5,6 +5,7 @@ import { directionPhotos, directionPages } from './direction-photos';
 import { prepareLiveDirection } from './live-direction';
 import { zeroTwelveComparison } from './zero-twelve-comparison';
 import { gptZeroTest } from './gpt-zero-test';
+import { higgsfieldQuality45 } from './higgsfield-quality';
 import { ANGLE_STEP, snapYaw } from './direction-step';
 import type { AngleFrame } from './angle-match';
 import {WalkCoverageError,rebaseWalkState} from './walk-sequencer';
@@ -60,19 +61,19 @@ const images = new AtlasPool(async index => {
   if (!blob) throw new Error('Photograph download cancelled');
   return createImageBitmap(blob);
 }, 24);
-let downloaded = 0, loadingPages: number[] = [], loadingGpt = false, warmGeneration = 0;
+let downloaded = 0, loadingPages: number[] = [], loadingQuality: { count: number; readonly downloaded: number } | undefined, warmGeneration = 0;
 function downloadedPage() {
   downloaded++;
-  const complete = loadingPages.filter(index => !!downloads.get(index)).length + (loadingGpt ? gptTest.downloaded : 0);
-  const total = loadingPages.length + (loadingGpt ? gptTest.count : 0);
+  const complete = loadingPages.filter(index => !!downloads.get(index)).length + (loadingQuality?.downloaded ?? 0);
+  const total = loadingPages.length + (loadingQuality?.count ?? 0);
   loading.style.setProperty('--loaded', `${total ? Math.min(100, complete / total * 100) : 0}%`);
   surface.dataset.loadedPages = String(downloaded);
 }
 async function loadView(yaw: number, current: () => boolean) {
-  const indices = directionPhotos(yaw), restored = gptTest.covers(yaw, indices, true);
-  loadingPages = restored ? [] : directionPages(yaw); loadingGpt = restored;
-  surface.dataset.startupPages = String(loadingPages.length + (restored ? gptTest.count : 0));
-  if (restored) await gptTest.load();
+  const indices = directionPhotos(yaw), provider = qualityForYaw(yaw), restored = provider.covers(yaw, indices, true);
+  loadingPages = restored ? [] : directionPages(yaw); loadingQuality = restored ? provider : undefined;
+  surface.dataset.startupPages = String(loadingPages.length + (restored ? provider.count : 0));
+  if (restored) await provider.load();
   else await Promise.all(loadingPages.map(index => downloads.request(index, current)));
 }
 function warmNeighbors() {
@@ -103,6 +104,9 @@ function comparisonLink(enabled: boolean) {
 }
 const comparison12 = zeroTwelveComparison(() => { comparisonLink(false); gptTest.endComparison(); lastTime = 0; carry = 0; if (!ready) void load(); else draw(); });
 const gptTest = gptZeroTest(() => { if (ready) { draw(); void startDirection().catch(failed); } }, () => { if (ready) setAngle(0); }, downloadedPage, enabled => { comparisonLink(enabled); if (enabled && !ready) setAngle(0); comparison12.setEnabled(enabled); lastTime = 0; carry = 0; if (!enabled) { if (!ready) void load(); else draw(); } });
+const higgsfieldTest = higgsfieldQuality45(gptTest.gui, () => { if (ready && target === 45) void refreshHiggsfield().catch(failed); }, downloadedPage);
+function qualityForYaw(yaw: number) { return yaw === 45 ? higgsfieldTest : gptTest; }
+
 function paint(image: ImageBitmap, tile: number, columns: number, width: number, height: number, row: AngleFrame, yaw: number, quality: string) {
   paintRegion(image, tile % columns * width, Math.floor(tile / columns) * height,
     width, height, 0, 0, row, yaw, quality);
@@ -119,13 +123,13 @@ function beginFrame(restored: boolean) {
   canvas.dataset.pixelScale = String(scale);
 }
 function paintRegion(image: ImageBitmap, x: number, y: number, width: number, height: number, dx: number, dy: number, row: AngleFrame, yaw: number, quality: string) {
-  const restored = quality === 'hd' ? gptTest.replacement(yaw, frameIndices.get(row)!) : undefined;
+  const restored = quality === 'hd' ? qualityForYaw(yaw).replacement(yaw, frameIndices.get(row)!) : undefined;
   beginFrame(!!restored);
   const aligned=quality==='hd'?!!block.registered:sequencer.usesRegistration(yaw);
   const transform=row.posture?(quality==='hd'?cutPhotoTransform(block,offset,row.posture,phase,yaw):aligned?photoTransform(row.posture,phase,yaw):IDENTITY_PHOTO):IDENTITY_PHOTO;
   context.save();applyPhotoTransform(context,transform);
   if (restored) {
-    context.save(); applyPhotoTransform(context, gptTest.registration(frameIndices.get(row)!) ?? IDENTITY_PHOTO);
+    context.save(); applyPhotoTransform(context, qualityForYaw(yaw).registration(frameIndices.get(row)!) ?? IDENTITY_PHOTO);
     context.drawImage(restored, 0, 0, restored.width, restored.height, 0, 0, data.tileWidth, data.tileHeight);
     context.restore();
   }
@@ -151,6 +155,9 @@ function paintRegion(image: ImageBitmap, x: number, y: number, width: number, he
   canvas.dataset.quality = quality;
   canvas.dataset.motionVerified = String(!restored && hd && !!block.qualityVerified);
   canvas.dataset.gptRestored = String(!!restored);
+  canvas.dataset.qualityProvider = restored ? (yaw === 45 ? 'higgsfield' : 'built-in-gpt') : 'original';
+  canvas.dataset.higgsfieldDownloaded = String(higgsfieldTest.downloaded);
+  canvas.dataset.higgsfieldDecoded = String(higgsfieldTest.decoded);
   canvas.dataset.posePatched = String(!!restored && gptTest.posePatched(yaw, frameIndices.get(row)!));
   canvas.dataset.decodedPages = String(images.size);
   canvas.dataset.compressedPages = String(downloads.size);
@@ -171,6 +178,7 @@ function draw() {
     direction.value = label(0);
     canvas.dataset.quality = 'quality-test-still';
     canvas.dataset.gptRestored = String(still.edited);
+    canvas.dataset.qualityProvider = still.edited ? 'built-in-gpt' : 'original';
     canvas.dataset.posePatched = String(still.edited && gptTest.posePatched(0, still.index, true));
     canvas.dataset.motionVerified = 'false';
     canvas.dataset.sourceFrame = String(frames[still.index].sourceFrame);
@@ -185,19 +193,20 @@ function draw() {
   }
   const row = frames[cutIndex(block,Math.min(offset, block.count - 1))];
   const image = images.get(row.atlas);
-  const restored = gptTest.replacement(renderedTarget, frameIndices.get(row)!);
+  const restored = qualityForYaw(renderedTarget).replacement(renderedTarget, frameIndices.get(row)!);
   if (!image && restored) paintRegion(restored, 0, 0, restored.width, restored.height, 0, 0, row, renderedTarget, 'hd');
   else if (image) paint(image, row.tile, data.columns, data.tileWidth, data.tileHeight, row, renderedTarget, 'hd');
 
 }
 async function prepare(candidate: typeof block, yaw = renderedTarget, requested = false) {
   const pages = new Set(cutIndices(candidate).map(i => frames[i].atlas));
-  await Promise.all([gptTest.covers(yaw, cutIndices(candidate), requested) ? Promise.resolve() : Promise.all([...pages].map(index => images.load(index))), gptTest.prepare(yaw, cutIndices(candidate), requested)]);
+  await Promise.all([qualityForYaw(yaw).covers(yaw, cutIndices(candidate), requested) ? Promise.resolve() : Promise.all([...pages].map(index => images.load(index))), qualityForYaw(yaw).prepare(yaw, cutIndices(candidate), requested)]);
 }
 function retainPages() {
   const indices = [block, ...upcoming, ...planned, ...bufferPlanned].flatMap(candidate => cutIndices(candidate));
   images.retain(indices.map(i => frames[i].atlas));
   gptTest.retain(indices);
+  higgsfieldTest.retain(indices);
 }
 /** Keep almost a second of complete appearances decoded ahead of playback. */
 async function fillBuffer() {
@@ -220,6 +229,33 @@ function failed(error?:unknown) {
   surface.dataset.playing = 'false';
   surface.setAttribute('aria-busy', 'false');
   status.textContent = error instanceof WalkCoverageError?'이 각도의 보행 소스가 부족해 재생을 멈췄어요. 다른 각도를 선택해 주세요.':'프레임을 불러오지 못했어요. 새로고침해 주세요.';
+}
+/** Quality comparison keeps this exact edit and live tick, including when
+ * paused. Download/decode the other variant before changing displayed pixels. */
+async function refreshHiggsfield() {
+  const epoch = ++generation;
+  directionLoading = epoch;
+  const current = () => epoch === generation && target === 45;
+  try {
+    loading.hidden = false;
+    await loadView(45, current);
+    while (current()) {
+      await Promise.all([block, ...upcoming].map(candidate => prepare(candidate, 45, true)));
+      if (!current()) return;
+      const available = [block, ...upcoming].every(candidate =>
+        (higgsfieldTest.covers(45, cutIndices(candidate), true) || cutIndices(candidate).every(i => !!images.get(frames[i].atlas)))
+        && higgsfieldTest.available(45, cutIndices(candidate)));
+      if (!available) continue;
+      higgsfieldTest.activate();
+      // An old fill may have decoded the previous variant. Its source order is
+      // unchanged, but do not install an unprepared appearance after handoff.
+      stream++; planned = []; bufferPlanned = [];
+      retainPages(); directionLoading = undefined;
+      draw(); loading.hidden = true;
+      void fillBuffer(); warmNeighbors();
+      return;
+    }
+  } finally { if (directionLoading === epoch) directionLoading = undefined; }
 }
 /** Decode the new view while the current HD sequence keeps playing. Only the
  * small entry window is needed to turn; the regular buffer fills afterwards. */
@@ -244,12 +280,12 @@ async function startDirection() {
         planned = sequence; retainPages();
         return sequence;
       },
-      available: candidate => (gptTest.covers(requested, cutIndices(candidate), true) || cutIndices(candidate).every(i => !!images.get(frames[i].atlas))) && gptTest.available(requested, cutIndices(candidate)),
+      available: candidate => (qualityForYaw(requested).covers(requested, cutIndices(candidate), true) || cutIndices(candidate).every(i => !!images.get(frames[i].atlas))) && qualityForYaw(requested).available(requested, cutIndices(candidate)),
       prepare: candidate => prepare(candidate, requested, true),
     });
     // Await itself yields, so recheck cancellation before installing the edit.
     if (!sequence || epoch !== generation || requested !== target) return;
-    gptTest.activate();
+    qualityForYaw(requested).activate();
     block = sequence[0]; upcoming = sequence.slice(1);
     planned = []; bufferPlanned = []; stream++;
     renderedTarget = requested;
@@ -265,6 +301,8 @@ function setAngle(value: number) {
   const next = snapYaw(value, minYaw, maxYaw);
   const changed = next !== target;
   target = next;
+  gptTest.setDirection(target);
+  higgsfieldTest.setDirection(target);
   surface.setAttribute('aria-valuenow', String(target));
   surface.setAttribute('aria-valuetext', label(target));
   if (ready && changed) {
@@ -338,9 +376,9 @@ async function load() {
     // complete artwork download until the viewer returns to the artwork.
     if (new URLSearchParams(location.search).get('compare') === '12') { gptTest.ready(); return; }
     gptTest.pending();
-    surface.dataset.totalPages = String(data.atlases.length + gptTest.count);
+    surface.dataset.totalPages = String(data.atlases.length + gptTest.count + higgsfieldTest.count);
     await startDirection();
-    if (!images.get(frames[block.start].atlas) && !gptTest.replacement(target, block.start)) throw new Error('Initial frame decode failed');
+    if (!images.get(frames[block.start].atlas) && !qualityForYaw(target).replacement(target, block.start)) throw new Error('Initial frame decode failed');
     ready = true;
     gptTest.ready();
     surface.dataset.readyAt = String(performance.now());
