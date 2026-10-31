@@ -4,7 +4,7 @@
   "purpose": "quality-only, no model or pose guide",
   "status": "partial library; artwork applies only covered directions with explicit original exceptions",
   "additionalTarget": 2892,
-  "generated": 2433,
+  "generated": 2505,
   "frames": [
     {
       "index": 370,
@@ -43848,6 +43848,1302 @@
       },
       "playback": "151-playback-768.webp",
       "playbackSha256": "48c605021ccfce142a1fd4d120f24e6b7eb55c148283cb7b3fbc33a13286f45b"
+    },
+    {
+      "index": 4541,
+      "group": -80,
+      "source": "pradafw12",
+      "sourceFrame": 6609,
+      "original": "4541-original.webp",
+      "edited": "4541.webp",
+      "originalInputSha256": "6aac3e9e9a18a945f3b30c4f4b66cb42c106c57a4ca48ac9dcee3d542d4d9513",
+      "generatedPngSha256": "2e190c66ae4370b14e9cebc23f204c1ae00ef92b1bc62fb82ed68e62627bb77f",
+      "editedSha256": "33fb6ff02cae321e8a83237a7875d64494bb336e23390e9a372fe56c57aa2e41",
+      "qualityRegistration": {
+        "scale": 0.999245283018868,
+        "dx": 0.18528301886792065,
+        "dy": -0.45433962264155525
+      },
+      "playback": "4541-playback-768.webp",
+      "playbackSha256": "242346ec4c68bb5364ba0c4300837ef40a65c4ecd22a9bd393bbba906f2a70a0"
+    },
+    {
+      "index": 4542,
+      "group": -80,
+      "source": "pradafw12",
+      "sourceFrame": 6610,
+      "original": "4542-original.webp",
+      "edited": "4542.webp",
+      "originalInputSha256": "8491c0dc0cbc022b232559a87d3a6ed65e7d20c348fa54d34d4b6453aeca4f76",
+      "generatedPngSha256": "76eed9ddfd2dd7921d800fbbbc58f5a86b87fc33945b15ecdd3e1301bafe3b8a",
+      "editedSha256": "5206ac2de4793f8c1797beea07ea2858935233ce965f2ae9eca14df0ccfc459c",
+      "qualityRegistration": {
+        "scale": 1.0037907505686126,
+        "dx": -3.1739954510993016,
+        "dy": -0.22744503411672667
+      },
+      "playback": "4542-playback-768.webp",
+      "playbackSha256": "d5337cedfe9b1050f99ecfcd3c551d7df4d136a35334075c113a36e5a7ead59f"
+    },
+    {
+      "index": 2100,
+      "group": -80,
+      "source": "hermes25",
+      "sourceFrame": 15068,
+      "original": "2100-original.webp",
+      "edited": "2100.webp",
+      "originalInputSha256": "0c9161f25e32bbaf9d264d5b4435174285c639e2a04f3acb226c486cdc22805f",
+      "generatedPngSha256": "b8a847fde52dbf8636eca595cb0bd2c0b3763dc2199cebca8c50c022d6d33771",
+      "editedSha256": "77caa95235c32ebe82f3f2ad989db3cc980f44ddf71f0ed74f1fc42874220c1c",
+      "qualityRegistration": {
+        "scale": 0.9969879518072289,
+        "dx": 2.3915662650602485,
+        "dy": 1.1777108433735748
+      },
+      "playback": "2100-playback-768.webp",
+      "playbackSha256": "d00b5f6794254ebb5de30ccf27e81bd7eb29a3baa2bfc1876f0dc891f1bdb96e"
+    },
+    {
+      "index": 2101,
+      "group": -80,
+      "source": "hermes25",
+      "sourceFrame": 15069,
+      "original": "2101-original.webp",
+      "edited": "2101.webp",
+      "originalInputSha256": "1ed077346749582dc35488b99e01e32992235b3a7d8cd209b449d7aab88f434c",
+      "generatedPngSha256": "de868bdcfd43444e07bed97be1392d7f5deb6725dae6c280e575529020f9e808",
+      "editedSha256": "c19b7bacbd0d7f6206cd62890f7d6eeb7f7a3287d1312fe73f43cbf5ef3d501f",
+      "qualityRegistration": {
+        "scale": 0.9917602996254682,
+        "dx": 3.2865168539325964,
+        "dy": 1.9737827715355252
+      },
+      "playback": "2101-playback-768.webp",
+      "playbackSha256": "b838326df3b738e6e8615e602709ced44aa688d1f2e46f368e375ff65927ca27"
+    },
+    {
+      "index": 2147,
+      "group": -80,
+      "source": "hermes25",
+      "sourceFrame": 15355,
+      "original": "2147-original.webp",
+      "edited": "2147.webp",
+      "originalInputSha256": "ce0998a4416f4707cf1dafdd3d503086267cb0dd457606a5abf8a68bc2c14db3",
+      "generatedPngSha256": "1f56fe5e2efb1f25ddcb4077c7030246d7178ab410ac60eb435ac7078909c3bf",
+      "editedSha256": "b5845d664c6739630033983906c2aac4e8e89a35761bc74bb77f53a705c8693d",
+      "qualityRegistration": {
+        "scale": 0.9954887218045113,
+        "dx": -6.091729323308272,
+        "dy": 1.2661654135338267
+      },
+      "playback": "2147-playback-768.webp",
+      "playbackSha256": "a1d9218212b27a094a8d2d8c0d9800b4c9f615d4f278f65456d4d41122698efd"
+    },
+    {
+      "index": 4889,
+      "group": -80,
+      "source": "pradafw12",
+      "sourceFrame": 12633,
+      "original": "4889-original.webp",
+      "edited": "4889.webp",
+      "originalInputSha256": "1f3358758a97b6e95410d51fb31d8249083354c02d437998e90c4bb4701aa70e",
+      "generatedPngSha256": "692ce56dec2decae5cb59cffb14fc74e76e50f62c41fa443d8486611299b9fec",
+      "editedSha256": "a77d37a0295c251dbbe813b8ce4b97528bab1267c1bad6f3ca292a8df792935b",
+      "qualityRegistration": {
+        "scale": 0.992503748125937,
+        "dx": 3.8178410794602655,
+        "dy": 3.92353823088456
+      },
+      "playback": "4889-playback-768.webp",
+      "playbackSha256": "71eed8465a1e6e944802a21612b57235fc0cb492fa254d7e601e2d93fe7bbf9f"
+    },
+    {
+      "index": 4890,
+      "group": -80,
+      "source": "pradafw12",
+      "sourceFrame": 12634,
+      "original": "4890-original.webp",
+      "edited": "4890.webp",
+      "originalInputSha256": "8d08bd239d20b994bf0447f144c593934adda43625606186060f5a8394524691",
+      "generatedPngSha256": "11e24241036f8046d71a93dbfe9a99ca4947d3d0e1d691d16627c717651f9280",
+      "editedSha256": "8dc8181badb4438615aa6bf2f0ba8478b2da37d8a4c369b286d86e7b884b370a",
+      "qualityRegistration": {
+        "scale": 0.9969879518072289,
+        "dx": -0.23042168674697905,
+        "dy": 3.17168674698803
+      },
+      "playback": "4890-playback-768.webp",
+      "playbackSha256": "fed1175346697d0c66ac1dc0626a9ee57a586e38d92149cbbfb1d92ae13a4349"
+    },
+    {
+      "index": 4891,
+      "group": -80,
+      "source": "pradafw12",
+      "sourceFrame": 12635,
+      "original": "4891-original.webp",
+      "edited": "4891.webp",
+      "originalInputSha256": "f7acf47ed2626b1d084a750dee3b5ef8dfde3ef8a181ef0ef04a7bf8e406ef9a",
+      "generatedPngSha256": "9cbabfbb27b1a21fb891d81502a168280ecc652ec36499646f17a985f2897ff5",
+      "editedSha256": "43d145626a960a02cb659f50b07d55fdbe0cbd8b41c3a3f99f1763b5aa229602",
+      "qualityRegistration": {
+        "scale": 0.9932483120780196,
+        "dx": 0.7419354838709751,
+        "dy": 4.378094523630921
+      },
+      "playback": "4891-playback-768.webp",
+      "playbackSha256": "16406fceed0262e3441076d366af74c8a1cdb1ba1f6970203900993117868ad6"
+    },
+    {
+      "index": 5451,
+      "group": -80,
+      "source": "pradafw14",
+      "sourceFrame": 1478,
+      "original": "5451-original.webp",
+      "edited": "5451.webp",
+      "originalInputSha256": "f009a6d860852a022d42b37745c6b1b657137d22850fca94aace9fc813e96c5c",
+      "generatedPngSha256": "2bb92c5a80d04b50836b82329cee1df6454224cc64a9007fa7ca8fe801c8ecd7",
+      "editedSha256": "9351dafa936068f39b1c3d22b55420074f62f8b524449f1b9140ae6ecd779d88",
+      "qualityRegistration": {
+        "scale": 1.003030303030303,
+        "dx": -1.5704545454545382,
+        "dy": -0.68030303030298
+      },
+      "playback": "5451-playback-768.webp",
+      "playbackSha256": "0f00c6b720ffa86b634829973b9d874ed97ed312a8c354930ab3c7559b63dd79"
+    },
+    {
+      "index": 6194,
+      "group": -80,
+      "source": "pradafw12",
+      "sourceFrame": 1713,
+      "original": "6194-original.webp",
+      "edited": "6194.webp",
+      "originalInputSha256": "42321121df0807d4867485de294a6d88a7126e3e03b3f73a3a38559c644a14a5",
+      "generatedPngSha256": "e4cf83c2bfef7da28ca64857b07dd663fe3e035daf39470e1f8ee9c2321f39f0",
+      "editedSha256": "8e534c0f8c38be2c60ecbb1e72392e762238505773ac7ebab3835593b063fe00",
+      "qualityRegistration": {
+        "scale": 0.999244142101285,
+        "dx": 1.9474678760392976,
+        "dy": -0.4542705971277883
+      },
+      "playback": "6194-playback-768.webp",
+      "playbackSha256": "9bfaffce0daae75bbe2c8062e33a31a51a1be7a420a879cb935c25a9333da871"
+    },
+    {
+      "index": 6195,
+      "group": -80,
+      "source": "pradafw12",
+      "sourceFrame": 1714,
+      "original": "6195-original.webp",
+      "edited": "6195.webp",
+      "originalInputSha256": "2b9c4b7fd187085fb571dab36e00d034a8ca1486768ce1c3d7f964a8339f25b5",
+      "generatedPngSha256": "f263a7d4fad5f6576b371bbc973e845d965bdd63a9a2021ba67c1a07d95edc7d",
+      "editedSha256": "88683f046154f8079c727c9d6170fb68a646889d02e36dc0ca2cb96d8c019970",
+      "qualityRegistration": {
+        "scale": 0.9962321024868124,
+        "dx": -3.5354182366239684,
+        "dy": 0.22607385079129472
+      },
+      "playback": "6195-playback-768.webp",
+      "playbackSha256": "f819307feb83e8fde68b72a5b0fa0c11e333db7a42c9ef0660f5a9f74e1bb70f"
+    },
+    {
+      "index": 6197,
+      "group": -80,
+      "source": "pradafw12",
+      "sourceFrame": 1716,
+      "original": "6197-original.webp",
+      "edited": "6197.webp",
+      "originalInputSha256": "30f29587a598a511d9e6610bb7fbf9c1c4cbb46a7bb9a1264d1414cc65ba78d0",
+      "generatedPngSha256": "9344c1497ed64966fcb02820f9d4b5ddab7051cb2e3d4a1cfde97184dfa8d367",
+      "editedSha256": "2289bc07f861804e8e2fe1cdbdb87f5b54cc2feb06985face04bdefb7d4f1589",
+      "qualityRegistration": {
+        "scale": 0.9954819277108434,
+        "dx": -0.6396837349397799,
+        "dy": 0.7688253012047426
+      },
+      "playback": "6197-playback-768.webp",
+      "playbackSha256": "db90bc3803ef8bf9f55c144329c2a9a247ef37231a7b3c751cd078f87b753fac"
+    },
+    {
+      "index": 196,
+      "group": -80,
+      "source": "prada",
+      "sourceFrame": 4639,
+      "original": "196-original.webp",
+      "edited": "196.webp",
+      "originalInputSha256": "d267696c4fc47523f33dce61fdb7cf2e89290760ba617ca390f0006c20c49b75",
+      "generatedPngSha256": "355babf43bc1420fb02f0faecc0e63ba0493631f561a03c54fe681404e54b33a",
+      "editedSha256": "f2a39d2ba8f09d834e3e8924cc11f1135bc03fdbc59947a3e24997ae1cb2d1fc",
+      "qualityRegistration": {
+        "scale": 0.9880418535127056,
+        "dx": -1.7914798206278135,
+        "dy": 1.7055306427503183
+      },
+      "playback": "196-playback-768.webp",
+      "playbackSha256": "6799b7f3d426395df73072cf8ad80d17b50ae1fb5ba3487fff154a1328b7aa4f"
+    },
+    {
+      "index": 2102,
+      "group": -80,
+      "source": "hermes25",
+      "sourceFrame": 15070,
+      "original": "2102-original.webp",
+      "edited": "2102.webp",
+      "originalInputSha256": "1e97f531d1765bbbfabe8c3b5270d9e51acf9871d236422af4fcc3dfbffffc42",
+      "generatedPngSha256": "8bad7055c0b5d0427b14409127e095a70b556679d77a64b63779d6005e00776f",
+      "editedSha256": "835ee07075020150daf866e021df320502f55b2d910f859e15527f9f4b593f59",
+      "qualityRegistration": {
+        "scale": 0.993993993993994,
+        "dx": 0.3551051051051104,
+        "dy": 1.3543543543543137
+      },
+      "playback": "2102-playback-768.webp",
+      "playbackSha256": "7ce81e6af5c270e22a28007ac80d7de8a32f91936fa57d1fa8ccb6fdd76204ff"
+    },
+    {
+      "index": 4553,
+      "group": -80,
+      "source": "pradafw12",
+      "sourceFrame": 6622,
+      "original": "4553-original.webp",
+      "edited": "4553.webp",
+      "originalInputSha256": "fdea146909e86ee0fad7215c04bf0e43e042a7eb014ed3747aee4b44f9c06cf2",
+      "generatedPngSha256": "189770b3c31c6b935c25267f458958088208f34f7ee153ed14121034e8afae33",
+      "editedSha256": "7f04fdcab23219233baa8455c6b98a95ed9c73139435a2f0fb7229a76342620b",
+      "qualityRegistration": {
+        "scale": 0.999244142101285,
+        "dx": -2.3163265306122582,
+        "dy": -0.953892668178355
+      },
+      "playback": "4553-playback-768.webp",
+      "playbackSha256": "a3e51f520301704749b28ac8716ca31b3622fb0318243805ce3c7a29b3e80c97"
+    },
+    {
+      "index": 4554,
+      "group": -80,
+      "source": "pradafw12",
+      "sourceFrame": 6623,
+      "original": "4554-original.webp",
+      "edited": "4554.webp",
+      "originalInputSha256": "56c555a889b14a1bb00c57deeabf1aa2a4484b9a434ed0efa553b23de4282fed",
+      "generatedPngSha256": "6d049f75a62b3dd943acc0a9f19e1bb0f277b17f0129d171a75ce4d6fb5375cd",
+      "editedSha256": "561f7e405c6cf0bf6bb565f58a402111863e85678545cbafef23035dba3973d2",
+      "qualityRegistration": {
+        "scale": 1.0007570022710068,
+        "dx": -3.1881150643451974,
+        "dy": -0.5457986373959329
+      },
+      "playback": "4554-playback-768.webp",
+      "playbackSha256": "b971f1853ba7bf1addd8524c074e969b2ca441a23400c2cf9ff46bdb110c71e5"
+    },
+    {
+      "index": 4555,
+      "group": -80,
+      "source": "pradafw12",
+      "sourceFrame": 6624,
+      "original": "4555-original.webp",
+      "edited": "4555.webp",
+      "originalInputSha256": "bd9a1136c24c12bfe38a80a9645bf2c71627a63cc0d57a6ad0018afa53aaea7e",
+      "generatedPngSha256": "cc251ee2fcba3d09d4304fe3de775985963f8fa8ff037c0b630767b5970814ef",
+      "editedSha256": "1c6e4d05dbbabbaa4827f49296f1c55761a803db63c4daf89781d86009128611",
+      "qualityRegistration": {
+        "scale": 0.9977358490566037,
+        "dx": -0.1935849056603729,
+        "dy": -0.36301886792455207
+      },
+      "playback": "4555-playback-768.webp",
+      "playbackSha256": "6e9db2bd8b01c9ee10fb26139ab1b961a9c6d6f5093ded90e82a3f8213b5267d"
+    },
+    {
+      "index": 4651,
+      "group": -80,
+      "source": "pradafw12",
+      "sourceFrame": 9111,
+      "original": "4651-original.webp",
+      "edited": "4651.webp",
+      "originalInputSha256": "29a8c360abf26980d810001ae54ce686a8e5d7321a8cf484c7820ec6644aea87",
+      "generatedPngSha256": "992cb64b3295e078a12bbec745c3fbdc6590fabf043856f453a1b1df61bd6239",
+      "editedSha256": "09dbfa91fbf7a7bda6694e277ddb6de841ea6512c60cbb359d6c22c32e7d555c",
+      "qualityRegistration": {
+        "scale": 0.9954819277108434,
+        "dx": 1.5365210843373234,
+        "dy": 0.7688253012047426
+      },
+      "playback": "4651-playback-768.webp",
+      "playbackSha256": "06e5710835d657ee4f53164749a5ad5d0457ff116538490223c783cf67c23fea"
+    },
+    {
+      "index": 2174,
+      "group": -80,
+      "source": "hermes25",
+      "sourceFrame": 15680,
+      "original": "2174-original.webp",
+      "edited": "2174.webp",
+      "originalInputSha256": "6232a815f4f30223cb9b25ef2af656270cf139794e39c0ee73520557efb72645",
+      "generatedPngSha256": "70429d875e0602bf0541341f21ad1079a1b117ae795eb3b2c3d3b03cb4681145",
+      "editedSha256": "abd8c440d04656dae78dd48646fe85070a49467d6e89a8fbed57f5233f8ef209",
+      "qualityRegistration": {
+        "scale": 0.9954887218045113,
+        "dx": 1.1278195488721678,
+        "dy": 1.26165413533829
+      },
+      "playback": "2174-playback-768.webp",
+      "playbackSha256": "55106cb82281c2381853de871ab1ba09fd3a7bd087ea6d7515e0bfc1fadfada8"
+    },
+    {
+      "index": 2175,
+      "group": -80,
+      "source": "hermes25",
+      "sourceFrame": 15681,
+      "original": "2175-original.webp",
+      "edited": "2175.webp",
+      "originalInputSha256": "91b426159bdb0f858338c3204698f807e0287adacdf46153189aeaed7dc1378e",
+      "generatedPngSha256": "90281dae0e7c17866762c5bcbeda322b748bb9bd6c92ca4527984cd316b14b47",
+      "editedSha256": "226c51b8af3a47441f4bb1d7151e96fa6027382ab2ced170c73bf30f4735b3df",
+      "qualityRegistration": {
+        "scale": 0.993993993993994,
+        "dx": -0.08858858858860685,
+        "dy": 0.8513513513513544
+      },
+      "playback": "2175-playback-768.webp",
+      "playbackSha256": "8edfc14e757a5bdffb0b00d46d52428733d481bc712e9c546f7d3d719e7844c4"
+    },
+    {
+      "index": 5340,
+      "group": -80,
+      "source": "pradafw12",
+      "sourceFrame": 4849,
+      "original": "5340-original.webp",
+      "edited": "5340.webp",
+      "originalInputSha256": "b03fc778ade30dabe81d767442cc7b2ffb3d05886fff6ebec1682796578bc9bd",
+      "generatedPngSha256": "ca3fe41679cf8ac0dbcaf0e3ea739398851f3c626f37870ec7c642e56a807f13",
+      "editedSha256": "18332a24ac053fd9e3c712764523b7c26579c7215979bce5fe8e49a3ea5e4fd5",
+      "qualityRegistration": {
+        "scale": 1.003030303030303,
+        "dx": -1.7863636363636033,
+        "dy": 0.8242424242424704
+      },
+      "playback": "5340-playback-768.webp",
+      "playbackSha256": "43416d2101ef09ffb0937ad8a33e274dec9460c3441d49926b8e8892a30b85b6"
+    },
+    {
+      "index": 5341,
+      "group": -80,
+      "source": "pradafw12",
+      "sourceFrame": 4850,
+      "original": "5341-original.webp",
+      "edited": "5341.webp",
+      "originalInputSha256": "3423efcb234892ed49aa7273cca697dfa4b52f92fd7f47dbf8c2c4406a9ce378",
+      "generatedPngSha256": "bc2fd523fe00c45d7fd95e43287ec484a939cabced7597adbab8f81af375c53e",
+      "editedSha256": "12b824e9d317a6d8464ae5767db088143b9ca1212f79cd14dfb663f4e4d426c1",
+      "qualityRegistration": {
+        "scale": 0.9677891654465594,
+        "dx": 4.359077598828691,
+        "dy": 14.513909224011627
+      },
+      "playback": "5341-playback-768.webp",
+      "playbackSha256": "21866687f64f2c03738da8cf73b06ab35c7907950400c10c558f8653725406c6"
+    },
+    {
+      "index": 5342,
+      "group": -80,
+      "source": "pradafw12",
+      "sourceFrame": 4851,
+      "original": "5342-original.webp",
+      "edited": "5342.webp",
+      "originalInputSha256": "58104cd1221b9eff4415139ebae43d2571012f227ffe7b7a65e4763bae9a2007",
+      "generatedPngSha256": "9e49292e95f3b6afcb77ba0de50a7c093e89b07b48a3c4be587b026f509123f3",
+      "editedSha256": "ebe79b928ebf13c782c4f6a8ba7503f6392c629b3aa4eb66c46afc9aa3cbb04b",
+      "qualityRegistration": {
+        "scale": 0.9858314690529456,
+        "dx": -4.727069351230426,
+        "dy": 8.243847874720359
+      },
+      "playback": "5342-playback-768.webp",
+      "playbackSha256": "3b724839ab107517390d7d2f7c7bbbb64d13be858b1cc79cfe3fd1f3d0d0c049"
+    },
+    {
+      "index": 5525,
+      "group": -80,
+      "source": "pradafw14",
+      "sourceFrame": 11727,
+      "original": "5525-original.webp",
+      "edited": "5525.webp",
+      "originalInputSha256": "0d03ae6aa57b9c36aeb0f4bc885bf3506bbcf6eb0b5d84cd77804854133831d0",
+      "generatedPngSha256": "5a268cf1e77a0b579a2bf728a5b164e41f2bd2c03d4d3ff749faeda5580709ce",
+      "editedSha256": "97074742a2f66cc3ff223184c0759c708ee089bbda967372a62bedccb5966b7f",
+      "qualityRegistration": {
+        "scale": 0.9977426636568849,
+        "dx": -0.3679458239277551,
+        "dy": 2.1286681715575924
+      },
+      "playback": "5525-playback-768.webp",
+      "playbackSha256": "f5390f13d769f9f1208a225bfdfa34923331c9179099f65fac622529dcce24f8"
+    },
+    {
+      "index": 5526,
+      "group": -80,
+      "source": "pradafw14",
+      "sourceFrame": 11728,
+      "original": "5526-original.webp",
+      "edited": "5526.webp",
+      "originalInputSha256": "5055c5cdf2d9e1cf70099620a204eaafe96e430d9af8b2e93fc8edb5d33d6c70",
+      "generatedPngSha256": "4c8b67b53cf7e8215e66fbfc98a07d1456b2927b391cdd672367ecc020bc77c5",
+      "editedSha256": "4974e0b9b79e9e50eeffc2ef5872d316dbc968e06c15d4899655d14ef98d67a7",
+      "qualityRegistration": {
+        "scale": 0.9947328818660647,
+        "dx": -2.1068472535741307,
+        "dy": 1.808126410835257
+      },
+      "playback": "5526-playback-768.webp",
+      "playbackSha256": "a0bb084e95230bcdfc8bb22cc63a270afc440feb45d146ef3fbd9e1eb06d1d29"
+    },
+    {
+      "index": 5528,
+      "group": -80,
+      "source": "pradafw14",
+      "sourceFrame": 11730,
+      "original": "5528-original.webp",
+      "edited": "5528.webp",
+      "originalInputSha256": "3f02a97b582e9fcfa08bf9f48a4216e95cab0b9caf487f36b32e9564edbd8704",
+      "generatedPngSha256": "6bd11826e1537ada907451b3259eb36f44ad7ee2f1ed628b6cabcb3e236ef62a",
+      "editedSha256": "56c0bc53ba3ada42ca93dd1e7abb90839cbd7822706a79514caf98a88dda34ac",
+      "qualityRegistration": {
+        "scale": 0.9939849624060151,
+        "dx": -1.1665413533834794,
+        "dy": 1.3548872180450644
+      },
+      "playback": "5528-playback-768.webp",
+      "playbackSha256": "89d26724ed6cbdbd83907aa7439d48e0efb0b9cc6213f215ea4da5216bfa854e"
+    },
+    {
+      "index": 158,
+      "group": -80,
+      "source": "prada",
+      "sourceFrame": 679,
+      "original": "158-original.webp",
+      "edited": "158.webp",
+      "originalInputSha256": "dc3c284e6ca1ca32fc135d4a086ba641ca8fa489d0e6daef4a9e72b4ebcf2d5e",
+      "generatedPngSha256": "6b1e2c4e185ce75efa8d98fb537766cfe3d843ad0db80cb2ac2e5ecd0b9bfe6a",
+      "editedSha256": "1548c686b55e8ef10afb97fc7c80dc507dc54ae611b9d6cb048c4d08167b0344",
+      "qualityRegistration": {
+        "scale": 0.9887976101568334,
+        "dx": -0.5586258401792179,
+        "dy": 5.1217326362957465
+      },
+      "playback": "158-playback-768.webp",
+      "playbackSha256": "82ae12cc86145f97b12a7a175fe804f1a96caf58d3c9cb16661eb5904be1d249"
+    },
+    {
+      "index": 159,
+      "group": -80,
+      "source": "prada",
+      "sourceFrame": 680,
+      "original": "159-original.webp",
+      "edited": "159.webp",
+      "originalInputSha256": "488ed2a24e735fb1ea156c07a279fd9a70f51510671516b457f7e28497bee358",
+      "generatedPngSha256": "e4d95957a3709dfa2c612aa5c64069b3b0e29bacdd1dba01a1c24502b88b25c0",
+      "editedSha256": "58860821736deb77bc07e2c305ad19a01d06a08c479726508b6df657d6179a73",
+      "qualityRegistration": {
+        "scale": 0.9880418535127056,
+        "dx": 1.4306841485814061,
+        "dy": 5.163677130044789
+      },
+      "playback": "159-playback-768.webp",
+      "playbackSha256": "ce727f5795c9aa5836a3d94f0fa9de6f3ad93f0d1df31c1c86034dae13a6c565"
+    },
+    {
+      "index": 160,
+      "group": -80,
+      "source": "prada",
+      "sourceFrame": 681,
+      "original": "160-original.webp",
+      "edited": "160.webp",
+      "originalInputSha256": "f6d991de5817af9cb22d95fb42f708195eefc890e78ea6555f515ad2a0d66f4e",
+      "generatedPngSha256": "f4f144053751d22af8eee839153eba2e0ed191d6e86317ef63adb7becf62149c",
+      "editedSha256": "367a8b0a44f868cfbe7ed954310008c6eed252a9a7e21414d121b6061b4c70eb",
+      "qualityRegistration": {
+        "scale": 0.9902767389678384,
+        "dx": 1.9061331338818377,
+        "dy": 2.554225878833222
+      },
+      "playback": "160-playback-768.webp",
+      "playbackSha256": "7f8824359c34a95aad378b4881a8403bca6d04eda3f6571a51773a2f14a7383c"
+    },
+    {
+      "index": 197,
+      "group": -80,
+      "source": "prada",
+      "sourceFrame": 4640,
+      "original": "197-original.webp",
+      "edited": "197.webp",
+      "originalInputSha256": "bef21005a46331babc2b4c37db0487b563a5c77a8c32929dec1588bf7f717edf",
+      "generatedPngSha256": "c493c966642bea393c6367539f95af83c8184f20090a7734d7e60603e313a6f7",
+      "editedSha256": "01a872a37cd558f5c64fff509a3d65ab119689f3983327131d1df99156a64fb3",
+      "qualityRegistration": {
+        "scale": 0.9954887218045113,
+        "dx": -2.5052631578947455,
+        "dy": -0.7293233082707502
+      },
+      "playback": "197-playback-768.webp",
+      "playbackSha256": "476f2e2b977feb2cb56b9f8f81662799c67596a6e2d80d0f76272408a20d0537"
+    },
+    {
+      "index": 198,
+      "group": -80,
+      "source": "prada",
+      "sourceFrame": 4641,
+      "original": "198-original.webp",
+      "edited": "198.webp",
+      "originalInputSha256": "eb9f57064d1be22783cff273d489ce684d070bbf8566766a6bdf095c1e304753",
+      "generatedPngSha256": "8e76f1f4825a3b6f70da8baad0afd33f2f615281ce190b1c83f5f5acd41b9de1",
+      "editedSha256": "353049a4acf07e9635bd006baf9d6b434ca33f4bc1e74c85b2015c1aed23cedf",
+      "qualityRegistration": {
+        "scale": 0.9552023121387283,
+        "dx": -1.1741329479768865,
+        "dy": 17.015895953757195
+      },
+      "playback": "198-playback-768.webp",
+      "playbackSha256": "3eec5df9ff26cfc0e33b760f95e745bbcf9eebfb8b2e17098e97d5ff74bf69b8"
+    },
+    {
+      "index": 199,
+      "group": -80,
+      "source": "prada",
+      "sourceFrame": 4642,
+      "original": "199-original.webp",
+      "edited": "199.webp",
+      "originalInputSha256": "09514d37e19cc6f179819af20e0348829695f201b19d6ff24d7354d746baa61c",
+      "generatedPngSha256": "be9eacef98c9134deafb67d76f3db01d053afac9232b0deee4ec17715075da2e",
+      "editedSha256": "a34a0870672526ace2fb59f933adcb0aa0a8e4e70600166144c9f6f7b8eb7719",
+      "qualityRegistration": {
+        "scale": 0.9932381667918858,
+        "dx": -0.19308790383169594,
+        "dy": 2.888805409466613
+      },
+      "playback": "199-playback-768.webp",
+      "playbackSha256": "5c94a574baa70ace92ef9cde47f24ef686f7f2ab71bdd27bb94412f6b8904cd5"
+    },
+    {
+      "index": 2148,
+      "group": -80,
+      "source": "hermes25",
+      "sourceFrame": 15356,
+      "original": "2148-original.webp",
+      "edited": "2148.webp",
+      "originalInputSha256": "3f45042a421a1f2cf57b6cf896b06d4063172595ce80aec156b9fed766219e91",
+      "generatedPngSha256": "82ed3192710b3c9c1138a48bef7289ae8f65b34437d62764d9175f7450d3c643",
+      "editedSha256": "e7b9c5223afd0bebabfb6974675cac8cdb1960b1c4f40f09bf7a63a5b914f7f5",
+      "qualityRegistration": {
+        "scale": 0.9895209580838323,
+        "dx": 0.7047155688622695,
+        "dy": 4.092065868263489
+      },
+      "playback": "2148-playback-768.webp",
+      "playbackSha256": "89de24d7f77b2ebcf5e835df508d41c74216473234d790ba0176b3960345098a"
+    },
+    {
+      "index": 2149,
+      "group": -80,
+      "source": "hermes25",
+      "sourceFrame": 15357,
+      "original": "2149-original.webp",
+      "edited": "2149.webp",
+      "originalInputSha256": "e2779668a5e8ee6382d6e93c9a02d94b47f035fa4c853c68767d743c4671d42e",
+      "generatedPngSha256": "a563d33fef9d1e4d01ba9832dab37591feba28deefc2c859b16ecb56dd26fcc8",
+      "editedSha256": "09375b70a2a8740d78f4bc8826cf7f0d88b04513ac75d2094caf750c3936ebab",
+      "qualityRegistration": {
+        "scale": 0.9939849624060151,
+        "dx": -0.6556390977443698,
+        "dy": 2.3488721804510533
+      },
+      "playback": "2149-playback-768.webp",
+      "playbackSha256": "84234d103b5773b3b872b8948fc2e67c9a2df8f4726a27eef7604e83f3dab35e"
+    },
+    {
+      "index": 2176,
+      "group": -80,
+      "source": "hermes25",
+      "sourceFrame": 15682,
+      "original": "2176-original.webp",
+      "edited": "2176.webp",
+      "originalInputSha256": "12c179d7c00ad2ad02b9995c8bac053bd74700cfae8ca63173130b788e06c0de",
+      "generatedPngSha256": "328d350703bd8bebc54c56bd23ad37f0526a768c55bb6b85c46a6071685be1d2",
+      "editedSha256": "6630ace383f58da51b1c40f306c611ae2bbbbe8e8ea8c5f0d12cffdc06f28d0d",
+      "qualityRegistration": {
+        "scale": 0.9962321024868124,
+        "dx": -0.6409193669932165,
+        "dy": 2.2185380557648386
+      },
+      "playback": "2176-playback-768.webp",
+      "playbackSha256": "5042ceea935b98a6aaa1044cb4af19f361a6bb373a0ad3075d5a7623d9a0f8d0"
+    },
+    {
+      "index": 4540,
+      "group": -80,
+      "source": "pradafw12",
+      "sourceFrame": 6608,
+      "original": "4540-original.webp",
+      "edited": "4540.webp",
+      "originalInputSha256": "b53f4d87f85c3a635faca5665dc6e3933fad7bf81403d302a93544905bb455e2",
+      "generatedPngSha256": "7771a5c9efd6113f6912cf391286b7c3d6d2a0d616c7fbc5eda07addf6489b61",
+      "editedSha256": "704f3f40235cb943bff527c93360b42108b31432f1dd7b949d7d8b14c88ce887",
+      "qualityRegistration": {
+        "scale": 0.9969834087481146,
+        "dx": -0.5086726998491713,
+        "dy": 1.1779788838612149
+      },
+      "playback": "4540-playback-768.webp",
+      "playbackSha256": "2ae323fca717b7369fe91707b9752555b6969fedbf9e9978cb4d946dc16574e5"
+    },
+    {
+      "index": 4693,
+      "group": -80,
+      "source": "pradafw12",
+      "sourceFrame": 10531,
+      "original": "4693-original.webp",
+      "edited": "4693.webp",
+      "originalInputSha256": "16f7d73eb7e779f49fe9eb5d4316a07470a2d2b4474597f36b77ac9060a35b91",
+      "generatedPngSha256": "9718edc2852ae1b00457cdf71a8f68cfdd97abcd1b08f82c8cb933e4c5bc1705",
+      "editedSha256": "70a1af0da0ba23b02a6ed685a268f7c046784661e11765b80b224b0e4db38d40",
+      "qualityRegistration": {
+        "scale": 0.999244142101285,
+        "dx": -0.8019652305366662,
+        "dy": 0.04535147392289218
+      },
+      "playback": "4693-playback-768.webp",
+      "playbackSha256": "41dc8020c5e4595c996a08266f68be4035d56da09b5ad5325ac194c6cfeb3a8a"
+    },
+    {
+      "index": 4694,
+      "group": -80,
+      "source": "pradafw12",
+      "sourceFrame": 10532,
+      "original": "4694-original.webp",
+      "edited": "4694.webp",
+      "originalInputSha256": "f4874d560d368245e9e12000a38a93ca60bc2ba30cb406da245daf94f2370a3a",
+      "generatedPngSha256": "fd4a5ecc1bce83160f7174abfd2090590a3fd5e3247838f5bccfad20a9d47e64",
+      "editedSha256": "51f70631181d14224a4a1eb52ea99624ac757497319de694615579a569c301ab",
+      "qualityRegistration": {
+        "scale": 0.9954887218045113,
+        "dx": 1.964661654135341,
+        "dy": 2.26165413533829
+      },
+      "playback": "4694-playback-768.webp",
+      "playbackSha256": "dec01fc4aff464f461550e435854241b813ba16c382ebd756a526889ba2a9de8"
+    },
+    {
+      "index": 4695,
+      "group": -80,
+      "source": "pradafw12",
+      "sourceFrame": 10533,
+      "original": "4695-original.webp",
+      "edited": "4695.webp",
+      "originalInputSha256": "3f10097017e218119524c1664c1aa0823085c5a391986653503449af886bef86",
+      "generatedPngSha256": "cbcf5660f8e743ca59541171bdedcd636952a2dd01aa8e283acb94993b5ad5f4",
+      "editedSha256": "e011b8d69a7aadfa764328bd9907ad7d10472922e3788ce455d7951d6db07598",
+      "qualityRegistration": {
+        "scale": 0.994740796393689,
+        "dx": 2.9278737791134404,
+        "dy": 2.305033809166048
+      },
+      "playback": "4695-playback-768.webp",
+      "playbackSha256": "0bb61d4b82a65aa0458618ec384408275c65b0db324acb8738b680d21f8f90ab"
+    },
+    {
+      "index": 5343,
+      "group": -80,
+      "source": "pradafw12",
+      "sourceFrame": 4852,
+      "original": "5343-original.webp",
+      "edited": "5343.webp",
+      "originalInputSha256": "81c9e6305d4624ef26a85ce057fc4640584b0efb27afc6b888e3dfce443ea5b4",
+      "generatedPngSha256": "14800665ea6509acfd76301d81c117ae2f9e9f31a5329f4c385b774370ee9596",
+      "editedSha256": "745d3a13c54e4dde9fc1a92d8e5ba0b0cd033e9bbb8e191e671f805b2e49bbee",
+      "qualityRegistration": {
+        "scale": 0.9902621722846442,
+        "dx": 1.2104868913857558,
+        "dy": 3.555056179775306
+      },
+      "playback": "5343-playback-768.webp",
+      "playbackSha256": "f206899617de30473fdee107abcbddb9d19808da4b64ecaaff28c72aebf3b7d7"
+    },
+    {
+      "index": 5344,
+      "group": -80,
+      "source": "pradafw12",
+      "sourceFrame": 4853,
+      "original": "5344-original.webp",
+      "edited": "5344.webp",
+      "originalInputSha256": "7bc98577242502e09f476bf18ebc636b8d5a8ffe89d7420e5bbee0a6341238d4",
+      "generatedPngSha256": "c80eff9340b7fade30226b237597e5d12ad6f4d3905b1335ce96b7b440d6623b",
+      "editedSha256": "d2b3ecacf4ae31cdc2a91f94c5720145ca00cc1b84b444ee0316589514b7c8ef",
+      "qualityRegistration": {
+        "scale": 0.9800148038490007,
+        "dx": -5.3086602516654295,
+        "dy": 8.549222797927428
+      },
+      "playback": "5344-playback-768.webp",
+      "playbackSha256": "74b97dee8df6dd1df1ecfdc047e88efa76a3ec5a85e5b34b7ef7a54983c8f94a"
+    },
+    {
+      "index": 5345,
+      "group": -80,
+      "source": "pradafw12",
+      "sourceFrame": 4854,
+      "original": "5345-original.webp",
+      "edited": "5345.webp",
+      "originalInputSha256": "6683a047c46b6aac1dc7f040e62d0bec1b02bdeae52419f9cf643d7fab83e6fe",
+      "generatedPngSha256": "b038d58dfbfef1c435593a1e725604bc933da1a5faf009b6ecf11afa3116bf1b",
+      "editedSha256": "7787ea656ca1226dd7c7b86cd6d1978efd3f3a020ef202bef94fab051d144ee3",
+      "qualityRegistration": {
+        "scale": 0.9836552748885586,
+        "dx": 1.2176820208023855,
+        "dy": 15.73551263001491
+      },
+      "playback": "5345-playback-768.webp",
+      "playbackSha256": "73e6d88541269b61e3af22077c8e305163850d91687a4d0665731a21e98c44d4"
+    },
+    {
+      "index": 5452,
+      "group": -80,
+      "source": "pradafw14",
+      "sourceFrame": 1479,
+      "original": "5452-original.webp",
+      "edited": "5452.webp",
+      "originalInputSha256": "10b375ecc65b91e738ade0b4cc1a6cae2bec54838f6f32adaa22c422d2d0babc",
+      "generatedPngSha256": "a34de51849087f394a3884ee7168e85694f5e0040f7f09d2dd110eb2fa6fab33",
+      "editedSha256": "3573ed78e3d07b1c14629e3cf1ddef0f7c3ebff9aeee1bf67e5d63bf3872901c",
+      "qualityRegistration": {
+        "scale": 1.016141429669485,
+        "dx": -2.86625672559569,
+        "dy": -0.9684857801690896
+      },
+      "playback": "5452-playback-768.webp",
+      "playbackSha256": "1c8db90fe3401fd00f2d5de03dfbbf9be043d993e23610b634dde0943dbe0225"
+    },
+    {
+      "index": 5520,
+      "group": -80,
+      "source": "pradafw14",
+      "sourceFrame": 11722,
+      "original": "5520-original.webp",
+      "edited": "5520.webp",
+      "originalInputSha256": "409837f14574d6cda16ec88f654dc770400560af02be1b6d4c94abbc557a6edf",
+      "generatedPngSha256": "04e69af5d3f3ef2d63c560a6517a0a59712411c80f5f930f284605ec58f4a04f",
+      "editedSha256": "19244e3b3bf53f3aa8761eeeb43495403c11358b6230883aa5650c5b25e5abc1",
+      "qualityRegistration": {
+        "scale": 0.994748687171793,
+        "dx": -1.33083270817707,
+        "dy": 2.2993248312077412
+      },
+      "playback": "5520-playback-768.webp",
+      "playbackSha256": "41180a7793938e7932298682aeaf24a14306d42eb1ff8cf635bca6aae0951353"
+    },
+    {
+      "index": 5521,
+      "group": -80,
+      "source": "pradafw14",
+      "sourceFrame": 11723,
+      "original": "5521-original.webp",
+      "edited": "5521.webp",
+      "originalInputSha256": "aa8df173b7a5607c7b56a441a79ef01b6fc2149b5ddcddd4929fb1878cf8b7d0",
+      "generatedPngSha256": "a11240558026ce7707e6d17bf3b27798fe826ee3b1db5eba00002c9d628fe51a",
+      "editedSha256": "1ff74b0658cc66d828159795e6e9b3942882957e5bd2721188dd48b880ce2816",
+      "qualityRegistration": {
+        "scale": 1.0015151515151515,
+        "dx": 3.8329545454545837,
+        "dy": -2.5946969696968836
+      },
+      "playback": "5521-playback-768.webp",
+      "playbackSha256": "66577b661e01f3492898936dcfb2c2010f1c9840672943ec3d8d546efbe5bfb4"
+    },
+    {
+      "index": 5522,
+      "group": -80,
+      "source": "pradafw14",
+      "sourceFrame": 11724,
+      "original": "5522-original.webp",
+      "edited": "5522.webp",
+      "originalInputSha256": "26a0dae4e2e309ba41f50c88815b60680e35fb61750102575230930718a8fc87",
+      "generatedPngSha256": "62d79aafb658c2fbff7f710070f43e58a8e47f2e3f88f51b7e452c36fdd323ea",
+      "editedSha256": "bd8b50278bf9da09971d0e134d4c40c03768722b137326d924d1a2f76f9ccfe1",
+      "qualityRegistration": {
+        "scale": 0.9771217712177122,
+        "dx": 6.031734317343194,
+        "dy": 19.938007380073827
+      },
+      "playback": "5522-playback-768.webp",
+      "playbackSha256": "55aadb7a38826bf9fde5838f01a0add9e2e1ec139b2fdb69564f20791c7fdc1f"
+    },
+    {
+      "index": 746,
+      "group": -80,
+      "source": "prada24",
+      "sourceFrame": 2506,
+      "original": "746-original.webp",
+      "edited": "746.webp",
+      "originalInputSha256": "5d3e4f5cf735ee6cd93436991a007e52d8543051e6b27d357edef4b0e6f5a8d4",
+      "generatedPngSha256": "0723b10075feaa7f97a77075ef5824b581f991a3ea4d0c9158f1b2cf20151e3b",
+      "editedSha256": "8c863dd47c4583f6cda36e389a16327ceeeb8aa489cd2c5c6545a46357a02737",
+      "qualityRegistration": {
+        "scale": 1.0015128593040847,
+        "dx": -0.8585476550680937,
+        "dy": 0.9122541603630907
+      },
+      "playback": "746-playback-768.webp",
+      "playbackSha256": "10a18e2fd3ba8244abdee6a77f9707d42c6536ea74d0b7283509aba54fc4f195"
+    },
+    {
+      "index": 161,
+      "group": -80,
+      "source": "prada",
+      "sourceFrame": 682,
+      "original": "161-original.webp",
+      "edited": "161.webp",
+      "originalInputSha256": "faa13db68c6edb71350749cf043787f7316b4dc0a2d8f6ab7eb143c614b5b407",
+      "generatedPngSha256": "886416be092f394732630dd8489beca43089725b6f82820cc119b7b145ae9cf9",
+      "editedSha256": "d456db8bd3520935792aecf46b629d1d781ae0e301285d92ba73b2279934171a",
+      "qualityRegistration": {
+        "scale": 0.9851190476190477,
+        "dx": 2.944940476190453,
+        "dy": 3.340773809523739
+      },
+      "playback": "161-playback-768.webp",
+      "playbackSha256": "264989c3a2ca2df19041559bb7686fc91f50dfd756e63179fca75115c8857012"
+    },
+    {
+      "index": 2152,
+      "group": -80,
+      "source": "hermes25",
+      "sourceFrame": 15360,
+      "original": "2152-original.webp",
+      "edited": "2152.webp",
+      "originalInputSha256": "1e04fb2ab4f5b9a657befe2941576dbb8340b804ba681bbae3a3986092176f6f",
+      "generatedPngSha256": "c228dcd69a743609fa02a75f51b9670420b34262650ef00be16b76272dcbb432",
+      "editedSha256": "a3be1b52871d7f0d7881db51bc3dd9da011781d146a9f915d62a568c12489ef6",
+      "qualityRegistration": {
+        "scale": 0.9873039581777446,
+        "dx": 1.3827483196415074,
+        "dy": 5.2046303211351415
+      },
+      "playback": "2152-playback-768.webp",
+      "playbackSha256": "d366db9d90f4d105607604fd89e2f336670cdcf464d22dbaa14e72bdbd11bdb1"
+    },
+    {
+      "index": 2153,
+      "group": -80,
+      "source": "hermes25",
+      "sourceFrame": 15361,
+      "original": "2153-original.webp",
+      "edited": "2153.webp",
+      "originalInputSha256": "92d630fe710fb51da66817a4143b37b2ff98f45f79265568afbcdae3b85c2fdd",
+      "generatedPngSha256": "5f764ef3f9a549970f32afbd682348a30aa5dd9007d344d2bf556fc419d84965",
+      "editedSha256": "48c350cc99167eb10b15e811b34fe8a65298c726884dfd756c10f909e17c3286",
+      "qualityRegistration": {
+        "scale": 0.9902621722846442,
+        "dx": -1.162172284644214,
+        "dy": 4.545318352059894
+      },
+      "playback": "2153-playback-768.webp",
+      "playbackSha256": "da7de8a5a80048aca94ebd4c6966baeae8a5e70f39ba3a04eec2e3fb7c671b47"
+    },
+    {
+      "index": 2154,
+      "group": -80,
+      "source": "hermes25",
+      "sourceFrame": 15362,
+      "original": "2154-original.webp",
+      "edited": "2154.webp",
+      "originalInputSha256": "e07bc4060e55f17f37f785bb18122142d0b4723b40ade2371ba89cef06ed7358",
+      "generatedPngSha256": "6b5ca436452de811c14f81db9f857050c2ca48655ed31e769b6a963d2c61aa5b",
+      "editedSha256": "02dd88432fc8aae97c5295ec28d8d65e85229004f12eaf931d25ec15027f4377",
+      "qualityRegistration": {
+        "scale": 0.994740796393689,
+        "dx": 0.7028549962434454,
+        "dy": 2.8024042073628834
+      },
+      "playback": "2154-playback-768.webp",
+      "playbackSha256": "e0c37ad9ee81b2edfd3757ee713d675dfaf905bf7cd33dee733873ebcb22c5ea"
+    },
+    {
+      "index": 2155,
+      "group": -80,
+      "source": "hermes25",
+      "sourceFrame": 15363,
+      "original": "2155-original.webp",
+      "edited": "2155.webp",
+      "originalInputSha256": "c6368230ebbe862baf0f06f61a319a4343fa77e7c6ce934413cdd1213960bb47",
+      "generatedPngSha256": "bf02195d5a0e87e949028fe766d282b34f6f1b195b398bbe9ee79b5129df3726",
+      "editedSha256": "7c5c8c840bbe1246f93f0e558203e5bf2b5d76ec0ac708cb413db815ab8ab8ca",
+      "qualityRegistration": {
+        "scale": 0.9932381667918858,
+        "dx": 0.9135987978963271,
+        "dy": 1.8955672426747014
+      },
+      "playback": "2155-playback-768.webp",
+      "playbackSha256": "b3c26c78bea6a10cd68ea0c1b42b528eaad4dccff3369171bd4b132394116eb0"
+    },
+    {
+      "index": 4322,
+      "group": -80,
+      "source": "issey19",
+      "sourceFrame": 3789,
+      "original": "4322-original.webp",
+      "edited": "4322.webp",
+      "originalInputSha256": "44e6362d0a26e558a12fae5a1dacfc36b555c9faf4052297f22ebdbd3cefeb1a",
+      "generatedPngSha256": "604a1b0b5c7616c8f5a5be287801ad3b42f8956f2184e42828b7f312e1da2299",
+      "editedSha256": "f190c17795f224f40405571a5a250b4d5cfdb19396b6706fbe9f15103a8def08",
+      "qualityRegistration": {
+        "scale": 0.9969834087481146,
+        "dx": 0.05467571644044256,
+        "dy": 1.6764705882352473
+      },
+      "playback": "4322-playback-768.webp",
+      "playbackSha256": "887d4db602bce09d6e077cec9aff56f802e21a1446032ccb4cdc17ae3e77cb9f"
+    },
+    {
+      "index": 4696,
+      "group": -80,
+      "source": "pradafw12",
+      "sourceFrame": 10534,
+      "original": "4696-original.webp",
+      "edited": "4696.webp",
+      "originalInputSha256": "2507f20cfe1768e3dabfa756b7f90203f9f0f9eee3289d04bae12e406f09ff9a",
+      "generatedPngSha256": "db295b3fbcc039337dc1f6cf8aaebde4f2c8999677c64053ab329368247ddd9d",
+      "editedSha256": "78e4e76a48dc2a90f752df52c61d623977f896f4649903694cb5aeca5cf7a706",
+      "qualityRegistration": {
+        "scale": 0.9977392614920875,
+        "dx": 0.12030897784524086,
+        "dy": 0.13564431047473136
+      },
+      "playback": "4696-playback-768.webp",
+      "playbackSha256": "51db586ba63ca868a656cc3d34d6b702db2c681cf296c3af20bd0e3308c9471f"
+    },
+    {
+      "index": 5338,
+      "group": -80,
+      "source": "pradafw12",
+      "sourceFrame": 4847,
+      "original": "5338-original.webp",
+      "edited": "5338.webp",
+      "originalInputSha256": "6734a457244209d1a269e452d764e0aee9c92b50dcf5b077bdb5a27769bd319e",
+      "generatedPngSha256": "a3e0f32eb94e7621edf5b09cc8b14aff4a0d509acab4aea68cfe26ee29bf2b69",
+      "editedSha256": "58cadec87e00449d100808c81ee75bfb0c91d074acf5d8bcd4b06a80029b5962",
+      "qualityRegistration": {
+        "scale": 0.9977392614920875,
+        "dx": -3.4031650339110797,
+        "dy": 0.6345139412208027
+      },
+      "playback": "5338-playback-768.webp",
+      "playbackSha256": "6e491550c17d6bb782dfe51a518dda3353de6dc18f126b78af638626bca69f9e"
+    },
+    {
+      "index": 5339,
+      "group": -80,
+      "source": "pradafw12",
+      "sourceFrame": 4848,
+      "original": "5339-original.webp",
+      "edited": "5339.webp",
+      "originalInputSha256": "47ab8a52bf72c7e649fc89ddec53dfeedaa7a21ec51b31eff7b6eeb60f370bc6",
+      "generatedPngSha256": "76091957ea3b3c6009f4c05a850206c74b682444c971b2dcc980c516e4572ebf",
+      "editedSha256": "f7fd667808a61d0d9498a306e0dd6a34113c7fe7943c7d0d90cbaa06797f215b",
+      "qualityRegistration": {
+        "scale": 1.0,
+        "dx": -1.5,
+        "dy": 0.5
+      },
+      "playback": "5339-playback-768.webp",
+      "playbackSha256": "7df497240df769a16bbd0ea9d2022c950861736a6f5cb1836a856c9dc8e8d299"
+    },
+    {
+      "index": 5346,
+      "group": -80,
+      "source": "pradafw12",
+      "sourceFrame": 4855,
+      "original": "5346-original.webp",
+      "edited": "5346.webp",
+      "originalInputSha256": "7f9542ffdf70cfb293199fd1a8cc39ced24dd336e3d977e3f8d841b4e7dc2ac6",
+      "generatedPngSha256": "292dfefd5a530acc60c191ebf4f2eb75062eb2a87c96af4e8fcffd3a147fa422",
+      "editedSha256": "6419b38943ba2677e17d22615bb62057c969812c9e3dcb3c239e7fd75c881999",
+      "qualityRegistration": {
+        "scale": 0.991747936984246,
+        "dx": 0.5795198799700074,
+        "dy": 2.9744936234059196
+      },
+      "playback": "5346-playback-768.webp",
+      "playbackSha256": "1156d8de1451af9fb02daea050bb325e8a45e526de5e0b6ed1567555d26ec40b"
+    },
+    {
+      "index": 5347,
+      "group": -80,
+      "source": "pradafw12",
+      "sourceFrame": 4856,
+      "original": "5347-original.webp",
+      "edited": "5347.webp",
+      "originalInputSha256": "c9fcba709003917e2eed3c3dd5102998d3e73aea0003a6e09fb6ec3dd731610a",
+      "generatedPngSha256": "cfe0656055f93c5035146d73f91a65f329d4fc88c0c307ac48ea32fb3967d394",
+      "editedSha256": "eaa3ea17e4db7f729e7a2b1d511dc3e1faab0d6279c9b05a5e251c45ba2cbad3",
+      "qualityRegistration": {
+        "scale": 0.9656683710737765,
+        "dx": 5.390796201607031,
+        "dy": 20.890430971512046
+      },
+      "playback": "5347-playback-768.webp",
+      "playbackSha256": "9e5668655d1f8a6fdd1a1aa40ba4bd0e4e45cdf8352fb65cb944d28e6e93be1a"
+    },
+    {
+      "index": 5509,
+      "group": -80,
+      "source": "pradafw14",
+      "sourceFrame": 11711,
+      "original": "5509-original.webp",
+      "edited": "5509.webp",
+      "originalInputSha256": "748ade39de9e11c4a879c4713dae52d8c4095df03485f3263e91caf8f9096d86",
+      "generatedPngSha256": "38b27be1befc09630f627d7186c075f33c9b9969c3a7a6bd9412756b77e2b2eb",
+      "editedSha256": "591682382e98b7b7900ae42406cb477a9cd4bff5baf29cf17d022b38618d636b",
+      "qualityRegistration": {
+        "scale": 1.001510574018127,
+        "dx": 0.8123111782477395,
+        "dy": -2.592900302114799
+      },
+      "playback": "5509-playback-768.webp",
+      "playbackSha256": "bab77c001167690ad7ce38929ce45b6c30d95937654cd5e8fb3a71795006bf12"
+    },
+    {
+      "index": 5510,
+      "group": -80,
+      "source": "pradafw14",
+      "sourceFrame": 11712,
+      "original": "5510-original.webp",
+      "edited": "5510.webp",
+      "originalInputSha256": "81542017c0adc6078298e401af6efad938b326c0129165134cc497cbc539ca8a",
+      "generatedPngSha256": "c4ac7c8cb556ffcd0dbcaad76444d85878e9f6dcb2e51a9866a712a28a5557f0",
+      "editedSha256": "d5fa6b89afd0ec1bb9eb248d69a9fb255ff0d93d11af8791688bd31f9e087ed8",
+      "qualityRegistration": {
+        "scale": 0.994740796393689,
+        "dx": 3.7580766341096705,
+        "dy": 2.7971450037565546
+      },
+      "playback": "5510-playback-768.webp",
+      "playbackSha256": "d8103820cd422ca5f22b96322c51fc90b6a717019efe60619dfae50d0d1814f4"
+    },
+    {
+      "index": 5517,
+      "group": -80,
+      "source": "pradafw14",
+      "sourceFrame": 11719,
+      "original": "5517-original.webp",
+      "edited": "5517.webp",
+      "originalInputSha256": "40048f2e0cd83229ce3df3c321b0b183e2ef9142ace9061c6ce5cbcbfcc06579",
+      "generatedPngSha256": "f0dbee2b0df3f8d8dea50c5830f9e6b6b337f892296c05da75d24efc21c7e23c",
+      "editedSha256": "b0bc65a646af24091293e7483f3d41158f083c449a5d716b69d02f8450f40fbb",
+      "qualityRegistration": {
+        "scale": 0.992503748125937,
+        "dx": 1.4272863568215826,
+        "dy": 2.92353823088456
+      },
+      "playback": "5517-playback-768.webp",
+      "playbackSha256": "a9ec52f99479972cc5e30fb462ac9954c7951d51f3a368a32631770dcf8b077f"
+    },
+    {
+      "index": 5518,
+      "group": -80,
+      "source": "pradafw14",
+      "sourceFrame": 11720,
+      "original": "5518-original.webp",
+      "edited": "5518.webp",
+      "originalInputSha256": "5927872a512762d54f8fef0fca78a103f928b649d6d1d78040e9deb603b05878",
+      "generatedPngSha256": "032b2066bb63096e0c8ba4cb414591ba136a1fe51db06d3a32f69d19deed4af2",
+      "editedSha256": "b26a5c0080d93dfdfa2d34555c35e4c5b69d9fd3c91e3bc7e95a56eaabafca48",
+      "qualityRegistration": {
+        "scale": 0.9962321024868124,
+        "dx": -6.093820648078378,
+        "dy": 0.7241899020345954
+      },
+      "playback": "5518-playback-768.webp",
+      "playbackSha256": "e2bb60e0636c17a882a7076e987448529f7ad48ec501fd2f54bea22674aa7984"
+    },
+    {
+      "index": 5519,
+      "group": -80,
+      "source": "pradafw14",
+      "sourceFrame": 11721,
+      "original": "5519-original.webp",
+      "edited": "5519.webp",
+      "originalInputSha256": "e957fe1a3d74d7c8a3430e2b269fe49247008a313597b9ce3b2c62fd781c55d7",
+      "generatedPngSha256": "98e3c82f6988a7009d4ec84bc88ec4514964347f6f6bb586785c0955696f3ee8",
+      "editedSha256": "d8d535b429433be6fed44995839acaa83ab590b49379c64ad6b4956de1852fb3",
+      "qualityRegistration": {
+        "scale": 0.9800443458980045,
+        "dx": 4.283813747228379,
+        "dy": 6.567627494456701
+      },
+      "playback": "5519-playback-768.webp",
+      "playbackSha256": "56240a3986a1819b7ef9e63bce374ee683d249a57cb641c13e32515d0815ec1e"
+    },
+    {
+      "index": 5621,
+      "group": -80,
+      "source": "pradass15",
+      "sourceFrame": 5943,
+      "original": "5621-original.webp",
+      "edited": "5621.webp",
+      "originalInputSha256": "1d24d54ba52621ae7a03a30618472af33ce2ca7d0bb777a6593769ad051867ed",
+      "generatedPngSha256": "13d666a13098ed7b9a984c552d6905d52d075de4c178aa92a28e1f65b0857ee7",
+      "editedSha256": "58c6867ef212b59a7f3c103ce55b3254e1abedffc7b3dc4a3c906fb0870f32c6",
+      "qualityRegistration": {
+        "scale": 0.9873039581777446,
+        "dx": -0.4387602688573793,
+        "dy": 4.710978342046246
+      },
+      "playback": "5621-playback-768.webp",
+      "playbackSha256": "f5de038b1e3155e755bfac984f539be2fed72784f251dbf78573602554923b0f"
+    },
+    {
+      "index": 5622,
+      "group": -80,
+      "source": "pradass15",
+      "sourceFrame": 5944,
+      "original": "5622-original.webp",
+      "edited": "5622.webp",
+      "originalInputSha256": "a52c1268c75c3c6d9f5cbc45f3f550addb14ba40ef81cb9f7b8a23579ef7507b",
+      "generatedPngSha256": "d1284cd4e82e2805667db28a5fe18a13147598f4ce2996efe7c33f5f6b1a4d0f",
+      "editedSha256": "28f0efa11d8cad914cc05d2ed2bed867fa5eceb77e5e6d70d080598c40bbe598",
+      "qualityRegistration": {
+        "scale": 0.9939849624060151,
+        "dx": -3.7706766917293635,
+        "dy": 1.3548872180450644
+      },
+      "playback": "5622-playback-768.webp",
+      "playbackSha256": "41879a60c61eac666d2f22420c7e755fd2fa3c4302277ab97afd7cfed0417808"
+    },
+    {
+      "index": 569,
+      "group": -80,
+      "source": "prada24",
+      "sourceFrame": 291,
+      "original": "569-original.webp",
+      "edited": "569.webp",
+      "originalInputSha256": "25173b3ea82aceab9a46361419129b078e6d5bfaa0a2fa8eb225a54ecbe59f2a",
+      "generatedPngSha256": "37917f5dc8fe3895c678eca43241d1f967dd1cc9e29a0ee06f0f06a15af17cb6",
+      "editedSha256": "ac87498e51d81f54f6bf1fbd27516103a57a67848eebe169892d78d58a81cbbf",
+      "qualityRegistration": {
+        "scale": 0.9969834087481146,
+        "dx": 1.6104826546002755,
+        "dy": 0.6794871794871824
+      },
+      "playback": "569-playback-768.webp",
+      "playbackSha256": "eb912fe529fecbebb62c345f47c7facac863bd15dde74ad863e7b3ef1958066e"
+    },
+    {
+      "index": 6186,
+      "group": -80,
+      "source": "pradafw12",
+      "sourceFrame": 1695,
+      "original": "6186-original.webp",
+      "edited": "6186.webp",
+      "originalInputSha256": "e050169b84e7adc1ef52c4d37f8ff9ebedabc61e5c1115c7a4fbec374e776ebc",
+      "generatedPngSha256": "23e50b55ddf0d521bb1e7be71d374dd06405d1fa9c20b0856b9a8e028f9903f5",
+      "editedSha256": "049c8030fa846c95f3dec27bba9f2aaa15215f507a1bc9a28a6a847b5a4e7a50",
+      "qualityRegistration": {
+        "scale": 0.9984894259818731,
+        "dx": -11.663141993957709,
+        "dy": 4.084592145015108
+      },
+      "playback": "6186-playback-768.webp",
+      "playbackSha256": "abff2b6783272fcab66aa9e3f397c2e7c4e0fb6fa98728f507ef5fe78a127336"
+    },
+    {
+      "index": 6196,
+      "group": -80,
+      "source": "pradafw12",
+      "sourceFrame": 1715,
+      "original": "6196-original.webp",
+      "edited": "6196.webp",
+      "originalInputSha256": "2c41b5da6dea314e5a5e9e6dac72dee1a4cafbf3b7ee41254d18257e230a47e5",
+      "generatedPngSha256": "85f7efdcad68685267868d6bca6ad16a50b5fedfb6f6bbc53e5f5403da3ff69f",
+      "editedSha256": "3e9736b2ed5fa6859fe518a06fc4745cfcd080fddf5ead28e1f252268cd69228",
+      "qualityRegistration": {
+        "scale": 0.9947328818660647,
+        "dx": -1.6595184349134513,
+        "dy": 0.8133935289691863
+      },
+      "playback": "6196-playback-768.webp",
+      "playbackSha256": "07858965283372bea995e34e2445f55515f1c1aa1ff293b4a355fdfffef2e015"
+    },
+    {
+      "index": 744,
+      "group": -80,
+      "source": "prada24",
+      "sourceFrame": 2504,
+      "original": "744-original.webp",
+      "edited": "744.webp",
+      "originalInputSha256": "8f0393ba5e23a3a5328da0492b3ea3c4529bf8929cead5c77b1c46021c5dc92a",
+      "generatedPngSha256": "b7013c5a7d26da704c2e4d25728bc098dd83b5586ca8d5e5cd29b69a486c7a72",
+      "editedSha256": "8afa195b956b5693a5268911faec8e7e96fe8f564efce63b8d8295048e8ffce4",
+      "qualityRegistration": {
+        "scale": 0.9650145772594753,
+        "dx": 3.949708454810491,
+        "dy": 19.434402332361515
+      },
+      "playback": "744-playback-768.webp",
+      "playbackSha256": "146a879343e5cbac6c4371b160a97ddcb5f1aa9de4c37db97341bc8291bc9efd"
+    },
+    {
+      "index": 745,
+      "group": -80,
+      "source": "prada24",
+      "sourceFrame": 2505,
+      "original": "745-original.webp",
+      "edited": "745.webp",
+      "originalInputSha256": "1fee6cb838e925695dcfc899f3275a5f2a93342aa4c8f55c7500385d18ccfff8",
+      "generatedPngSha256": "0e2e2fc7777abdf31d97d5497488183a0e01ef4bd010a2f68f5ea88d9703170a",
+      "editedSha256": "205ddfdb821dbc850894e9bbc5af52f09236033b251047fc28026460164077cf",
+      "qualityRegistration": {
+        "scale": 0.9954819277108434,
+        "dx": 2.385165662650593,
+        "dy": 2.26204819277109
+      },
+      "playback": "745-playback-768.webp",
+      "playbackSha256": "0bd6cc6d5234cdcdb4dcea959ce13f164f3043bf550378e2f1f7a824180a1020"
+    },
+    {
+      "index": 4539,
+      "group": -80,
+      "source": "pradafw12",
+      "sourceFrame": 6606,
+      "original": "4539-original.webp",
+      "edited": "4539.webp",
+      "originalInputSha256": "08ab694da196361c80c455a25edbcd5d0ee1df49706043bcea251c1185b8db7e",
+      "generatedPngSha256": "91e614120695c7768580a0f2e0d73cc2f893cb9699211d5bb40d2b0a68f2b46f",
+      "editedSha256": "f5843d365d11f799cee519f9cf02b8ec8f0ddfaebb382c58bf1cae1d7157d964",
+      "qualityRegistration": {
+        "scale": 0.9962377727614747,
+        "dx": 1.308126410835257,
+        "dy": 1.7163280662152829
+      },
+      "playback": "4539-playback-768.webp",
+      "playbackSha256": "41256470a072c017c321581453e86fe5572db91199cf9f2ba3e3f4c237fbd901"
+    },
+    {
+      "index": 4556,
+      "group": -80,
+      "source": "pradafw12",
+      "sourceFrame": 6625,
+      "original": "4556-original.webp",
+      "edited": "4556.webp",
+      "originalInputSha256": "514261965352a6de988d9572bd5db10e3c34822a4d9a77fc10d4045f0656e296",
+      "generatedPngSha256": "b9d23a768e834a2d21c2753359f662b85fb6ff1849b0b6da255e3668d503a8d2",
+      "editedSha256": "67f0c2e368d647e6008e98f5a387deebebe7832af1c94a4256716b535a14c626",
+      "qualityRegistration": {
+        "scale": 1.0,
+        "dx": -0.5,
+        "dy": -0.5
+      },
+      "playback": "4556-playback-768.webp",
+      "playbackSha256": "bf130acdf5d4f747623d5ee1f1a0f716989355bbbf933193216bdf0ff0060dd2"
     }
   ],
   "groups": [
@@ -47853,6 +49149,120 @@
       "label": "-75° · 사진 151",
       "indices": [
         151
+      ]
+    },
+    {
+      "id": "-80:4541",
+      "label": "-80° · 사진 4541",
+      "indices": [
+        4541,
+        4542
+      ]
+    },
+    {
+      "id": "-80:2100",
+      "label": "-80° · 사진 2100",
+      "indices": [
+        2100,
+        2101,
+        2147,
+        4889,
+        4890,
+        4891,
+        5451,
+        6194,
+        6195,
+        6197
+      ]
+    },
+    {
+      "id": "-80:196",
+      "label": "-80° · 사진 196",
+      "indices": [
+        196,
+        2102,
+        4553,
+        4554,
+        4555,
+        4651
+      ]
+    },
+    {
+      "id": "-80:2174",
+      "label": "-80° · 사진 2174",
+      "indices": [
+        2174,
+        2175,
+        5340,
+        5341,
+        5342,
+        5525,
+        5526,
+        5528
+      ]
+    },
+    {
+      "id": "-80:158",
+      "label": "-80° · 사진 158",
+      "indices": [
+        158,
+        159,
+        160,
+        197,
+        198,
+        199,
+        2148,
+        2149,
+        2176,
+        4540,
+        4693,
+        4694,
+        4695,
+        5343,
+        5344,
+        5345,
+        5452,
+        5520,
+        5521,
+        5522,
+        746
+      ]
+    },
+    {
+      "id": "-80:161",
+      "label": "-80° · 사진 161",
+      "indices": [
+        161,
+        2152,
+        2153,
+        2154,
+        2155,
+        4322,
+        4696,
+        5338,
+        5339,
+        5346,
+        5347,
+        5509,
+        5510,
+        5517,
+        5518,
+        5519,
+        5621,
+        5622,
+        569,
+        6186,
+        6196,
+        744,
+        745
+      ]
+    },
+    {
+      "id": "-80:4539",
+      "label": "-80° · 사진 4539",
+      "indices": [
+        4539,
+        4556
       ]
     }
   ]
