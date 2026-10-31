@@ -7,6 +7,7 @@ import {clockPhase,createWalkState,CYCLE_FRAMES,MIN_REUSE_FRAMES} from './refere
 import { legError, referenceFeatures, referencePose } from './gait-reference';
 import schedule from './reference-schedule.json';
 import library from './angles.json';
+import photographs from './assets/quality/manifest.json';
 import rejectedQuality from './quality-originals.json';
 import {audits,blockHeld} from './review-policy';
 import {measureMotion,MOTION_LIMITS} from './motion-quality';
@@ -43,6 +44,7 @@ type Match = {
 };
 const exchange = (f: readonly number[]) => [...f.slice(2, 4), ...f.slice(0, 2), ...f.slice(6, 8), ...f.slice(4, 6), ...f.slice(10, 12), ...f.slice(8, 10), ...f.slice(14, 16), ...f.slice(12, 14)];
 const key = (frame: AngleFrame) => `${frame.source}:${frame.sourceFrame}`;
+const finalPhotographs = new Set(photographs.frames.map(row => row.index));
 const excludedPhotographs = new Set(rejectedQuality.assetVersion === library.assetVersion
     ? rejectedQuality.frames.map(i => key(library.frames[i])) : []);
 export class ReferenceSequencer {
@@ -51,10 +53,12 @@ export class ReferenceSequencer {
     private verifiedSchedule=false;
     readonly blocks: AngleBlock[];
     private readonly excluded: ReadonlySet<number>;
+    private readonly finalLibrary: boolean;
     constructor(readonly frames: readonly AngleFrame[], readonly hold = 3, readonly fitted: readonly Match[] = matches.frames) {
         if(fitted===matches.frames&&(matches.referenceModelHash!==motion.modelHash||matches.referenceDuration!==motion.duration))throw new Error('Photograph fits are for a different reference animation');
         if (frames.length !== fitted.length)
             throw new Error('Reference poses do not match the photograph library');
+        this.finalLibrary = frames.length === library.frames.length && frames.every((frame, i) => key(frame) === key(library.frames[i]));
         this.excluded = new Set(frames.flatMap((frame, i) => excludedPhotographs.has(key(frame)) ? [i] : []));
         this.blocks = buildBlocks(frames, hold).filter(block => this.allowedBlock(block, hold));
         const validTransforms=Object.entries(compiled.registration?.photoTransforms??{}).every(([yaw,rows])=>compiled.registration?.yaws.includes(+yaw)&&!!compiled.directions[yaw]&&validPhotoTransforms(rows,schedule.periodFrames));
@@ -62,7 +66,7 @@ export class ReferenceSequencer {
     }
     usesRegistration(yaw:number){return this.verifiedSchedule&&!!compiled.registration?.yaws.includes(yaw);}
     private allowedBlock(block:AngleBlock,count:number){
-        return Array.from({length:count},(_,i)=>block.start+i).every(i=>!this.excluded.has(i));
+        return Array.from({length:count},(_,i)=>block.start+i).every(i=>!this.excluded.has(i) && (!this.finalLibrary || finalPhotographs.has(i)));
     }
     candidates(yaw: number, count = this.hold) {
         const id = `${yaw}:${count}`;

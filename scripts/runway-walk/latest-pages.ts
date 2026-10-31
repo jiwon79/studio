@@ -9,7 +9,11 @@ export function latestRunwayPage(directory: string) {
   return async (request: IncomingMessage, response: ServerResponse, next: () => void) => {
     if (request.method !== 'GET' && request.method !== 'HEAD') { next(); return; }
     const url = new URL(request.url ?? '/', 'http://localhost');
-    const route = /^\/(?:pages\/)?runway-walk\/(?:(index|angle|debug|sequence|reference|pose-test|quality-test)\.html)?$/.exec(url.pathname);
+    if (/^\/(?:pages\/)?runway-walk\/(?:debug|sequence|reference|pose-test|quality-test)\.html$/.test(url.pathname)) {
+      response.setHeader('Cache-Control', 'no-store');
+      response.statusCode = 404; response.end(); return;
+    }
+    const route = /^\/(?:pages\/)?runway-walk\/(?:(index|angle)\.html)?$/.exec(url.pathname);
     if (!route) { next(); return; }
     response.setHeader('Cache-Control', 'no-store');
     if (url.searchParams.has('v')) {

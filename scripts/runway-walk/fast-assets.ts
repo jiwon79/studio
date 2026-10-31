@@ -14,10 +14,9 @@ export function fastAssets(directory: string) {
     if (request.method !== 'GET' && request.method !== 'HEAD') { next(); return; }
     const url = new URL(request.url ?? '/', 'http://localhost');
     const hashed = /^\/assets\/([\w.-]+-[\w-]{8}\.(js|css|png|webp))$/.exec(url.pathname);
-    const media = /^\/(?:pages\/)?runway-walk\/media\/angles\/([\w-]+\.webp)$/.exec(url.pathname);
-    if (!hashed && !media) { next(); return; }
-    const filename = hashed ? resolve(directory, 'assets', hashed[1]) : resolve(directory, 'pages/runway-walk/media/angles', media![1]);
-    const type = hashed?.[2] ?? 'webp';
+    if (!hashed) { next(); return; }
+    const filename = resolve(directory, 'assets', hashed[1]);
+    const type = hashed[2];
     const acceptsGzip = (request.headers['accept-encoding'] ?? '').split(',').some(value => {
       const [name, ...parameters] = value.trim().split(';');
       return name === 'gzip' && !parameters.some(p => /^\s*q=0(?:\.0*)?\s*$/.test(p));
@@ -34,8 +33,7 @@ export function fastAssets(directory: string) {
         body = await pending;
         response.setHeader('Content-Encoding', 'gzip');
       } else body = await readFile(filename);
-      const versioned = hashed || /^[a-f0-9]{8,64}$/.test(url.searchParams.get('v') ?? '');
-      response.setHeader('Cache-Control', versioned ? 'public, max-age=31536000, immutable' : 'no-cache');
+      response.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
       response.setHeader('Vary', [response.getHeader('Vary'), 'Accept-Encoding'].filter(Boolean).join(', '));
       response.setHeader('Content-Type', ({ js: 'text/javascript; charset=utf-8', css: 'text/css; charset=utf-8', png: 'image/png', webp: 'image/webp' })[type]!);
       response.setHeader('Content-Length', body.length);

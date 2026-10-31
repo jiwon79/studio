@@ -45,7 +45,7 @@ test('the same page URL returns the new build even with stale conditional cache 
 
 test('old version links redirect without losing the selected angle or review position', async () => {
   const { url } = await preview();
-  for (const route of ['/runway-walk/angle.html', '/pages/runway-walk/sequence.html']) {
+  for (const route of ['/runway-walk/angle.html', '/pages/runway-walk/index.html']) {
     const response = await fetch(`${url}${route}?v=23&angle=-25&tick=54&v=53`, { redirect: 'manual' });
     expect(response.status).toBe(307);
     expect(response.headers.get('location')).toBe(`${route}?angle=-25&tick=54`);
@@ -60,5 +60,15 @@ test('photograph versions and unrelated artwork caches are left to the static se
     expect(response.status).toBe(200);
     expect(response.headers.get('cache-control')).toBe('public, max-age=3600');
     expect(await response.text()).toBe('asset');
+  }
+});
+
+
+test('retired experiments cannot fall through to the gallery SPA', async () => {
+  const { url } = await preview();
+  for (const page of ['debug', 'sequence', 'reference', 'pose-test', 'quality-test']) {
+    const response = await fetch(`${url}/runway-walk/${page}.html`);
+    expect(response.status).toBe(404);
+    expect(response.headers.get('cache-control')).toBe('no-store');
   }
 });

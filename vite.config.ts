@@ -2,7 +2,6 @@ import { defineConfig } from 'vite';
 import { resolve } from 'path';
 import { readdirSync, existsSync } from 'fs';
 import { staticPageAssets } from './scripts/static-page-assets';
-import { runwayReviewServer } from './scripts/runway-walk/review-server';
 import { runwayLatestPages } from './scripts/runway-walk/latest-pages';
 import { runwayFastAssets } from './scripts/runway-walk/fast-assets';
 
@@ -69,11 +68,6 @@ for (const name of pageEntries) {
 // 런타임 문자열/OG 경로에 필요한 파일만 원래 경로로 복사한다.
 // Vite가 번들에 포함한 파일은 JS에서도 new URL(..., import.meta.url)로 참조한다.
 input['runway-walk-angle'] = resolve(pagesDir, 'runway-walk/angle.html');
-input['runway-walk-debug'] = resolve(pagesDir, 'runway-walk/debug.html');
-input['runway-walk-sequence'] = resolve(pagesDir, 'runway-walk/sequence.html');
-input['runway-walk-reference'] = resolve(pagesDir, 'runway-walk/reference.html');
-input['runway-walk-pose-test'] = resolve(pagesDir, 'runway-walk/pose-test.html');
-input['runway-walk-quality-test'] = resolve(pagesDir, 'runway-walk/quality-test.html');
 
 const assetDirectories = pageEntries
   .filter(name => existsSync(resolve(pagesDir, name, 'assets')))
@@ -89,7 +83,6 @@ export default defineConfig({
   plugins: [
     runwayLatestPages(),
     runwayFastAssets(),
-    runwayReviewServer(root),
     artworkRouteFallback(pageEntries),
     {
       name: 'inject-site-favicon',

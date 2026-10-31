@@ -8,11 +8,10 @@ import { fastAssets } from './fast-assets';
 test('preview compresses bundles, caches versioned photos, and serves new hashes freshly', async () => {
   const root = await mkdtemp(join(tmpdir(), 'runway-assets-'));
   await mkdir(join(root, 'assets'));
-  await mkdir(join(root, 'pages/runway-walk/media/angles'), { recursive: true });
   const script = 'const pose = [1,2,3];\n'.repeat(10000);
   await writeFile(join(root, 'assets/reference-12345678.js'), script);
   await writeFile(join(root, 'assets/reference-abcdefgh.js'), 'new build');
-  await writeFile(join(root, 'pages/runway-walk/media/angles/hd-00.webp'), 'photo bytes');
+  await writeFile(join(root, 'assets/person-12345678.webp'), 'photo bytes');
   const middleware = fastAssets(root);
   const server = createServer((request, response) => { void middleware(request, response, () => { response.statusCode = 404; response.end(); }); });
   await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));
@@ -33,12 +32,12 @@ test('preview compresses bundles, caches versioned photos, and serves new hashes
   expect(await raw.text()).toBe(script);
   const latest = await fetch(base + '/assets/reference-abcdefgh.js');
   expect(await latest.text()).toBe('new build');
-  const photo = await fetch(base + '/runway-walk/media/angles/hd-00.webp?v=cf6c5178ec36');
+  const photo = await fetch(base + '/assets/person-12345678.webp');
   expect(photo.headers.get('cache-control')).toContain('immutable');
   expect(photo.headers.get('content-encoding')).toBeNull();
   expect(await photo.text()).toBe('photo bytes');
-  const unversioned = await fetch(base + '/runway-walk/media/angles/hd-00.webp', { method: 'HEAD' });
-  expect(unversioned.headers.get('cache-control')).toBe('no-cache');
+  const unversioned = await fetch(base + '/assets/person-12345678.webp', { method: 'HEAD' });
+  expect(unversioned.headers.get('cache-control')).toContain('immutable');
   expect(await unversioned.text()).toBe('');
   expect((await fetch(base + '/runway-walk/angle.html')).status).toBe(404);
 });

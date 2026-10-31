@@ -1,9 +1,8 @@
-export type PhotoLoading = { originals: number; originalTotal: number; enhanced: number; enhancedTotal: number; bytes: number };
+export type PhotoLoading = { loaded: number; total: number; bytes: number };
 export function photoLoadingProgress(state: PhotoLoading) {
-  const total = state.originalTotal + state.enhancedTotal;
-  const loaded = Math.min(state.originals, state.originalTotal) + Math.min(state.enhanced, state.enhancedTotal);
-  return { total, loaded, percent: total ? Math.floor(loaded / total * 100) : 0,
-    downloaded: total > 0 && loaded === total };
+  const loaded = Math.min(state.loaded, state.total);
+  return { total: state.total, loaded, percent: state.total ? Math.floor(loaded / state.total * 100) : 0,
+    downloaded: state.total > 0 && loaded === state.total };
 }
 
 export function startupProgress(element: HTMLElement) {
@@ -18,8 +17,7 @@ export function startupProgress(element: HTMLElement) {
       downloaded = result.downloaded;
       progress.value = result.percent;
       text('loading-percent', `${result.percent}%`);
-      text('loading-originals', `${state.originals.toLocaleString()} / ${state.originalTotal.toLocaleString()}장`);
-      text('loading-enhanced', `${state.enhanced.toLocaleString()} / ${state.enhancedTotal.toLocaleString()}장`);
+      text('loading-enhanced', `${result.loaded.toLocaleString()} / ${result.total.toLocaleString()}장`);
       text('loading-bytes', `${(state.bytes / 1024 ** 2).toFixed(1)} MB 받음`);
       if (!failed) text('loading-title', downloaded ? '재생을 준비하고 있어요' : '전체 사진을 준비하고 있어요');
       progress.setAttribute('aria-valuetext', `${result.loaded} / ${result.total}장 다운로드 완료`);

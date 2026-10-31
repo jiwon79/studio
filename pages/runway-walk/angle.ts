@@ -1,11 +1,6 @@
+import { qualityLibrary } from './quality-library';
 import data from './angles.json';
-import { AtlasPool } from './atlas-pool';
-import { PhotoDownloads } from './photo-downloads';
-import { directionPhotos, directionPages } from './direction-photos';
 import { prepareLiveDirection } from './live-direction';
-import { zeroTwelveComparison } from './zero-twelve-comparison';
-import { gptZeroTest } from './gpt-zero-test';
-import { higgsfieldQuality } from './higgsfield-quality';
 import { startupProgress } from './startup-progress';
 import { ANGLE_STEP, snapYaw } from './direction-step';
 import type { AngleFrame } from './angle-match';
@@ -13,7 +8,7 @@ import {WalkCoverageError,rebaseWalkState} from './walk-sequencer';
 import {clockPhase,createWalkState} from './reference-clock';
 import { ReferenceSequencer,cutIndex,cutIndices, type ReferenceCut } from './reference-sequencer';
 import referenceMatches from './reference-matches.json';
-import {photoTransform,cutPhotoTransform,applyPhotoTransform,IDENTITY_PHOTO} from './photo-registration';
+import {cutPhotoTransform,applyPhotoTransform,IDENTITY_PHOTO} from './photo-registration';
 
 const frames: AngleFrame[] = data.frames;
 const sequencer = new ReferenceSequencer(frames, data.holdFrames);
@@ -25,8 +20,6 @@ const direction = document.querySelector<HTMLOutputElement>('#direction')!;
 const status = document.querySelector<HTMLElement>('#status')!;
 const loading = document.querySelector<HTMLElement>('#loading')!;
 const startup = startupProgress(loading);
-const allPhotoIndices = [...new Set(Array.from({ length: 37 }, (_, i) => i * 5 - 90).flatMap(directionPhotos))];
-const allPhotoPages = [...new Set(allPhotoIndices.map(i => frames[i].atlas))];
 const [minYaw, maxYaw] = data.yawRange;
 surface.setAttribute('aria-valuemin', String(minYaw));
 surface.setAttribute('aria-valuemax', String(maxYaw));
@@ -44,64 +37,7 @@ function persist() {
 }
 function label(value: number) { return `${value < 0 ? '−' : value > 0 ? '+' : ''}${Math.abs(value)}°`; }
 
-async function fetchPage(name: string, version: string) {
-  const url = new URL(`./media/angles/${name}`, import.meta.url);
-  url.searchParams.set('v', version);
-  for (let attempt = 0; ; attempt++) {
-    try {
-      const response = await fetch(url);
-      if (!response.ok) throw new Error(`Atlas failed: ${response.status}`);
-      return await response.blob();
-    } catch (error) {
-      if (attempt === 2) throw error;
-      await new Promise(resolve => window.setTimeout(resolve, attempt === 0 ? 250 : 750));
-    }
-  }
-}
-// Complete the selected edit before playback; nearby views warm afterwards.
-const downloads = new PhotoDownloads(index => fetchPage(data.atlases[index], data.assetVersion), downloadedPage);
-const images = new AtlasPool(async index => {
-  const blob = await downloads.request(index);
-  if (!blob) throw new Error('Photograph download cancelled');
-  return createImageBitmap(blob);
-}, 24);
-let downloaded = 0, loadingPages: number[] = [], loadingQuality: { count: number; readonly downloaded: number } | undefined, warmGeneration = 0;
-function downloadedPage() {
-  downloaded++;
-  const complete = loadingPages.filter(index => !!downloads.get(index)).length + (loadingQuality?.downloaded ?? 0);
-  const total = loadingPages.length + (loadingQuality?.count ?? 0);
-  loading.style.setProperty('--loaded', `${total ? Math.min(100, complete / total * 100) : 0}%`);
-  surface.dataset.loadedPages = String(downloaded);
-  if (!ready) updateStartup();
-}
-function updateStartup() {
-  const enhanced = higgsfieldTest.preloadStats, legacy = !higgsfieldTest.hasDirection(0);
-  startup.update({ originals: allPhotoIndices.filter(i => !!downloads.get(frames[i].atlas)).length,
-    originalTotal: allPhotoIndices.length,
-    enhanced: enhanced.loaded + (legacy ? gptTest.downloaded : 0), enhancedTotal: enhanced.total + (legacy ? gptTest.count : 0),
-    bytes: allPhotoPages.reduce((sum, i) => sum + (downloads.get(i)?.size ?? 0), 0) + enhanced.bytes + (legacy ? gptTest.compressedBytes : 0) });
-}
-async function preloadPhotographs() {
-  updateStartup();
-  await Promise.all(allPhotoPages.map(index => downloads.request(index, () => true, false)));
-  await higgsfieldTest.preloadAll();
-  if (!higgsfieldTest.hasDirection(0)) await gptTest.load();
-  updateStartup();
-}
-async function loadView(yaw: number, current: () => boolean) {
-  const indices = directionPhotos(yaw), provider = qualityForYaw(yaw), restored = provider.covers(yaw, indices, true);
-  loadingPages = restored ? [] : directionPages(yaw); loadingQuality = restored ? provider : undefined;
-  surface.dataset.startupPages = String(loadingPages.length + (restored ? provider.count : 0));
-  if (restored) await provider.load(yaw);
-  else await Promise.all(loadingPages.map(index => downloads.request(index, current)));
-}
-function warmNeighbors() {
-  const epoch = ++warmGeneration;
-  const neighbors = [renderedTarget - ANGLE_STEP, renderedTarget + ANGLE_STEP].filter(yaw => yaw >= minYaw && yaw <= maxYaw);
-  const pages = [...new Set(neighbors.flatMap(directionPages))];
-  void Promise.all(pages.map(index => downloads.request(index, () => epoch === warmGeneration && directionLoading === undefined && !document.hidden, false)))
-    .catch(() => { /* The requested direction retries a speculative failure. */ });
-}
+const photographs = qualityLibrary(() => { if (!ready) startup.update(photographs.stats); });
 context.imageSmoothingQuality = 'high';
 let ready = false;
 let playing = !matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -115,23 +51,8 @@ let directionLoading: number | undefined;
 let generation = 0, stream = 0, filling: number | undefined;
 let lastTime = 0, carry = 0;
 let drag: { id: number; x: number; start: number } | undefined;
-function comparisonLink(enabled: boolean) {
-  const url = new URL(location.href);
-  if (enabled) { url.searchParams.set('angle', '0'); url.searchParams.set('compare', '12'); }
-  else { url.searchParams.delete('compare'); url.searchParams.delete('depth'); }
-  history.replaceState(null, '', url);
-}
-const comparison12 = zeroTwelveComparison(() => { comparisonLink(false); gptTest.endComparison(); lastTime = 0; carry = 0; if (!ready) void load(); else draw(); });
-const gptTest = gptZeroTest(() => { if (ready) { draw(); void startDirection().catch(failed); } }, () => { if (ready) setAngle(0); }, downloadedPage, enabled => { comparisonLink(enabled); if (enabled && !ready) setAngle(0); comparison12.setEnabled(enabled); lastTime = 0; carry = 0; if (!enabled) { if (!ready) void load(); else draw(); } });
-const higgsfieldTest = higgsfieldQuality(gptTest.gui, () => { if (ready && higgsfieldTest.hasDirection(target)) void (target === renderedTarget ? refreshHiggsfield() : startDirection()).catch(failed); }, downloadedPage);
-function qualityForYaw(yaw: number) { return higgsfieldTest.hasDirection(yaw) ? higgsfieldTest : gptTest; }
-
-function paint(image: ImageBitmap, tile: number, columns: number, width: number, height: number, row: AngleFrame, yaw: number, quality: string) {
-  paintRegion(image, tile % columns * width, Math.floor(tile / columns) * height,
-    width, height, 0, 0, row, yaw, quality);
-}
-function beginFrame(restored: boolean) {
-  const scale = restored ? 1.5 : 1;
+function beginFrame() {
+  const scale = 1.5;
   if (canvas.width !== data.tileWidth * scale) {
     canvas.width = data.tileWidth * scale;
     canvas.height = data.tileHeight * scale;
@@ -141,18 +62,16 @@ function beginFrame(restored: boolean) {
   context.clearRect(0, 0, data.tileWidth, data.tileHeight);
   canvas.dataset.pixelScale = String(scale);
 }
-function paintRegion(image: ImageBitmap, x: number, y: number, width: number, height: number, dx: number, dy: number, row: AngleFrame, yaw: number, quality: string) {
-  const restored = quality === 'hd' ? qualityForYaw(yaw).replacement(yaw, frameIndices.get(row)!) : undefined;
-  beginFrame(!!restored);
-  const aligned=quality==='hd'?!!block.registered:sequencer.usesRegistration(yaw);
-  const transform=row.posture?(quality==='hd'?cutPhotoTransform(block,offset,row.posture,phase,yaw):aligned?photoTransform(row.posture,phase,yaw):IDENTITY_PHOTO):IDENTITY_PHOTO;
-  context.save();applyPhotoTransform(context,transform);
-  if (restored) {
-    context.save(); applyPhotoTransform(context, qualityForYaw(yaw).registration(frameIndices.get(row)!) ?? IDENTITY_PHOTO);
-    context.drawImage(restored, 0, 0, restored.width, restored.height, 0, 0, data.tileWidth, data.tileHeight);
-    context.restore();
-  }
-  else context.drawImage(image, x, y, width, height, dx, dy, width, height);
+function paint(row: AngleFrame, yaw: number) {
+  const index = frameIndices.get(row)!;
+  const image = photographs.image(index);
+  if (!image) throw new Error(`Photograph not decoded: ${index}`);
+  beginFrame();
+  const transform = row.posture ? cutPhotoTransform(block, offset, row.posture, phase, yaw) : IDENTITY_PHOTO;
+  context.save(); applyPhotoTransform(context, transform);
+  context.save(); applyPhotoTransform(context, photographs.registration(index));
+  context.drawImage(image, 0, 0, image.width, image.height, 0, 0, data.tileWidth, data.tileHeight);
+  context.restore();
   context.restore();canvas.dataset.photoTransform=JSON.stringify(transform);
   direction.value = label(yaw);
   canvas.dataset.sourceFrame = String(row.sourceFrame);
@@ -160,72 +79,32 @@ function paintRegion(image: ImageBitmap, x: number, y: number, width: number, he
   canvas.dataset.clip = row.clip;
   canvas.dataset.actualYaw = String(row.yaw);
   canvas.dataset.phase = String(phase);
-  const hd=quality==='hd';
   canvas.dataset.sourcePhase = String(referenceMatches.frames[frameIndices.get(row)!].phase);
-  canvas.dataset.referenceError = hd?String(block.referenceError):'';
+  canvas.dataset.referenceError = String(block.referenceError);
   canvas.dataset.selector = referenceMatches.version;
-  canvas.dataset.phaseError = hd?String(block.phaseError):'';
-  canvas.dataset.swapped = String(hd&&block.swapped);
-  canvas.dataset.halfCycle = String(hd&&block.halfCycle);
-  canvas.dataset.relaxed = String(hd&&block.relaxed);
-  canvas.dataset.continuation = String(hd&&block.sourceContinuation);
-  canvas.dataset.cutTick = hd?String(block.before.tick):'';
+  canvas.dataset.phaseError = String(block.phaseError);
+  canvas.dataset.swapped = String(block.swapped);
+  canvas.dataset.halfCycle = String(block.halfCycle);
+  canvas.dataset.relaxed = String(block.relaxed);
+  canvas.dataset.continuation = String(block.sourceContinuation);
+  canvas.dataset.cutTick = String(block.before.tick);
   canvas.dataset.clock = String(clock);
-  canvas.dataset.quality = quality;
-  canvas.dataset.motionVerified = String(!restored && hd && !!block.qualityVerified);
-  canvas.dataset.gptRestored = String(!!restored);
-  canvas.dataset.qualityProvider = restored ? (higgsfieldTest.hasDirection(yaw) ? higgsfieldTest.provider(frameIndices.get(row)!) : 'built-in-gpt') : 'original';
-  canvas.dataset.higgsfieldDownloaded = String(higgsfieldTest.downloaded);
-  canvas.dataset.higgsfieldDecoded = String(higgsfieldTest.decoded);
-  canvas.dataset.posePatched = String(!!restored && !higgsfieldTest.hasDirection(yaw) && gptTest.posePatched(yaw, frameIndices.get(row)!));
-  canvas.dataset.decodedPages = String(images.size);
-  canvas.dataset.compressedPages = String(downloads.size);
-  canvas.dataset.previewPages = '0';
+  canvas.dataset.quality = 'enhanced';
+  canvas.dataset.gptRestored = 'true';
+  canvas.dataset.qualityProvider = photographs.provider(index);
+  canvas.dataset.decodedPhotos = String(photographs.decoded);
   canvas.dataset.bufferedFrames = String(upcoming.reduce((sum,cut)=>sum+cut.count,0));
   canvas.dataset.directionLoading = String(directionLoading !== undefined);
   canvas.dataset.requestedYaw = String(target);
 }
 function draw() {
-  if (comparison12.active) return;
-  const still = gptTest.still(renderedTarget);
-  if (still) {
-    beginFrame(still.edited);
-    context.save();
-    if (still.edited) applyPhotoTransform(context, gptTest.registration(still.index, true) ?? IDENTITY_PHOTO);
-    context.drawImage(still.image, 0, 0, still.image.width, still.image.height, 0, 0, data.tileWidth, data.tileHeight);
-    context.restore();
-    direction.value = label(0);
-    canvas.dataset.quality = 'quality-test-still';
-    canvas.dataset.gptRestored = String(still.edited);
-    canvas.dataset.qualityProvider = still.edited ? 'built-in-gpt' : 'original';
-    canvas.dataset.posePatched = String(still.edited && gptTest.posePatched(0, still.index, true));
-    canvas.dataset.motionVerified = 'false';
-    canvas.dataset.sourceFrame = String(frames[still.index].sourceFrame);
-    canvas.dataset.frameIndex = String(still.index);
-    canvas.dataset.clip = frames[still.index].clip;
-    canvas.dataset.actualYaw = String(frames[still.index].yaw);
-    canvas.dataset.clock = String(clock);
-    canvas.dataset.phase = String(phase);
-    canvas.dataset.referenceError = '';
-    canvas.dataset.photoTransform = JSON.stringify(IDENTITY_PHOTO);
-    return;
-  }
-  const row = frames[cutIndex(block,Math.min(offset, block.count - 1))];
-  const image = images.get(row.atlas);
-  const restored = qualityForYaw(renderedTarget).replacement(renderedTarget, frameIndices.get(row)!);
-  if (!image && restored) paintRegion(restored, 0, 0, restored.width, restored.height, 0, 0, row, renderedTarget, 'hd');
-  else if (image) paint(image, row.tile, data.columns, data.tileWidth, data.tileHeight, row, renderedTarget, 'hd');
-
+  paint(frames[cutIndex(block, Math.min(offset, block.count - 1))], renderedTarget);
 }
-async function prepare(candidate: typeof block, yaw = renderedTarget, requested = false) {
-  const pages = new Set(cutIndices(candidate).map(i => frames[i].atlas));
-  await Promise.all([qualityForYaw(yaw).covers(yaw, cutIndices(candidate), requested) ? Promise.resolve() : Promise.all([...pages].map(index => images.load(index))), qualityForYaw(yaw).prepare(yaw, cutIndices(candidate), requested)]);
+async function prepare(candidate: typeof block) {
+  await photographs.prepare(cutIndices(candidate));
 }
-function retainPages() {
-  const indices = [block, ...upcoming, ...planned, ...bufferPlanned].flatMap(candidate => cutIndices(candidate));
-  images.retain(indices.map(i => frames[i].atlas));
-  gptTest.retain(indices);
-  higgsfieldTest.retain(indices);
+function retainPhotos() {
+  photographs.retain([block, ...upcoming, ...planned, ...bufferPlanned].flatMap(candidate => cutIndices(candidate)));
 }
 /** Keep almost a second of complete appearances decoded ahead of playback. */
 async function fillBuffer() {
@@ -235,10 +114,10 @@ async function fillBuffer() {
   try {
     while (upcoming.length < LOOKAHEAD_CUTS && epoch === stream) {
       const candidate = sequencer.plan(renderedTarget, (upcoming[upcoming.length - 1] ?? block).after);
-      bufferPlanned = [candidate]; retainPages();
+      bufferPlanned = [candidate]; retainPhotos();
       await prepare(candidate);
       if (epoch !== stream) return;
-      upcoming.push(candidate); bufferPlanned = []; retainPages();
+      upcoming.push(candidate); bufferPlanned = []; retainPhotos();
     }
   } catch(error) { if (epoch === stream) failed(error); }
   finally { if (filling === epoch) filling = undefined; }
@@ -250,36 +129,8 @@ function failed(error?:unknown) {
   status.textContent = error instanceof WalkCoverageError?'이 각도의 보행 소스가 부족해 재생을 멈췄어요. 다른 각도를 선택해 주세요.':'프레임을 불러오지 못했어요. 새로고침해 주세요.';
   if (!ready) startup.fail();
 }
-function candidateAvailable(candidate: ReferenceCut, yaw: number, requested = false) {
-  return (qualityForYaw(yaw).covers(yaw, cutIndices(candidate), requested) || cutIndices(candidate).every(i => !!images.get(frames[i].atlas)))
-    && qualityForYaw(yaw).available(yaw, cutIndices(candidate));
-}
-/** Quality comparison keeps this exact edit and live tick, including when
- * paused. Download/decode the other variant before changing displayed pixels. */
-async function refreshHiggsfield() {
-  const epoch = ++generation, yaw = target;
-  directionLoading = epoch;
-  const current = () => epoch === generation && target === yaw && renderedTarget === yaw;
-  try {
-    loading.hidden = false;
-    await loadView(yaw, current);
-    while (current()) {
-      await Promise.all([block, ...upcoming].map(candidate => prepare(candidate, yaw, true)));
-      if (!current()) return;
-      const available = [block, ...upcoming].every(candidate =>
-        (higgsfieldTest.covers(yaw, cutIndices(candidate), true) || cutIndices(candidate).every(i => !!images.get(frames[i].atlas)))
-        && higgsfieldTest.available(yaw, cutIndices(candidate)));
-      if (!available) continue;
-      higgsfieldTest.activate();
-      // An old fill may have decoded the previous variant. Its source order is
-      // unchanged, but do not install an unprepared appearance after handoff.
-      stream++; planned = []; bufferPlanned = [];
-      retainPages(); directionLoading = undefined;
-      draw(); loading.hidden = true;
-      void fillBuffer(); warmNeighbors();
-      return;
-    }
-  } finally { if (directionLoading === epoch) directionLoading = undefined; }
+function candidateAvailable(candidate: ReferenceCut) {
+  return photographs.available(cutIndices(candidate));
 }
 /** Decode the new view while the current HD sequence keeps playing. Only the
  * small entry window is needed to turn; the regular buffer fills afterwards. */
@@ -288,7 +139,6 @@ async function startDirection() {
   directionLoading = epoch;
   try {
     if (ready) loading.hidden = false;
-    await loadView(requested, () => epoch === generation);
     if (epoch !== generation) return;
     const sequence = await prepareLiveDirection({
       current: () => epoch === generation && requested === target,
@@ -301,26 +151,25 @@ async function startDirection() {
           const candidate = sequencer.plan(requested, state);
           sequence.push(candidate); state = candidate.after;
         }
-        planned = sequence; retainPages();
-        if (!ready) startup.prepare(sequence.filter(candidate => candidateAvailable(candidate, requested, true)).length, sequence.length);
+        planned = sequence; retainPhotos();
+        if (!ready) startup.prepare(sequence.filter(candidate => candidateAvailable(candidate)).length, sequence.length);
         return sequence;
       },
-      available: candidate => candidateAvailable(candidate, requested, true),
+      available: candidate => candidateAvailable(candidate),
       prepare: async candidate => {
-        await prepare(candidate, requested, true);
-        if (!ready && epoch === generation) startup.prepare(planned.filter(cut => candidateAvailable(cut, requested, true)).length, planned.length);
+        await prepare(candidate);
+        if (!ready && epoch === generation) startup.prepare(planned.filter(cut => candidateAvailable(cut)).length, planned.length);
       },
     });
     // Await itself yields, so recheck cancellation before installing the edit.
     if (!sequence || epoch !== generation || requested !== target) return;
-    qualityForYaw(requested).activate();
     block = sequence[0]; upcoming = sequence.slice(1);
     planned = []; bufferPlanned = []; stream++;
     renderedTarget = requested;
     directionLoading = undefined;
     offset = 0; phase = clockPhase(clock);
-    retainPages();
-    if (ready) { draw(); loading.hidden = true; warmNeighbors(); }
+    retainPhotos();
+    if (ready) { draw(); loading.hidden = true; }
     void fillBuffer();
   } catch (error) { if (epoch === generation) throw error; }
   finally { if (directionLoading === epoch) directionLoading = undefined; }
@@ -329,8 +178,6 @@ function setAngle(value: number) {
   const next = snapYaw(value, minYaw, maxYaw);
   const changed = next !== target;
   target = next;
-  gptTest.setDirection(target, higgsfieldTest.hasDirection(target));
-  higgsfieldTest.setDirection(target);
   surface.setAttribute('aria-valuenow', String(target));
   surface.setAttribute('aria-valuetext', label(target));
   if (ready && changed) {
@@ -377,7 +224,7 @@ window.addEventListener('blur', () => {
 });
 document.addEventListener('visibilitychange', () => { lastTime = 0; carry = 0; });
 function tick(time: number) {
-  if (ready && playing && !document.hidden && !gptTest.isStill(renderedTarget) && !comparison12.active) {
+  if (ready && playing && !document.hidden) {
     carry += lastTime ? Math.min((time - lastTime) / 1000, 0.12) : 0;
     while (carry >= 1 / data.fps) {
       carry -= 1 / data.fps;
@@ -388,7 +235,7 @@ function tick(time: number) {
         // Slow decoding never advances the clock behind a repeated still.
         if (!next) { canvas.dataset.decodeWaits = String(++decodeWaits); carry = 0; void fillBuffer(); break; }
         block = next; offset = 0;
-        retainPages(); void fillBuffer();
+        retainPhotos(); void fillBuffer();
       }
       clock++; phase = clockPhase(clock);
       draw();
@@ -400,26 +247,20 @@ function tick(time: number) {
 async function load() {
   try {
     surface.dataset.playing = 'false';
-    // A direct twelve-photo comparison needs only its own 24 images. Defer the
-    // complete artwork download until the viewer returns to the artwork.
-    if (new URLSearchParams(location.search).get('compare') === '12') {
-      document.body.dataset.booting = 'false'; loading.hidden = true; gptTest.ready(); return;
-    }
     document.body.dataset.booting = 'true'; loading.dataset.mode = 'startup'; loading.hidden = false;
-    gptTest.pending();
-    surface.dataset.totalPages = String(data.atlases.length + gptTest.count + higgsfieldTest.count);
-    await preloadPhotographs();
+    startup.update(photographs.stats);
+    await photographs.preloadAll();
+    startup.update(photographs.stats);
     await startDirection();
-    if (!images.get(frames[block.start].atlas) && !qualityForYaw(target).replacement(target, block.start)) throw new Error('Initial frame decode failed');
+    if (!photographs.image(block.start)) throw new Error('Initial frame decode failed');
     ready = true;
-    gptTest.ready();
     surface.dataset.readyAt = String(performance.now());
     draw();
     surface.setAttribute('aria-busy', 'false');
     startup.finish();
     surface.dataset.playing = String(playing);
     requestAnimationFrame(tick);
-    warmNeighbors();
+
   } catch(error) { failed(error); }
 }
 document.querySelector('#loading-retry')!.addEventListener('click', () => location.reload());
