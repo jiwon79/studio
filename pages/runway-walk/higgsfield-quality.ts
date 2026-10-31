@@ -7,6 +7,7 @@ import { directionPhotos } from './direction-photos';
 import { AtlasPool } from './atlas-pool';
 import { PhotoDownloads } from './photo-downloads';
 import { qualityFraming } from './quality-framing';
+import { preservedOriginals, qualityDirections } from './quality-coverage';
 
 type QualityFrame = { index: number; edited: string; playback?: string; qualityRegistration: { scale: number; dx: number; dy: number } };
 type QualityLibrary = { assetVersion: string; frames: QualityFrame[] };
@@ -16,11 +17,13 @@ for (const [folder, library] of [['higgsfield-quality-45', initialManifest], ['h
   if (library.assetVersion !== data.assetVersion) continue;
   for (const row of library.frames) byIndex.set(row.index, { ...row, folder });
 }
-const completeDirections = new Set(Array.from({ length: 37 }, (_, i) => i * 5 - 90).filter(yaw => directionPhotos(yaw).every(i => byIndex.has(i))));
-const activeIndices = [...new Set([...completeDirections].flatMap(directionPhotos))];
+const completeDirections = new Set(qualityDirections(new Set(byIndex.keys())));
+const enhancedPhotos = (yaw: number) => directionPhotos(yaw).filter(index => byIndex.has(index));
+const activeIndices = [...new Set([...completeDirections].flatMap(enhancedPhotos))];
 
 /** All requested angles share a comparison switch. A direction is promoted
- * only when every scheduled source photograph has a matching restoration. */
+ * only when every scheduled photograph is restored or explicitly kept original
+ * after a rejected generation. Original exceptions are never counted as edits. */
 export function higgsfieldQuality(gui: GUI, onChange: () => void, onDownloaded: () => void) {
   let selectedYaw = 0;
   const options = { enabled: true, state: '' };
@@ -50,21 +53,22 @@ export function higgsfieldQuality(gui: GUI, onChange: () => void, onDownloaded: 
     }
   }, () => { state(); onDownloaded(); }, 6);
   function state() {
-    const indices = directionPhotos(selectedYaw), count = indices.filter(i => blobs.has(i)).length;
+    const indices = enhancedPhotos(selectedYaw), count = indices.filter(i => blobs.has(i)).length;
+    const originalCount = directionPhotos(selectedYaw).filter(index => preservedOriginals.has(index) && !byIndex.has(index)).length;
     options.state = !completeDirections.has(selectedYaw) ? `${selectedYaw}° · 보정 사진 준비 중` : count === indices.length
-      ? `${selectedYaw}° · ${count}장 · 화질만 보정` : `${selectedYaw}° · 준비 ${count}/${indices.length}장`;
+      ? `${selectedYaw}° · ${count}장 보정${originalCount ? ` · ${originalCount}장 원본 유지` : ''}` : `${selectedYaw}° · 준비 ${count}/${indices.length}장`;
   }
   async function load(yaw = selectedYaw) {
     if (!completeDirections.has(yaw)) return;
-    await Promise.all(directionPhotos(yaw).map(index => downloads.request(index, () => selectedYaw === yaw)));
+    await Promise.all(enhancedPhotos(yaw).map(index => downloads.request(index, () => selectedYaw === yaw)));
   }
   const enabled = (requested: boolean) => requested ? options.enabled : activeEnabled;
   return {
     provider(index: number) { return byIndex.get(index)?.folder === 'gpt-quality' ? 'built-in-gpt' : 'higgsfield'; },
     hasDirection(yaw: number) { return completeDirections.has(yaw); },
     setDirection(yaw: number) { selectedYaw = yaw; state(); },
-    get count() { return directionPhotos(selectedYaw).length; },
-    get downloaded() { return directionPhotos(selectedYaw).filter(i => blobs.has(i)).length; },
+    get count() { return enhancedPhotos(selectedYaw).length; },
+    get downloaded() { return enhancedPhotos(selectedYaw).filter(i => blobs.has(i)).length; },
     get decoded() { return images.size; },
     get preloadStats() {
       return { total: activeIndices.length, loaded: activeIndices.filter(i => blobs.has(i)).length,
@@ -79,11 +83,12 @@ export function higgsfieldQuality(gui: GUI, onChange: () => void, onDownloaded: 
     async prepare(yaw: number, indices: number[], requested = false) {
       if (!completeDirections.has(yaw) || !enabled(requested)) return;
       await load(yaw);
-      await Promise.all([...new Set(indices)].map(index => images.load(index)));
+      await Promise.all([...new Set(indices)].filter(index => byIndex.has(index)).map(index => images.load(index)));
     },
     retain(indices: number[]) { images.retain(indices.filter(index => byIndex.has(index))); },
     available(yaw: number, indices: number[]) {
-      return !completeDirections.has(yaw) || !options.enabled || indices.every(index => !!images.get(index));
+      return !completeDirections.has(yaw) || !options.enabled || indices.every(index =>
+        (preservedOriginals.has(index) && !byIndex.has(index)) || !!images.get(index));
     },
     replacement(yaw: number, index: number) { return completeDirections.has(yaw) && activeEnabled ? images.get(index) : undefined; },
     registration(index: number) {
