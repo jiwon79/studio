@@ -23,5 +23,11 @@ test('the artwork stays hidden until the last photo and initial playback window 
     loading.prepare(9, 9); loading.finish();
     expect(body.dataset.booting).toBe('false');
     expect(element.hidden).toBe(true);
+    body.dataset.booting = 'true';
+    const failed = startupProgress(element);
+    failed.update({ ...state, enhanced: 244 }); failed.prepare(9, 9);
+    failed.fail(); failed.update({ ...state, enhanced: 244 });
+    expect(() => failed.finish()).toThrow();
+    expect(body.dataset.booting).toBe('true');
   } finally { vi.unstubAllGlobals(); }
 });
