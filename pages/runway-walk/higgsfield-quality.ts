@@ -2,16 +2,17 @@ import type GUI from 'lil-gui';
 import data from './angles.json';
 import initialManifest from './assets/higgsfield-quality-45/manifest.json';
 import addedManifest from './assets/higgsfield-quality/manifest.json';
+import builtInManifest from './assets/gpt-quality/manifest.json';
 import { directionPhotos } from './direction-photos';
 import { AtlasPool } from './atlas-pool';
 import { PhotoDownloads } from './photo-downloads';
 import { qualityFraming } from './quality-framing';
 
-type QualityFrame = { index: number; edited: string; qualityRegistration: { scale: number; dx: number; dy: number } };
+type QualityFrame = { index: number; edited: string; playback?: string; qualityRegistration: { scale: number; dx: number; dy: number } };
 type QualityLibrary = { assetVersion: string; frames: QualityFrame[] };
-const files = import.meta.glob<string>('./assets/{higgsfield-quality,higgsfield-quality-45}/*.webp', { eager: true, query: '?url', import: 'default' });
+const files = import.meta.glob<string>('./assets/{higgsfield-quality,higgsfield-quality-45,gpt-quality}/*.webp', { eager: true, query: '?url', import: 'default' });
 const byIndex = new Map<number, QualityFrame & { folder: string }>();
-for (const [folder, library] of [['higgsfield-quality-45', initialManifest], ['higgsfield-quality', addedManifest]] as [string, QualityLibrary][]) {
+for (const [folder, library] of [['higgsfield-quality-45', initialManifest], ['higgsfield-quality', addedManifest], ['gpt-quality', builtInManifest]] as [string, QualityLibrary][]) {
   if (library.assetVersion !== data.assetVersion) continue;
   for (const row of library.frames) byIndex.set(row.index, { ...row, folder });
 }
@@ -30,14 +31,14 @@ export function higgsfieldQuality(gui: GUI, onChange: () => void, onDownloaded: 
     if (!blob) throw new Error('Higgsfield download incomplete');
     return createImageBitmap(blob, { resizeWidth: 768, resizeHeight: 1152, resizeQuality: 'high' });
   }, 24);
-  const folder = gui.addFolder('Higgsfield 화질');
+  const folder = gui.addFolder('사진 화질');
   folder.add(options, 'enabled').name('화질 보정 ON/OFF').onChange(onChange);
   folder.add(options, 'state').name('준비 상태').listen().disable();
   const downloads = new PhotoDownloads(async index => {
     const row = byIndex.get(index)!;
     for (let attempt = 0; ; attempt++) {
       try {
-        const response = await fetch(files[`./assets/${row.folder}/${row.edited}`]);
+        const response = await fetch(files[`./assets/${row.folder}/${row.playback ?? row.edited}`]);
         if (!response.ok) throw new Error(`Higgsfield photo unavailable: ${index}`);
         const blob = await response.blob();
         blobs.set(index, blob);
@@ -50,7 +51,7 @@ export function higgsfieldQuality(gui: GUI, onChange: () => void, onDownloaded: 
   }, () => { state(); onDownloaded(); }, 6);
   function state() {
     const indices = directionPhotos(selectedYaw), count = indices.filter(i => blobs.has(i)).length;
-    options.state = !completeDirections.has(selectedYaw) ? `${selectedYaw}° · Higgsfield 준비 중` : count === indices.length
+    options.state = !completeDirections.has(selectedYaw) ? `${selectedYaw}° · 보정 사진 준비 중` : count === indices.length
       ? `${selectedYaw}° · ${count}장 · 화질만 보정` : `${selectedYaw}° · 준비 ${count}/${indices.length}장`;
   }
   async function load(yaw = selectedYaw) {
@@ -59,6 +60,7 @@ export function higgsfieldQuality(gui: GUI, onChange: () => void, onDownloaded: 
   }
   const enabled = (requested: boolean) => requested ? options.enabled : activeEnabled;
   return {
+    provider(index: number) { return byIndex.get(index)?.folder === 'gpt-quality' ? 'built-in-gpt' : 'higgsfield'; },
     hasDirection(yaw: number) { return completeDirections.has(yaw); },
     setDirection(yaw: number) { selectedYaw = yaw; state(); },
     get count() { return directionPhotos(selectedYaw).length; },

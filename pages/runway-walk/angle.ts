@@ -174,7 +174,7 @@ function paintRegion(image: ImageBitmap, x: number, y: number, width: number, he
   canvas.dataset.quality = quality;
   canvas.dataset.motionVerified = String(!restored && hd && !!block.qualityVerified);
   canvas.dataset.gptRestored = String(!!restored);
-  canvas.dataset.qualityProvider = restored ? (higgsfieldTest.hasDirection(yaw) ? 'higgsfield' : 'built-in-gpt') : 'original';
+  canvas.dataset.qualityProvider = restored ? (higgsfieldTest.hasDirection(yaw) ? higgsfieldTest.provider(frameIndices.get(row)!) : 'built-in-gpt') : 'original';
   canvas.dataset.higgsfieldDownloaded = String(higgsfieldTest.downloaded);
   canvas.dataset.higgsfieldDecoded = String(higgsfieldTest.decoded);
   canvas.dataset.posePatched = String(!!restored && !higgsfieldTest.hasDirection(yaw) && gptTest.posePatched(yaw, frameIndices.get(row)!));

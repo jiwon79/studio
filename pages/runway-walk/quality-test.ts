@@ -1,6 +1,7 @@
 import gptManifest from './assets/gpt-quality/manifest.json';
 import higgsfieldManifest from './assets/higgsfield-quality-45/manifest.json';
 import addedManifest from './assets/higgsfield-quality/manifest.json';
+import { directionPhotos } from './direction-photos';
 type ReviewFrame = { index: number; group: number; original: string; edited: string; qualityRegistration?: { scale: number; dx: number; dy: number } };
 type ReviewGroup = { id: string; label: string; indices: number[] };
 type ReviewLibrary = { additionalTarget: number; generated: number; frames: ReviewFrame[]; groups?: ReviewGroup[] };
@@ -19,7 +20,10 @@ const groups: ReviewGroup[] = (manifest as { groups?: ReviewGroup[] }).groups ??
 for (const row of groups) group.add(new Option(row.label, row.id));
 const linked = new URLSearchParams(location.search).get('group');
 if (groups.some(row => row.id === linked)) group.value = linked!;
-el('scope').textContent = isHiggsfield ? `Higgsfield API · GPT Image 2.5 · 전체 ${manifest.additionalTarget}장 중 ${manifest.generated}장 생성. 작품 적용 완료 각도: ${[...new Set([45, ...addedManifest.completeDirections])].join(', ')}°. 원본 사진만 입력해 화질·누끼를 보정했습니다. 완성된 각도에서 ON/OFF 비교할 수 있습니다.` : `전체 추가 대상 ${manifest.additionalTarget.toLocaleString()}장 중 ${manifest.generated.toLocaleString()}장을 생성한 중간 결과입니다. 자세·각도 변경 가이드는 사용하지 않았습니다. 아직 기본 작품에 적용하지 않았습니다.`;
+const combinedIndices = new Set([...gptManifest.frames, ...higgsfieldManifest.frames, ...addedManifest.frames].map(row => row.index));
+const completeAngles = Array.from({ length: 37 }, (_, i) => i * 5 - 90).filter(yaw => directionPhotos(yaw).every(index => combinedIndices.has(index)));
+el('scope').textContent = isHiggsfield ? `Higgsfield API · GPT Image 2.5 · 전체 ${manifest.additionalTarget}장 중 ${manifest.generated}장 생성. 원본 사진만 입력해 화질·누끼를 보정했습니다.` : `내장 GPT 이미지 · ${manifest.generated.toLocaleString()}장 생성. 자세·각도 변경 가이드 없이 원본 사진의 화질·누끼만 보정합니다.`;
+el('scope').textContent += ` 두 제공자의 사진을 합쳐 전체 사진이 준비된 ${completeAngles.join(', ')}°는 작품에서 ON/OFF 비교할 수 있습니다. 나머지 각도는 원본으로 유지합니다.`;
 if (isHiggsfield) el<HTMLAnchorElement>('artwork').href = './angle.html?angle=45';
 el('edited-label').textContent = isHiggsfield ? 'Higgsfield · GPT Image 2.5' : 'GPT 화질 보정';
 let tick = 0, epoch = 0, loading = 0, ready = false, playing = false;
@@ -62,7 +66,7 @@ speed.onchange = () => { stop(); if (ready) play(); };
 align.onchange = () => { if (ready) draw(); };
 async function loadGroup() {
   stop(); ready = false; button.disabled = true; seek.disabled = true;
-  if (isHiggsfield) el<HTMLAnchorElement>('artwork').href = `./angle.html?angle=${Number(group.value.split(':')[0])}`;
+  el<HTMLAnchorElement>('artwork').href = `./angle.html?angle=${Number(group.value.split(':')[0])}`;
   const version = ++loading, selected = rows(), wanted = [...new Set(selected.flatMap(row => [row.original, row.edited]))];
   images.clear(); canvases.forEach(canvas => { const ctx = canvas.getContext('2d')!; ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, canvas.width, canvas.height); canvas.dataset.index = ''; });
   el<HTMLOutputElement>('frame').value = '준비 중';
