@@ -54,6 +54,11 @@ with tempfile.TemporaryDirectory() as tmp:
  for x,y,u,v in [(120/300,100/450,.3,10/150),(200/300,360/450,.7,140/150)]:
   assert abs((x*512*fit['scale']+fit['dx'])/512-u)<1e-9
   assert abs((y*768*fit['scale']+fit['dy'])/768-v)<1e-9
+ # A small fragment removed by matting must not shift the whole person.
+ a=Image.new('RGBA',(512,768));a.paste((255,255,255,255),(200,50,300,700));a.paste((255,255,255,255),(50,500,75,525));a.save(source)
+ b=Image.new('RGBA',(512,768));b.paste((255,255,255,255),(200,50,300,700));b.save(candidate)
+ cleaned=m.quality_registration(source,candidate)
+ assert abs(cleaned['dx'])<1e-9 and cleaned['scale']==1 and cleaned['dy']==0
  folder=m.PAGE/'assets/gpt-quality';folder.mkdir(parents=True)
  (m.PAGE/'assets/gpt-zero').mkdir()
  (m.CACHE/'input').mkdir(parents=True);(m.CACHE/'jobs').mkdir()

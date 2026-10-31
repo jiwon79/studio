@@ -31,19 +31,43 @@ def quality_registration(original, generated):
     No rig, target gait, angle, joint labels, rotation or limb deformation.
     Raw generated pixels remain available unchanged in the comparison.
     """
-    from PIL import Image
+    from PIL import Image, ImageChops
     bounds = []
+    masks = []
     for path in [original, generated]:
         with Image.open(path) as image:
-            box = image.getchannel('A').point(lambda a: 255 if a >= 128 else 0).getbbox()
+            mask = image.getchannel('A').point(lambda a: 255 if a >= 128 else 0)
+            box = mask.getbbox()
             if box is None:
                 return dict(scale=1, dx=0, dy=0)
             bounds.append([box[0] / image.width * 512, box[1] / image.height * 768,
                            box[2] / image.width * 512, box[3] / image.height * 768])
+            masks.append(mask.resize((512, 768), Image.Resampling.BILINEAR))
     a, b = bounds
     scale = (a[3] - a[1]) / (b[3] - b[1])
-    return dict(scale=scale, dx=(a[0] + a[2]) / 2 - scale * (b[0] + b[2]) / 2,
-                dy=a[3] - scale * b[3])
+    fit = dict(scale=scale, dx=(a[0] + a[2]) / 2 - scale * (b[0] + b[2]) / 2,
+               dy=a[3] - scale * b[3])
+    # Removed background fragments can corrupt the original bounding box's
+    # horizontal center. Check a second center from the upper foreground, and
+    # use it only when the full source silhouette matches substantially better.
+    # Both candidates are whole-photo scale/translation, never a new pose.
+    centers = []
+    for mask, box in zip(masks, bounds):
+        profile = mask.crop((0, int(box[1]), 512, max(int(box[1]) + 1, int(box[1] + (box[3] - box[1]) * .55)))).resize((512, 1), Image.Resampling.BOX)
+        weights = profile.tobytes()
+        centers.append(sum((x + .5) * value for x, value in enumerate(weights)) / max(1, sum(weights)))
+    alternate_dx = centers[0] - scale * centers[1]
+    if abs(alternate_dx - fit['dx']) > 4:
+        source_mask = masks[0].point(lambda a: 255 if a >= 128 else 0)
+        def overlap(dx):
+            candidate = masks[1].transform((512, 768), Image.Transform.AFFINE,
+                (1 / scale, 0, -dx / scale, 0, 1 / scale, -fit['dy'] / scale), Image.Resampling.BILINEAR).point(lambda a: 255 if a >= 128 else 0)
+            intersection = ImageChops.darker(source_mask, candidate).histogram()[255]
+            union = ImageChops.lighter(source_mask, candidate).histogram()[255]
+            return intersection / max(1, union)
+        if overlap(alternate_dx) > overlap(fit['dx']) + .05:
+            fit['dx'] = alternate_dx
+    return fit
 
 
 def inventory():
