@@ -1,0 +1,26 @@
+[
+  {
+    "index": 370,
+    "prompt": "Use case: identity-preserve. Edit target: the single supplied runway photograph, frame 370. Restore image quality only: remove compression blocks, sharpen existing fabric/hair/shoe details conservatively, and clean the transparent cutout edge by removing gray background contamination. Preserve the EXACT original person silhouette, head center, body lean, camera viewpoint and facing angle, shoulder/hip/knee/ankle positions, anatomical left/right identity, shoe orientation, overlap/occlusion and foot placement. Keep the entire person at the same normalized canvas coordinates and same scale in a 2:3 portrait canvas. Do not improve, correct or reinterpret posture or gait. Do not invent hidden limbs or change depth. Same green coat, gray wide trousers, sunglasses, shoes and colors. No mannequin or pose reference. Genuine transparent alpha background, no floor, shadow, text or added accessories. High fidelity photographic restoration, not a new pose."
+  },
+  {
+    "index": 371,
+    "prompt": "Use case: identity-preserve. Edit target is only this runway photograph frame 371. Conservative upscale/photo restoration ONLY. Keep every original contour and every body-part coordinate exactly at the same relative canvas location. Do not recenter, zoom, rotate, pose-correct, change camera/facing angle or gait. Same green coat, gray trousers and shoes. Preserve exact foot placement, crossed-leg overlap, shoe toe/sole orientation, face center, torso lean and anatomical left/right. Restore fine fabric, clean compression artifacts and gray fringing. Genuine transparent background: strictly clean crisp alpha outside the original silhouette, ZERO opacity more than a few pixels from its edge. No colored glow, halo, drop shadow, fog, light spill, floor or gradient around the subject. Solid opaque clothing/skin inside silhouette. No mannequin guides. Keep 2:3 portrait composition. No added accessories/text."
+  },
+  {
+    "index": 372,
+    "prompt": "Restore and upscale the supplied low-resolution runway cutout. Keep the EXACT same photograph composition, silhouette and walking pose, same subject position and scale, same face and facing angle, same torso lean, same hands, legs and both shoes in precisely their original locations. Only improve photographic clarity, fabric texture and clean the ragged cutout. Transparent PNG-style subject on fully transparent background with a hard clean edge; preserve alpha outside the silhouette as zero. No aura or glow. Do not redesign anatomy, clothes, pose, foot placement or viewpoint. Portrait 2:3, full body, nothing added."
+  },
+  {
+    "index": 1361,
+    "prompt": "Restore and upscale the supplied low-resolution runway cutout. Keep the EXACT same photograph composition, silhouette and walking pose, same subject position and scale, same face and facing angle, same torso lean, same hands, legs and both shoes in precisely their original locations. Only improve photographic clarity, fabric texture and clean the ragged cutout. Transparent PNG-style subject on fully transparent background with a hard clean edge; preserve alpha outside the silhouette as zero. No aura or glow. Do not redesign anatomy, clothes, pose, foot placement or viewpoint. Portrait 2:3, full body, nothing added. This is a near-right-profile subject, frame 1361. Keep this exact existing profile, do not turn toward camera. Preserve extended stride: both legs, trousers silhouette and shoes exactly as in source."
+  },
+  {
+    "index": 1362,
+    "prompt": "Restore and upscale the supplied low-resolution runway cutout. Keep the EXACT same photograph composition, silhouette and walking pose, same subject position and scale, same face and facing angle, same torso lean, same hands, legs and both shoes in precisely their original locations. Only improve photographic clarity, fabric texture and clean the ragged cutout. Transparent PNG-style subject on fully transparent background with a hard clean edge; preserve alpha outside the silhouette as zero. No aura or glow. Do not redesign anatomy, clothes, pose, foot placement or viewpoint. Portrait 2:3, full body, nothing added. This is a near-right-profile subject, frame 1362. Keep this exact existing profile, do not turn toward camera. Preserve extended stride: both legs, trousers silhouette and shoes exactly as in source."
+  },
+  {
+    "index": 1363,
+    "prompt": "Restore and upscale the supplied low-resolution runway cutout. Keep the EXACT same photograph composition, silhouette and walking pose, same subject position and scale, same face and facing angle, same torso lean, same hands, legs and both shoes in precisely their original locations. Only improve photographic clarity, fabric texture and clean the ragged cutout. Transparent PNG-style subject on fully transparent background with a hard clean edge; preserve alpha outside the silhouette as zero. No aura or glow. Do not redesign anatomy, clothes, pose, foot placement or viewpoint. Portrait 2:3, full body, nothing added. This is a near-right-profile subject, frame 1363. Keep this exact existing profile, do not turn toward camera. Preserve extended stride: both legs, trousers silhouette and shoes exactly as in source."
+  }
+]

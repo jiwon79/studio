@@ -1,0 +1,76 @@
+{
+  "assetVersion": "cf6c5178ec36",
+  "tool": "built-in GPT image editing",
+  "purpose": "quality-only, no model or pose guide",
+  "status": "partial; not applied to main artwork",
+  "additionalTarget": 2892,
+  "generated": 6,
+  "frames": [
+    {
+      "index": 370,
+      "group": 5,
+      "source": "prada25",
+      "sourceFrame": 2059,
+      "original": "370-original.webp",
+      "edited": "370.webp",
+      "originalInputSha256": "2539fc1020cbca718ff5630a5fb6d548fae44ec241d83488c608a25ace63bc0f",
+      "generatedPngSha256": "070a3a6d2847738c328003e5c77201f86db06698c1110ec5ee78db1cd0722c66",
+      "editedSha256": "38498dd46439a469b36d9676ba84aa403db13208a76131f8d9e230bb50d2e990"
+    },
+    {
+      "index": 371,
+      "group": 5,
+      "source": "prada25",
+      "sourceFrame": 2060,
+      "original": "371-original.webp",
+      "edited": "371.webp",
+      "originalInputSha256": "e02e91e2eca484a3f559bba96f4e2d17b0e1b616b8c46c22c1a8ab171420e671",
+      "generatedPngSha256": "3e010e5e1886af3257a5cdd76dd89e870cb30667b6db9d182a5f243852449ad3",
+      "editedSha256": "56bd2f8cae740415cdc24ed0e33dbbcacbb8ecdb825ec47dd4d4e5ec13048718"
+    },
+    {
+      "index": 372,
+      "group": 5,
+      "source": "prada25",
+      "sourceFrame": 2061,
+      "original": "372-original.webp",
+      "edited": "372.webp",
+      "originalInputSha256": "314e013dedf2c541cca75b6c99500e32e3d31b2bc9d90bc5f87d488ea4b3f406",
+      "generatedPngSha256": "49cd245665a98793c56c96380bd90be08cb4e02c7352dfbd7c2a9d3fcafeb4cf",
+      "editedSha256": "ae3d81a4bb686016c2f77578fe24684175e4c5785eb1f2dd26fb5de32d4c6b50"
+    },
+    {
+      "index": 1361,
+      "group": 85,
+      "source": "hermes24",
+      "sourceFrame": 4909,
+      "original": "1361-original.webp",
+      "edited": "1361.webp",
+      "originalInputSha256": "256f77baa0c1a2c7e14119ec04818a77a6f652cb85aecef280b62f5133cd0e83",
+      "generatedPngSha256": "b4303388a6bc744f50d7305ce7179a7b7eade9157d06634c0be860fb687c3e45",
+      "editedSha256": "e4da55d6c650fd6cbaf8bf5059c5e41645ed33c9035b7ef04ab85137cecbaaa2"
+    },
+    {
+      "index": 1362,
+      "group": 85,
+      "source": "hermes24",
+      "sourceFrame": 4910,
+      "original": "1362-original.webp",
+      "edited": "1362.webp",
+      "originalInputSha256": "4280b888882695e64660351b76f9665588921f22b2c24b45b77cf04c087899c2",
+      "generatedPngSha256": "0b7594fc12a9cc9e52be5518918e606b36733403fb945ea732b1daf0717227fe",
+      "editedSha256": "976851779ab47b3a83b1dea06e1c89c2f2599a0f2d4d80ff56a54cba2880b49f"
+    },
+    {
+      "index": 1363,
+      "group": 85,
+      "source": "hermes24",
+      "sourceFrame": 4911,
+      "original": "1363-original.webp",
+      "edited": "1363.webp",
+      "originalInputSha256": "0020435e096fbefb040f20d203784be643840cd54a1313882177313b059724fb",
+      "generatedPngSha256": "0de616e67b918a181e2785699c671b845b5ef39f5ae08d2c8b6d8807f2886d2d",
+      "editedSha256": "86d1ff95241bfb17586979926b94b3927f6dc755a5627074857b75e6b03db776"
+    }
+  ]
+}

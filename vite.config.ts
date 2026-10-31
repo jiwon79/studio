@@ -73,6 +73,7 @@ input['runway-walk-debug'] = resolve(pagesDir, 'runway-walk/debug.html');
 input['runway-walk-sequence'] = resolve(pagesDir, 'runway-walk/sequence.html');
 input['runway-walk-reference'] = resolve(pagesDir, 'runway-walk/reference.html');
 input['runway-walk-pose-test'] = resolve(pagesDir, 'runway-walk/pose-test.html');
+input['runway-walk-quality-test'] = resolve(pagesDir, 'runway-walk/quality-test.html');
 
 const assetDirectories = pageEntries
   .filter(name => existsSync(resolve(pagesDir, name, 'assets')))
