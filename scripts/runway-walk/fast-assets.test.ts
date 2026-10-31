@@ -1,0 +1,43 @@
+import { test, expect, onTestFinished } from 'vitest';
+import { createServer } from 'node:http';
+import { mkdir, mkdtemp, writeFile, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { fastAssets } from './fast-assets';
+
+test('preview compresses bundles, caches versioned photos, and serves new hashes freshly', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'runway-assets-'));
+  await mkdir(join(root, 'assets'));
+  const script = 'const pose = [1,2,3];\n'.repeat(10000);
+  await writeFile(join(root, 'assets/reference-12345678.js'), script);
+  await writeFile(join(root, 'assets/reference-abcdefgh.js'), 'new build');
+  await writeFile(join(root, 'assets/person-12345678.webp'), 'photo bytes');
+  const middleware = fastAssets(root);
+  const server = createServer((request, response) => { void middleware(request, response, () => { response.statusCode = 404; response.end(); }); });
+  await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));
+  onTestFinished(async () => {
+    await new Promise<void>(resolve => server.close(() => resolve()));
+    await rm(root, { recursive: true });
+  });
+  const address = server.address();
+  if (!address || typeof address === 'string') throw new Error('Missing test address');
+  const base = `http://127.0.0.1:${address.port}`;
+  const compressed = await fetch(base + '/assets/reference-12345678.js', { headers: { 'Accept-Encoding': 'gzip' } });
+  expect(compressed.headers.get('content-encoding')).toBe('gzip');
+  expect(+compressed.headers.get('content-length')!).toBeLessThan(script.length / 10);
+  expect(compressed.headers.get('cache-control')).toContain('immutable');
+  expect(await compressed.text()).toBe(script);
+  const raw = await fetch(base + '/assets/reference-12345678.js', { headers: { 'Accept-Encoding': 'gzip;q=0' } });
+  expect(raw.headers.get('content-encoding')).toBeNull();
+  expect(await raw.text()).toBe(script);
+  const latest = await fetch(base + '/assets/reference-abcdefgh.js');
+  expect(await latest.text()).toBe('new build');
+  const photo = await fetch(base + '/assets/person-12345678.webp');
+  expect(photo.headers.get('cache-control')).toContain('immutable');
+  expect(photo.headers.get('content-encoding')).toBeNull();
+  expect(await photo.text()).toBe('photo bytes');
+  const unversioned = await fetch(base + '/assets/person-12345678.webp', { method: 'HEAD' });
+  expect(unversioned.headers.get('cache-control')).toContain('immutable');
+  expect(await unversioned.text()).toBe('');
+  expect((await fetch(base + '/runway-walk/angle.html')).status).toBe(404);
+});

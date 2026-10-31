@@ -1,0 +1,12182 @@
+[
+  {
+    "id": "lv-left-548",
+    "source": "lv",
+    "start": 546,
+    "end": 548.4,
+    "yaw": -60,
+    "roi": [
+      480,
+      0,
+      960,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "yawKeys": [
+      [
+        546,
+        -40
+      ],
+      [
+        547.0,
+        -50
+      ],
+      [
+        547.64,
+        -55
+      ],
+      [
+        548.24,
+        -45
+      ],
+      [
+        548.4,
+        -55
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "carriedItems": "none"
+  },
+  {
+    "id": "lv-look-410",
+    "source": "lv",
+    "start": 409.2,
+    "end": 411.65,
+    "yaw": -45,
+    "roi": [
+      612,
+      0,
+      960,
+      1080
+    ],
+    "yawKeys": [
+      [
+        409.2,
+        -30
+      ],
+      [
+        410.0,
+        -35
+      ],
+      [
+        410.76,
+        -35
+      ],
+      [
+        411.65,
+        -40
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "carriedItems": "none"
+  },
+  {
+    "id": "lv-look-670",
+    "source": "lv",
+    "start": 669.2,
+    "end": 670.8,
+    "yaw": -55,
+    "roi": [
+      481,
+      0,
+      960,
+      1080
+    ],
+    "yawKeys": [
+      [
+        669.2,
+        -30
+      ],
+      [
+        669.68,
+        -35
+      ],
+      [
+        670.32,
+        -40
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "carriedItems": "none"
+  },
+  {
+    "id": "prada-look-26",
+    "source": "prada",
+    "start": 26,
+    "end": 28.1,
+    "yaw": -75,
+    "roi": [
+      330,
+      0,
+      640,
+      720
+    ],
+    "yawKeys": [
+      [
+        26.0,
+        -50
+      ],
+      [
+        26.24,
+        -55
+      ],
+      [
+        26.48,
+        -60
+      ],
+      [
+        26.68,
+        -70
+      ],
+      [
+        26.92,
+        -75
+      ],
+      [
+        27.16,
+        -80
+      ],
+      [
+        28.1,
+        -95
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "carriedItems": "none"
+  },
+  {
+    "id": "prada-look-186",
+    "source": "prada",
+    "start": 184.5,
+    "end": 186.6,
+    "yaw": -75,
+    "roi": [
+      346,
+      0,
+      640,
+      720
+    ],
+    "yawKeys": [
+      [
+        184.5,
+        -45
+      ],
+      [
+        185.2,
+        -70
+      ],
+      [
+        185.56,
+        -80
+      ],
+      [
+        185.8,
+        -90
+      ],
+      [
+        186.16,
+        -100
+      ],
+      [
+        186.6,
+        -115
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "carriedItems": "none"
+  },
+  {
+    "id": "prada-look-318",
+    "source": "prada",
+    "start": 317.9,
+    "end": 319.1,
+    "yaw": -75,
+    "roi": [
+      310,
+      0,
+      640,
+      720
+    ],
+    "personGuard": "body",
+    "yawKeys": [
+      [
+        317.92,
+        -30
+      ],
+      [
+        318.16,
+        -35
+      ],
+      [
+        318.36,
+        -45
+      ],
+      [
+        318.64,
+        -60
+      ],
+      [
+        318.84,
+        -70
+      ],
+      [
+        319.08,
+        -80
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "carriedItems": "none"
+  },
+  {
+    "id": "prada25-look-50",
+    "source": "prada25",
+    "start": 49.2,
+    "end": 50.8,
+    "yaw": 0,
+    "roi": [
+      482,
+      0,
+      960,
+      1080
+    ],
+    "carriedItems": "none"
+  },
+  {
+    "id": "fendi-look-1720",
+    "source": "fendi",
+    "start": 29.2,
+    "end": 30.8,
+    "yaw": 0,
+    "roi": [
+      481,
+      0,
+      960,
+      1080
+    ],
+    "lookId": "fendi-gray-jacket-shorts",
+    "matteRegion": [
+      [
+        0.3,
+        0
+      ],
+      [
+        0.68,
+        0
+      ],
+      [
+        0.68,
+        0.48
+      ],
+      [
+        0.615,
+        0.55
+      ],
+      [
+        0.615,
+        1
+      ],
+      [
+        0.3,
+        1
+      ]
+    ],
+    "excludedFrames": [
+      759,
+      760,
+      761,
+      762,
+      763,
+      764,
+      765,
+      766,
+      767,
+      768,
+      769
+    ],
+    "carriedItems": "none"
+  },
+  {
+    "id": "prada25-look-112",
+    "source": "prada25",
+    "start": 111.4,
+    "end": 112.7,
+    "yaw": 0,
+    "roi": [
+      466,
+      0,
+      960,
+      1080
+    ],
+    "personGuard": "body",
+    "carriedItems": "none"
+  },
+  {
+    "id": "gucci-look-95",
+    "source": "gucci",
+    "start": 94.3,
+    "end": 95.7,
+    "yaw": 0,
+    "roi": [
+      480,
+      0,
+      960,
+      1080
+    ],
+    "carriedItems": "none"
+  },
+  {
+    "id": "prada25-curve-70",
+    "source": "prada25",
+    "start": 69.2,
+    "end": 72.4,
+    "yaw": 10,
+    "roi": [
+      300,
+      0,
+      640,
+      1080
+    ],
+    "personGuard": "body",
+    "neutralWristBackdrop": true,
+    "reviewedFrames": [
+      1775,
+      1776,
+      1777,
+      1778,
+      1790,
+      1791,
+      1792
+    ],
+    "carriedItems": "none"
+  },
+  {
+    "id": "prada25-nearfront-83",
+    "source": "prada25",
+    "start": 82.0,
+    "end": 83.6,
+    "yaw": 10,
+    "roi": [
+      660,
+      0,
+      600,
+      1080
+    ],
+    "personGuard": "body",
+    "carriedItems": "none"
+  },
+  {
+    "id": "prada25-curve-130",
+    "source": "prada25",
+    "start": 129.6,
+    "end": 132.4,
+    "yaw": -15,
+    "roi": [
+      300,
+      0,
+      640,
+      1080
+    ],
+    "personGuard": "body",
+    "excludedFrames": [
+      3265,
+      3267,
+      3269,
+      3270,
+      3271,
+      3272
+    ],
+    "instance": true,
+    "yawKeys": [
+      [
+        130.56,
+        -10
+      ],
+      [
+        130.8,
+        -5
+      ],
+      [
+        131.04,
+        0
+      ],
+      [
+        131.28,
+        5
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "carriedItems": "none"
+  },
+  {
+    "id": "prada25-curve-174",
+    "source": "prada25",
+    "start": 172.6,
+    "end": 174.3,
+    "yaw": -15,
+    "roi": [
+      340,
+      0,
+      520,
+      1080
+    ],
+    "personGuard": "body",
+    "headEnvelope": [
+      1.1,
+      2.0
+    ],
+    "instance": true,
+    "yawKeys": [
+      [
+        172.6,
+        -5
+      ],
+      [
+        173.12,
+        -10
+      ],
+      [
+        173.6,
+        -15
+      ],
+      [
+        174.28,
+        -15
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes-left-499",
+    "source": "hermes",
+    "start": 498.6,
+    "end": 501.3,
+    "yaw": -20,
+    "roi": [
+      650,
+      0,
+      650,
+      1080
+    ],
+    "yawKeys": [
+      [
+        498.6,
+        -5
+      ],
+      [
+        499.16,
+        -10
+      ],
+      [
+        499.72,
+        -15
+      ],
+      [
+        501.3,
+        -25
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes-left-560",
+    "source": "hermes",
+    "start": 559.0,
+    "end": 560.8,
+    "yaw": -20,
+    "roi": [
+      600,
+      0,
+      700,
+      1080
+    ],
+    "excludedFrames": [
+      14000,
+      14001,
+      14002,
+      14003,
+      14004,
+      14005,
+      14006,
+      14007,
+      14008,
+      14009,
+      14010,
+      14011,
+      14012,
+      14013,
+      14014
+    ],
+    "lookId": "hermes-pale-gray",
+    "yawKeys": [
+      [
+        559.0,
+        -10
+      ],
+      [
+        559.96,
+        -15
+      ],
+      [
+        560.8,
+        -20
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes-turn-686",
+    "source": "hermes",
+    "start": 684.4,
+    "end": 687.3,
+    "yaw": -55,
+    "roi": [
+      350,
+      0,
+      1200,
+      1080
+    ],
+    "targetXKeys": [
+      [
+        684.4,
+        0.6
+      ],
+      [
+        687.3,
+        0.37
+      ]
+    ],
+    "reviewedFrames": [
+      17164,
+      17165,
+      17166,
+      17167,
+      17168,
+      17169,
+      17170,
+      17171,
+      17174,
+      17175,
+      17176,
+      17177,
+      17178,
+      17179
+    ],
+    "phaseReference": "lv-look-410",
+    "yawKeys": [
+      [
+        686.56,
+        -35
+      ],
+      [
+        687.16,
+        -50
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes-turn-690",
+    "source": "hermes",
+    "start": 688.9,
+    "end": 691.1,
+    "yaw": -50,
+    "roi": [
+      350,
+      0,
+      1200,
+      1080
+    ],
+    "targetXKeys": [
+      [
+        688.9,
+        0.6
+      ],
+      [
+        691.1,
+        0.37
+      ]
+    ],
+    "reviewedFrames": [
+      17243,
+      17244,
+      17245,
+      17246,
+      17247,
+      17248,
+      17249,
+      17250,
+      17251,
+      17252,
+      17253,
+      17254
+    ],
+    "phaseReference": "lv-look-410",
+    "lookId": "hermes-brown-open-cardigan",
+    "yawKeys": [
+      [
+        689.72,
+        -30
+      ],
+      [
+        690.16,
+        -40
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes-turn-692",
+    "source": "hermes",
+    "start": 691.0,
+    "end": 693.0,
+    "yaw": -35,
+    "roi": [
+      350,
+      0,
+      1200,
+      1080
+    ],
+    "targetXKeys": [
+      [
+        691.0,
+        0.6
+      ],
+      [
+        693.0,
+        0.37
+      ]
+    ],
+    "reviewedFrames": [
+      17275,
+      17276,
+      17278,
+      17279,
+      17280,
+      17281,
+      17282,
+      17283,
+      17284,
+      17285,
+      17286,
+      17287,
+      17288
+    ],
+    "phaseReference": "lv-look-410",
+    "lookId": "hermes-brown-leather",
+    "yawKeys": [
+      [
+        691.0,
+        -25
+      ],
+      [
+        691.52,
+        -35
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "carriedItems": "none"
+  },
+  {
+    "id": "prada24-turn-10",
+    "lookId": "prada24-black-short",
+    "source": "prada24",
+    "start": 9.8,
+    "end": 12.35,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        9.8,
+        -10
+      ],
+      [
+        10.5,
+        -20
+      ],
+      [
+        11,
+        -40
+      ],
+      [
+        11.5,
+        -75
+      ],
+      [
+        12.35,
+        -110
+      ]
+    ],
+    "roi": [
+      293,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "instanceThreshold": -2.2,
+    "carriedItems": "none"
+  },
+  {
+    "id": "prada24-turn-39",
+    "lookId": "prada24-black-suit",
+    "source": "prada24",
+    "start": 39.35,
+    "end": 40.4,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        39.36,
+        -10
+      ],
+      [
+        39.56,
+        -20
+      ],
+      [
+        39.72,
+        -30
+      ],
+      [
+        39.92,
+        -40
+      ],
+      [
+        40.08,
+        -50
+      ],
+      [
+        40.28,
+        -60
+      ]
+    ],
+    "roi": [
+      142,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "yawMethod": "reviewed-torso",
+    "instanceThreshold": 0,
+    "excludedFrames": [
+      991,
+      992
+    ],
+    "carriedItems": "none"
+  },
+  {
+    "id": "prada24-turn-49",
+    "lookId": "prada24-black-utility",
+    "source": "prada24",
+    "start": 48.3,
+    "end": 50.65,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        48.3,
+        -5
+      ],
+      [
+        48.9,
+        -20
+      ],
+      [
+        49.2,
+        -35
+      ],
+      [
+        49.6,
+        -65
+      ],
+      [
+        49.9,
+        -75
+      ],
+      [
+        50.65,
+        -115
+      ]
+    ],
+    "roi": [
+      302,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "instanceThreshold": -2.2,
+    "carriedItems": "none"
+  },
+  {
+    "id": "prada24-turn-81",
+    "lookId": "prada24-gray-suit",
+    "source": "prada24",
+    "start": 80.7,
+    "end": 83.4,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        80.7,
+        -5
+      ],
+      [
+        81.35,
+        -15
+      ],
+      [
+        81.7,
+        -30
+      ],
+      [
+        82.1,
+        -55
+      ],
+      [
+        82.6,
+        -75
+      ],
+      [
+        83.4,
+        -110
+      ]
+    ],
+    "roi": [
+      313,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "instanceThreshold": -2.2,
+    "carriedItems": "none"
+  },
+  {
+    "id": "prada24-turn-99",
+    "lookId": "prada24-teal-vest",
+    "source": "prada24",
+    "start": 98.9,
+    "end": 101.3,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        99.0,
+        -10
+      ],
+      [
+        99.4,
+        -25
+      ],
+      [
+        99.8,
+        -50
+      ],
+      [
+        100.08,
+        -75
+      ],
+      [
+        100.36,
+        -90
+      ],
+      [
+        101.3,
+        -110
+      ]
+    ],
+    "roi": [
+      194,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "yawMethod": "reviewed-torso",
+    "instanceThreshold": -2.2,
+    "carriedItems": "none"
+  },
+  {
+    "id": "prada24-turn-142",
+    "lookId": "prada24-lavender-short",
+    "source": "prada24",
+    "start": 141.1,
+    "end": 143.2,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        141.1,
+        -10
+      ],
+      [
+        141.72,
+        -15
+      ],
+      [
+        141.92,
+        -35
+      ],
+      [
+        142.2,
+        -60
+      ],
+      [
+        142.4,
+        -75
+      ],
+      [
+        142.64,
+        -95
+      ],
+      [
+        143.2,
+        -110
+      ]
+    ],
+    "roi": [
+      219,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "yawMethod": "reviewed-torso",
+    "excludedFrames": [
+      3557,
+      3560,
+      3561,
+      3562
+    ],
+    "instanceThreshold": -2.2,
+    "carriedItems": "none"
+  },
+  {
+    "id": "prada24-turn-162",
+    "lookId": "prada24-black-utility",
+    "source": "prada24",
+    "start": 162.3,
+    "end": 164,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        162.32,
+        -15
+      ],
+      [
+        162.72,
+        -35
+      ],
+      [
+        163.12,
+        -60
+      ],
+      [
+        163.32,
+        -80
+      ],
+      [
+        163.48,
+        -100
+      ],
+      [
+        164,
+        -115
+      ]
+    ],
+    "roi": [
+      267,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "yawMethod": "reviewed-torso",
+    "instanceThreshold": -2.2,
+    "carriedItems": "none"
+  },
+  {
+    "id": "prada24-turn-208",
+    "lookId": "prada24-floral-olive",
+    "source": "prada24",
+    "start": 207.7,
+    "end": 210.9,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        207.7,
+        -5
+      ],
+      [
+        208.36,
+        -15
+      ],
+      [
+        208.88,
+        -38
+      ],
+      [
+        209.44,
+        -65
+      ],
+      [
+        209.76,
+        -75
+      ],
+      [
+        210.24,
+        -90
+      ],
+      [
+        210.9,
+        -105
+      ]
+    ],
+    "roi": [
+      324,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "yawMethod": "reviewed-torso",
+    "instanceThreshold": -2.2,
+    "carriedItems": "none"
+  },
+  {
+    "id": "prada24-turn-282",
+    "lookId": "prada24-navy-long",
+    "source": "prada24",
+    "start": 282.35,
+    "end": 283.85,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        282.36,
+        -20
+      ],
+      [
+        282.64,
+        -25
+      ],
+      [
+        282.96,
+        -30
+      ]
+    ],
+    "roi": [
+      360,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "reviewedFrames": [
+      7059,
+      7060,
+      7061,
+      7062,
+      7063,
+      7064,
+      7065,
+      7066,
+      7067,
+      7068,
+      7069,
+      7070,
+      7071,
+      7072,
+      7073,
+      7074
+    ],
+    "instanceThreshold": 0,
+    "yawMethod": "reviewed-torso",
+    "carriedItems": "none"
+  },
+  {
+    "id": "prada24-turn-297",
+    "lookId": "prada24-floral-white",
+    "source": "prada24",
+    "start": 296.2,
+    "end": 298.45,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        296.2,
+        -5
+      ],
+      [
+        296.84,
+        -35
+      ],
+      [
+        297.12,
+        -50
+      ],
+      [
+        297.4,
+        -65
+      ],
+      [
+        297.6,
+        -75
+      ],
+      [
+        298.16,
+        -90
+      ],
+      [
+        298.45,
+        -100
+      ]
+    ],
+    "roi": [
+      247,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "yawMethod": "reviewed-torso",
+    "instanceThreshold": -2.2,
+    "carriedItems": "none"
+  },
+  {
+    "id": "prada24-turn-306",
+    "lookId": "prada24-navy-long",
+    "source": "prada24",
+    "start": 305.9,
+    "end": 306.65,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        305.9,
+        -45
+      ],
+      [
+        306.2,
+        -60
+      ],
+      [
+        306.6,
+        -75
+      ]
+    ],
+    "roi": [
+      480,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "instanceThreshold": -2.2,
+    "instanceHeadThreshold": -4,
+    "reviewedFrames": [
+      7651,
+      7652,
+      7653
+    ],
+    "carriedItems": "none"
+  },
+  {
+    "id": "prada24-turn-312",
+    "lookId": "prada24-denim-short",
+    "source": "prada24",
+    "start": 311.7,
+    "end": 313.5,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        311.7,
+        -5
+      ],
+      [
+        312.32,
+        -15
+      ],
+      [
+        312.48,
+        -20
+      ],
+      [
+        312.64,
+        -30
+      ],
+      [
+        312.84,
+        -40
+      ],
+      [
+        313.0,
+        -50
+      ],
+      [
+        313.16,
+        -60
+      ],
+      [
+        313.5,
+        -85
+      ]
+    ],
+    "roi": [
+      268,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "yawMethod": "reviewed-torso",
+    "instanceThreshold": -2.2,
+    "carriedItems": "none"
+  },
+  {
+    "id": "prada24-turn-324",
+    "lookId": "prada24-floral-beige",
+    "source": "prada24",
+    "start": 324.15,
+    "end": 324.95,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        324.15,
+        -30
+      ],
+      [
+        324.5,
+        -50
+      ],
+      [
+        324.9,
+        -75
+      ]
+    ],
+    "roi": [
+      122,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": 0,
+    "reviewedFrames": [
+      8111,
+      8112,
+      8113
+    ],
+    "carriedItems": "none"
+  },
+  {
+    "id": "prada24-turn-351",
+    "lookId": "prada24-gray-suit",
+    "source": "prada24",
+    "start": 351.1,
+    "end": 352.2,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        351.12,
+        -36
+      ],
+      [
+        351.24,
+        -42
+      ],
+      [
+        351.32,
+        -46
+      ],
+      [
+        351.48,
+        -54
+      ],
+      [
+        351.72,
+        -85
+      ],
+      [
+        352.16,
+        -125
+      ]
+    ],
+    "roi": [
+      27,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "yawMethod": "reviewed-torso",
+    "excludedFrames": [
+      8778,
+      8787,
+      8802
+    ],
+    "instanceThreshold": -2.2,
+    "carriedItems": "none"
+  },
+  {
+    "id": "prada24-turn-382",
+    "lookId": "prada24-floral-pink-red-shoes",
+    "source": "prada24",
+    "start": 381.9,
+    "end": 383.12,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        381.92,
+        -10
+      ],
+      [
+        382.08,
+        -20
+      ],
+      [
+        382.2,
+        -30
+      ],
+      [
+        382.32,
+        -40
+      ],
+      [
+        382.44,
+        -50
+      ]
+    ],
+    "roi": [
+      0,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "phaseReference": "lv-look-410",
+    "reviewedFrames": [
+      9548,
+      9549,
+      9550,
+      9551,
+      9552,
+      9553,
+      9554,
+      9555,
+      9556,
+      9557,
+      9558,
+      9559,
+      9560,
+      9561
+    ],
+    "instanceThreshold": -2.2,
+    "yawMethod": "reviewed-torso",
+    "excludedFrames": [
+      9551,
+      9552,
+      9553,
+      9556
+    ],
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes-side-152",
+    "lookId": "hermes-cream-brown",
+    "source": "hermes",
+    "start": 151.1,
+    "end": 153.4,
+    "yaw": -20,
+    "roi": [
+      450,
+      0,
+      1200,
+      1080
+    ],
+    "instance": true,
+    "yawKeys": [
+      [
+        151.4,
+        -10
+      ],
+      [
+        152.04,
+        -20
+      ],
+      [
+        153.4,
+        -25
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes-side-184",
+    "lookId": "hermes-plaid-coat",
+    "source": "hermes",
+    "start": 183.3,
+    "end": 184.6,
+    "yaw": -20,
+    "roi": [
+      450,
+      0,
+      1200,
+      1080
+    ],
+    "instance": true,
+    "yawKeys": [
+      [
+        183.64,
+        -15
+      ],
+      [
+        184.12,
+        -25
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes-side-431",
+    "lookId": "hermes-gray-green-scarf",
+    "source": "hermes",
+    "start": 430.2,
+    "end": 432.2,
+    "yaw": -20,
+    "roi": [
+      450,
+      0,
+      1200,
+      1080
+    ],
+    "instance": true,
+    "yawKeys": [
+      [
+        430.56,
+        -10
+      ],
+      [
+        430.72,
+        -15
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes-side-475",
+    "lookId": "hermes-pale-gray",
+    "source": "hermes",
+    "start": 474.4,
+    "end": 476.6,
+    "yaw": -20,
+    "roi": [
+      450,
+      0,
+      1200,
+      1080
+    ],
+    "instance": true,
+    "yawKeys": [
+      [
+        474.4,
+        -5
+      ],
+      [
+        475.64,
+        -15
+      ],
+      [
+        476.6,
+        -25
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes-side-487",
+    "lookId": "hermes-tan-scarf",
+    "source": "hermes",
+    "start": 486.15,
+    "end": 488.1,
+    "yaw": -20,
+    "roi": [
+      450,
+      0,
+      1200,
+      1080
+    ],
+    "instance": true,
+    "yawKeys": [
+      [
+        486.16,
+        -5
+      ],
+      [
+        487.0,
+        -15
+      ],
+      [
+        488.1,
+        -25
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "carriedItems": "none"
+  },
+  {
+    "id": "prada24-side-137",
+    "lookId": "prada24-lavender-short",
+    "source": "prada24",
+    "start": 136.0,
+    "end": 138.44,
+    "yaw": -70,
+    "yawKeys": [
+      [
+        136,
+        -60
+      ],
+      [
+        136.4,
+        -65
+      ],
+      [
+        136.8,
+        -70
+      ],
+      [
+        137.2,
+        -70
+      ],
+      [
+        137.6,
+        -75
+      ],
+      [
+        138.4,
+        -75
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      180,
+      150,
+      1440,
+      750
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "phaseReference": "lv-look-410",
+    "minPoseHeight": 0.24,
+    "excludedFrames": [
+      3434,
+      3436,
+      3437,
+      3447,
+      3450,
+      3453,
+      3455
+    ],
+    "carriedItems": "none"
+  },
+  {
+    "id": "prada24-turn-130",
+    "lookId": "prada24-navy-double-coat",
+    "source": "prada24",
+    "start": 128.8,
+    "end": 131.15,
+    "yaw": -65,
+    "yawKeys": [
+      [
+        129.24,
+        -20
+      ],
+      [
+        129.76,
+        -30
+      ],
+      [
+        130.0,
+        -40
+      ],
+      [
+        130.32,
+        -50
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1440,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": 0,
+    "phaseReference": "lv-look-410",
+    "excludedFrames": [
+      3235,
+      3236,
+      3237,
+      3238,
+      3239,
+      3251,
+      3252,
+      3254
+    ],
+    "instanceHeadThreshold": -2.2,
+    "carriedItems": "none",
+    "reviewedFrames": [
+      3244,
+      3245,
+      3246,
+      3247,
+      3248,
+      3249,
+      3250
+    ]
+  },
+  {
+    "id": "hermes24-right-61",
+    "lookId": "hermes24-look-61",
+    "source": "hermes24",
+    "start": 60.6,
+    "end": 64.5,
+    "yaw": 15,
+    "yawKeys": [
+      [
+        60.6,
+        0
+      ],
+      [
+        61.58,
+        0
+      ],
+      [
+        62.12667,
+        15
+      ],
+      [
+        62.67333,
+        35
+      ],
+      [
+        63.22,
+        75
+      ],
+      [
+        64.5,
+        110
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "targetXKeys": [
+      [
+        62.0,
+        0.473
+      ],
+      [
+        62.5,
+        0.52722
+      ],
+      [
+        63.0,
+        0.60723
+      ]
+    ],
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes24-right-169",
+    "lookId": "hermes24-look-169",
+    "source": "hermes24",
+    "start": 168.6,
+    "end": 171.5,
+    "yaw": 25,
+    "yawKeys": [
+      [
+        168.6,
+        5
+      ],
+      [
+        169.18,
+        5
+      ],
+      [
+        169.92667,
+        25
+      ],
+      [
+        170.67333,
+        50
+      ],
+      [
+        171.42,
+        75
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "targetXKeys": [
+      [
+        169.5,
+        0.29879
+      ],
+      [
+        170.0,
+        0.33649
+      ],
+      [
+        170.5,
+        0.35625
+      ],
+      [
+        171.0,
+        0.39321
+      ]
+    ],
+    "carriedItems": "none",
+    "excludedFrames": [
+      4221,
+      4222,
+      4223,
+      4224,
+      4225,
+      4226,
+      4227,
+      4228,
+      4229,
+      4230,
+      4231,
+      4232,
+      4233,
+      4234,
+      4235,
+      4236,
+      4237,
+      4238,
+      4239,
+      4258,
+      4259,
+      4260,
+      4261,
+      4262,
+      4279,
+      4280
+    ]
+  },
+  {
+    "id": "hermes24-right-184",
+    "lookId": "hermes24-look-184",
+    "source": "hermes24",
+    "start": 183.3,
+    "end": 186.7,
+    "yaw": 40,
+    "yawKeys": [
+      [
+        183.3,
+        5
+      ],
+      [
+        184.58,
+        20
+      ],
+      [
+        185.19333,
+        40
+      ],
+      [
+        185.80667,
+        65
+      ],
+      [
+        186.42,
+        85
+      ],
+      [
+        186.7,
+        100
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "targetXKeys": [
+      [
+        185.0,
+        0.43056
+      ],
+      [
+        185.5,
+        0.4966
+      ],
+      [
+        186.0,
+        0.5855
+      ],
+      [
+        186.5,
+        0.65774
+      ]
+    ],
+    "carriedItems": "none",
+    "excludedFrames": [
+      4658,
+      4659,
+      4660,
+      4661
+    ],
+    "poseXYOverrides": {
+      "4663": {
+        "25": [
+          0.6684033274650574,
+          0.7384613752365112
+        ],
+        "26": [
+          0.5866380929946899,
+          0.7401537895202637
+        ],
+        "27": [
+          0.7091405391693115,
+          0.9049140214920044
+        ],
+        "28": [
+          0.5386457443237305,
+          0.8783522248268127
+        ],
+        "29": [
+          0.7085869908332825,
+          0.9443475008010864
+        ],
+        "30": [
+          0.5246589183807373,
+          0.9005970358848572
+        ],
+        "31": [
+          0.7540193796157837,
+          0.8954748511314392
+        ],
+        "32": [
+          0.5719909071922302,
+          0.9218378067016602
+        ]
+      },
+      "4664": {
+        "25": [
+          0.6880502700805664,
+          0.7321871519088745
+        ],
+        "26": [
+          0.5935190916061401,
+          0.7471129298210144
+        ],
+        "27": [
+          0.7088969945907593,
+          0.9122077226638794
+        ],
+        "28": [
+          0.5382126569747925,
+          0.8670542240142822
+        ],
+        "29": [
+          0.7066836953163147,
+          0.94749915599823
+        ],
+        "30": [
+          0.520957887172699,
+          0.8826291561126709
+        ],
+        "31": [
+          0.7519116401672363,
+          0.9147721529006958
+        ],
+        "32": [
+          0.5633185505867004,
+          0.9245826601982117
+        ]
+      }
+    }
+  },
+  {
+    "id": "hermes24-right-192",
+    "lookId": "hermes24-look-192",
+    "source": "hermes24",
+    "start": 192.7,
+    "end": 197.4,
+    "yaw": 25,
+    "yawKeys": [
+      [
+        192.78,
+        0
+      ],
+      [
+        193.99333,
+        25
+      ],
+      [
+        195.20667,
+        55
+      ],
+      [
+        196.42,
+        85
+      ],
+      [
+        197.4,
+        100
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "targetXKeys": [
+      [
+        193.0,
+        0.4621
+      ],
+      [
+        193.5,
+        0.49552
+      ],
+      [
+        194.0,
+        0.57768
+      ],
+      [
+        194.5,
+        0.18535
+      ],
+      [
+        195.0,
+        0.24206
+      ],
+      [
+        195.5,
+        0.2933
+      ],
+      [
+        196.0,
+        0.37191
+      ],
+      [
+        196.5,
+        0.42966
+      ]
+    ],
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes24-right-221",
+    "lookId": "hermes24-look-221",
+    "source": "hermes24",
+    "start": 220.4,
+    "end": 224.8,
+    "yaw": 25,
+    "yawKeys": [
+      [
+        220.4,
+        0
+      ],
+      [
+        221.58,
+        0
+      ],
+      [
+        222.39333,
+        25
+      ],
+      [
+        223.20667,
+        50
+      ],
+      [
+        224.02,
+        75
+      ],
+      [
+        224.8,
+        105
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "targetXKeys": [
+      [
+        222.0,
+        0.34199
+      ],
+      [
+        222.5,
+        0.36483
+      ],
+      [
+        223.0,
+        0.39488
+      ],
+      [
+        223.5,
+        0.47269
+      ],
+      [
+        224.0,
+        0.55908
+      ]
+    ],
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes24-right-233",
+    "lookId": "hermes24-look-233",
+    "source": "hermes24",
+    "start": 232.5,
+    "end": 236.5,
+    "yaw": 70,
+    "yawKeys": [
+      [
+        232.5,
+        15
+      ],
+      [
+        233.78,
+        40
+      ],
+      [
+        234.62667,
+        70
+      ],
+      [
+        235.47333,
+        90
+      ],
+      [
+        236.32,
+        105
+      ],
+      [
+        236.5,
+        110
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "targetXKeys": [
+      [
+        234.0,
+        0.27546
+      ],
+      [
+        234.5,
+        0.32867
+      ],
+      [
+        235.0,
+        0.37401
+      ],
+      [
+        235.5,
+        0.43782
+      ],
+      [
+        236.0,
+        0.49618
+      ]
+    ],
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes24-right-285",
+    "lookId": "hermes24-look-285",
+    "source": "hermes24",
+    "start": 284.6,
+    "end": 288.1,
+    "yaw": 25,
+    "yawKeys": [
+      [
+        284.6,
+        0
+      ],
+      [
+        285.28,
+        5
+      ],
+      [
+        286.16,
+        25
+      ],
+      [
+        287.04,
+        50
+      ],
+      [
+        287.92,
+        80
+      ],
+      [
+        288.1,
+        85
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "targetXKeys": [
+      [
+        285.5,
+        0.23116
+      ],
+      [
+        286.0,
+        0.26969
+      ],
+      [
+        286.5,
+        0.31145
+      ],
+      [
+        287.0,
+        0.34772
+      ],
+      [
+        287.5,
+        0.37148
+      ]
+    ],
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes24-right-295",
+    "lookId": "hermes24-look-295",
+    "source": "hermes24",
+    "start": 294,
+    "end": 298.2,
+    "yaw": 85,
+    "yawKeys": [
+      [
+        294,
+        45
+      ],
+      [
+        295.28,
+        60
+      ],
+      [
+        295.99333,
+        85
+      ],
+      [
+        296.70667,
+        100
+      ],
+      [
+        297.42,
+        120
+      ],
+      [
+        298.2,
+        120
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "targetXKeys": [
+      [
+        295.5,
+        0.33996
+      ],
+      [
+        296.0,
+        0.43732
+      ],
+      [
+        296.5,
+        0.51782
+      ],
+      [
+        297.0,
+        0.62082
+      ]
+    ],
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes24-right-388",
+    "lookId": "hermes24-look-388",
+    "source": "hermes24",
+    "start": 387.9,
+    "end": 390.8,
+    "yaw": 90,
+    "yawKeys": [
+      [
+        387.9,
+        55
+      ],
+      [
+        388.48,
+        70
+      ],
+      [
+        389.22667,
+        90
+      ],
+      [
+        389.97333,
+        110
+      ],
+      [
+        390.72,
+        130
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "targetXKeys": [
+      [
+        388.5,
+        0.13895
+      ],
+      [
+        389.0,
+        0.34118
+      ],
+      [
+        389.5,
+        0.50923
+      ],
+      [
+        390.0,
+        0.69716
+      ],
+      [
+        390.5,
+        0.86085
+      ]
+    ],
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes24-right-455",
+    "lookId": "hermes24-look-455",
+    "source": "hermes24",
+    "start": 454.5,
+    "end": 457.9,
+    "yaw": 110,
+    "yawKeys": [
+      [
+        454.5,
+        30
+      ],
+      [
+        455.38,
+        90
+      ],
+      [
+        456.19333,
+        110
+      ],
+      [
+        457.00667,
+        125
+      ],
+      [
+        457.82,
+        140
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "targetXKeys": [
+      [
+        455.5,
+        0.20389
+      ],
+      [
+        456.0,
+        0.36429
+      ],
+      [
+        456.5,
+        0.53226
+      ],
+      [
+        457.0,
+        0.70065
+      ],
+      [
+        457.5,
+        0.85757
+      ]
+    ],
+    "carriedItems": "none",
+    "excludedFrames": [
+      11436,
+      11437,
+      11438
+    ],
+    "poseXYOverrides": {
+      "11388": {
+        "25": [
+          0.17005036771297455,
+          0.7277678847312927
+        ],
+        "26": [
+          0.14901882410049438,
+          0.7167369723320007
+        ],
+        "27": [
+          0.20476356148719788,
+          0.8515024185180664
+        ],
+        "28": [
+          0.10229185223579407,
+          0.8610244989395142
+        ],
+        "29": [
+          0.20127081871032715,
+          0.8865247964859009
+        ],
+        "30": [
+          0.09890665113925934,
+          0.8861222267150879
+        ],
+        "31": [
+          0.23726123571395874,
+          0.8741890788078308
+        ],
+        "32": [
+          0.13586576282978058,
+          0.8946859836578369
+        ]
+      }
+    }
+  },
+  {
+    "id": "hermes24-right-530",
+    "lookId": "hermes24-look-530",
+    "source": "hermes24",
+    "start": 530.5,
+    "end": 533,
+    "yaw": 60,
+    "yawKeys": [
+      [
+        530.58,
+        25
+      ],
+      [
+        531.36,
+        60
+      ],
+      [
+        532.14,
+        100
+      ],
+      [
+        532.92,
+        125
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "targetXKeys": [
+      [
+        530.5,
+        0.38047
+      ],
+      [
+        531.0,
+        0.40271
+      ],
+      [
+        531.5,
+        0.44598
+      ],
+      [
+        532.0,
+        0.52265
+      ],
+      [
+        532.5,
+        0.6051
+      ]
+    ],
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes25-right-92",
+    "lookId": "hermes25-look-92",
+    "source": "hermes25",
+    "start": 92.1,
+    "end": 94,
+    "yaw": 25,
+    "yawKeys": [
+      [
+        92.18,
+        45
+      ],
+      [
+        92.76,
+        25
+      ],
+      [
+        93.34,
+        10
+      ],
+      [
+        93.92,
+        0
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "targetXKeys": [
+      [
+        92.16,
+        0.53222
+      ],
+      [
+        92.64,
+        0.62986
+      ]
+    ],
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes25-right-188",
+    "lookId": "hermes25-look-188",
+    "source": "hermes25",
+    "start": 188.3,
+    "end": 190.5,
+    "yaw": 40,
+    "yawKeys": [
+      [
+        188.38,
+        75
+      ],
+      [
+        189.06,
+        40
+      ],
+      [
+        189.74,
+        10
+      ],
+      [
+        190.42,
+        0
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "targetXKeys": [
+      [
+        188.64,
+        0.45758
+      ],
+      [
+        189.12,
+        0.54347
+      ],
+      [
+        189.6,
+        0.61335
+      ]
+    ],
+    "reviewedFrames": [
+      4709,
+      4710,
+      4711,
+      4712,
+      4713,
+      4714,
+      4715,
+      4716,
+      4717,
+      4718,
+      4719,
+      4720,
+      4722,
+      4723,
+      4724,
+      4725,
+      4726,
+      4727,
+      4728,
+      4729,
+      4730,
+      4731,
+      4732,
+      4733,
+      4734,
+      4735,
+      4736,
+      4737,
+      4738,
+      4739,
+      4740,
+      4741,
+      4742,
+      4743,
+      4744
+    ],
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes25-right-275",
+    "lookId": "hermes25-look-275",
+    "source": "hermes25",
+    "start": 275.7,
+    "end": 278,
+    "yaw": 40,
+    "yawKeys": [
+      [
+        275.78,
+        85
+      ],
+      [
+        276.49333,
+        40
+      ],
+      [
+        277.20667,
+        0
+      ],
+      [
+        277.92,
+        0
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "targetXKeys": [
+      [
+        276.0,
+        0.30602
+      ],
+      [
+        276.48,
+        0.37926
+      ]
+    ],
+    "reviewedFrames": [
+      6910,
+      6911,
+      6912,
+      6913,
+      6914,
+      6915,
+      6916,
+      6917,
+      6918,
+      6919,
+      6920,
+      6921,
+      6922,
+      6923,
+      6924,
+      6925,
+      6926
+    ],
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes25-right-286",
+    "lookId": "hermes25-look-286",
+    "source": "hermes25",
+    "start": 286.2,
+    "end": 288.5,
+    "yaw": 65,
+    "yawKeys": [
+      [
+        286.28,
+        90
+      ],
+      [
+        286.99333,
+        65
+      ],
+      [
+        287.70667,
+        25
+      ],
+      [
+        288.42,
+        0
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "targetXKeys": [
+      [
+        286.56,
+        0.30625
+      ],
+      [
+        287.04,
+        0.42291
+      ],
+      [
+        287.52,
+        0.4966
+      ]
+    ],
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes25-right-341",
+    "lookId": "hermes25-look-341",
+    "source": "hermes25",
+    "start": 341,
+    "end": 343.4,
+    "yaw": 75,
+    "yawKeys": [
+      [
+        341.08,
+        90
+      ],
+      [
+        341.82667,
+        75
+      ],
+      [
+        342.57333,
+        55
+      ],
+      [
+        343.32,
+        35
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "targetXKeys": [
+      [
+        341.28,
+        0.19983
+      ],
+      [
+        341.76,
+        0.31333
+      ],
+      [
+        342.24,
+        0.43368
+      ]
+    ],
+    "reviewedFrames": [
+      8542,
+      8544,
+      8545,
+      8546,
+      8547,
+      8548,
+      8549,
+      8550,
+      8551,
+      8552,
+      8553,
+      8554,
+      8555,
+      8556,
+      8557,
+      8558,
+      8559,
+      8560,
+      8561,
+      8562,
+      8563,
+      8564
+    ],
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes25-right-373",
+    "lookId": "hermes25-look-373",
+    "source": "hermes25",
+    "start": 373,
+    "end": 375.3,
+    "yaw": 10,
+    "yawKeys": [
+      [
+        373.08,
+        60
+      ],
+      [
+        373.79333,
+        10
+      ],
+      [
+        374.50667,
+        0
+      ],
+      [
+        375.22,
+        0
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "targetXKeys": [
+      [
+        373.44,
+        0.52683
+      ]
+    ],
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes25-right-444",
+    "lookId": "hermes25-look-444",
+    "source": "hermes25",
+    "start": 444.6,
+    "end": 446.8,
+    "yaw": 50,
+    "yawKeys": [
+      [
+        444.68,
+        90
+      ],
+      [
+        445.36,
+        50
+      ],
+      [
+        446.04,
+        10
+      ],
+      [
+        446.72,
+        0
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "targetXKeys": [
+      [
+        444.96,
+        0.4398
+      ],
+      [
+        445.44,
+        0.51515
+      ]
+    ],
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes25-right-468",
+    "lookId": "hermes25-look-468",
+    "source": "hermes25",
+    "start": 468.5,
+    "end": 470.7,
+    "yaw": 30,
+    "yawKeys": [
+      [
+        468.58,
+        65
+      ],
+      [
+        469.26,
+        30
+      ],
+      [
+        469.94,
+        10
+      ],
+      [
+        470.62,
+        0
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "targetXKeys": [
+      [
+        468.96,
+        0.37871
+      ],
+      [
+        469.44,
+        0.45593
+      ]
+    ],
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes25-right-477",
+    "lookId": "hermes25-look-477",
+    "source": "hermes25",
+    "start": 477.2,
+    "end": 479.2,
+    "yaw": 10,
+    "yawKeys": [
+      [
+        477.2,
+        15
+      ],
+      [
+        477.44,
+        10
+      ],
+      [
+        477.72,
+        5
+      ],
+      [
+        478.08,
+        0
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "targetXKeys": [
+      [
+        477.6,
+        0.49073
+      ]
+    ],
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes25-right-485",
+    "lookId": "hermes25-look-485",
+    "source": "hermes25",
+    "start": 485,
+    "end": 487.1,
+    "yaw": 0,
+    "yawKeys": [
+      [
+        485.08,
+        45
+      ],
+      [
+        485.72667,
+        0
+      ],
+      [
+        486.37333,
+        0
+      ],
+      [
+        487.02,
+        0
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "targetXKeys": [
+      [
+        485.28,
+        0.45445
+      ]
+    ],
+    "carriedItems": "none",
+    "excludedFrames": [
+      12125,
+      12126,
+      12127,
+      12128,
+      12129,
+      12130
+    ]
+  },
+  {
+    "id": "hermes25-right-504",
+    "lookId": "hermes25-look-504",
+    "source": "hermes25",
+    "start": 504.6,
+    "end": 506.8,
+    "yaw": 30,
+    "yawKeys": [
+      [
+        504.8,
+        40
+      ],
+      [
+        504.96,
+        30
+      ],
+      [
+        505.16,
+        20
+      ],
+      [
+        505.36,
+        10
+      ],
+      [
+        505.56,
+        5
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "targetXKeys": [
+      [
+        504.96,
+        0.40505
+      ],
+      [
+        505.44,
+        0.48606
+      ]
+    ],
+    "carriedItems": "none",
+    "excludedFrames": [
+      12622,
+      12623,
+      12624
+    ]
+  },
+  {
+    "id": "hermes25-right-525",
+    "lookId": "hermes25-look-525",
+    "source": "hermes25",
+    "start": 525.9,
+    "end": 528.2,
+    "yaw": 85,
+    "yawKeys": [
+      [
+        525.92,
+        75
+      ],
+      [
+        526.24,
+        75
+      ],
+      [
+        526.56,
+        65
+      ],
+      [
+        526.88,
+        55
+      ],
+      [
+        527.12,
+        45
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "targetXKeys": [
+      [
+        526.08,
+        0.31582
+      ],
+      [
+        526.56,
+        0.38617
+      ],
+      [
+        527.04,
+        0.46417
+      ]
+    ],
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes25-right-553",
+    "lookId": "hermes25-look-553",
+    "source": "hermes25",
+    "start": 553.5,
+    "end": 555.7,
+    "yaw": 35,
+    "yawKeys": [
+      [
+        553.58,
+        65
+      ],
+      [
+        554.26,
+        35
+      ],
+      [
+        554.94,
+        10
+      ],
+      [
+        555.62,
+        0
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "targetXKeys": [
+      [
+        553.92,
+        0.46109
+      ]
+    ],
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes25-left-574",
+    "lookId": "hermes25-look-574",
+    "source": "hermes25",
+    "start": 574.6,
+    "end": 576.5,
+    "yaw": -85,
+    "yawKeys": [
+      [
+        574.68,
+        -75
+      ],
+      [
+        575.26,
+        -85
+      ],
+      [
+        575.84,
+        -90
+      ],
+      [
+        576.42,
+        -95
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "targetXKeys": [
+      [
+        575.04,
+        0.62987
+      ],
+      [
+        575.52,
+        0.51229
+      ],
+      [
+        576.0,
+        0.3732
+      ]
+    ],
+    "reviewedFrames": [
+      14373,
+      14374,
+      14375,
+      14376,
+      14377,
+      14378,
+      14379,
+      14380,
+      14381,
+      14382,
+      14383,
+      14384,
+      14385,
+      14386,
+      14387,
+      14388,
+      14389,
+      14390,
+      14391,
+      14392,
+      14393,
+      14394,
+      14395,
+      14397,
+      14398,
+      14399
+    ],
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes25-left-601",
+    "lookId": "hermes25-look-525",
+    "source": "hermes25",
+    "start": 601.4,
+    "end": 604.2,
+    "yaw": -70,
+    "yawKeys": [
+      [
+        601.48,
+        -35
+      ],
+      [
+        602.36,
+        -70
+      ],
+      [
+        603.24,
+        -90
+      ],
+      [
+        604.12,
+        -95
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "targetXKeys": [
+      [
+        601.92,
+        0.88381
+      ],
+      [
+        602.4,
+        0.8029
+      ],
+      [
+        602.88,
+        0.68193
+      ],
+      [
+        603.36,
+        0.5418
+      ],
+      [
+        603.84,
+        0.39078
+      ]
+    ],
+    "poseXYOverrides": {
+      "15075": {
+        "27": [
+          0.727,
+          0.906
+        ]
+      },
+      "15076": {
+        "27": [
+          0.721,
+          0.906
+        ]
+      }
+    },
+    "carriedItems": "none",
+    "excludedFrames": [
+      15049,
+      15050,
+      15051,
+      15052,
+      15053,
+      15054,
+      15055,
+      15056,
+      15057,
+      15058,
+      15059,
+      15060,
+      15061,
+      15062,
+      15063,
+      15064,
+      15065,
+      15066
+    ]
+  },
+  {
+    "id": "hermes25-left-613",
+    "lookId": "hermes25-look-540",
+    "source": "hermes25",
+    "start": 613.4,
+    "end": 615.7,
+    "yaw": -80,
+    "yawKeys": [
+      [
+        613.48,
+        -45
+      ],
+      [
+        614.19333,
+        -80
+      ],
+      [
+        614.90667,
+        -90
+      ],
+      [
+        615.62,
+        -100
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "targetXKeys": [
+      [
+        613.44,
+        0.86326
+      ],
+      [
+        613.92,
+        0.75501
+      ],
+      [
+        614.4,
+        0.61708
+      ],
+      [
+        614.88,
+        0.4445
+      ],
+      [
+        615.36,
+        0.24425
+      ]
+    ],
+    "poseXYOverrides": {
+      "15358": {
+        "25": [
+          0.679875,
+          0.75389
+        ],
+        "26": [
+          0.59766,
+          0.738625
+        ],
+        "27": [
+          0.716835,
+          0.908715
+        ],
+        "28": [
+          0.569465,
+          0.899895
+        ]
+      },
+      "15359": {
+        "25": [
+          0.6619040369987488,
+          0.7606034278869629
+        ],
+        "26": [
+          0.5839542746543884,
+          0.7430195808410645
+        ],
+        "27": [
+          0.7156460285186768,
+          0.9110377430915833
+        ],
+        "28": [
+          0.5506640076637268,
+          0.9030084609985352
+        ]
+      }
+    },
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes25-left-626",
+    "lookId": "hermes25-look-553",
+    "source": "hermes25",
+    "start": 626.2,
+    "end": 628.3,
+    "yaw": -70,
+    "yawKeys": [
+      [
+        626.28,
+        -45
+      ],
+      [
+        626.92667,
+        -70
+      ],
+      [
+        627.57333,
+        -90
+      ],
+      [
+        628.22,
+        -95
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "targetXKeys": [
+      [
+        626.4,
+        0.90482
+      ],
+      [
+        626.88,
+        0.82528
+      ],
+      [
+        627.36,
+        0.70518
+      ],
+      [
+        627.84,
+        0.5401
+      ]
+    ],
+    "reviewedFrames": [
+      15677,
+      15678,
+      15679,
+      15680,
+      15681,
+      15682,
+      15683,
+      15684,
+      15686,
+      15687,
+      15688,
+      15689,
+      15690,
+      15691,
+      15692,
+      15693,
+      15694,
+      15695,
+      15696,
+      15697,
+      15700,
+      15701,
+      15703,
+      15704
+    ],
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes24-right-607",
+    "lookId": "hermes24-look-607",
+    "source": "hermes24",
+    "start": 606.8,
+    "end": 611.6,
+    "yaw": 60,
+    "yawKeys": [
+      [
+        606.8,
+        0
+      ],
+      [
+        607.2,
+        0
+      ],
+      [
+        608,
+        25
+      ],
+      [
+        608.7,
+        50
+      ],
+      [
+        609.4,
+        80
+      ],
+      [
+        610,
+        105
+      ],
+      [
+        611.2,
+        130
+      ],
+      [
+        611.6,
+        130
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "targetXKeys": [
+      [
+        607.5,
+        0.30778
+      ],
+      [
+        608.0,
+        0.37159
+      ],
+      [
+        608.5,
+        0.4211
+      ],
+      [
+        609.0,
+        0.47022
+      ],
+      [
+        609.5,
+        0.51855
+      ],
+      [
+        610.0,
+        0.59401
+      ],
+      [
+        610.5,
+        0.68774
+      ],
+      [
+        611.0,
+        0.80031
+      ]
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes25-left-542",
+    "lookId": "hermes25-look-468",
+    "source": "hermes25",
+    "start": 541.2,
+    "end": 542.24,
+    "yaw": -85,
+    "yawKeys": [
+      [
+        541.2,
+        -60
+      ],
+      [
+        541.6,
+        -75
+      ],
+      [
+        541.92,
+        -83
+      ],
+      [
+        542.2,
+        -90
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      850,
+      120,
+      800,
+      930
+    ],
+    "targetXKeys": [
+      [
+        541.2,
+        0.8
+      ],
+      [
+        541.6,
+        0.55
+      ],
+      [
+        542.24,
+        0.18
+      ]
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "reviewedFrames": [
+      13545,
+      13546,
+      13547,
+      13548,
+      13549,
+      13550,
+      13551,
+      13552,
+      13553,
+      13554,
+      13555
+    ],
+    "phaseReference": "hermes25-left-613",
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes24-clean-175",
+    "lookId": "hermes24-look-184",
+    "source": "hermes24",
+    "start": 175.1,
+    "end": 178.2,
+    "yaw": 10,
+    "yawKeys": [
+      [
+        175.1,
+        0
+      ],
+      [
+        176.7,
+        10
+      ],
+      [
+        178.2,
+        20
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "phaseReference": "lv-look-410",
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes24-clean-563",
+    "lookId": "hermes24-look-563",
+    "source": "hermes24",
+    "start": 562,
+    "end": 565.8,
+    "yaw": 40,
+    "yawKeys": [
+      [
+        562,
+        0
+      ],
+      [
+        563.4,
+        10
+      ],
+      [
+        564.1,
+        20
+      ],
+      [
+        564.8,
+        40
+      ],
+      [
+        565.5,
+        80
+      ],
+      [
+        565.8,
+        90
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "phaseReference": "lv-look-410",
+    "carriedItems": "none",
+    "reviewedFrames": [
+      14050,
+      14051,
+      14052,
+      14053,
+      14054,
+      14055,
+      14056,
+      14057,
+      14058,
+      14059,
+      14060,
+      14061,
+      14062,
+      14063,
+      14064,
+      14065,
+      14066,
+      14067,
+      14068,
+      14069,
+      14070,
+      14071,
+      14072,
+      14073,
+      14074,
+      14075,
+      14076,
+      14077,
+      14078,
+      14079,
+      14080,
+      14081,
+      14082,
+      14083,
+      14084,
+      14085,
+      14086,
+      14087,
+      14088,
+      14089,
+      14090,
+      14091,
+      14092,
+      14093,
+      14094,
+      14095,
+      14096,
+      14097
+    ]
+  },
+  {
+    "id": "hermes24-clean-590",
+    "lookId": "hermes24-look-590",
+    "source": "hermes24",
+    "start": 589,
+    "end": 593.5,
+    "yaw": 40,
+    "yawKeys": [
+      [
+        589,
+        0
+      ],
+      [
+        590.2,
+        10
+      ],
+      [
+        590.6,
+        40
+      ],
+      [
+        592.5,
+        70
+      ],
+      [
+        593.5,
+        85
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "instanceThreshold": -2.2,
+    "phaseReference": "lv-look-410",
+    "carriedItems": "none"
+  },
+  {
+    "id": "hermes25-profile-cream-brown",
+    "lookId": "hermes25-cream-brown",
+    "source": "hermes25",
+    "start": 737.4,
+    "end": 738.55,
+    "yawKeys": [
+      [
+        737.4,
+        82
+      ],
+      [
+        737.9749999999999,
+        90
+      ],
+      [
+        738.55,
+        98
+      ]
+    ],
+    "roi": [
+      300,
+      20,
+      1300,
+      1060
+    ],
+    "targetXKeys": [
+      [
+        737.4,
+        0.2
+      ],
+      [
+        738.55,
+        0.8076923076923077
+      ]
+    ],
+    "minPoseHeight": 0.4,
+    "instance": true,
+    "carriedItems": "none",
+    "reviewedFrames": [
+      18438,
+      18439,
+      18440,
+      18441,
+      18442,
+      18443,
+      18444,
+      18445,
+      18446,
+      18447,
+      18448,
+      18449,
+      18450,
+      18451,
+      18452,
+      18453,
+      18454,
+      18455,
+      18456,
+      18457,
+      18458,
+      18459,
+      18460,
+      18461,
+      18462,
+      18463
+    ],
+    "yaw": 90
+  },
+  {
+    "id": "hermes25-profile-tan-shorts",
+    "lookId": "hermes25-tan-shorts",
+    "source": "hermes25",
+    "start": 738.7,
+    "end": 739.85,
+    "yawKeys": [
+      [
+        738.7,
+        82
+      ],
+      [
+        739.2750000000001,
+        90
+      ],
+      [
+        739.85,
+        98
+      ]
+    ],
+    "roi": [
+      300,
+      20,
+      1300,
+      1060
+    ],
+    "targetXKeys": [
+      [
+        738.7,
+        0.13076923076923078
+      ],
+      [
+        739.85,
+        0.7846153846153846
+      ]
+    ],
+    "minPoseHeight": 0.4,
+    "instance": true,
+    "carriedItems": "none",
+    "yaw": 90,
+    "excludedFrames": [
+      18468,
+      18469,
+      18470,
+      18471,
+      18472
+    ]
+  },
+  {
+    "id": "hermes25-profile-blue-trousers",
+    "lookId": "hermes25-look-341",
+    "source": "hermes25",
+    "start": 748.5,
+    "end": 749.7,
+    "yawKeys": [
+      [
+        748.5,
+        82
+      ],
+      [
+        749.1,
+        90
+      ],
+      [
+        749.7,
+        98
+      ]
+    ],
+    "roi": [
+      300,
+      20,
+      1300,
+      1060
+    ],
+    "targetXKeys": [
+      [
+        748.5,
+        0.3153846153846154
+      ],
+      [
+        749.7,
+        0.823076923076923
+      ]
+    ],
+    "minPoseHeight": 0.4,
+    "instance": true,
+    "carriedItems": "none",
+    "yaw": 90
+  },
+  {
+    "id": "hermes25-profile-pink-shirt",
+    "lookId": "hermes25-pink-shirt",
+    "source": "hermes25",
+    "start": 754.45,
+    "end": 755.7,
+    "yawKeys": [
+      [
+        754.45,
+        82
+      ],
+      [
+        755.075,
+        90
+      ],
+      [
+        755.7,
+        98
+      ]
+    ],
+    "roi": [
+      300,
+      20,
+      1300,
+      1060
+    ],
+    "targetXKeys": [
+      [
+        754.45,
+        0.2
+      ],
+      [
+        755.7,
+        0.7923076923076923
+      ]
+    ],
+    "minPoseHeight": 0.4,
+    "instance": true,
+    "carriedItems": "none",
+    "reviewedFrames": [
+      18864,
+      18865,
+      18866,
+      18867,
+      18868,
+      18869,
+      18870,
+      18871,
+      18872,
+      18873,
+      18874,
+      18875,
+      18876,
+      18877,
+      18878,
+      18879,
+      18880,
+      18881,
+      18882,
+      18883,
+      18884,
+      18885,
+      18886,
+      18887,
+      18888,
+      18889,
+      18890,
+      18891
+    ],
+    "yaw": 90
+  },
+  {
+    "id": "hermes25-profile-white-shorts",
+    "lookId": "hermes25-look-485",
+    "source": "hermes25",
+    "start": 760.1,
+    "end": 761.35,
+    "yawKeys": [
+      [
+        760.1,
+        82
+      ],
+      [
+        760.725,
+        90
+      ],
+      [
+        761.35,
+        98
+      ]
+    ],
+    "roi": [
+      300,
+      20,
+      1300,
+      1060
+    ],
+    "targetXKeys": [
+      [
+        760.1,
+        0.24615384615384617
+      ],
+      [
+        761.35,
+        0.8384615384615385
+      ]
+    ],
+    "minPoseHeight": 0.4,
+    "instance": true,
+    "carriedItems": "none",
+    "yaw": 90
+  },
+  {
+    "id": "hermes25-profile-navy-shirt",
+    "lookId": "hermes25-navy-shirt",
+    "source": "hermes25",
+    "start": 761.3,
+    "end": 762.6,
+    "yawKeys": [
+      [
+        761.3,
+        82
+      ],
+      [
+        761.95,
+        90
+      ],
+      [
+        762.6,
+        98
+      ]
+    ],
+    "roi": [
+      300,
+      20,
+      1300,
+      1060
+    ],
+    "targetXKeys": [
+      [
+        761.3,
+        0.2
+      ],
+      [
+        762.6,
+        0.8
+      ]
+    ],
+    "minPoseHeight": 0.4,
+    "instance": true,
+    "carriedItems": "none",
+    "reviewedFrames": [
+      19037,
+      19038,
+      19039,
+      19040,
+      19041,
+      19042,
+      19043,
+      19044,
+      19045,
+      19046,
+      19047,
+      19048,
+      19049,
+      19050,
+      19051,
+      19052,
+      19053,
+      19054,
+      19055,
+      19056,
+      19057,
+      19058
+    ],
+    "yaw": 90
+  },
+  {
+    "id": "hermes25-profile-blue-print",
+    "lookId": "hermes25-blue-print-trousers",
+    "source": "hermes25",
+    "start": 762.1,
+    "end": 763.4,
+    "yawKeys": [
+      [
+        762.1,
+        82
+      ],
+      [
+        762.75,
+        90
+      ],
+      [
+        763.4,
+        98
+      ]
+    ],
+    "roi": [
+      300,
+      20,
+      1300,
+      1060
+    ],
+    "targetXKeys": [
+      [
+        762.1,
+        0.2076923076923077
+      ],
+      [
+        763.4,
+        0.823076923076923
+      ]
+    ],
+    "minPoseHeight": 0.4,
+    "instance": true,
+    "carriedItems": "none",
+    "yaw": 90,
+    "excludedFrames": [
+      19052,
+      19053,
+      19054,
+      19055,
+      19056,
+      19057,
+      19058
+    ]
+  },
+  {
+    "id": "hermesfw25-profile-37",
+    "lookId": "hermesfw25-look-37",
+    "source": "hermesfw25",
+    "start": 36.5,
+    "end": 39.7,
+    "yaw": 90,
+    "yawKeys": [
+      [
+        36.5,
+        75
+      ],
+      [
+        38.3,
+        85
+      ],
+      [
+        39.7,
+        90
+      ]
+    ],
+    "roi": [
+      100,
+      0,
+      1720,
+      1080
+    ],
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermesfw25-profile-90",
+    "lookId": "hermesfw25-look-90",
+    "source": "hermesfw25",
+    "start": 89.7,
+    "end": 93.7,
+    "yaw": 90,
+    "yawKeys": [
+      [
+        89.7,
+        80
+      ],
+      [
+        91.5,
+        90
+      ],
+      [
+        93.7,
+        85
+      ]
+    ],
+    "roi": [
+      100,
+      0,
+      1720,
+      1080
+    ],
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermesfw25-profile-179",
+    "lookId": "hermesfw25-look-179",
+    "source": "hermesfw25",
+    "start": 178.6,
+    "end": 180.8,
+    "yaw": 90,
+    "yawKeys": [
+      [
+        178.6,
+        85
+      ],
+      [
+        179.5,
+        90
+      ],
+      [
+        180.8,
+        90
+      ]
+    ],
+    "roi": [
+      100,
+      0,
+      1720,
+      1080
+    ],
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermesfw25-profile-278",
+    "lookId": "hermesfw25-look-278",
+    "source": "hermesfw25",
+    "start": 276.7,
+    "end": 279,
+    "yaw": 90,
+    "yawKeys": [
+      [
+        276.7,
+        85
+      ],
+      [
+        279,
+        90
+      ]
+    ],
+    "roi": [
+      100,
+      0,
+      1720,
+      1080
+    ],
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermesfw25-profile-348",
+    "lookId": "hermesfw25-look-348",
+    "source": "hermesfw25",
+    "start": 346.5,
+    "end": 348.8,
+    "yaw": 90,
+    "yawKeys": [
+      [
+        346.5,
+        90
+      ],
+      [
+        348.8,
+        90
+      ]
+    ],
+    "roi": [
+      100,
+      0,
+      1720,
+      1080
+    ],
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermesfw25-profile-366",
+    "lookId": "hermesfw25-look-366",
+    "source": "hermesfw25",
+    "start": 365.4,
+    "end": 367.5,
+    "yaw": 90,
+    "yawKeys": [
+      [
+        365.4,
+        85
+      ],
+      [
+        367.5,
+        90
+      ]
+    ],
+    "roi": [
+      100,
+      0,
+      1720,
+      1080
+    ],
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "excludedFrames": [
+      9135,
+      9136,
+      9137,
+      9138,
+      9139,
+      9140,
+      9141,
+      9142,
+      9143,
+      9144,
+      9145,
+      9146,
+      9147,
+      9148,
+      9149
+    ]
+  },
+  {
+    "id": "hermesfw25-profile-388",
+    "lookId": "hermesfw25-look-388",
+    "source": "hermesfw25",
+    "start": 385.6,
+    "end": 388.7,
+    "yaw": 90,
+    "yawKeys": [
+      [
+        385.6,
+        80
+      ],
+      [
+        387.5,
+        85
+      ],
+      [
+        388.7,
+        95
+      ]
+    ],
+    "roi": [
+      100,
+      0,
+      1720,
+      1080
+    ],
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermesfw25-profile-435",
+    "lookId": "hermesfw25-look-435",
+    "source": "hermesfw25",
+    "start": 433.5,
+    "end": 435.8,
+    "yaw": 90,
+    "yawKeys": [
+      [
+        433.96,
+        85
+      ],
+      [
+        435.8,
+        95
+      ]
+    ],
+    "roi": [
+      100,
+      0,
+      1720,
+      1080
+    ],
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      10850,
+      10851,
+      10852,
+      10853,
+      10854,
+      10855,
+      10856,
+      10857,
+      10858,
+      10859,
+      10860,
+      10861,
+      10862,
+      10863,
+      10864,
+      10865,
+      10866,
+      10867,
+      10868,
+      10869,
+      10870,
+      10871,
+      10872,
+      10873,
+      10874,
+      10875,
+      10876,
+      10877,
+      10878,
+      10879,
+      10880,
+      10881,
+      10882,
+      10883,
+      10884,
+      10885,
+      10886,
+      10887,
+      10888,
+      10889,
+      10890,
+      10891,
+      10892,
+      10893,
+      10894,
+      10895
+    ]
+  },
+  {
+    "id": "hermesfw25-profile-480",
+    "lookId": "hermesfw25-look-480",
+    "source": "hermesfw25",
+    "start": 477.8,
+    "end": 481.7,
+    "yaw": 90,
+    "yawKeys": [
+      [
+        477.8,
+        80
+      ],
+      [
+        479.8,
+        85
+      ],
+      [
+        481.7,
+        90
+      ]
+    ],
+    "roi": [
+      100,
+      0,
+      1720,
+      1080
+    ],
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "excludedFrames": [
+      11945,
+      11946,
+      11947,
+      11948,
+      11949,
+      11950,
+      11951,
+      11952,
+      11953,
+      11954,
+      11955,
+      11956,
+      11957,
+      11958,
+      11959,
+      11960,
+      11961,
+      11962,
+      11963,
+      11964,
+      11965,
+      11966,
+      11967,
+      11968,
+      11969,
+      11970,
+      11971,
+      11972,
+      11973,
+      11974,
+      11975,
+      11976,
+      11977,
+      11978,
+      11979,
+      11980,
+      11981,
+      11982,
+      11983,
+      11984,
+      11985,
+      11986,
+      11987,
+      11988,
+      11989
+    ]
+  },
+  {
+    "id": "hermesfw25-left-130",
+    "lookId": "hermesfw25-look-130",
+    "source": "hermesfw25",
+    "start": 128.1,
+    "end": 130.7,
+    "yaw": -50,
+    "yawKeys": [
+      [
+        128.1,
+        -15
+      ],
+      [
+        129.2,
+        -25
+      ],
+      [
+        130.7,
+        -55
+      ]
+    ],
+    "roi": [
+      100,
+      0,
+      1720,
+      1080
+    ],
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermesfw25-left-162",
+    "lookId": "hermesfw25-look-162",
+    "source": "hermesfw25",
+    "start": 161.5,
+    "end": 162.8,
+    "yaw": -50,
+    "yawKeys": [
+      [
+        161.5,
+        -50
+      ],
+      [
+        162.8,
+        -70
+      ]
+    ],
+    "roi": [
+      100,
+      0,
+      1720,
+      1080
+    ],
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermesfw25-left-495",
+    "lookId": "hermesfw25-look-495",
+    "source": "hermesfw25",
+    "start": 493.6,
+    "end": 495.9,
+    "yaw": -50,
+    "yawKeys": [
+      [
+        493.6,
+        -40
+      ],
+      [
+        494.8,
+        -55
+      ],
+      [
+        495.9,
+        -65
+      ]
+    ],
+    "roi": [
+      100,
+      0,
+      1720,
+      1080
+    ],
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermesfw25-left-506",
+    "lookId": "hermesfw25-look-506",
+    "source": "hermesfw25",
+    "start": 503,
+    "end": 506.8,
+    "yaw": -50,
+    "yawKeys": [
+      [
+        503,
+        -15
+      ],
+      [
+        504,
+        -35
+      ],
+      [
+        505,
+        -55
+      ],
+      [
+        506.8,
+        -65
+      ]
+    ],
+    "roi": [
+      100,
+      0,
+      1720,
+      1080
+    ],
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso"
+  },
+  {
+    "id": "hermes23-right-110",
+    "lookId": "hermes23-look-110",
+    "source": "hermes23",
+    "start": 109.7,
+    "end": 112.4,
+    "yaw": 65,
+    "yawKeys": [
+      [
+        109.7,
+        65
+      ],
+      [
+        111,
+        80
+      ],
+      [
+        112.4,
+        90
+      ]
+    ],
+    "roi": [
+      120,
+      0,
+      1680,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      2750,
+      2751,
+      2752,
+      2753,
+      2760,
+      2761,
+      2763,
+      2764,
+      2768,
+      2772,
+      2773,
+      2774,
+      2775,
+      2776,
+      2777,
+      2778,
+      2779,
+      2780,
+      2781,
+      2782,
+      2783,
+      2784,
+      2787,
+      2789,
+      2790,
+      2791,
+      2792,
+      2793,
+      2795,
+      2797,
+      2798,
+      2799,
+      2800,
+      2801,
+      2804
+    ]
+  },
+  {
+    "id": "hermes23-right-180",
+    "lookId": "hermes23-look-180",
+    "source": "hermes23",
+    "start": 178.8,
+    "end": 181.8,
+    "yaw": 65,
+    "yawKeys": [
+      [
+        178.8,
+        65
+      ],
+      [
+        180,
+        75
+      ],
+      [
+        181.8,
+        90
+      ]
+    ],
+    "roi": [
+      120,
+      0,
+      1680,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      4470,
+      4471,
+      4472,
+      4473,
+      4474,
+      4475,
+      4478,
+      4479,
+      4480,
+      4481,
+      4482,
+      4483,
+      4484,
+      4485,
+      4486,
+      4487,
+      4491,
+      4492,
+      4495,
+      4496,
+      4497,
+      4498,
+      4500,
+      4501,
+      4502,
+      4503,
+      4504,
+      4505,
+      4506,
+      4507,
+      4508,
+      4509,
+      4510
+    ]
+  },
+  {
+    "id": "hermes23-right-204",
+    "lookId": "hermes23-look-204",
+    "source": "hermes23",
+    "start": 203.6,
+    "end": 205.5,
+    "yaw": 70,
+    "yawKeys": [
+      [
+        203.6,
+        70
+      ],
+      [
+        205.5,
+        90
+      ]
+    ],
+    "roi": [
+      120,
+      0,
+      1680,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      5090,
+      5096,
+      5097,
+      5098,
+      5099,
+      5100,
+      5101,
+      5102,
+      5103,
+      5104,
+      5105,
+      5106,
+      5107,
+      5108,
+      5109,
+      5110,
+      5112,
+      5117,
+      5118,
+      5119,
+      5120,
+      5121,
+      5122,
+      5123,
+      5124,
+      5125,
+      5126,
+      5127,
+      5128,
+      5129,
+      5130,
+      5131,
+      5132,
+      5133,
+      5134,
+      5135,
+      5136
+    ]
+  },
+  {
+    "id": "hermes23-right-388",
+    "lookId": "hermes23-look-380",
+    "source": "hermes23",
+    "start": 387.8,
+    "end": 389.4,
+    "yaw": 20,
+    "yawKeys": [
+      [
+        387.8,
+        20
+      ],
+      [
+        389.4,
+        45
+      ]
+    ],
+    "roi": [
+      120,
+      0,
+      1680,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      9695,
+      9696,
+      9697,
+      9707,
+      9708,
+      9709,
+      9710,
+      9714,
+      9715,
+      9716,
+      9717,
+      9718,
+      9721,
+      9724,
+      9726,
+      9727,
+      9730,
+      9731
+    ]
+  },
+  {
+    "id": "hermes23-right-616",
+    "lookId": "hermes23-look-616",
+    "source": "hermes23",
+    "start": 615.6,
+    "end": 617,
+    "yaw": 20,
+    "yawKeys": [
+      [
+        615.6,
+        20
+      ],
+      [
+        617,
+        45
+      ]
+    ],
+    "roi": [
+      120,
+      0,
+      1680,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      15391,
+      15392,
+      15393,
+      15394,
+      15395,
+      15396,
+      15397,
+      15398,
+      15399,
+      15400,
+      15401
+    ]
+  },
+  {
+    "id": "homme25-profile-162",
+    "lookId": "homme25-look-162",
+    "source": "homme25",
+    "start": 161.8,
+    "end": 165.7,
+    "yaw": 65,
+    "yawKeys": [
+      [
+        161.8,
+        65
+      ],
+      [
+        165.7,
+        90
+      ]
+    ],
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      4075,
+      4076,
+      4077,
+      4094,
+      4095,
+      4096,
+      4097,
+      4099,
+      4100,
+      4101,
+      4102,
+      4103,
+      4104,
+      4105,
+      4106,
+      4107,
+      4108,
+      4109,
+      4110,
+      4111,
+      4112,
+      4113,
+      4114,
+      4115,
+      4119,
+      4120,
+      4131,
+      4132
+    ]
+  },
+  {
+    "id": "homme25-profile-233",
+    "lookId": "homme25-look-233",
+    "source": "homme25",
+    "start": 232.3,
+    "end": 235.7,
+    "yaw": 70,
+    "yawKeys": [
+      [
+        232.3,
+        70
+      ],
+      [
+        235.7,
+        90
+      ]
+    ],
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      5823,
+      5824,
+      5825,
+      5826,
+      5827,
+      5828,
+      5829,
+      5838,
+      5839,
+      5840,
+      5841,
+      5852,
+      5853,
+      5854,
+      5856,
+      5867,
+      5868,
+      5879,
+      5880
+    ]
+  },
+  {
+    "id": "homme25-profile-332",
+    "lookId": "homme25-look-332",
+    "source": "homme25",
+    "start": 331.4,
+    "end": 334.7,
+    "yaw": 70,
+    "yawKeys": [
+      [
+        331.4,
+        70
+      ],
+      [
+        334.7,
+        85
+      ]
+    ],
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      8291,
+      8292,
+      8293,
+      8294,
+      8295,
+      8296,
+      8297,
+      8298,
+      8299,
+      8300,
+      8301,
+      8302,
+      8303,
+      8316,
+      8317,
+      8318,
+      8319,
+      8320,
+      8324,
+      8325,
+      8326,
+      8327,
+      8328,
+      8329,
+      8331,
+      8332,
+      8333,
+      8335,
+      8336,
+      8345,
+      8346,
+      8347,
+      8348,
+      8349,
+      8350,
+      8351,
+      8352,
+      8358,
+      8359,
+      8361,
+      8362
+    ]
+  },
+  {
+    "id": "homme25-profile-472",
+    "lookId": "homme25-look-472",
+    "source": "homme25",
+    "start": 471.7,
+    "end": 475,
+    "yaw": 70,
+    "yawKeys": [
+      [
+        471.7,
+        70
+      ],
+      [
+        475,
+        90
+      ]
+    ],
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      11794,
+      11795,
+      11796,
+      11797,
+      11798,
+      11799,
+      11800,
+      11801,
+      11802,
+      11803,
+      11804,
+      11809,
+      11810,
+      11811,
+      11812,
+      11813,
+      11814,
+      11815,
+      11816,
+      11817,
+      11818,
+      11819,
+      11844,
+      11845,
+      11854,
+      11855,
+      11856,
+      11857,
+      11869,
+      11870,
+      11871,
+      11872,
+      11874
+    ]
+  },
+  {
+    "id": "homme25-profile-554",
+    "lookId": "homme25-look-554",
+    "source": "homme25",
+    "start": 553.7,
+    "end": 556.7,
+    "yaw": 65,
+    "yawKeys": [
+      [
+        553.7,
+        65
+      ],
+      [
+        556.7,
+        85
+      ]
+    ],
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      13852,
+      13853,
+      13854,
+      13855,
+      13856,
+      13857,
+      13858,
+      13859,
+      13860,
+      13861,
+      13862,
+      13863,
+      13864,
+      13865,
+      13866,
+      13867,
+      13881,
+      13882,
+      13883
+    ]
+  },
+  {
+    "id": "homme25-profile-597",
+    "lookId": "homme25-look-597",
+    "source": "homme25",
+    "start": 596.6,
+    "end": 600,
+    "yaw": 65,
+    "yawKeys": [
+      [
+        596.6,
+        65
+      ],
+      [
+        600,
+        85
+      ]
+    ],
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      14920,
+      14921,
+      14922,
+      14923,
+      14924,
+      14925,
+      14926,
+      14927,
+      14928,
+      14929,
+      14930,
+      14931,
+      14932,
+      14935,
+      14938,
+      14939,
+      14940,
+      14941,
+      14955,
+      14956
+    ]
+  },
+  {
+    "id": "homme25-profile-641",
+    "lookId": "homme25-look-641",
+    "source": "homme25",
+    "start": 640.5,
+    "end": 644.7,
+    "yaw": 65,
+    "yawKeys": [
+      [
+        640.5,
+        65
+      ],
+      [
+        644.7,
+        80
+      ]
+    ],
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      16023,
+      16024,
+      16025,
+      16026,
+      16038,
+      16039,
+      16040,
+      16041,
+      16042,
+      16043,
+      16044,
+      16045,
+      16046,
+      16047,
+      16048,
+      16049,
+      16051,
+      16052,
+      16053,
+      16054,
+      16055,
+      16056,
+      16057,
+      16058,
+      16059,
+      16069,
+      16070,
+      16071,
+      16072,
+      16073,
+      16074,
+      16075,
+      16076,
+      16077,
+      16078,
+      16079,
+      16080,
+      16081,
+      16084,
+      16086,
+      16100,
+      16101,
+      16108,
+      16110,
+      16113
+    ]
+  },
+  {
+    "id": "homme25-profile-671",
+    "lookId": "homme25-look-597",
+    "source": "homme25",
+    "start": 670.6,
+    "end": 676.8,
+    "yaw": -55,
+    "yawKeys": [
+      [
+        670.6,
+        -55
+      ],
+      [
+        676.8,
+        -80
+      ]
+    ],
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      16774,
+      16775,
+      16776,
+      16777,
+      16780,
+      16781,
+      16782,
+      16806,
+      16807,
+      16808,
+      16809,
+      16810,
+      16811,
+      16812,
+      16813,
+      16814,
+      16815,
+      16816,
+      16828,
+      16829,
+      16830,
+      16831,
+      16832,
+      16833,
+      16834,
+      16837,
+      16838,
+      16839,
+      16840,
+      16841,
+      16842,
+      16844,
+      16845,
+      16848,
+      16849,
+      16850,
+      16851,
+      16871,
+      16872,
+      16875,
+      16876,
+      16877,
+      16878,
+      16879,
+      16881,
+      16882,
+      16884,
+      16885,
+      16886,
+      16887,
+      16888,
+      16890,
+      16891,
+      16892
+    ]
+  },
+  {
+    "id": "hermes22-profile-249",
+    "lookId": "hermes22-look-249",
+    "source": "hermes22",
+    "start": 248.7,
+    "end": 252.8,
+    "yaw": -25,
+    "yawKeys": [
+      [
+        248.7,
+        -25
+      ],
+      [
+        252.8,
+        -40
+      ]
+    ],
+    "roi": [
+      650,
+      180,
+      750,
+      880
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      6218,
+      6219,
+      6220,
+      6221,
+      6222,
+      6223,
+      6224,
+      6225,
+      6226,
+      6227,
+      6228,
+      6229,
+      6230,
+      6231,
+      6232,
+      6233,
+      6234,
+      6235,
+      6236,
+      6237,
+      6238,
+      6242,
+      6243,
+      6244,
+      6245,
+      6246,
+      6247,
+      6248,
+      6249,
+      6250,
+      6251,
+      6252,
+      6253,
+      6254,
+      6255,
+      6256,
+      6257,
+      6258,
+      6259,
+      6260,
+      6261,
+      6262,
+      6263,
+      6264,
+      6265,
+      6266,
+      6267,
+      6268,
+      6269
+    ]
+  },
+  {
+    "id": "hermes22-profile-264",
+    "lookId": "hermes22-look-264",
+    "source": "hermes22",
+    "start": 263.2,
+    "end": 266.8,
+    "yaw": -55,
+    "yawKeys": [
+      [
+        263.2,
+        -55
+      ],
+      [
+        264.5,
+        -65
+      ],
+      [
+        266.8,
+        -75
+      ]
+    ],
+    "roi": [
+      750,
+      400,
+      650,
+      650
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      6580,
+      6581,
+      6582,
+      6583,
+      6584,
+      6585,
+      6586,
+      6587,
+      6590,
+      6591,
+      6592,
+      6593,
+      6596,
+      6597,
+      6598,
+      6599,
+      6600,
+      6601,
+      6602,
+      6603,
+      6604,
+      6605,
+      6606,
+      6607,
+      6608,
+      6609,
+      6610,
+      6611,
+      6612,
+      6613,
+      6614,
+      6615,
+      6616,
+      6617,
+      6618,
+      6619,
+      6620
+    ]
+  },
+  {
+    "id": "hermesfw23-profile-274",
+    "lookId": "hermesfw23-look-274",
+    "source": "hermesfw23",
+    "start": 273.8,
+    "end": 276.5,
+    "yaw": 40,
+    "yawKeys": [
+      [
+        273.8,
+        40
+      ],
+      [
+        275,
+        65
+      ],
+      [
+        276.5,
+        90
+      ]
+    ],
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      6855,
+      6858,
+      6859,
+      6860,
+      6861,
+      6862,
+      6873,
+      6875,
+      6876,
+      6877,
+      6878,
+      6879,
+      6880,
+      6881,
+      6882,
+      6883,
+      6884,
+      6885,
+      6886,
+      6887,
+      6888,
+      6889,
+      6890,
+      6891,
+      6892,
+      6893,
+      6894,
+      6895
+    ]
+  },
+  {
+    "id": "hermesfw23-profile-501",
+    "lookId": "hermesfw23-look-501",
+    "source": "hermesfw23",
+    "start": 500.6,
+    "end": 503,
+    "yaw": 40,
+    "yawKeys": [
+      [
+        500.6,
+        40
+      ],
+      [
+        501.8,
+        65
+      ],
+      [
+        503,
+        90
+      ]
+    ],
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      12515,
+      12516,
+      12517,
+      12518,
+      12519,
+      12520,
+      12521,
+      12522,
+      12523,
+      12524,
+      12525,
+      12526,
+      12527,
+      12528,
+      12531,
+      12532,
+      12533,
+      12534,
+      12538,
+      12539,
+      12540,
+      12541,
+      12542,
+      12543,
+      12544,
+      12545,
+      12546,
+      12547,
+      12548,
+      12549,
+      12550,
+      12551,
+      12552,
+      12553,
+      12554,
+      12560,
+      12561,
+      12562,
+      12563
+    ]
+  },
+  {
+    "id": "hermesfw23-profile-529",
+    "lookId": "hermesfw23-look-529",
+    "source": "hermesfw23",
+    "start": 528.4,
+    "end": 530.5,
+    "yaw": 40,
+    "yawKeys": [
+      [
+        528.4,
+        40
+      ],
+      [
+        529.4,
+        65
+      ],
+      [
+        530.5,
+        90
+      ]
+    ],
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      13242,
+      13243,
+      13244,
+      13246,
+      13247,
+      13248,
+      13249,
+      13250,
+      13251,
+      13252,
+      13253,
+      13254,
+      13255,
+      13259,
+      13261
+    ]
+  },
+  {
+    "id": "hermesfw22-left-492",
+    "lookId": "hermesfw22-look-480",
+    "source": "hermesfw22",
+    "start": 491.4,
+    "end": 494.6,
+    "yaw": -55,
+    "yawKeys": [
+      [
+        491.4,
+        -30
+      ],
+      [
+        492.5,
+        -45
+      ],
+      [
+        493.5,
+        -65
+      ],
+      [
+        494.6,
+        -80
+      ]
+    ],
+    "roi": [
+      450,
+      0,
+      1300,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      12285,
+      12286,
+      12287,
+      12288,
+      12289,
+      12290,
+      12291,
+      12292,
+      12293,
+      12294,
+      12295,
+      12296,
+      12297,
+      12298,
+      12299,
+      12300,
+      12301,
+      12302,
+      12303,
+      12304,
+      12305,
+      12306,
+      12307,
+      12308,
+      12309,
+      12310,
+      12311,
+      12312,
+      12313,
+      12314,
+      12315,
+      12316,
+      12317,
+      12318,
+      12319,
+      12320,
+      12321,
+      12322,
+      12323,
+      12324,
+      12325,
+      12326,
+      12327,
+      12328,
+      12329,
+      12330,
+      12331,
+      12332,
+      12333,
+      12334,
+      12335,
+      12336,
+      12337,
+      12338,
+      12339,
+      12340,
+      12341,
+      12342,
+      12343,
+      12344
+    ]
+  },
+  {
+    "id": "hermesfw22-left-497",
+    "lookId": "hermesfw22-look-480",
+    "source": "hermesfw22",
+    "start": 497.0,
+    "end": 498.2,
+    "yaw": -65,
+    "yawKeys": [
+      [
+        497,
+        -65
+      ],
+      [
+        498.2,
+        -65
+      ]
+    ],
+    "roi": [
+      450,
+      0,
+      1300,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      12452,
+      12453,
+      12454
+    ]
+  },
+  {
+    "id": "dries24-right-31",
+    "source": "dries24",
+    "start": 31,
+    "end": 34.5,
+    "yaw": 25.0,
+    "yawKeys": [
+      [
+        31,
+        15
+      ],
+      [
+        34.5,
+        35
+      ]
+    ],
+    "roi": [
+      450,
+      0,
+      1250,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      775,
+      779,
+      780,
+      781,
+      786,
+      787,
+      790,
+      791,
+      795,
+      796,
+      797,
+      800,
+      804,
+      805,
+      806,
+      807,
+      808,
+      811,
+      812,
+      813,
+      814,
+      815,
+      818,
+      819,
+      820,
+      821,
+      822,
+      823,
+      826,
+      827,
+      828,
+      829,
+      830,
+      831,
+      832,
+      833,
+      834,
+      835,
+      836,
+      837,
+      838,
+      839,
+      840,
+      841,
+      842,
+      846,
+      847,
+      848
+    ]
+  },
+  {
+    "id": "dries24-right-57",
+    "source": "dries24",
+    "start": 56.8,
+    "end": 59.8,
+    "yaw": 22.5,
+    "yawKeys": [
+      [
+        56.8,
+        15
+      ],
+      [
+        59.8,
+        30
+      ]
+    ],
+    "roi": [
+      450,
+      0,
+      1250,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      1421,
+      1422,
+      1423,
+      1424,
+      1425,
+      1426,
+      1427,
+      1430,
+      1431,
+      1432,
+      1433,
+      1434,
+      1435,
+      1436,
+      1437,
+      1438,
+      1439,
+      1477,
+      1478,
+      1479,
+      1480,
+      1481,
+      1482,
+      1484
+    ]
+  },
+  {
+    "id": "dries24-right-80",
+    "source": "dries24",
+    "start": 80.5,
+    "end": 83.5,
+    "yaw": 27.5,
+    "yawKeys": [
+      [
+        80.5,
+        20
+      ],
+      [
+        83.5,
+        35
+      ]
+    ],
+    "roi": [
+      450,
+      0,
+      1250,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      2013,
+      2022,
+      2023,
+      2024,
+      2025,
+      2027,
+      2028,
+      2035,
+      2039,
+      2040,
+      2042,
+      2043,
+      2044,
+      2046,
+      2047
+    ]
+  },
+  {
+    "id": "dries24-right-113",
+    "source": "dries24",
+    "start": 112.6,
+    "end": 115.2,
+    "yaw": 22.5,
+    "yawKeys": [
+      [
+        112.6,
+        15
+      ],
+      [
+        115.2,
+        30
+      ]
+    ],
+    "roi": [
+      450,
+      0,
+      1250,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      2819,
+      2820,
+      2822,
+      2823,
+      2824,
+      2825,
+      2837,
+      2847
+    ]
+  },
+  {
+    "id": "dries24-right-191",
+    "source": "dries24",
+    "start": 190.7,
+    "end": 193.2,
+    "yaw": 27.5,
+    "yawKeys": [
+      [
+        190.7,
+        20
+      ],
+      [
+        193.2,
+        35
+      ]
+    ],
+    "roi": [
+      450,
+      0,
+      1250,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      4768,
+      4769,
+      4770,
+      4784,
+      4785,
+      4786,
+      4788,
+      4792,
+      4793,
+      4794,
+      4795,
+      4796,
+      4797,
+      4801,
+      4803,
+      4804,
+      4806,
+      4807
+    ]
+  },
+  {
+    "id": "dries24-right-212",
+    "source": "dries24",
+    "start": 211.5,
+    "end": 213.7,
+    "yaw": 22.5,
+    "yawKeys": [
+      [
+        211.5,
+        15
+      ],
+      [
+        213.7,
+        30
+      ]
+    ],
+    "roi": [
+      450,
+      0,
+      1250,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      5293,
+      5301,
+      5302,
+      5303,
+      5304,
+      5305,
+      5306,
+      5307,
+      5308,
+      5311,
+      5313,
+      5316,
+      5317,
+      5318,
+      5319,
+      5320,
+      5322,
+      5323,
+      5324,
+      5325,
+      5326,
+      5327,
+      5328,
+      5329,
+      5330,
+      5331,
+      5332,
+      5333,
+      5334,
+      5335,
+      5339
+    ]
+  },
+  {
+    "id": "dries24-right-296",
+    "source": "dries24",
+    "start": 296,
+    "end": 299.5,
+    "yaw": 30.0,
+    "yawKeys": [
+      [
+        296,
+        20
+      ],
+      [
+        299.5,
+        40
+      ]
+    ],
+    "roi": [
+      450,
+      0,
+      1250,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      7405,
+      7406,
+      7407,
+      7408,
+      7409,
+      7410,
+      7432,
+      7433,
+      7434,
+      7435,
+      7436,
+      7437,
+      7438,
+      7439
+    ]
+  },
+  {
+    "id": "dries24-right-334",
+    "source": "dries24",
+    "start": 334,
+    "end": 336.8,
+    "yaw": 27.5,
+    "yawKeys": [
+      [
+        334,
+        20
+      ],
+      [
+        336.8,
+        35
+      ]
+    ],
+    "roi": [
+      450,
+      0,
+      1250,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      8357,
+      8359,
+      8360,
+      8370,
+      8372,
+      8373,
+      8374,
+      8376,
+      8377,
+      8378,
+      8379,
+      8380,
+      8381,
+      8382,
+      8383,
+      8384,
+      8386,
+      8388,
+      8390,
+      8391,
+      8393,
+      8394,
+      8395,
+      8397,
+      8400,
+      8401,
+      8402,
+      8403,
+      8405
+    ]
+  },
+  {
+    "id": "dries24-right-422",
+    "source": "dries24",
+    "start": 421.8,
+    "end": 425,
+    "yaw": 27.5,
+    "yawKeys": [
+      [
+        421.8,
+        20
+      ],
+      [
+        425,
+        35
+      ]
+    ],
+    "roi": [
+      450,
+      0,
+      1250,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      10545,
+      10546,
+      10547,
+      10548,
+      10550,
+      10551,
+      10552,
+      10553,
+      10554,
+      10555,
+      10556,
+      10557,
+      10558,
+      10559,
+      10560,
+      10562,
+      10563,
+      10564,
+      10565,
+      10567,
+      10568,
+      10569,
+      10570,
+      10573,
+      10574,
+      10576,
+      10578,
+      10585
+    ]
+  },
+  {
+    "id": "dries24-right-500",
+    "source": "dries24",
+    "start": 500,
+    "end": 502.7,
+    "yaw": 27.5,
+    "yawKeys": [
+      [
+        500,
+        20
+      ],
+      [
+        502.7,
+        35
+      ]
+    ],
+    "roi": [
+      450,
+      0,
+      1250,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      12525,
+      12527,
+      12528,
+      12529,
+      12530,
+      12531
+    ]
+  },
+  {
+    "id": "dries24-right-511",
+    "source": "dries24",
+    "start": 510.8,
+    "end": 513.5,
+    "yaw": 27.5,
+    "yawKeys": [
+      [
+        510.8,
+        20
+      ],
+      [
+        513.5,
+        35
+      ]
+    ],
+    "roi": [
+      450,
+      0,
+      1250,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      12801,
+      12802,
+      12803,
+      12804,
+      12806,
+      12808,
+      12809,
+      12810,
+      12811,
+      12812,
+      12813,
+      12815,
+      12821,
+      12822,
+      12823,
+      12824
+    ]
+  },
+  {
+    "id": "dries24-right-524",
+    "source": "dries24",
+    "start": 524,
+    "end": 526.5,
+    "yaw": 27.5,
+    "yawKeys": [
+      [
+        524,
+        20
+      ],
+      [
+        526.5,
+        35
+      ]
+    ],
+    "roi": [
+      450,
+      0,
+      1250,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      13100,
+      13102,
+      13104,
+      13105,
+      13119,
+      13120,
+      13121,
+      13122,
+      13123,
+      13124,
+      13128,
+      13129,
+      13130,
+      13133,
+      13134,
+      13136,
+      13140,
+      13141,
+      13142,
+      13143,
+      13144,
+      13145,
+      13146,
+      13147,
+      13148,
+      13149,
+      13150,
+      13151,
+      13152,
+      13154,
+      13155,
+      13156,
+      13157,
+      13158,
+      13159,
+      13160,
+      13161
+    ]
+  },
+  {
+    "id": "dries24-right-568",
+    "source": "dries24",
+    "start": 568,
+    "end": 572.5,
+    "yaw": 30.0,
+    "yawKeys": [
+      [
+        568,
+        20
+      ],
+      [
+        572.5,
+        40
+      ]
+    ],
+    "roi": [
+      450,
+      0,
+      1250,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      14216,
+      14219,
+      14220,
+      14221,
+      14266,
+      14267,
+      14268,
+      14269,
+      14270,
+      14271,
+      14272,
+      14273,
+      14274,
+      14275,
+      14276,
+      14277
+    ]
+  },
+  {
+    "id": "dries24-right-599",
+    "source": "dries24",
+    "start": 599,
+    "end": 602.3,
+    "yaw": 30.0,
+    "yawKeys": [
+      [
+        599,
+        20
+      ],
+      [
+        602.3,
+        40
+      ]
+    ],
+    "roi": [
+      450,
+      0,
+      1250,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      14993,
+      14994,
+      14998,
+      15000,
+      15001,
+      15002,
+      15003,
+      15004,
+      15005,
+      15007,
+      15008,
+      15009,
+      15010,
+      15012,
+      15016,
+      15017,
+      15022,
+      15023,
+      15024,
+      15025,
+      15026,
+      15027,
+      15030,
+      15032,
+      15033,
+      15034,
+      15037,
+      15039,
+      15043,
+      15044,
+      15050,
+      15052
+    ]
+  },
+  {
+    "id": "issey19-left-38",
+    "source": "issey19",
+    "start": 38,
+    "end": 39.7,
+    "yaw": -60,
+    "yawKeys": [
+      [
+        38,
+        -20
+      ],
+      [
+        39,
+        -60
+      ],
+      [
+        39.7,
+        -85
+      ]
+    ],
+    "roi": [
+      0,
+      0,
+      1500,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      950,
+      951,
+      952,
+      953,
+      954,
+      955,
+      956,
+      957,
+      958,
+      959,
+      960,
+      961,
+      962,
+      963,
+      964,
+      965,
+      966,
+      967,
+      968,
+      969,
+      970,
+      971,
+      972,
+      973,
+      974,
+      975,
+      976,
+      977,
+      979,
+      980,
+      981
+    ]
+  },
+  {
+    "id": "issey19-left-150",
+    "source": "issey19",
+    "start": 150,
+    "end": 151.9,
+    "yaw": -60,
+    "yawKeys": [
+      [
+        150,
+        -15
+      ],
+      [
+        151,
+        -60
+      ],
+      [
+        151.9,
+        -85
+      ]
+    ],
+    "roi": [
+      0,
+      0,
+      1500,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      3750,
+      3751,
+      3752,
+      3753,
+      3754,
+      3755,
+      3756,
+      3757,
+      3758,
+      3759,
+      3760,
+      3762,
+      3763,
+      3764,
+      3765,
+      3766,
+      3769,
+      3771,
+      3772,
+      3773,
+      3775,
+      3776,
+      3777,
+      3778,
+      3779,
+      3780,
+      3781,
+      3782,
+      3783,
+      3784,
+      3785,
+      3786,
+      3787,
+      3788,
+      3789,
+      3790,
+      3791,
+      3792
+    ]
+  },
+  {
+    "id": "issey19-left-176",
+    "source": "issey19",
+    "start": 176,
+    "end": 177.7,
+    "yaw": -60,
+    "yawKeys": [
+      [
+        176,
+        -15
+      ],
+      [
+        177,
+        -60
+      ],
+      [
+        177.7,
+        -80
+      ]
+    ],
+    "roi": [
+      0,
+      0,
+      1500,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      4400,
+      4401,
+      4402,
+      4403,
+      4404,
+      4405,
+      4406,
+      4407,
+      4408,
+      4409,
+      4410,
+      4411,
+      4412,
+      4413,
+      4414,
+      4415,
+      4416,
+      4417,
+      4418,
+      4419
+    ]
+  },
+  {
+    "id": "issey19-left-194",
+    "source": "issey19",
+    "start": 194,
+    "end": 195.8,
+    "yaw": -45,
+    "yawKeys": [
+      [
+        194,
+        -10
+      ],
+      [
+        195,
+        -45
+      ],
+      [
+        195.8,
+        -75
+      ]
+    ],
+    "roi": [
+      0,
+      0,
+      1500,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      4863,
+      4864,
+      4865,
+      4866,
+      4867,
+      4868,
+      4869,
+      4871,
+      4872,
+      4873,
+      4874,
+      4875,
+      4876,
+      4878,
+      4879,
+      4880,
+      4881,
+      4882,
+      4883,
+      4884,
+      4885,
+      4888
+    ]
+  },
+  {
+    "id": "issey19-left-222",
+    "source": "issey19",
+    "start": 221.8,
+    "end": 222.8,
+    "yaw": -60,
+    "yawKeys": [
+      [
+        221.8,
+        -45
+      ],
+      [
+        222,
+        -60
+      ],
+      [
+        222.8,
+        -80
+      ]
+    ],
+    "roi": [
+      0,
+      0,
+      1500,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      5545,
+      5546,
+      5547,
+      5548,
+      5549,
+      5550,
+      5551,
+      5552,
+      5553,
+      5554,
+      5555,
+      5556,
+      5557,
+      5558,
+      5559,
+      5560,
+      5562,
+      5563,
+      5564
+    ]
+  },
+  {
+    "id": "issey19-left-355",
+    "source": "issey19",
+    "start": 355,
+    "end": 356.8,
+    "yaw": -55,
+    "yawKeys": [
+      [
+        355,
+        -10
+      ],
+      [
+        356,
+        -55
+      ],
+      [
+        356.8,
+        -80
+      ]
+    ],
+    "roi": [
+      0,
+      0,
+      1500,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      8875,
+      8876,
+      8877,
+      8883,
+      8884,
+      8885,
+      8886,
+      8887,
+      8888,
+      8889,
+      8890,
+      8891,
+      8892,
+      8893,
+      8894,
+      8895,
+      8896,
+      8897,
+      8898,
+      8899,
+      8900,
+      8901,
+      8902,
+      8903,
+      8904,
+      8905,
+      8906,
+      8907,
+      8908,
+      8909,
+      8910,
+      8911,
+      8912,
+      8913,
+      8914,
+      8915
+    ]
+  },
+  {
+    "id": "issey19-left-391",
+    "source": "issey19",
+    "start": 391,
+    "end": 391.8,
+    "yaw": -70,
+    "yawKeys": [
+      [
+        391,
+        -10
+      ],
+      [
+        391.8,
+        -70
+      ]
+    ],
+    "roi": [
+      0,
+      0,
+      1500,
+      1080
+    ],
+    "instance": true,
+    "carriedItems": "none",
+    "yawMethod": "reviewed-torso",
+    "reviewedFrames": [
+      9775,
+      9776,
+      9777,
+      9778,
+      9779,
+      9780,
+      9781,
+      9782,
+      9783,
+      9784,
+      9785,
+      9786,
+      9787,
+      9788,
+      9789,
+      9790,
+      9791,
+      9792,
+      9793,
+      9794
+    ]
+  },
+  {
+    "id": "pradafw12-left-241",
+    "lookId": "pradafw12-beige",
+    "source": "pradafw12",
+    "start": 239.8,
+    "end": 242.4,
+    "yaw": -80,
+    "yawKeys": [
+      [
+        239.8,
+        -80
+      ],
+      [
+        240.4,
+        -85
+      ],
+      [
+        241,
+        -90
+      ],
+      [
+        242.4,
+        -90
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      200,
+      0,
+      1600,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      5997,
+      5998,
+      5999,
+      6000,
+      6001,
+      6002,
+      6003,
+      6004,
+      6005,
+      6006,
+      6011,
+      6015,
+      6016,
+      6023,
+      6027,
+      6028,
+      6029,
+      6030,
+      6031,
+      6032,
+      6033,
+      6034,
+      6035,
+      6036,
+      6038,
+      6040,
+      6041,
+      6042,
+      6043,
+      6044,
+      6045,
+      6046,
+      6047,
+      6048,
+      6049,
+      6050,
+      6051,
+      6053,
+      6054,
+      6055,
+      6056,
+      6057,
+      6059
+    ]
+  },
+  {
+    "id": "pradafw12-left-259",
+    "lookId": "pradafw12-browncoat",
+    "source": "pradafw12",
+    "start": 258.2,
+    "end": 260,
+    "yaw": -75,
+    "yawKeys": [
+      [
+        258.2,
+        -40
+      ],
+      [
+        258.5,
+        -65
+      ],
+      [
+        258.8,
+        -80
+      ],
+      [
+        260,
+        -90
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      200,
+      0,
+      1600,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      6455,
+      6456,
+      6457,
+      6458,
+      6459,
+      6460,
+      6461,
+      6464,
+      6465,
+      6466,
+      6469,
+      6470,
+      6471,
+      6472,
+      6482,
+      6483
+    ]
+  },
+  {
+    "id": "pradafw12-left-264",
+    "lookId": "pradafw12-brownshirt",
+    "source": "pradafw12",
+    "start": 262.7,
+    "end": 265.4,
+    "yaw": -55,
+    "yawKeys": [
+      [
+        262.7,
+        -55
+      ],
+      [
+        263.3,
+        -65
+      ],
+      [
+        264,
+        -75
+      ],
+      [
+        265.4,
+        -80
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      200,
+      0,
+      1600,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      6568,
+      6569,
+      6570,
+      6571,
+      6573,
+      6574,
+      6575,
+      6576,
+      6577,
+      6578,
+      6579,
+      6580,
+      6581,
+      6582,
+      6583,
+      6584,
+      6585,
+      6586,
+      6587,
+      6588,
+      6589,
+      6590,
+      6591,
+      6592,
+      6593,
+      6594,
+      6595,
+      6596,
+      6597,
+      6598,
+      6599,
+      6600,
+      6601,
+      6602,
+      6603,
+      6604,
+      6605,
+      6606,
+      6608,
+      6609,
+      6610,
+      6611,
+      6612,
+      6613,
+      6614,
+      6615,
+      6616,
+      6617,
+      6618,
+      6619,
+      6620,
+      6622,
+      6623,
+      6624,
+      6625,
+      6626,
+      6627,
+      6628,
+      6630,
+      6631,
+      6632,
+      6633
+    ]
+  },
+  {
+    "id": "pradafw12-left-272",
+    "lookId": "pradafw12-graycoat",
+    "source": "pradafw12",
+    "start": 271.4,
+    "end": 272.8,
+    "yaw": -80,
+    "yawKeys": [
+      [
+        271.4,
+        -80
+      ],
+      [
+        272,
+        -90
+      ],
+      [
+        272.8,
+        -95
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      200,
+      0,
+      1600,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      6798,
+      6799,
+      6800,
+      6801,
+      6802,
+      6803,
+      6804,
+      6805,
+      6806,
+      6808
+    ]
+  },
+  {
+    "id": "pradafw12-left-277",
+    "lookId": "pradafw12-purplebrown",
+    "source": "pradafw12",
+    "start": 276,
+    "end": 277.8,
+    "yaw": -40,
+    "yawKeys": [
+      [
+        276,
+        -40
+      ],
+      [
+        277,
+        -55
+      ],
+      [
+        277.8,
+        -65
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      200,
+      0,
+      1600,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      6902,
+      6903,
+      6904,
+      6905,
+      6906,
+      6907,
+      6908,
+      6909,
+      6910,
+      6911,
+      6912,
+      6913,
+      6914,
+      6915,
+      6916,
+      6917,
+      6918,
+      6919,
+      6920,
+      6921,
+      6922,
+      6923,
+      6924,
+      6925,
+      6926,
+      6927,
+      6928,
+      6929,
+      6930,
+      6931,
+      6932,
+      6933,
+      6934,
+      6935,
+      6936,
+      6937,
+      6938,
+      6939,
+      6940,
+      6941,
+      6942,
+      6943,
+      6944
+    ]
+  },
+  {
+    "id": "pradafw12-left-290",
+    "lookId": "pradafw12-blackcape",
+    "source": "pradafw12",
+    "start": 289.8,
+    "end": 291.7,
+    "yaw": -60,
+    "yawKeys": [
+      [
+        289.8,
+        -60
+      ],
+      [
+        290.5,
+        -65
+      ],
+      [
+        291.2,
+        -75
+      ],
+      [
+        291.7,
+        -80
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      200,
+      0,
+      1600,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      7245,
+      7246,
+      7247,
+      7248,
+      7249,
+      7250,
+      7251,
+      7252,
+      7253,
+      7254,
+      7255,
+      7256,
+      7257,
+      7258,
+      7259,
+      7260,
+      7261,
+      7262,
+      7263,
+      7264,
+      7266,
+      7268,
+      7269,
+      7274,
+      7275,
+      7276,
+      7277,
+      7278
+    ]
+  },
+  {
+    "id": "pradafw12-left-365",
+    "lookId": "pradafw12-pinkcoat",
+    "source": "pradafw12",
+    "start": 363.8,
+    "end": 365.7,
+    "yaw": -65,
+    "yawKeys": [
+      [
+        363.8,
+        -65
+      ],
+      [
+        364.5,
+        -80
+      ],
+      [
+        365.2,
+        -90
+      ],
+      [
+        365.7,
+        -95
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      200,
+      0,
+      1600,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      9105,
+      9106,
+      9107,
+      9108,
+      9109,
+      9110,
+      9111,
+      9114,
+      9115,
+      9116
+    ]
+  },
+  {
+    "id": "pradafw12-left-399",
+    "lookId": "pradafw12-purplesatin",
+    "source": "pradafw12",
+    "start": 398,
+    "end": 399.6,
+    "yaw": -55,
+    "yawKeys": [
+      [
+        398,
+        -55
+      ],
+      [
+        398.5,
+        -75
+      ],
+      [
+        399,
+        -90
+      ],
+      [
+        399.6,
+        -95
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      200,
+      0,
+      1600,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      9950,
+      9951,
+      9952,
+      9953,
+      9954,
+      9955,
+      9956,
+      9957,
+      9958,
+      9959,
+      9962,
+      9963,
+      9964,
+      9965,
+      9966,
+      9967,
+      9968,
+      9969,
+      9970,
+      9972,
+      9973,
+      9974,
+      9978,
+      9982
+    ]
+  },
+  {
+    "id": "pradafw12-left-422",
+    "lookId": "pradafw12-whiteshorts",
+    "source": "pradafw12",
+    "start": 420.5,
+    "end": 422.5,
+    "yaw": -80,
+    "yawKeys": [
+      [
+        420.5,
+        -65
+      ],
+      [
+        421.3,
+        -80
+      ],
+      [
+        421.8,
+        -90
+      ],
+      [
+        422.5,
+        -90
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      200,
+      0,
+      1600,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      10512,
+      10513,
+      10514,
+      10515,
+      10516,
+      10517,
+      10518,
+      10519,
+      10520,
+      10521,
+      10524,
+      10525,
+      10529,
+      10530,
+      10531,
+      10532,
+      10533,
+      10534,
+      10535,
+      10536,
+      10537,
+      10538,
+      10540,
+      10541,
+      10542,
+      10543,
+      10544,
+      10545,
+      10546,
+      10547,
+      10548,
+      10549,
+      10550,
+      10551,
+      10552,
+      10553,
+      10559,
+      10561
+    ]
+  },
+  {
+    "id": "pradafw12-left-435",
+    "lookId": "pradafw12-whitecoat",
+    "source": "pradafw12",
+    "start": 433.6,
+    "end": 435.6,
+    "yaw": -50,
+    "yawKeys": [
+      [
+        433.6,
+        -50
+      ],
+      [
+        434.2,
+        -60
+      ],
+      [
+        434.8,
+        -65
+      ],
+      [
+        435.6,
+        -75
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      200,
+      0,
+      1600,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      10840,
+      10841,
+      10842,
+      10843,
+      10844,
+      10845,
+      10846,
+      10847,
+      10848,
+      10849,
+      10850,
+      10851,
+      10852,
+      10853,
+      10854,
+      10855,
+      10856,
+      10857,
+      10858,
+      10859,
+      10860,
+      10861,
+      10862,
+      10863,
+      10864,
+      10865,
+      10866,
+      10867,
+      10868,
+      10869,
+      10870,
+      10871,
+      10872,
+      10873,
+      10874,
+      10875,
+      10876,
+      10877,
+      10878,
+      10879,
+      10880,
+      10881,
+      10882,
+      10883,
+      10884,
+      10885,
+      10886
+    ]
+  },
+  {
+    "id": "pradafw12-left-441",
+    "lookId": "pradafw12-whitevest",
+    "source": "pradafw12",
+    "start": 440.7,
+    "end": 441.7,
+    "yaw": -75,
+    "yawKeys": [
+      [
+        440.7,
+        -85
+      ],
+      [
+        441.1,
+        -90
+      ],
+      [
+        441.7,
+        -100
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      200,
+      0,
+      1600,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      11018,
+      11019,
+      11020,
+      11021,
+      11022,
+      11023,
+      11025,
+      11026,
+      11027,
+      11028,
+      11030,
+      11031,
+      11032,
+      11033,
+      11034,
+      11035,
+      11036,
+      11037,
+      11038,
+      11039,
+      11040,
+      11041
+    ]
+  },
+  {
+    "id": "pradafw12-left-474",
+    "lookId": "pradafw12-black474",
+    "source": "pradafw12",
+    "start": 473.7,
+    "end": 474.7,
+    "yaw": -75,
+    "yawKeys": [
+      [
+        473.7,
+        -75
+      ],
+      [
+        474.2,
+        -90
+      ],
+      [
+        474.7,
+        -95
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      200,
+      0,
+      1600,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      11842,
+      11843,
+      11844,
+      11845,
+      11846,
+      11847,
+      11849,
+      11850,
+      11851,
+      11852,
+      11853,
+      11855,
+      11856,
+      11857,
+      11858,
+      11859,
+      11860,
+      11861,
+      11862,
+      11863,
+      11864
+    ]
+  },
+  {
+    "id": "pradafw12-left-493",
+    "lookId": "pradafw12-redcoat",
+    "source": "pradafw12",
+    "start": 491.7,
+    "end": 494.6,
+    "yaw": -60,
+    "yawKeys": [
+      [
+        491.7,
+        -60
+      ],
+      [
+        492.8,
+        -65
+      ],
+      [
+        493.8,
+        -70
+      ],
+      [
+        494.6,
+        -75
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      200,
+      0,
+      1600,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      12296,
+      12297,
+      12298,
+      12299,
+      12300,
+      12301,
+      12302,
+      12303,
+      12304,
+      12305,
+      12306,
+      12307,
+      12308,
+      12309,
+      12310,
+      12311,
+      12312,
+      12313,
+      12314,
+      12315,
+      12316,
+      12317,
+      12318,
+      12319,
+      12321,
+      12327,
+      12328,
+      12329,
+      12330,
+      12331,
+      12332,
+      12333,
+      12334,
+      12335,
+      12336,
+      12337,
+      12340,
+      12342,
+      12343,
+      12344,
+      12345,
+      12346,
+      12348,
+      12356,
+      12357,
+      12358,
+      12359,
+      12360,
+      12361
+    ]
+  },
+  {
+    "id": "pradafw12-left-505",
+    "lookId": "pradafw12-black505",
+    "source": "pradafw12",
+    "start": 503.7,
+    "end": 506.7,
+    "yaw": -70,
+    "yawKeys": [
+      [
+        503.7,
+        -70
+      ],
+      [
+        504.6,
+        -75
+      ],
+      [
+        505.6,
+        -85
+      ],
+      [
+        506.7,
+        -90
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      200,
+      0,
+      1600,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      12593,
+      12594,
+      12595,
+      12596,
+      12597,
+      12598,
+      12599,
+      12600,
+      12601,
+      12602,
+      12603,
+      12604,
+      12605,
+      12606,
+      12607,
+      12614,
+      12615,
+      12616,
+      12618,
+      12619,
+      12620,
+      12621,
+      12622,
+      12623,
+      12624,
+      12625,
+      12626,
+      12627,
+      12628,
+      12629,
+      12630,
+      12631,
+      12632,
+      12633,
+      12634,
+      12635,
+      12637,
+      12638,
+      12639,
+      12640,
+      12641,
+      12642,
+      12643,
+      12644,
+      12645,
+      12646,
+      12647,
+      12648,
+      12649,
+      12650,
+      12651,
+      12652
+    ]
+  },
+  {
+    "id": "pradafw12-left-535",
+    "lookId": "pradafw12-black535",
+    "source": "pradafw12",
+    "start": 533.5,
+    "end": 536.5,
+    "yaw": -45,
+    "yawKeys": [
+      [
+        533.5,
+        -45
+      ],
+      [
+        534.5,
+        -55
+      ],
+      [
+        535.5,
+        -65
+      ],
+      [
+        536.5,
+        -70
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      200,
+      0,
+      1600,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      13346,
+      13347,
+      13348,
+      13349,
+      13350,
+      13351,
+      13359,
+      13360,
+      13361,
+      13362,
+      13363,
+      13364,
+      13365,
+      13366,
+      13367,
+      13374,
+      13375,
+      13376,
+      13377,
+      13388,
+      13389,
+      13390,
+      13391,
+      13399,
+      13400,
+      13401,
+      13402,
+      13403,
+      13404,
+      13405,
+      13406,
+      13407,
+      13408,
+      13409,
+      13410,
+      13411
+    ]
+  },
+  {
+    "id": "pradafw13-right-66",
+    "lookId": "pradafw13-look-66",
+    "source": "pradafw13",
+    "start": 65.98,
+    "end": 66.78,
+    "yaw": 95,
+    "yawKeys": [
+      [
+        66,
+        95
+      ],
+      [
+        66.24,
+        85
+      ],
+      [
+        66.6,
+        75
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      400,
+      0,
+      1400,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      1650,
+      1651,
+      1652,
+      1653,
+      1655,
+      1656,
+      1657,
+      1659,
+      1660,
+      1661
+    ]
+  },
+  {
+    "id": "pradafw13-right-82",
+    "lookId": "pradafw13-look-82",
+    "source": "pradafw13",
+    "start": 82.24,
+    "end": 83.2,
+    "yaw": 90,
+    "yawKeys": [
+      [
+        82.28,
+        75
+      ],
+      [
+        82.6,
+        60
+      ],
+      [
+        82.8,
+        40
+      ],
+      [
+        82.96,
+        20
+      ],
+      [
+        83.16,
+        5
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      400,
+      0,
+      1400,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      2058,
+      2059,
+      2060,
+      2061,
+      2062,
+      2064,
+      2065,
+      2067,
+      2068,
+      2069,
+      2070,
+      2071,
+      2072
+    ]
+  },
+  {
+    "id": "pradafw13-right-104",
+    "lookId": "pradafw13-look-104",
+    "source": "pradafw13",
+    "start": 103.96,
+    "end": 104.84,
+    "yaw": 95,
+    "yawKeys": [
+      [
+        103.96,
+        100
+      ],
+      [
+        104.24,
+        85
+      ],
+      [
+        104.48,
+        75
+      ],
+      [
+        104.76,
+        65
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      400,
+      0,
+      1400,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      2602,
+      2605,
+      2606,
+      2607,
+      2608,
+      2609,
+      2610,
+      2611,
+      2612,
+      2613,
+      2614,
+      2616,
+      2617,
+      2618,
+      2619
+    ]
+  },
+  {
+    "id": "pradafw13-right-121",
+    "lookId": "pradafw13-look-121",
+    "source": "pradafw13",
+    "start": 120.4,
+    "end": 121.6,
+    "yaw": 90,
+    "yawKeys": [
+      [
+        120.4,
+        90
+      ],
+      [
+        120.76,
+        65
+      ],
+      [
+        120.96,
+        50
+      ],
+      [
+        121.16,
+        35
+      ],
+      [
+        121.56,
+        0
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      400,
+      0,
+      1400,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      3019,
+      3020,
+      3021,
+      3022,
+      3023,
+      3024,
+      3027,
+      3029
+    ]
+  },
+  {
+    "id": "pradafw13-right-172",
+    "lookId": "pradafw13-look-172",
+    "source": "pradafw13",
+    "start": 171.96,
+    "end": 172.8,
+    "yaw": 90,
+    "yawKeys": [
+      [
+        172.08,
+        75
+      ],
+      [
+        172.28,
+        60
+      ],
+      [
+        172.44,
+        40
+      ],
+      [
+        172.6,
+        20
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      400,
+      0,
+      1400,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      4302,
+      4303,
+      4304,
+      4306,
+      4307,
+      4308,
+      4309,
+      4310,
+      4311,
+      4313
+    ]
+  },
+  {
+    "id": "pradafw13-right-194",
+    "lookId": "pradafw13-look-194",
+    "source": "pradafw13",
+    "start": 193.96,
+    "end": 194.8,
+    "yaw": 90,
+    "yawKeys": [
+      [
+        193.96,
+        100
+      ],
+      [
+        194.28,
+        90
+      ],
+      [
+        194.6,
+        75
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      400,
+      0,
+      1400,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      4853,
+      4855,
+      4856,
+      4857,
+      4858,
+      4859,
+      4860,
+      4861,
+      4862,
+      4863,
+      4864,
+      4865
+    ]
+  },
+  {
+    "id": "pradafw13-right-225",
+    "lookId": "pradafw13-look-225",
+    "source": "pradafw13",
+    "start": 224.92,
+    "end": 225.72,
+    "yaw": 85,
+    "yawKeys": [
+      [
+        224.92,
+        75
+      ],
+      [
+        225.12,
+        60
+      ],
+      [
+        225.28,
+        35
+      ],
+      [
+        225.44,
+        15
+      ],
+      [
+        225.68,
+        5
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      400,
+      0,
+      1400,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      5627,
+      5628,
+      5629,
+      5630,
+      5631,
+      5632,
+      5633
+    ]
+  },
+  {
+    "id": "pradafw13-right-236",
+    "lookId": "pradafw13-look-236",
+    "source": "pradafw13",
+    "start": 235.96,
+    "end": 236.8,
+    "yaw": 90,
+    "yawKeys": [
+      [
+        235.96,
+        100
+      ],
+      [
+        236.16,
+        90
+      ],
+      [
+        236.4,
+        75
+      ],
+      [
+        236.76,
+        45
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      400,
+      0,
+      1400,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      5902,
+      5903,
+      5904,
+      5905,
+      5906,
+      5907,
+      5908,
+      5909,
+      5910,
+      5911,
+      5912,
+      5913,
+      5914,
+      5915,
+      5916,
+      5917,
+      5919
+    ]
+  },
+  {
+    "id": "pradafw13-right-282",
+    "lookId": "pradafw13-look-282",
+    "source": "pradafw13",
+    "start": 282.08,
+    "end": 283.2,
+    "yaw": 90,
+    "yawKeys": [
+      [
+        282.08,
+        70
+      ],
+      [
+        282.56,
+        55
+      ],
+      [
+        282.8,
+        45
+      ],
+      [
+        283.16,
+        30
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      400,
+      0,
+      1400,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      7052,
+      7053,
+      7054,
+      7055,
+      7056,
+      7060,
+      7061,
+      7062,
+      7063,
+      7064,
+      7065,
+      7067,
+      7068,
+      7069,
+      7070,
+      7071,
+      7072,
+      7073,
+      7074,
+      7075,
+      7076,
+      7077,
+      7078,
+      7079
+    ]
+  },
+  {
+    "id": "pradafw13-right-300",
+    "lookId": "pradafw13-look-300",
+    "source": "pradafw13",
+    "start": 299.6,
+    "end": 300.8,
+    "yaw": 95,
+    "yawKeys": [
+      [
+        299.6,
+        95
+      ],
+      [
+        300,
+        65
+      ],
+      [
+        300.36,
+        45
+      ],
+      [
+        300.76,
+        30
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      400,
+      0,
+      1400,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      7490,
+      7491,
+      7492,
+      7493,
+      7494,
+      7495,
+      7496,
+      7497,
+      7498,
+      7499,
+      7500,
+      7501,
+      7502,
+      7503,
+      7504,
+      7505,
+      7506,
+      7507,
+      7508,
+      7509,
+      7510,
+      7511,
+      7512,
+      7514,
+      7516,
+      7517,
+      7518,
+      7519
+    ]
+  },
+  {
+    "id": "pradafw13-right-376",
+    "lookId": "pradafw13-look-376",
+    "source": "pradafw13",
+    "start": 375,
+    "end": 376.28,
+    "yaw": 90,
+    "yawKeys": [
+      [
+        375,
+        105
+      ],
+      [
+        375.32,
+        95
+      ],
+      [
+        375.6,
+        85
+      ],
+      [
+        376.24,
+        65
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      400,
+      0,
+      1400,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      9383,
+      9384,
+      9385,
+      9386,
+      9387,
+      9388,
+      9389,
+      9390,
+      9391,
+      9393,
+      9394,
+      9395,
+      9396,
+      9397,
+      9398,
+      9399,
+      9400,
+      9401,
+      9402,
+      9403,
+      9404,
+      9405,
+      9406
+    ]
+  },
+  {
+    "id": "pradafw13-right-393",
+    "lookId": "pradafw13-look-393",
+    "source": "pradafw13",
+    "start": 392.5,
+    "end": 393.52,
+    "yaw": 90,
+    "yawKeys": [
+      [
+        392.52,
+        90
+      ],
+      [
+        392.96,
+        75
+      ],
+      [
+        393.48,
+        55
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      400,
+      0,
+      1400,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      9813,
+      9817,
+      9818,
+      9819,
+      9820,
+      9821,
+      9822,
+      9823,
+      9824,
+      9825,
+      9826,
+      9827,
+      9828,
+      9829,
+      9831,
+      9832,
+      9834,
+      9835,
+      9836,
+      9837
+    ]
+  },
+  {
+    "id": "pradafw13-right-412",
+    "lookId": "pradafw13-look-412",
+    "source": "pradafw13",
+    "start": 411.28,
+    "end": 412.16,
+    "yaw": 85,
+    "yawKeys": [
+      [
+        411.28,
+        70
+      ],
+      [
+        411.4,
+        65
+      ],
+      [
+        411.6,
+        50
+      ],
+      [
+        411.88,
+        35
+      ],
+      [
+        412.12,
+        25
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      400,
+      0,
+      1400,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      10282,
+      10283,
+      10284,
+      10285,
+      10286,
+      10287,
+      10292,
+      10293,
+      10294,
+      10295,
+      10296,
+      10297
+    ]
+  },
+  {
+    "id": "pradafw13-right-429",
+    "lookId": "pradafw13-look-429",
+    "source": "pradafw13",
+    "start": 428.4,
+    "end": 430.08,
+    "yaw": 90,
+    "yawKeys": [
+      [
+        428.4,
+        70
+      ],
+      [
+        429,
+        55
+      ],
+      [
+        429.52,
+        40
+      ],
+      [
+        430.04,
+        25
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      400,
+      0,
+      1400,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      10710,
+      10711,
+      10712,
+      10713,
+      10715,
+      10716,
+      10717,
+      10718,
+      10719,
+      10720,
+      10721,
+      10722,
+      10723,
+      10724,
+      10725,
+      10726,
+      10727,
+      10728,
+      10729,
+      10730,
+      10731,
+      10732,
+      10733,
+      10734,
+      10735,
+      10736,
+      10737,
+      10738,
+      10739,
+      10740,
+      10741,
+      10742,
+      10743,
+      10744,
+      10745
+    ]
+  },
+  {
+    "id": "pradafw12-early-78",
+    "lookId": "pradafw12-earlylook-78",
+    "source": "pradafw12",
+    "start": 77.52,
+    "end": 78.64,
+    "yaw": -45,
+    "yawKeys": [
+      [
+        77.52,
+        -45
+      ],
+      [
+        77.92,
+        -80
+      ],
+      [
+        78.28,
+        -90
+      ],
+      [
+        78.64,
+        -95
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      80,
+      0,
+      1800,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      1940,
+      1941,
+      1949,
+      1950,
+      1951,
+      1952,
+      1953,
+      1954,
+      1955,
+      1956,
+      1957,
+      1959,
+      1960,
+      1961,
+      1962,
+      1963,
+      1964,
+      1965
+    ]
+  },
+  {
+    "id": "pradafw12-early-117",
+    "lookId": "pradafw12-earlylook-117",
+    "source": "pradafw12",
+    "start": 115.76,
+    "end": 118.36,
+    "yaw": -85,
+    "yawKeys": [
+      [
+        115.76,
+        -85
+      ],
+      [
+        116.5,
+        -90
+      ],
+      [
+        118.36,
+        -90
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      80,
+      0,
+      1800,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      2895,
+      2896,
+      2897,
+      2898,
+      2899,
+      2900,
+      2901,
+      2902,
+      2903,
+      2904,
+      2905,
+      2906,
+      2907,
+      2908,
+      2909,
+      2910,
+      2911,
+      2912,
+      2913,
+      2914,
+      2915,
+      2916,
+      2917,
+      2918,
+      2919,
+      2920,
+      2921,
+      2922,
+      2923,
+      2924,
+      2925,
+      2926,
+      2927,
+      2928,
+      2929,
+      2930,
+      2931,
+      2932,
+      2933,
+      2934,
+      2935,
+      2936,
+      2937,
+      2938,
+      2939,
+      2940,
+      2941,
+      2942,
+      2943,
+      2944,
+      2945,
+      2946,
+      2947,
+      2948,
+      2949,
+      2950,
+      2951,
+      2952,
+      2953,
+      2955,
+      2956,
+      2957,
+      2958
+    ]
+  },
+  {
+    "id": "pradafw12-early-123",
+    "lookId": "pradafw12-earlylook-123",
+    "source": "pradafw12",
+    "start": 122.64,
+    "end": 123.76,
+    "yaw": -40,
+    "yawKeys": [
+      [
+        122.64,
+        -40
+      ],
+      [
+        123,
+        -70
+      ],
+      [
+        123.28,
+        -85
+      ],
+      [
+        123.76,
+        -95
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      80,
+      0,
+      1800,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      3066,
+      3067,
+      3068,
+      3069,
+      3070,
+      3071,
+      3072,
+      3073,
+      3074,
+      3075,
+      3076,
+      3077,
+      3078,
+      3079,
+      3080,
+      3081,
+      3082,
+      3083,
+      3084,
+      3085,
+      3086,
+      3087,
+      3088,
+      3089,
+      3090,
+      3091,
+      3092,
+      3093
+    ]
+  },
+  {
+    "id": "pradafw12-early-159",
+    "lookId": "pradafw12-earlylook-159",
+    "source": "pradafw12",
+    "start": 158.12,
+    "end": 159.48,
+    "yaw": -85,
+    "yawKeys": [
+      [
+        158.12,
+        -85
+      ],
+      [
+        158.5,
+        -90
+      ],
+      [
+        159.48,
+        -100
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      80,
+      0,
+      1800,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      3953,
+      3954,
+      3956,
+      3957,
+      3958,
+      3959,
+      3960,
+      3961,
+      3962,
+      3963,
+      3965,
+      3966,
+      3967,
+      3968,
+      3969,
+      3970,
+      3971,
+      3972,
+      3973,
+      3974,
+      3975,
+      3976,
+      3977,
+      3978,
+      3979,
+      3980,
+      3981,
+      3982,
+      3983,
+      3984,
+      3985,
+      3986
+    ]
+  },
+  {
+    "id": "pradafw12-early-194",
+    "lookId": "pradafw12-earlylook-194",
+    "source": "pradafw12",
+    "start": 192.96,
+    "end": 194.64,
+    "yaw": -55,
+    "yawKeys": [
+      [
+        192.96,
+        -55
+      ],
+      [
+        193.36,
+        -70
+      ],
+      [
+        193.92,
+        -80
+      ],
+      [
+        194.64,
+        -85
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      80,
+      0,
+      1800,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      4824,
+      4825,
+      4826,
+      4827,
+      4828,
+      4829,
+      4830,
+      4831,
+      4832,
+      4833,
+      4834,
+      4835,
+      4836,
+      4840,
+      4842,
+      4843,
+      4844,
+      4845,
+      4846,
+      4847,
+      4848,
+      4849,
+      4850,
+      4851,
+      4852,
+      4853,
+      4854,
+      4855,
+      4856,
+      4857,
+      4860,
+      4861,
+      4862,
+      4863,
+      4864,
+      4865
+    ]
+  },
+  {
+    "id": "pradass14-right-15",
+    "lookId": "pradass14-look-15",
+    "source": "pradass14",
+    "start": 14,
+    "end": 15.4,
+    "yaw": 25,
+    "yawKeys": [
+      [
+        14,
+        5
+      ],
+      [
+        14.28,
+        15
+      ],
+      [
+        14.48,
+        25
+      ],
+      [
+        14.6,
+        40
+      ],
+      [
+        14.76,
+        55
+      ],
+      [
+        14.92,
+        65
+      ],
+      [
+        15.04,
+        75
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      400,
+      0,
+      1350,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      363,
+      364,
+      365,
+      366,
+      367,
+      368,
+      369,
+      370,
+      371,
+      372,
+      373,
+      374,
+      375,
+      376
+    ]
+  },
+  {
+    "id": "pradass14-right-79",
+    "lookId": "pradass14-look-79",
+    "source": "pradass14",
+    "start": 78.8,
+    "end": 79.76,
+    "yaw": 75,
+    "yawKeys": [
+      [
+        78.8,
+        50
+      ],
+      [
+        79,
+        40
+      ],
+      [
+        79.2,
+        30
+      ],
+      [
+        79.4,
+        20
+      ],
+      [
+        79.6,
+        10
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      400,
+      0,
+      1350,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      1970,
+      1971,
+      1972,
+      1973,
+      1974,
+      1975,
+      1976,
+      1977,
+      1978,
+      1979,
+      1980
+    ]
+  },
+  {
+    "id": "pradass14-right-225",
+    "lookId": "pradass14-look-225",
+    "source": "pradass14",
+    "start": 224.16,
+    "end": 225.6,
+    "yaw": 85,
+    "yawKeys": [
+      [
+        224.16,
+        85
+      ],
+      [
+        224.4,
+        75
+      ],
+      [
+        224.64,
+        60
+      ],
+      [
+        224.84,
+        45
+      ],
+      [
+        225,
+        30
+      ],
+      [
+        225.2,
+        15
+      ],
+      [
+        225.4,
+        5
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      400,
+      0,
+      1350,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      5604,
+      5605,
+      5606,
+      5607,
+      5608,
+      5609,
+      5610,
+      5611,
+      5612,
+      5613,
+      5614,
+      5615,
+      5616,
+      5617,
+      5618,
+      5619,
+      5620,
+      5621,
+      5622,
+      5623,
+      5624,
+      5625
+    ]
+  },
+  {
+    "id": "pradass14-right-255",
+    "lookId": "pradass14-look-255",
+    "source": "pradass14",
+    "start": 254.52,
+    "end": 255.68,
+    "yaw": 20,
+    "yawKeys": [
+      [
+        254.52,
+        5
+      ],
+      [
+        254.76,
+        15
+      ],
+      [
+        254.96,
+        35
+      ],
+      [
+        255.12,
+        50
+      ],
+      [
+        255.36,
+        70
+      ],
+      [
+        255.64,
+        90
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      400,
+      0,
+      1350,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      6373,
+      6374,
+      6375,
+      6376,
+      6377,
+      6378,
+      6379,
+      6380,
+      6381,
+      6382,
+      6383,
+      6384,
+      6385,
+      6386,
+      6387,
+      6388,
+      6389,
+      6390,
+      6391
+    ]
+  },
+  {
+    "id": "pradass14-right-317",
+    "lookId": "pradass14-look-317",
+    "source": "pradass14",
+    "start": 316.4,
+    "end": 317.6,
+    "yaw": 15,
+    "yawKeys": [
+      [
+        316.4,
+        5
+      ],
+      [
+        316.64,
+        25
+      ],
+      [
+        316.8,
+        40
+      ],
+      [
+        316.96,
+        60
+      ],
+      [
+        317.32,
+        80
+      ],
+      [
+        317.52,
+        90
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      400,
+      0,
+      1350,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      7918,
+      7919,
+      7920,
+      7921,
+      7922,
+      7923,
+      7924,
+      7925,
+      7926,
+      7933,
+      7934,
+      7935,
+      7936,
+      7937,
+      7938,
+      7939
+    ]
+  },
+  {
+    "id": "pradafw14-left-59",
+    "lookId": "pradafw14-look-59",
+    "source": "pradafw14",
+    "start": 57.44,
+    "end": 60.12,
+    "yaw": -40,
+    "yawKeys": [
+      [
+        57.44,
+        -40
+      ],
+      [
+        58,
+        -55
+      ],
+      [
+        58.6,
+        -70
+      ],
+      [
+        59.2,
+        -85
+      ],
+      [
+        60.12,
+        -100
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      200,
+      0,
+      1600,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      1463,
+      1464,
+      1466,
+      1467,
+      1468,
+      1469,
+      1470,
+      1471,
+      1472,
+      1473,
+      1474,
+      1475,
+      1476,
+      1477,
+      1478,
+      1479,
+      1480,
+      1482,
+      1483,
+      1484,
+      1485,
+      1486,
+      1487
+    ]
+  },
+  {
+    "id": "pradafw14-left-349",
+    "lookId": "pradafw14-look-349",
+    "source": "pradafw14",
+    "start": 347.44,
+    "end": 349.28,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        347.44,
+        -35
+      ],
+      [
+        348,
+        -50
+      ],
+      [
+        348.56,
+        -70
+      ],
+      [
+        349.28,
+        -90
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      200,
+      0,
+      1600,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      8704,
+      8705,
+      8706,
+      8707,
+      8708,
+      8709,
+      8710,
+      8711,
+      8712,
+      8713,
+      8714,
+      8715,
+      8716,
+      8717,
+      8718,
+      8719,
+      8720,
+      8721,
+      8724,
+      8725,
+      8726,
+      8727
+    ]
+  },
+  {
+    "id": "pradafw14-left-468",
+    "lookId": "pradafw14-look-468",
+    "source": "pradafw14",
+    "start": 466,
+    "end": 469.28,
+    "yaw": -40,
+    "yawKeys": [
+      [
+        466,
+        -40
+      ],
+      [
+        467,
+        -55
+      ],
+      [
+        468,
+        -70
+      ],
+      [
+        469.28,
+        -85
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      200,
+      0,
+      1600,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      11684,
+      11685,
+      11686,
+      11687,
+      11688,
+      11689,
+      11690,
+      11691,
+      11692,
+      11693,
+      11694,
+      11695,
+      11696,
+      11697,
+      11698,
+      11699,
+      11700,
+      11701,
+      11702,
+      11703,
+      11704,
+      11705,
+      11706,
+      11707,
+      11708,
+      11709,
+      11710,
+      11711,
+      11712,
+      11713,
+      11714,
+      11715,
+      11716,
+      11717,
+      11718,
+      11719,
+      11720,
+      11721,
+      11722,
+      11723,
+      11724,
+      11725,
+      11726,
+      11727,
+      11728,
+      11729,
+      11730,
+      11731
+    ]
+  },
+  {
+    "id": "pradafw14-left-574",
+    "lookId": "pradafw14-look-574",
+    "source": "pradafw14",
+    "start": 572.24,
+    "end": 574.88,
+    "yaw": -40,
+    "yawKeys": [
+      [
+        572.24,
+        -40
+      ],
+      [
+        573,
+        -60
+      ],
+      [
+        573.6,
+        -75
+      ],
+      [
+        574.24,
+        -90
+      ],
+      [
+        574.88,
+        -105
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      200,
+      0,
+      1600,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      14325,
+      14326,
+      14327,
+      14328,
+      14329,
+      14330,
+      14331,
+      14332,
+      14333,
+      14335,
+      14336,
+      14337,
+      14339,
+      14340,
+      14343,
+      14344,
+      14345,
+      14347,
+      14348,
+      14349,
+      14350,
+      14351,
+      14352,
+      14353,
+      14354,
+      14355,
+      14356,
+      14357,
+      14358
+    ]
+  },
+  {
+    "id": "pradafw14-left-612",
+    "lookId": "pradafw14-look-612",
+    "source": "pradafw14",
+    "start": 610.24,
+    "end": 613.12,
+    "yaw": -35,
+    "yawKeys": [
+      [
+        610.24,
+        -35
+      ],
+      [
+        611,
+        -50
+      ],
+      [
+        611.6,
+        -70
+      ],
+      [
+        612.2,
+        -85
+      ],
+      [
+        613.12,
+        -105
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      200,
+      0,
+      1600,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      15279,
+      15280,
+      15281,
+      15284,
+      15287,
+      15288,
+      15289,
+      15290,
+      15291,
+      15292,
+      15293,
+      15294,
+      15295,
+      15296,
+      15297,
+      15299,
+      15300,
+      15301,
+      15302,
+      15303,
+      15304,
+      15305,
+      15306,
+      15307
+    ]
+  },
+  {
+    "id": "pradass15-left-21",
+    "lookId": "pradass15-look-21",
+    "source": "pradass15",
+    "start": 19.8,
+    "end": 23.4,
+    "yaw": -55,
+    "yawKeys": [
+      [
+        19.8,
+        -55
+      ],
+      [
+        20,
+        -60
+      ],
+      [
+        20.4,
+        -70
+      ],
+      [
+        20.72,
+        -78
+      ],
+      [
+        20.92,
+        -85
+      ],
+      [
+        21.12,
+        -90
+      ],
+      [
+        21.24,
+        -95
+      ],
+      [
+        21.6,
+        -105
+      ],
+      [
+        22,
+        -115
+      ],
+      [
+        22.4,
+        -125
+      ],
+      [
+        23.08,
+        -140
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      200,
+      0,
+      1650,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      500,
+      501,
+      502,
+      503,
+      504,
+      505,
+      506,
+      507,
+      508,
+      509,
+      510,
+      511,
+      512,
+      513,
+      514,
+      515,
+      516,
+      517,
+      518,
+      519,
+      520,
+      521,
+      522,
+      523,
+      524,
+      525,
+      526,
+      527,
+      528
+    ]
+  },
+  {
+    "id": "pradass15-left-238",
+    "lookId": "pradass15-look-238",
+    "source": "pradass15",
+    "start": 236.2,
+    "end": 238.8,
+    "yaw": -45,
+    "yawKeys": [
+      [
+        236.2,
+        -25
+      ],
+      [
+        236.8,
+        -40
+      ],
+      [
+        237.12,
+        -50
+      ],
+      [
+        237.36,
+        -60
+      ],
+      [
+        237.52,
+        -70
+      ],
+      [
+        237.76,
+        -85
+      ],
+      [
+        237.88,
+        -90
+      ],
+      [
+        238.12,
+        -110
+      ],
+      [
+        238.44,
+        -130
+      ],
+      [
+        238.76,
+        -145
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      200,
+      0,
+      1650,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      5934,
+      5935,
+      5936,
+      5937,
+      5938,
+      5939,
+      5940,
+      5941,
+      5942,
+      5943,
+      5944,
+      5945,
+      5946,
+      5947
+    ]
+  },
+  {
+    "id": "hermes24-shallow-112",
+    "lookId": "hermes24-shallow-112",
+    "source": "hermes24",
+    "start": 109.4,
+    "end": 112.8,
+    "yaw": 0,
+    "yawKeys": [
+      [
+        110.72,
+        10
+      ],
+      [
+        111.12,
+        10
+      ],
+      [
+        111.36,
+        15
+      ],
+      [
+        111.72,
+        20
+      ],
+      [
+        112.12,
+        30
+      ],
+      [
+        112.48,
+        40
+      ],
+      [
+        112.76,
+        50
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      350,
+      0,
+      1300,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      2768,
+      2769,
+      2770,
+      2771,
+      2772,
+      2773,
+      2774,
+      2775,
+      2776,
+      2777,
+      2778,
+      2779,
+      2780,
+      2781,
+      2782,
+      2783,
+      2784,
+      2785,
+      2786,
+      2787,
+      2788,
+      2789,
+      2790,
+      2791,
+      2792,
+      2793,
+      2794,
+      2795,
+      2796,
+      2797,
+      2798,
+      2799,
+      2800,
+      2801,
+      2802,
+      2803,
+      2804,
+      2805,
+      2806,
+      2807,
+      2808,
+      2809,
+      2810,
+      2811,
+      2812,
+      2813,
+      2814,
+      2815,
+      2816,
+      2817,
+      2818,
+      2819
+    ]
+  },
+  {
+    "id": "hermes24-shallow-126",
+    "lookId": "hermes24-shallow-126",
+    "source": "hermes24",
+    "start": 124,
+    "end": 128.1,
+    "yaw": 0,
+    "yawKeys": [
+      [
+        124.04,
+        -35
+      ],
+      [
+        124.52,
+        -25
+      ],
+      [
+        125,
+        -15
+      ],
+      [
+        125.32,
+        -10
+      ],
+      [
+        125.64,
+        -5
+      ],
+      [
+        126,
+        0
+      ],
+      [
+        126.4,
+        5
+      ],
+      [
+        126.72,
+        15
+      ],
+      [
+        127.04,
+        35
+      ],
+      [
+        127.32,
+        55
+      ],
+      [
+        127.96,
+        80
+      ],
+      [
+        128.04,
+        85
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      350,
+      0,
+      1300,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      3101,
+      3110,
+      3111,
+      3112,
+      3113,
+      3114,
+      3115,
+      3116,
+      3117,
+      3118,
+      3119,
+      3120,
+      3121,
+      3122,
+      3123,
+      3124,
+      3125,
+      3126,
+      3127,
+      3128,
+      3129,
+      3130,
+      3131,
+      3132,
+      3133,
+      3134,
+      3135,
+      3136,
+      3137,
+      3138,
+      3139,
+      3140,
+      3141,
+      3142,
+      3143,
+      3144,
+      3145,
+      3146,
+      3147,
+      3148,
+      3149,
+      3150,
+      3151,
+      3152,
+      3153,
+      3154,
+      3155,
+      3156,
+      3157,
+      3158,
+      3159,
+      3160,
+      3161,
+      3162,
+      3163,
+      3164,
+      3165,
+      3166,
+      3167,
+      3168,
+      3169,
+      3170,
+      3171,
+      3172,
+      3173,
+      3174,
+      3175,
+      3176,
+      3177,
+      3183,
+      3184,
+      3185,
+      3186,
+      3199,
+      3200,
+      3201
+    ]
+  },
+  {
+    "id": "hermes24-shallow-400",
+    "lookId": "hermes24-shallow-400",
+    "source": "hermes24",
+    "start": 398.1,
+    "end": 401.8,
+    "yaw": 0,
+    "yawKeys": [
+      [
+        398.08,
+        0
+      ],
+      [
+        398.4,
+        0
+      ],
+      [
+        398.8,
+        10
+      ],
+      [
+        399.12,
+        25
+      ],
+      [
+        399.36,
+        40
+      ],
+      [
+        399.56,
+        55
+      ],
+      [
+        399.8,
+        75
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      350,
+      0,
+      1300,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      9952,
+      9953,
+      9954,
+      9955,
+      9956,
+      9957,
+      9958,
+      9959,
+      9960,
+      9961,
+      9962,
+      9963,
+      9964,
+      9965,
+      9966,
+      9967,
+      9968,
+      9969,
+      9970,
+      9971,
+      9972,
+      9973,
+      9974,
+      9975,
+      9976,
+      9977,
+      9978,
+      9979,
+      9980,
+      9981,
+      9984,
+      9989,
+      9990,
+      9991,
+      9992,
+      9993,
+      9994,
+      9995
+    ]
+  },
+  {
+    "id": "pradass14-right-15-shallow",
+    "lookId": "pradass14-look-15",
+    "source": "pradass14",
+    "start": 14,
+    "end": 15.4,
+    "yaw": 25,
+    "yawKeys": [
+      [
+        14,
+        5
+      ],
+      [
+        14.28,
+        15
+      ],
+      [
+        14.48,
+        25
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      400,
+      0,
+      1350,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      350,
+      351,
+      352,
+      353,
+      354,
+      355,
+      356,
+      357,
+      358,
+      359,
+      360,
+      361,
+      362
+    ]
+  },
+  {
+    "id": "pradass14-right-79-shallow",
+    "lookId": "pradass14-look-79",
+    "source": "pradass14",
+    "start": 78.8,
+    "end": 79.76,
+    "yaw": 75,
+    "yawKeys": [
+      [
+        79.28,
+        26
+      ],
+      [
+        79.4,
+        20
+      ],
+      [
+        79.6,
+        10
+      ],
+      [
+        79.72,
+        5
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      400,
+      0,
+      1350,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      1982,
+      1983,
+      1984,
+      1985,
+      1986,
+      1987,
+      1988,
+      1989,
+      1990,
+      1991,
+      1992,
+      1993
+    ]
+  },
+  {
+    "id": "pradass14-right-225-shallow",
+    "lookId": "pradass14-look-225",
+    "source": "pradass14",
+    "start": 224.16,
+    "end": 225.6,
+    "yaw": 85,
+    "yawKeys": [
+      [
+        225.04,
+        27
+      ],
+      [
+        225.2,
+        15
+      ],
+      [
+        225.4,
+        5
+      ],
+      [
+        225.56,
+        0
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      400,
+      0,
+      1350,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      5626,
+      5627,
+      5628,
+      5629,
+      5630,
+      5631,
+      5632,
+      5633,
+      5634,
+      5635,
+      5636,
+      5637,
+      5638,
+      5639
+    ]
+  },
+  {
+    "id": "pradass14-right-255-shallow",
+    "lookId": "pradass14-look-255",
+    "source": "pradass14",
+    "start": 254.52,
+    "end": 255.68,
+    "yaw": 20,
+    "yawKeys": [
+      [
+        254.52,
+        5
+      ],
+      [
+        254.76,
+        15
+      ],
+      [
+        254.88,
+        27
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      400,
+      0,
+      1350,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      6363,
+      6364,
+      6365,
+      6366,
+      6367,
+      6368,
+      6369,
+      6370,
+      6371,
+      6372
+    ]
+  },
+  {
+    "id": "pradass14-right-317-shallow",
+    "lookId": "pradass14-look-317",
+    "source": "pradass14",
+    "start": 316.4,
+    "end": 317.6,
+    "yaw": 15,
+    "yawKeys": [
+      [
+        316.4,
+        5
+      ],
+      [
+        316.64,
+        25
+      ],
+      [
+        316.68,
+        29
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      400,
+      0,
+      1350,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      7910,
+      7911,
+      7912,
+      7913,
+      7914,
+      7915,
+      7916,
+      7917
+    ]
+  },
+  {
+    "id": "pradafw13-right-45-shallow",
+    "lookId": "pradafw13-look-45",
+    "source": "pradafw13",
+    "start": 45.04,
+    "end": 45.52,
+    "yaw": 70,
+    "yawKeys": [
+      [
+        45.32,
+        35
+      ],
+      [
+        45.4,
+        25
+      ],
+      [
+        45.48,
+        15
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      400,
+      0,
+      1400,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      1133,
+      1134,
+      1135,
+      1136,
+      1137
+    ]
+  },
+  {
+    "id": "pradafw13-right-82-shallow",
+    "lookId": "pradafw13-look-82",
+    "source": "pradafw13",
+    "start": 82.24,
+    "end": 83.2,
+    "yaw": 90,
+    "yawKeys": [
+      [
+        82.92,
+        25
+      ],
+      [
+        82.96,
+        20
+      ],
+      [
+        83.16,
+        5
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      400,
+      0,
+      1400,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      2073,
+      2074,
+      2075,
+      2076,
+      2077,
+      2078,
+      2079
+    ]
+  },
+  {
+    "id": "pradafw13-right-225-shallow",
+    "lookId": "pradafw13-look-225",
+    "source": "pradafw13",
+    "start": 224.92,
+    "end": 225.72,
+    "yaw": 85,
+    "yawKeys": [
+      [
+        225.36,
+        25
+      ],
+      [
+        225.44,
+        15
+      ],
+      [
+        225.68,
+        5
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      400,
+      0,
+      1400,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      5634,
+      5635,
+      5636,
+      5637,
+      5638,
+      5639,
+      5640,
+      5641,
+      5642
+    ]
+  },
+  {
+    "id": "pradafw13-right-461-shallow",
+    "lookId": "pradafw13-look-461",
+    "source": "pradafw13",
+    "start": 460.48,
+    "end": 461.68,
+    "yaw": 45,
+    "yawKeys": [
+      [
+        461.2,
+        35
+      ],
+      [
+        461.36,
+        40
+      ],
+      [
+        461.64,
+        45
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      400,
+      0,
+      1400,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      11530,
+      11531,
+      11532,
+      11533,
+      11534,
+      11535,
+      11536,
+      11537,
+      11538,
+      11539,
+      11541
+    ]
+  },
+  {
+    "id": "pradass16-shallow-58",
+    "lookId": "pradass16-shallow-58",
+    "source": "pradass16",
+    "start": 57.8,
+    "end": 60.5,
+    "yaw": 8,
+    "yawKeys": [
+      [
+        57.8,
+        8
+      ],
+      [
+        58.16,
+        10
+      ],
+      [
+        58.92,
+        15
+      ],
+      [
+        59.52,
+        25
+      ],
+      [
+        59.84,
+        35
+      ],
+      [
+        60.04,
+        45
+      ],
+      [
+        60.44,
+        60
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      200,
+      0,
+      1400,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      1445,
+      1446,
+      1447,
+      1448,
+      1449,
+      1452,
+      1454,
+      1455,
+      1456,
+      1457,
+      1458,
+      1459,
+      1460,
+      1462,
+      1463,
+      1464,
+      1466,
+      1469,
+      1472,
+      1473,
+      1474,
+      1475,
+      1476,
+      1477,
+      1478,
+      1479,
+      1484,
+      1487,
+      1488,
+      1489,
+      1490,
+      1491,
+      1493,
+      1494,
+      1495,
+      1496,
+      1501,
+      1503,
+      1505,
+      1507,
+      1509,
+      1510,
+      1511
+    ]
+  },
+  {
+    "id": "pradass16-shallow-163",
+    "lookId": "pradass16-shallow-163",
+    "source": "pradass16",
+    "start": 161.8,
+    "end": 164.5,
+    "yaw": 8,
+    "yawKeys": [
+      [
+        162.64,
+        15
+      ],
+      [
+        163.2,
+        20
+      ],
+      [
+        163.84,
+        28
+      ],
+      [
+        163.88,
+        15
+      ],
+      [
+        164.44,
+        30
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      200,
+      0,
+      1400,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      4066,
+      4067,
+      4068,
+      4069,
+      4070,
+      4071,
+      4072,
+      4073,
+      4078,
+      4079,
+      4080,
+      4081,
+      4082,
+      4083,
+      4084,
+      4085,
+      4086,
+      4087,
+      4088,
+      4089,
+      4090,
+      4091,
+      4092,
+      4095,
+      4096,
+      4097,
+      4098,
+      4099,
+      4100,
+      4101,
+      4102,
+      4103,
+      4104,
+      4105,
+      4106,
+      4107,
+      4108,
+      4109,
+      4110,
+      4111
+    ]
+  },
+  {
+    "id": "pradass16-shallow-327",
+    "lookId": "pradass16-shallow-327",
+    "source": "pradass16",
+    "start": 325.6,
+    "end": 329.6,
+    "yaw": 7,
+    "yawKeys": [
+      [
+        325.6,
+        7
+      ],
+      [
+        326.4,
+        10
+      ],
+      [
+        327.04,
+        15
+      ],
+      [
+        327.56,
+        20
+      ],
+      [
+        328.16,
+        35
+      ],
+      [
+        328.4,
+        45
+      ],
+      [
+        328.6,
+        60
+      ],
+      [
+        329.08,
+        75
+      ],
+      [
+        329.56,
+        90
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      200,
+      0,
+      1400,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      8140,
+      8142,
+      8143,
+      8145,
+      8146,
+      8150,
+      8151,
+      8152,
+      8153,
+      8154,
+      8155,
+      8156,
+      8157,
+      8158,
+      8159,
+      8160,
+      8161,
+      8169,
+      8172,
+      8173,
+      8174,
+      8175,
+      8176,
+      8177,
+      8178,
+      8179,
+      8180,
+      8181,
+      8182,
+      8183,
+      8184,
+      8185,
+      8186,
+      8187,
+      8188,
+      8189,
+      8190,
+      8191,
+      8192,
+      8193,
+      8194,
+      8195,
+      8196,
+      8197,
+      8198,
+      8199,
+      8200,
+      8201,
+      8202,
+      8203,
+      8204,
+      8208,
+      8209,
+      8210,
+      8211,
+      8212,
+      8213,
+      8214,
+      8215,
+      8216,
+      8217,
+      8218,
+      8219,
+      8220,
+      8221,
+      8222,
+      8223,
+      8224,
+      8225,
+      8226,
+      8228,
+      8229,
+      8230,
+      8231,
+      8232,
+      8233,
+      8234,
+      8235,
+      8238
+    ]
+  },
+  {
+    "id": "pradass16-shallow-72",
+    "lookId": "pradass16-shallow-72",
+    "source": "pradass16",
+    "start": 70.8,
+    "end": 74.4,
+    "yaw": 6,
+    "yawKeys": [
+      [
+        71.44,
+        8
+      ],
+      [
+        71.6,
+        10
+      ],
+      [
+        72.16,
+        15
+      ],
+      [
+        72.52,
+        0
+      ],
+      [
+        72.68,
+        5
+      ],
+      [
+        72.96,
+        10
+      ],
+      [
+        73.12,
+        15
+      ],
+      [
+        73.6,
+        25
+      ],
+      [
+        74.36,
+        45
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      350,
+      0,
+      1200,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "personGuard": "body",
+    "headEnvelope": [
+      1.3,
+      1.8
+    ],
+    "reviewedFrames": [
+      1786,
+      1787,
+      1788,
+      1789,
+      1790,
+      1791,
+      1792,
+      1793,
+      1799,
+      1800,
+      1801,
+      1802,
+      1803,
+      1804,
+      1813,
+      1814,
+      1815,
+      1816,
+      1817,
+      1818,
+      1819,
+      1820,
+      1821,
+      1822,
+      1823,
+      1824,
+      1825,
+      1826,
+      1827,
+      1828,
+      1829,
+      1830,
+      1831,
+      1832,
+      1833,
+      1834,
+      1835,
+      1836,
+      1837,
+      1838,
+      1839,
+      1840,
+      1841,
+      1842,
+      1843,
+      1844,
+      1845,
+      1846,
+      1847,
+      1848,
+      1849,
+      1850,
+      1851,
+      1852,
+      1853,
+      1854,
+      1855,
+      1856,
+      1858,
+      1859
+    ]
+  },
+  {
+    "id": "pradass16-shallow-84",
+    "lookId": "pradass16-shallow-84",
+    "source": "pradass16",
+    "start": 82.7,
+    "end": 85.5,
+    "yaw": 8,
+    "yawKeys": [
+      [
+        82.72,
+        8
+      ],
+      [
+        83,
+        10
+      ],
+      [
+        83.52,
+        15
+      ],
+      [
+        84.12,
+        25
+      ],
+      [
+        84.68,
+        35
+      ],
+      [
+        85.08,
+        60
+      ],
+      [
+        85.48,
+        75
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      350,
+      0,
+      1200,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "personGuard": "body",
+    "headEnvelope": [
+      1.3,
+      1.8
+    ],
+    "reviewedFrames": [
+      2068,
+      2069,
+      2070,
+      2071,
+      2073,
+      2074,
+      2075,
+      2076,
+      2077,
+      2078,
+      2079,
+      2080,
+      2081,
+      2082,
+      2083,
+      2084,
+      2085,
+      2086,
+      2088,
+      2089,
+      2090,
+      2091,
+      2093,
+      2094,
+      2095,
+      2096,
+      2097,
+      2098,
+      2099,
+      2100,
+      2101,
+      2102,
+      2103,
+      2104,
+      2105,
+      2106,
+      2109,
+      2110,
+      2111,
+      2112,
+      2113,
+      2114,
+      2115,
+      2116,
+      2117,
+      2118,
+      2119,
+      2120,
+      2121,
+      2122,
+      2123,
+      2126,
+      2129,
+      2130,
+      2131,
+      2132,
+      2133,
+      2134,
+      2136,
+      2137
+    ]
+  },
+  {
+    "id": "pradafw12-walk-68",
+    "lookId": "pradafw12-walk-68",
+    "source": "pradafw12",
+    "start": 66.0,
+    "end": 69.15,
+    "yaw": -75,
+    "yawKeys": [
+      [
+        66,
+        -65
+      ],
+      [
+        67,
+        -70
+      ],
+      [
+        67.6,
+        -75
+      ],
+      [
+        68.2,
+        -80
+      ],
+      [
+        68.8,
+        -85
+      ],
+      [
+        69.15,
+        -90
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      250,
+      0,
+      1400,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "personGuard": "body",
+    "headEnvelope": [
+      1.5,
+      2.1
+    ],
+    "reviewedFrames": [
+      1693,
+      1694,
+      1695,
+      1696,
+      1697,
+      1698,
+      1699,
+      1700,
+      1706,
+      1708,
+      1713,
+      1714,
+      1715,
+      1716
+    ]
+  },
+  {
+    "id": "pradass13-left-125",
+    "lookId": "pradass13-left-125",
+    "source": "pradass13",
+    "start": 121.8,
+    "end": 125.4,
+    "yaw": -25,
+    "yawKeys": [
+      [
+        121.8,
+        -25
+      ],
+      [
+        122.25,
+        -40
+      ],
+      [
+        122.7,
+        -65
+      ],
+      [
+        123.0,
+        -80
+      ],
+      [
+        124.5,
+        -85
+      ],
+      [
+        125.4,
+        -90
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      250,
+      150,
+      1400,
+      900
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "excludedFrames": [
+      3084,
+      3085,
+      3086,
+      3087,
+      3088,
+      3089,
+      3090,
+      3091,
+      3092,
+      3093,
+      3094,
+      3095,
+      3096,
+      3097,
+      3098,
+      3099,
+      3100,
+      3101,
+      3102,
+      3103,
+      3104
+    ],
+    "reviewedFrames": [
+      3079,
+      3080,
+      3081,
+      3082,
+      3083,
+      3105,
+      3106,
+      3107,
+      3108,
+      3109,
+      3110,
+      3111,
+      3112,
+      3113,
+      3114,
+      3115,
+      3116,
+      3117,
+      3118,
+      3119,
+      3120,
+      3121,
+      3122,
+      3123,
+      3124,
+      3125,
+      3126,
+      3127,
+      3128,
+      3129,
+      3130,
+      3131,
+      3132,
+      3133,
+      3134
+    ]
+  },
+  {
+    "id": "pradass13-left-188",
+    "lookId": "pradass13-left-188",
+    "source": "pradass13",
+    "start": 187,
+    "end": 190.4,
+    "yaw": -70,
+    "yawKeys": [
+      [
+        187,
+        -70
+      ],
+      [
+        187.4,
+        -80
+      ],
+      [
+        188.3,
+        -85
+      ],
+      [
+        190.4,
+        -90
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      350,
+      150,
+      1300,
+      900
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "excludedFrames": [
+      4728,
+      4729,
+      4730,
+      4731,
+      4732,
+      4733,
+      4734,
+      4735,
+      4736,
+      4737,
+      4738,
+      4739,
+      4740,
+      4741,
+      4742
+    ],
+    "reviewedFrames": [
+      4723,
+      4724,
+      4725,
+      4726,
+      4727,
+      4745,
+      4746,
+      4747,
+      4748,
+      4749,
+      4750,
+      4751,
+      4752,
+      4753,
+      4754,
+      4755
+    ]
+  },
+  {
+    "id": "hermes24-right-329",
+    "lookId": "hermes24-right-329",
+    "source": "hermes24",
+    "start": 327.0,
+    "end": 331.4,
+    "yaw": 30,
+    "yawKeys": [
+      [
+        327,
+        30
+      ],
+      [
+        327.75,
+        40
+      ],
+      [
+        328.5,
+        50
+      ],
+      [
+        329.25,
+        65
+      ],
+      [
+        330,
+        80
+      ],
+      [
+        331,
+        90
+      ],
+      [
+        331.4,
+        90
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "roi": [
+      250,
+      0,
+      1500,
+      1080
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      8175,
+      8176,
+      8177,
+      8178,
+      8179,
+      8180,
+      8181,
+      8182,
+      8183,
+      8184,
+      8185,
+      8186,
+      8187,
+      8188,
+      8189,
+      8190,
+      8191,
+      8192,
+      8193,
+      8194,
+      8195,
+      8196,
+      8198,
+      8199,
+      8200,
+      8201,
+      8202,
+      8203,
+      8204,
+      8205,
+      8206,
+      8207,
+      8208,
+      8209,
+      8210,
+      8211,
+      8212,
+      8213,
+      8214,
+      8215,
+      8216,
+      8217,
+      8218,
+      8219,
+      8220,
+      8221,
+      8222,
+      8223,
+      8224,
+      8225,
+      8226,
+      8227,
+      8228,
+      8229,
+      8230,
+      8231,
+      8232,
+      8233,
+      8234,
+      8235,
+      8236,
+      8237,
+      8238,
+      8239,
+      8240,
+      8241,
+      8244,
+      8245,
+      8246,
+      8247,
+      8252,
+      8253,
+      8254,
+      8255,
+      8256,
+      8257,
+      8258,
+      8261,
+      8263,
+      8264,
+      8265,
+      8266,
+      8269,
+      8270,
+      8271,
+      8272,
+      8273,
+      8274,
+      8275,
+      8276,
+      8277,
+      8278,
+      8279,
+      8280,
+      8281,
+      8282,
+      8283,
+      8284
+    ]
+  },
+  {
+    "id": "hermesfw23-right-253",
+    "source": "hermesfw23",
+    "start": 252.75,
+    "end": 254.45,
+    "roi": [
+      200,
+      0,
+      1600,
+      1080
+    ],
+    "yaw": 40,
+    "yawKeys": [
+      [
+        252.75,
+        40
+      ],
+      [
+        253,
+        50
+      ],
+      [
+        253.3,
+        60
+      ],
+      [
+        253.7,
+        75
+      ],
+      [
+        254.1,
+        85
+      ],
+      [
+        254.45,
+        90
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "reviewedFrames": [
+      6319,
+      6320,
+      6321,
+      6322,
+      6324,
+      6325,
+      6326,
+      6327,
+      6328,
+      6329,
+      6330,
+      6331,
+      6332,
+      6333,
+      6334,
+      6335,
+      6336,
+      6337,
+      6338,
+      6339,
+      6345
+    ]
+  },
+  {
+    "id": "pradafw14-shallow-56",
+    "lookId": "pradafw14-left-59",
+    "source": "pradafw14",
+    "start": 55.0,
+    "end": 57.44,
+    "roi": [
+      250,
+      0,
+      1400,
+      1080
+    ],
+    "yaw": -20,
+    "yawKeys": [
+      [
+        55,
+        -20
+      ],
+      [
+        55.8,
+        -25
+      ],
+      [
+        56.4,
+        -30
+      ],
+      [
+        57,
+        -35
+      ],
+      [
+        57.44,
+        -40
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "excludedFrames": [
+      1400,
+      1401,
+      1402,
+      1411
+    ],
+    "reviewedFrames": [
+      1375,
+      1376,
+      1377,
+      1378,
+      1379,
+      1380,
+      1381,
+      1382,
+      1383,
+      1384,
+      1385,
+      1386,
+      1387,
+      1388,
+      1389,
+      1390,
+      1391,
+      1392,
+      1393,
+      1394,
+      1395,
+      1396,
+      1397,
+      1398,
+      1399,
+      1403,
+      1404,
+      1405,
+      1406,
+      1407,
+      1408,
+      1409,
+      1410,
+      1412,
+      1413,
+      1414,
+      1415,
+      1416,
+      1417,
+      1418,
+      1419,
+      1420,
+      1421,
+      1422,
+      1423,
+      1424,
+      1425,
+      1426,
+      1427,
+      1428,
+      1429,
+      1430,
+      1431,
+      1432,
+      1433,
+      1434,
+      1435
+    ]
+  },
+  {
+    "id": "hermesfw22-finale-518",
+    "source": "hermesfw22",
+    "start": 517.5,
+    "end": 518.68,
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "yaw": -55,
+    "yawKeys": [
+      [
+        517.5,
+        -55
+      ],
+      [
+        518,
+        -65
+      ],
+      [
+        518.35,
+        -75
+      ],
+      [
+        518.68,
+        -85
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "targetXKeys": [
+      [
+        517.5,
+        0.78
+      ],
+      [
+        518,
+        0.5
+      ],
+      [
+        518.5,
+        0.16
+      ],
+      [
+        518.68,
+        0.05
+      ]
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "extractedFrames": 29,
+    "excludedFrames": [
+      12938,
+      12939,
+      12940,
+      12941,
+      12942
+    ],
+    "reviewedFrames": [
+      12943,
+      12944,
+      12945,
+      12946,
+      12947,
+      12949,
+      12950,
+      12951,
+      12952,
+      12953,
+      12954,
+      12955,
+      12956,
+      12957,
+      12958,
+      12959,
+      12960,
+      12961,
+      12962,
+      12963
+    ]
+  },
+  {
+    "id": "hermesfw22-finale-577",
+    "source": "hermesfw22",
+    "start": 576.72,
+    "end": 578.04,
+    "roi": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "yaw": -45,
+    "yawKeys": [
+      [
+        576.72,
+        -45
+      ],
+      [
+        577.2,
+        -55
+      ],
+      [
+        577.6,
+        -65
+      ],
+      [
+        578.04,
+        -75
+      ]
+    ],
+    "yawMethod": "reviewed-torso",
+    "targetXKeys": [
+      [
+        576.72,
+        0.57
+      ],
+      [
+        577.2,
+        0.44
+      ],
+      [
+        577.6,
+        0.28
+      ],
+      [
+        578.04,
+        0.12
+      ]
+    ],
+    "carriedItems": "none",
+    "instance": true,
+    "instanceThreshold": 0,
+    "instanceHeadThreshold": -2.2,
+    "extractedFrames": 31,
+    "reviewedFrames": [
+      14422,
+      14423,
+      14424,
+      14425,
+      14426,
+      14430,
+      14431,
+      14432,
+      14433,
+      14434,
+      14435,
+      14436,
+      14437,
+      14438,
+      14439,
+      14441,
+      14442
+    ]
+  }
+]

@@ -34,3 +34,6 @@ pages/cursor-cat-circle/assets/
 
 # Buyer-facing sales assets are managed in Google Drive
 kits/
+
+# Local Runway Walk source, model and cutout cache
+/.cache/runway-walk/

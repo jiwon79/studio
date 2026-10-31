@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex,nofollow" />
+  <meta name="theme-color" content="#d8d6d0" />
+  <title>Runway Walk</title>
+  <link rel="stylesheet" href="./angle.css" />
+</head>
+<body data-booting="true">
+  <main id="surface" role="slider" tabindex="0" aria-label="몸의 방향" aria-orientation="horizontal" aria-valuemin="-90" aria-valuemax="90" aria-valuenow="0" aria-keyshortcuts="ArrowLeft ArrowRight Home Space" aria-busy="true">
+    <div class="halo" aria-hidden="true"></div>
+    <canvas id="person" width="512" height="768" aria-hidden="true"></canvas>
+    <output id="direction" aria-hidden="true">0°</output>
+  </main>
+    <section id="loading" data-mode="startup" aria-label="사진 준비">
+      <div class="loading-panel">
+        <p class="loading-eyebrow">RUNWAY WALK · 전체 37개 각도</p>
+        <h1 id="loading-title" role="status">전체 사진을 준비하고 있어요</h1>
+        <div class="loading-heading"><span>사진 다운로드</span><output id="loading-percent">0%</output></div>
+        <progress id="photo-progress" max="100" value="0" aria-label="전체 사진 다운로드"></progress>
+        <dl class="loading-details"><div><dt>화질 보정 사진</dt><dd id="loading-enhanced">목록 확인 중</dd></div><div><dt>재생 준비</dt><dd id="loading-playback">대기 중</dd></div></dl>
+        <p id="loading-bytes">0.0 MB 받음</p>
+        <p id="loading-note">모든 각도의 사진을 받은 뒤 작품이 시작돼요.</p>
+        <button id="loading-retry" type="button" hidden>다시 시도</button>
+      </div>
+      <span class="loading-switch">다음 장면 준비 중</span>
+    </section>
+  <p id="status" class="sr-only" role="status"></p>
+  <script type="module" src="./angle.ts"></script>
+  <script type="module" src="/common/touch-pointer.ts"></script>
+</body>
+</html>
