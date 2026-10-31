@@ -25,6 +25,27 @@ PROMPT = (
 )
 
 
+def quality_registration(original, generated):
+    """Undo only incidental framing drift, using original photo alpha bounds.
+
+    No rig, target gait, angle, joint labels, rotation or limb deformation.
+    Raw generated pixels remain available unchanged in the comparison.
+    """
+    from PIL import Image
+    bounds = []
+    for path in [original, generated]:
+        with Image.open(path) as image:
+            box = image.getchannel('A').point(lambda a: 255 if a >= 128 else 0).getbbox()
+            if box is None:
+                return dict(scale=1, dx=0, dy=0)
+            bounds.append([box[0] / image.width * 512, box[1] / image.height * 768,
+                           box[2] / image.width * 512, box[3] / image.height * 768])
+    a, b = bounds
+    scale = (a[3] - a[1]) / (b[3] - b[1])
+    return dict(scale=scale, dx=(a[0] + a[2]) / 2 - scale * (b[0] + b[2]) / 2,
+                dy=a[3] - scale * b[3])
+
+
 def inventory():
     data = json.loads((PAGE / 'angles.json').read_text())
     schedule = json.loads((PAGE / 'reference-schedule.json').read_text())['directions']
@@ -129,7 +150,9 @@ def main():
             for file, expected in [(original, row['originalSha256']), (generated, row['generatedSha256'])]:
                 if hashlib.sha256(file.read_bytes()).hexdigest() != expected:
                     raise ValueError(f'Input/result changed after generation: {file}')
+            registration = quality_registration(original, generated)
             if index in frames and frames[index]['generatedPngSha256'] == row['generatedSha256']:
+                frames[index]['qualityRegistration'] = registration
                 continue
             edited_name = f'{index}.webp' if index not in frames else f"{index}-{row['generatedSha256'][:12]}.webp"
             for src, name in [(original, f'{index}-original.webp'), (generated, edited_name)]:
@@ -143,13 +166,18 @@ def main():
             frames[index] = dict(index=index, group=args.angle, source=row['source'],
                                  sourceFrame=row['sourceFrame'], original=f'{index}-original.webp', edited=edited_name,
                                  originalInputSha256=row['originalSha256'], generatedPngSha256=row['generatedSha256'],
-                                 editedSha256=hashlib.sha256((folder / edited_name).read_bytes()).hexdigest())
+                                 editedSha256=hashlib.sha256((folder / edited_name).read_bytes()).hexdigest(),
+                                 qualityRegistration=registration)
             if prior_versions:
                 frames[index]['previousVersions'] = prior_versions
             prompts[index] = dict(index=index, prompt=row['prompt'])
         key = f'{args.angle}:{args.indices[0]}'
-        if not any(g['id'] == key for g in metadata['groups']):
+        if not any(g['indices'] == args.indices for g in metadata['groups']):
             metadata['groups'].append(dict(id=key, label=f'{args.angle:+d}° · 사진 {args.indices[0]}', indices=args.indices))
+        unique_groups = {}
+        for group in metadata['groups']:
+            unique_groups.setdefault(tuple(group['indices']), group)
+        metadata['groups'] = list(unique_groups.values())
         metadata.update(frames=list(frames.values()), generated=len(frames), status='partial; not applied to main artwork')
         (folder / 'manifest.json').write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + '\n')
         (folder / 'prompts.json').write_text(json.dumps(list(prompts.values()), ensure_ascii=False, indent=2) + '\n')

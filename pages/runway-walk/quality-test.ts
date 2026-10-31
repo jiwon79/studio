@@ -3,6 +3,7 @@ const files = import.meta.glob<string>('./assets/gpt-quality/*.webp', { eager: t
 const el = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const group = el<HTMLSelectElement>('group'), speed = el<HTMLSelectElement>('speed'), seek = el<HTMLInputElement>('seek');
 const button = el<HTMLButtonElement>('play'), state = el('state');
+const align = el<HTMLInputElement>('align');
 const canvases = [el<HTMLCanvasElement>('before'), el<HTMLCanvasElement>('after')];
 const images = new Map<string, HTMLImageElement>();
 type ReviewGroup = { id: string; label: string; indices: number[] };
@@ -18,7 +19,12 @@ function draw() {
   const row = rows()[tick];
   [row.original, row.edited].forEach((file, i) => {
     const canvas = canvases[i], ctx = canvas.getContext('2d')!;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (i === 1 && align.checked) {
+      const fit = (row as { qualityRegistration?: { scale: number; dx: number; dy: number } }).qualityRegistration;
+      if (fit) ctx.setTransform(fit.scale, 0, 0, fit.scale, fit.dx * canvas.width / 512, fit.dy * canvas.height / 768);
+    }
     ctx.drawImage(images.get(file)!, 0, 0, canvas.width, canvas.height);
     canvas.dataset.index = String(row.index);
   });
@@ -43,10 +49,12 @@ button.onclick = play;
 seek.oninput = () => { stop(); tick = Number(seek.value) - 1; draw(); state.textContent = '프레임 정지 비교'; };
 group.onchange = () => { void loadGroup(); };
 speed.onchange = () => { stop(); if (ready) play(); };
+align.onchange = () => { if (ready) draw(); };
 async function loadGroup() {
   stop(); ready = false; button.disabled = true; seek.disabled = true;
   const version = ++loading, selected = rows(), wanted = [...new Set(selected.flatMap(row => [row.original, row.edited]))];
-  images.clear(); canvases.forEach(canvas => canvas.getContext('2d')!.clearRect(0, 0, canvas.width, canvas.height));
+  images.clear(); canvases.forEach(canvas => { const ctx = canvas.getContext('2d')!; ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, canvas.width, canvas.height); canvas.dataset.index = ''; });
+  el<HTMLOutputElement>('frame').value = '준비 중';
   state.textContent = `${wanted.length}장 준비 중…`;
   seek.max = String(selected.length); seek.value = '1';
   const url = new URL(location.href); url.searchParams.set('group', group.value); history.replaceState(null, '', url);

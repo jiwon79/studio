@@ -46,6 +46,14 @@ spec=importlib.util.spec_from_file_location('quality_jobs',sys.argv[1])
 m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
 with tempfile.TemporaryDirectory() as tmp:
  root=Path(tmp);m.PAGE=root/'page';m.CACHE=root/'cache'
+ source=root/'source.png';candidate=root/'candidate.png'
+ a=Image.new('RGBA',(100,150));a.paste((255,255,255,255),(30,10,70,140));a.save(source)
+ b=Image.new('RGBA',(300,450));b.paste((255,255,255,255),(120,100,200,360));b.save(candidate)
+ fit=m.quality_registration(source,candidate)
+ assert set(fit)=={'scale','dx','dy'}
+ for x,y,u,v in [(120/300,100/450,.3,10/150),(200/300,360/450,.7,140/150)]:
+  assert abs((x*512*fit['scale']+fit['dx'])/512-u)<1e-9
+  assert abs((y*768*fit['scale']+fit['dy'])/768-v)<1e-9
  folder=m.PAGE/'assets/gpt-quality';folder.mkdir(parents=True)
  (m.PAGE/'assets/gpt-zero').mkdir()
  (m.CACHE/'input').mkdir(parents=True);(m.CACHE/'jobs').mkdir()
