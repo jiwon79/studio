@@ -94,9 +94,9 @@ export function gptZeroTest(onChange: () => void, faceFront: () => void, onDownl
   for (const controller of gui.controllers.slice(0, 4)) controller.disable();
   return {
     gui,
-    setDirection(yaw: number) {
-      gui.controllers.forEach(controller => controller.show(yaw === 0));
-      gui.show(yaw === 0 || yaw === 45);
+    setDirection(yaw: number, restored = false) {
+      gui.controllers.forEach(controller => controller.show(yaw === 0 && !restored));
+      gui.show();
     },
     ready() {
       for (const controller of gui.controllers.slice(0, 4)) controller.enable();

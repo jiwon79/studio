@@ -85,7 +85,9 @@ def generate(data, index):
         if receipt.exists() and receipt.stat().st_size:
             raise ValueError(f'{index}: inspect non-completed receipt before retrying')
         errors_path = CACHE / f'{index}-error.log'
-        if receipt.exists() and not (errors_path.exists() and 'failed to PUT media bytes' in errors_path.read_text()):
+        rejected = errors_path.read_text() if errors_path.exists() else ''
+        safe_to_resume = 'failed to PUT media bytes' in rejected or '"error_type":"not_enough_credits"' in rejected
+        if receipt.exists() and not safe_to_resume:
             raise ValueError(f'{index}: recover any submitted job before retrying an empty receipt')
         with receipt.open('w') as output, (CACHE / f'{index}-error.log').open('w') as errors:
             subprocess.run([

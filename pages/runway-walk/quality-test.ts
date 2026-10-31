@@ -1,21 +1,25 @@
 import gptManifest from './assets/gpt-quality/manifest.json';
 import higgsfieldManifest from './assets/higgsfield-quality-45/manifest.json';
+import addedManifest from './assets/higgsfield-quality/manifest.json';
+type ReviewFrame = { index: number; group: number; original: string; edited: string; qualityRegistration?: { scale: number; dx: number; dy: number } };
+type ReviewGroup = { id: string; label: string; indices: number[] };
+type ReviewLibrary = { additionalTarget: number; generated: number; frames: ReviewFrame[]; groups?: ReviewGroup[] };
+const prefix = (library: ReviewLibrary, folder: string): ReviewLibrary => ({ ...library, frames: library.frames.map(row => ({ ...row, original: `${folder}/${row.original}`, edited: `${folder}/${row.edited}` })) });
+const initial = prefix(higgsfieldManifest, 'higgsfield-quality-45'), added = prefix(addedManifest, 'higgsfield-quality');
 const isHiggsfield = new URLSearchParams(location.search).get('provider') === 'higgsfield';
-const manifest = isHiggsfield ? higgsfieldManifest : gptManifest;
-const folder = isHiggsfield ? 'higgsfield-quality-45' : 'gpt-quality';
-const files = import.meta.glob<string>(['./assets/gpt-quality/*.webp', './assets/higgsfield-quality-45/*.webp'], { eager: true, query: '?url', import: 'default' });
+const manifest: ReviewLibrary = isHiggsfield ? { additionalTarget: higgsfieldManifest.generated + addedManifest.additionalTarget, generated: initial.generated + added.generated, frames: [...initial.frames, ...added.frames], groups: [...(initial.groups ?? []), ...(added.groups ?? [])] } : prefix(gptManifest, 'gpt-quality');
+const files = import.meta.glob<string>('./assets/{gpt-quality,higgsfield-quality,higgsfield-quality-45}/*.webp', { eager: true, query: '?url', import: 'default' });
 const el = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const group = el<HTMLSelectElement>('group'), speed = el<HTMLSelectElement>('speed'), seek = el<HTMLInputElement>('seek');
 const button = el<HTMLButtonElement>('play'), state = el('state');
 const align = el<HTMLInputElement>('align');
 const canvases = [el<HTMLCanvasElement>('before'), el<HTMLCanvasElement>('after')];
 const images = new Map<string, HTMLImageElement>();
-type ReviewGroup = { id: string; label: string; indices: number[] };
 const groups: ReviewGroup[] = (manifest as { groups?: ReviewGroup[] }).groups ?? [...new Set(manifest.frames.map(r => r.group))].map(angle => ({ id: String(angle), label: `${angle > 0 ? '+' : ''}${angle}°`, indices: manifest.frames.filter(r => r.group === angle).map(r => r.index) }));
 for (const row of groups) group.add(new Option(row.label, row.id));
 const linked = new URLSearchParams(location.search).get('group');
 if (groups.some(row => row.id === linked)) group.value = linked!;
-el('scope').textContent = isHiggsfield ? `Higgsfield API · GPT Image 2.5 · +45° 전체 ${manifest.generated}장입니다. 원본 사진만 입력해 화질과 누끼를 보정했습니다. 작품의 +45°에서 원본과 ON/OFF 비교할 수 있습니다.` : `전체 추가 대상 ${manifest.additionalTarget.toLocaleString()}장 중 ${manifest.generated.toLocaleString()}장을 생성한 중간 결과입니다. 자세·각도 변경 가이드는 사용하지 않았습니다. 아직 기본 작품에 적용하지 않았습니다.`;
+el('scope').textContent = isHiggsfield ? `Higgsfield API · GPT Image 2.5 · 전체 ${manifest.additionalTarget}장 중 ${manifest.generated}장 생성. 작품 적용 완료 각도: ${[...new Set([45, ...addedManifest.completeDirections])].join(', ')}°. 원본 사진만 입력해 화질·누끼를 보정했습니다. 완성된 각도에서 ON/OFF 비교할 수 있습니다.` : `전체 추가 대상 ${manifest.additionalTarget.toLocaleString()}장 중 ${manifest.generated.toLocaleString()}장을 생성한 중간 결과입니다. 자세·각도 변경 가이드는 사용하지 않았습니다. 아직 기본 작품에 적용하지 않았습니다.`;
 if (isHiggsfield) el<HTMLAnchorElement>('artwork').href = './angle.html?angle=45';
 el('edited-label').textContent = isHiggsfield ? 'Higgsfield · GPT Image 2.5' : 'GPT 화질 보정';
 let tick = 0, epoch = 0, loading = 0, ready = false, playing = false;
@@ -58,6 +62,7 @@ speed.onchange = () => { stop(); if (ready) play(); };
 align.onchange = () => { if (ready) draw(); };
 async function loadGroup() {
   stop(); ready = false; button.disabled = true; seek.disabled = true;
+  if (isHiggsfield) el<HTMLAnchorElement>('artwork').href = `./angle.html?angle=${Number(group.value.split(':')[0])}`;
   const version = ++loading, selected = rows(), wanted = [...new Set(selected.flatMap(row => [row.original, row.edited]))];
   images.clear(); canvases.forEach(canvas => { const ctx = canvas.getContext('2d')!; ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, canvas.width, canvas.height); canvas.dataset.index = ''; });
   el<HTMLOutputElement>('frame').value = '준비 중';
@@ -66,7 +71,7 @@ async function loadGroup() {
   const url = new URL(location.href); url.searchParams.set('group', group.value); history.replaceState(null, '', url);
   try {
     const loaded = await Promise.all(wanted.map(async file => {
-      const image = new Image(); image.src = files[`./assets/${folder}/${file}`];
+      const image = new Image(); image.src = files[`./assets/${file}`];
       await image.decode(); return [file, image] as const;
     }));
     if (loading !== version) return;
