@@ -4,7 +4,7 @@
   "purpose": "quality-only, no model or pose guide",
   "status": "partial library; artwork applies only covered directions with explicit original exceptions",
   "additionalTarget": 2892,
-  "generated": 2734,
+  "generated": 2740,
   "frames": [
     {
       "index": 370,
@@ -49266,6 +49266,114 @@
       },
       "playback": "5236-playback-768.webp",
       "playbackSha256": "d833eb6f2ffae2b5b420625317de80b2bfa22feab76388e9304aebbccf2a2b66"
+    },
+    {
+      "index": 3434,
+      "group": 25,
+      "source": "hermes23",
+      "sourceFrame": 15391,
+      "original": "3434-original.webp",
+      "edited": "3434.webp",
+      "originalInputSha256": "c8b7554dc0b19c0fb2ec3b0dd0ae2a0f0465c095c00a7f7b71f07e9f18796e7c",
+      "generatedPngSha256": "75e00de6166f4cef375476900aa06d07614c09e3a1c7ad4ba3fafd6be2fc5f45",
+      "editedSha256": "3ba5268f26c252ade560fe615ecb59c2a3de53611a27009041767459572bb2c8",
+      "qualityRegistration": {
+        "scale": 0.9910179640718563,
+        "dx": 2.484281437125759,
+        "dy": 3.9985029940120285
+      },
+      "playback": "3434-playback-768.webp",
+      "playbackSha256": "3efc88d2b1a2b6f92392386b8fc57cb7cb66d242cd6d3b6a1d0dbdbda8e9f592"
+    },
+    {
+      "index": 5937,
+      "group": 20,
+      "source": "pradass16",
+      "sourceFrame": 4083,
+      "original": "5937-original.webp",
+      "edited": "5937.webp",
+      "originalInputSha256": "e3c576b5e5471eca109577868ccb266bbac77df4abda18708936dd6c7a1e2ce2",
+      "generatedPngSha256": "ec94b55ee0e6aeeb44412f6765547fc45903007b317ed61e4b0b17fee2868894",
+      "editedSha256": "4303bd60de4f0dd08d05b4257ae78b035fdeec4211cd83d065e0a87ceb4b59f5",
+      "qualityRegistration": {
+        "scale": 0.9678362573099415,
+        "dx": 2.992690058479525,
+        "dy": 23.190058479532127
+      },
+      "playback": "5937-playback-768.webp",
+      "playbackSha256": "047eb18f881030298220f4aed6c54f26030ffca4232a1f5f8b32e2c6719ea03f"
+    },
+    {
+      "index": 5958,
+      "group": 20,
+      "source": "pradass16",
+      "sourceFrame": 4106,
+      "original": "5958-original.webp",
+      "edited": "5958.webp",
+      "originalInputSha256": "8886cb7926a752cbf747116c1318d7cea0dfaaea62507d4afc5593918d9378cd",
+      "generatedPngSha256": "195b3e6a7645370d6614fae876a4edd8e36e9fa11e58515f28c2c61a9c325712",
+      "editedSha256": "693238f3be309ae61041202be6e8455e18a42b0320646f42e4b900fc08a9ed23",
+      "qualityRegistration": {
+        "scale": 0.992503748125937,
+        "dx": 3.3890554722638626,
+        "dy": 3.916041979010515
+      },
+      "playback": "5958-playback-768.webp",
+      "playbackSha256": "95ee4e0cc41cbabf8e01f693a519928b0e676206124c20532deef117fc8155bc"
+    },
+    {
+      "index": 1267,
+      "group": 30,
+      "source": "hermes24",
+      "sourceFrame": 4619,
+      "original": "1267-original.webp",
+      "edited": "1267.webp",
+      "originalInputSha256": "4afe810d98619ef1eb033ec4ffbd26b061334cad1a98b297de9d445ee4cb2b55",
+      "generatedPngSha256": "0acf9baebe6e2e0c602b429f7b550beb0c3aef40d8d8fe565c34728b57bbd503",
+      "editedSha256": "eb8fa3194f8a70389a2a41dbdd7be9ba29ad241ef43c43763948229671e46232",
+      "qualityRegistration": {
+        "scale": 0.9962377727614747,
+        "dx": 3.0101580135440145,
+        "dy": 1.7200902934537226
+      },
+      "playback": "1267-playback-768.webp",
+      "playbackSha256": "fc2df8e9b727c741e823b6f1f239ed878ea10e6cce70426eb42b7a7b4baaba68"
+    },
+    {
+      "index": 4150,
+      "group": 30,
+      "source": "dries24",
+      "sourceFrame": 12525,
+      "original": "4150-original.webp",
+      "edited": "4150.webp",
+      "originalInputSha256": "af0faaf19aa32a46a1143e89384e52f272b71fb0fe3aa16479428aa70fe3f445",
+      "generatedPngSha256": "8a0fcd905220c0c99e1aea275ab93a44a94c1dd8d7a96befe8be1d50e71b9227",
+      "editedSha256": "7de61682738ad5bd6f1e0b8b87731d889dd643e19462e6c413be2464e18bbd26",
+      "qualityRegistration": {
+        "scale": 0.9642596644784829,
+        "dx": 6.8457330415754996,
+        "dy": 10.34062727935816
+      },
+      "playback": "4150-playback-768.webp",
+      "playbackSha256": "829f646ad13a9560eac8f60b3f70bec26902b8409b925585e37411062dcdb1a5"
+    },
+    {
+      "index": 4161,
+      "group": 30,
+      "source": "dries24",
+      "sourceFrame": 12808,
+      "original": "4161-original.webp",
+      "edited": "4161.webp",
+      "originalInputSha256": "1c7fe67acd48d0c879da285891ff2735c72ac176f0f42e9126c8c8ff61767548",
+      "generatedPngSha256": "9f2d1fd5e9c5fbcef5b4e0560ed37f26992fae3922716531fc6c07663fde1618",
+      "editedSha256": "9c7888e4c2ff9546edef297347af395862c9242d5ffa27d009200e06fe8f735e",
+      "qualityRegistration": {
+        "scale": 0.969208211143695,
+        "dx": 6.4864369501466115,
+        "dy": 27.046920821114327
+      },
+      "playback": "4161-playback-768.webp",
+      "playbackSha256": "1d70be5890f6f3428ad19000dd874fa50c5554d405d3e4d6f24c97b6d28769eb"
     }
   ],
   "groups": [
@@ -49496,7 +49604,49 @@
         3426,
         1559,
         1560,
-        1561
+        1561,
+        1870,
+        1871,
+        1872,
+        1276,
+        1277,
+        1278,
+        6259,
+        6260,
+        6261,
+        1852,
+        1853,
+        1854,
+        5171,
+        5173,
+        5174,
+        5872,
+        1758,
+        5877,
+        5878,
+        5879,
+        5668,
+        5669,
+        6148,
+        5170,
+        6262,
+        6263,
+        1447,
+        1448,
+        6267,
+        6095,
+        6098,
+        6099,
+        1563,
+        1274,
+        1275,
+        4247,
+        4248,
+        4249,
+        6256,
+        6257,
+        6258,
+        5172
       ]
     },
     {
@@ -53740,6 +53890,30 @@
         5217,
         5218,
         5236
+      ]
+    },
+    {
+      "id": "25:3434",
+      "label": "+25° · 사진 3434",
+      "indices": [
+        3434
+      ]
+    },
+    {
+      "id": "20:5937",
+      "label": "+20° · 사진 5937",
+      "indices": [
+        5937,
+        5958
+      ]
+    },
+    {
+      "id": "30:1267",
+      "label": "+30° · 사진 1267",
+      "indices": [
+        1267,
+        4150,
+        4161
       ]
     }
   ]

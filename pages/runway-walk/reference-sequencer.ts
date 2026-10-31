@@ -6,6 +6,8 @@ import {WalkCoverageError,type WalkState} from './walk-sequencer';
 import {clockPhase,createWalkState,CYCLE_FRAMES,MIN_REUSE_FRAMES} from './reference-clock';
 import { legError, referenceFeatures, referencePose } from './gait-reference';
 import schedule from './reference-schedule.json';
+import library from './angles.json';
+import rejectedQuality from './quality-originals.json';
 import {audits,blockHeld} from './review-policy';
 import {measureMotion,MOTION_LIMITS} from './motion-quality';
 import {PHOTO_REGISTRATION_VERSION,photoTransform,transformPosture,IDENTITY_PHOTO,validPhotoTransforms,type PhotoTransform} from './photo-registration';
@@ -41,25 +43,32 @@ type Match = {
 };
 const exchange = (f: readonly number[]) => [...f.slice(2, 4), ...f.slice(0, 2), ...f.slice(6, 8), ...f.slice(4, 6), ...f.slice(10, 12), ...f.slice(8, 10), ...f.slice(14, 16), ...f.slice(12, 14)];
 const key = (frame: AngleFrame) => `${frame.source}:${frame.sourceFrame}`;
+const excludedPhotographs = new Set(rejectedQuality.assetVersion === library.assetVersion
+    ? rejectedQuality.frames.map(i => key(library.frames[i])) : []);
 export class ReferenceSequencer {
     private pools = new Map<string, AngleBlock[]>();
     private targets = new Map<string, number[]>();
     private verifiedSchedule=false;
     readonly blocks: AngleBlock[];
+    private readonly excluded: ReadonlySet<number>;
     constructor(readonly frames: readonly AngleFrame[], readonly hold = 3, readonly fitted: readonly Match[] = matches.frames) {
         if(fitted===matches.frames&&(matches.referenceModelHash!==motion.modelHash||matches.referenceDuration!==motion.duration))throw new Error('Photograph fits are for a different reference animation');
         if (frames.length !== fitted.length)
             throw new Error('Reference poses do not match the photograph library');
-        this.blocks = buildBlocks(frames, hold);
+        this.excluded = new Set(frames.flatMap((frame, i) => excludedPhotographs.has(key(frame)) ? [i] : []));
+        this.blocks = buildBlocks(frames, hold).filter(block => this.allowedBlock(block, hold));
         const validTransforms=Object.entries(compiled.registration?.photoTransforms??{}).every(([yaw,rows])=>compiled.registration?.yaws.includes(+yaw)&&!!compiled.directions[yaw]&&validPhotoTransforms(rows,schedule.periodFrames));
         this.verifiedSchedule=validTransforms&&(!compiled.registration||compiled.registration.version===PHOTO_REGISTRATION_VERSION)&&fitted===matches.frames&&hold===3&&schedule.assetVersion===matches.assetVersion&&schedule.matchVersion===matches.matchVersion&&schedule.cycleFrames===CYCLE_FRAMES&&schedule.minReuseFrames===MIN_REUSE_FRAMES&&JSON.stringify(schedule.reviewPolicy)===JSON.stringify(audits);
     }
     usesRegistration(yaw:number){return this.verifiedSchedule&&!!compiled.registration?.yaws.includes(yaw);}
+    private allowedBlock(block:AngleBlock,count:number){
+        return Array.from({length:count},(_,i)=>block.start+i).every(i=>!this.excluded.has(i));
+    }
     candidates(yaw: number, count = this.hold) {
         const id = `${yaw}:${count}`;
         let pool = this.pools.get(id);
         if (!pool) {
-            pool = directionCandidates(count === this.hold ? this.blocks : buildBlocks(this.frames, count), yaw).filter(b => Math.max(Math.abs((b.minYaw ?? b.yaw) - yaw), Math.abs((b.maxYaw ?? b.yaw) - yaw)) <= 5 && this.fitted.slice(b.start,b.start+count).every(row=>row.error<=.4&&!row.uncertain));
+            pool = directionCandidates(count === this.hold ? this.blocks : buildBlocks(this.frames, count), yaw).filter(b => this.allowedBlock(b,count) && Math.max(Math.abs((b.minYaw ?? b.yaw) - yaw), Math.abs((b.maxYaw ?? b.yaw) - yaw)) <= 5 && this.fitted.slice(b.start,b.start+count).every(row=>row.error<=.4&&!row.uncertain));
             this.pools.set(id, pool);
         }
         return pool;
@@ -111,7 +120,7 @@ export class ReferenceSequencer {
             const indices=(typeof entry==='number'?[entry,entry+1,entry+2]:entry).slice(offset),start=indices[0],count=3-offset;
             const rows=indices.map(i=>this.frames[i]),first=rows[0];
             const allowReverse=compiled.boundaryReview.yaws.includes(yaw);
-            if(rows.length!==count||!validSourceRun(rows,schedule.maxSourceStep??1,allowReverse)||rows.some((f,i)=>Math.abs(f.yaw-yaw)>5||this.fitted[indices[i]].uncertain||state.tick+i-(used.get(key(f))??-1000)<MIN_REUSE_FRAMES)||blockHeld(first.clip,first.sourceFrame,rows[count-1].sourceFrame,yaw))continue;
+            if(rows.length!==count||indices.some(i=>this.excluded.has(i))||!validSourceRun(rows,schedule.maxSourceStep??1,allowReverse)||rows.some((f,i)=>Math.abs(f.yaw-yaw)>5||this.fitted[indices[i]].uncertain||state.tick+i-(used.get(key(f))??-1000)<MIN_REUSE_FRAMES)||blockHeld(first.clip,first.sourceFrame,rows[count-1].sourceFrame,yaw))continue;
             const checks=rows.map((_,i)=>this.inspect(indices[i],state.tick+i,yaw));if(checks.some(c=>c.oppositeFits))continue;
             const direct=checks.reduce((s,c)=>s+c.direct,0)/count;if(direct>.4)continue;
             if(state.last&&state.referenceSchedule?.yaw===yaw){
