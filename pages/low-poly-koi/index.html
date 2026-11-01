@@ -9,8 +9,9 @@
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-  <canvas aria-label="커서와 손가락을 피해 헤엄치는 아스키아트 잉어 열 마리"></canvas>
+  <canvas aria-label="더블클릭한 곳을 피해 헤엄치는 아스키아트 잉어 열 마리"></canvas>
   <svg class="sketch" aria-hidden="true"><path /></svg>
+  <div class="hover-outline" aria-hidden="true" hidden></div>
   <div class="selection" hidden>
     <span class="selection-size"></span>
     <button type="button" data-corner="nw" aria-label="왼쪽 위 모서리로 크기 조절"></button>
@@ -22,7 +23,7 @@
   <div class="editor-tools" role="group" aria-label="물고기 편집 도구">
     <button type="button" data-tool="select" aria-pressed="false" title="선택 (V)">선택</button>
     <button type="button" data-tool="draw" aria-pressed="false" title="그리기 (P)">그리기</button>
-    <button type="button" data-tool="swim" aria-pressed="true" title="재생 / 일시 정지 (Space)">헤엄치기</button>
+    <button type="button" data-tool="swim" aria-pressed="true" title="선택 해제하고 모두 헤엄치기 (Space)">헤엄치기</button>
     <span class="tool-divider"></span>
     <button type="button" data-undo aria-label="실행 취소" title="실행 취소 (⌘Z)">↶</button>
     <button type="button" data-redo aria-label="다시 실행" title="다시 실행 (⌘⇧Z)">↷</button>

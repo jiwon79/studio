@@ -3,6 +3,7 @@ import { createSchool, MAX_FISH, MAX_SCENE_FISH, type PointerState } from './sch
 import { FishGeometry, FISH_LENGTH } from './geometry';
 import { AsciiPass, isAsciiSize, type AsciiSize } from './ascii';
 import { PondEditor } from './editor';
+import { WaterRipples } from './ripples';
 import { sketchFootprint, type Bounds } from './editor-model';
 import licenseUrl from './LICENSE?url';
 
@@ -22,7 +23,8 @@ function start() {
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   const scene = new THREE.Scene();
-  let editor: PondEditor<{ school: ReturnType<ReturnType<typeof createSchool>['capture']>; time: number }> | undefined;
+  let editor: PondEditor<ReturnType<ReturnType<typeof createSchool>['capture']>> | undefined;
+  const ripples = new WaterRipples(scene);
   const ascii = new AsciiPass();
   const modeButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-mode]')];
   const sizeButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-size]')];
@@ -60,7 +62,8 @@ function start() {
   let spine: Float32Array = new Float32Array(MAX_SCENE_FISH * 20);
   let states: Float32Array = new Float32Array(MAX_SCENE_FISH * 4);
   const fishScale = () => Math.min(1, canvas.clientWidth / canvas.clientHeight / 0.9);
-  const school = createSchool({ canvas, options: () => ({ size: 1.15 * fishScale(), interactive: !motion.matches && editor?.playing !== false }),
+  const school = createSchool({ canvas, options: () => ({ size: 1.15 * fishScale(), interactive: !motion.matches }),
+    isPaused: index => editor?.selectedId === index,
     uniform: (name, value) => { if (name === 'uSpine') spine = value; else states = value; },
   }, pointer);
   const previousSpine = new Float32Array(MAX_SCENE_FISH * 20);
@@ -75,8 +78,6 @@ function start() {
     mode = button.dataset.mode!;
     modeButtons.forEach(item => item.setAttribute('aria-pressed', String(item === button)));
     density.hidden = mode !== 'ascii';
-    canvas.setAttribute('aria-label', `커서와 손가락을 피해 헤엄치는 ${mode === 'ascii' ? '아스키아트' : '로우폴리'} 잉어 열 마리`);
-    pointer.over = false;
     draw();
   }, { signal }));
   sizeButtons.forEach(button => button.addEventListener('click', () => {
@@ -88,19 +89,8 @@ function start() {
     const url = new URL(location.href);
     url.searchParams.set('ascii', asciiSize);
     history.replaceState(null, '', url);
-    pointer.over = false;
     draw();
   }, { signal }));
-  const move = (event: PointerEvent) => {
-    pointer.target = [event.clientX / canvas.clientWidth, 1 - event.clientY / canvas.clientHeight];
-    pointer.over = true;
-  };
-  canvas.addEventListener('pointermove', move, { signal });
-  canvas.addEventListener('pointerdown', move, { signal });
-  for (const name of ['pointerleave', 'pointercancel', 'pointerup'] as const) {
-    canvas.addEventListener(name, () => { pointer.over = false; }, { signal });
-  }
-  window.addEventListener('blur', () => { pointer.over = false; }, { signal });
   const resize = () => {
     renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
     ascii.resize(canvas.clientWidth, canvas.clientHeight, asciiSize);
@@ -131,21 +121,23 @@ function start() {
       });
     });
     const count = fish.filter((_, i) => i < school.count && school.enabled(i)).length;
-    const description = `커서와 손가락을 피해 헤엄치는 ${mode === 'ascii' ? '아스키아트' : '로우폴리'} 잉어 ${count}마리`;
+    const description = `더블클릭한 곳을 피해 헤엄치는 ${mode === 'ascii' ? '아스키아트' : '로우폴리'} 잉어 ${count}마리`;
     if (canvas.getAttribute('aria-label') !== description) canvas.setAttribute('aria-label', description);
+    ripples.update(time);
     if (mode === 'ascii') ascii.render(renderer, scene, camera);
     else renderer.render(scene, camera);
     editor?.refresh();
   }
   let last = 0;
   function frame(now: number) {
-    if (document.hidden || motion.matches || editor?.playing === false) { last = 0; accumulator = 0; return; }
+    if (document.hidden || motion.matches) { last = 0; accumulator = 0; return; }
     if (last) accumulator += Math.min((now - last) / 1000, 0.05);
     last = now;
     while (accumulator >= step) {
       previousSpine.set(spine);
       previousStates.set(states);
       time += step;
+      pointer.over = ripples.active(time);
       school.frame(time);
       accumulator -= step;
     }
@@ -155,7 +147,11 @@ function start() {
   document.addEventListener('visibilitychange', () => { last = 0; accumulator = 0; pointer.over = false; }, { signal });
   motion.addEventListener('change', () => { last = 0; accumulator = 0; draw(); }, { signal });
   const refresh = () => {
-    previousSpine.set(spine); previousStates.set(states); accumulator = 0; last = 0;
+    const index = editor?.selectedId;
+    if (index !== undefined && index !== null) {
+      previousSpine.set(spine.subarray(index * 20, index * 20 + 20), index * 20);
+      previousStates.set(states.subarray(index * 4, index * 4 + 4), index * 4);
+    } else { previousSpine.set(spine); previousStates.set(states); }
     draw();
   };
   const nodes = () => fish.flatMap(({ geometry, mesh }, id) => {
@@ -194,8 +190,14 @@ function start() {
       return applied;
     },
     remove(id) { school.removeFish(id); },
-    capture: () => ({ school: school.capture(), time }),
-    restore(saved) { time = saved.time; school.restore(saved.school); },
+    splash(point) {
+      if (motion.matches) return;
+      const h = canvas.clientHeight;
+      pointer.target = [point.x / canvas.clientWidth, 1 - point.y / h];
+      ripples.splash(point.x / h, 1 - point.y / h, time);
+    },
+    capture: () => school.capture(),
+    restore(saved, id) { school.restoreFish(id, saved); },
     changed: refresh,
   });
   renderer.setAnimationLoop(frame);
@@ -209,6 +211,7 @@ function start() {
     material.dispose();
     finMaterial.dispose();
     ascii.dispose();
+    ripples.dispose();
     renderer.dispose();
   });
 }

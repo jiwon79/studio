@@ -2,6 +2,8 @@ import { test, expect } from 'vitest';
 import { cornerResize, sketchFootprint } from './editor-model';
 import { createSchool, MAX_FISH } from './school';
 import { ASCII_SIZES, isAsciiSize } from './ascii';
+import { Scene } from 'three';
+import { WaterRipples } from './ripples';
 
 function pond() {
   const output: Record<string, Float32Array> = {};
@@ -68,4 +70,48 @@ test('adding, moving and scaling affects the actual simulation and restores thro
   school.removeFish(id);
   expect(school.enabled(id)).toBe(false);
   expect(school.addFish(0.4, 0.3, 0, 1)).toBe(id);
+});
+
+test('selection freezes one whole fish pose while its neighbours keep swimming', () => {
+  let selected: number | null = 0;
+  let spine: Float32Array = new Float32Array();
+  const school = createSchool({
+    canvas: { width: 1440, height: 900, clientWidth: 1440, clientHeight: 900 },
+    options: () => ({ size: 1.15, interactive: true }),
+    isPaused: id => id === selected,
+    uniform: (name, value) => { if (name === 'uSpine') spine = value; },
+  }, { target: [0.5, 0.5], over: false });
+  school.frame(0);
+  const fixed = spine.slice(0, 20), neighbour = spine.slice(20, 40);
+  school.frame(1);
+  expect(spine.slice(0, 20)).toEqual(fixed);
+  expect(spine.slice(20, 40)).not.toEqual(neighbour);
+  selected = null;
+  school.frame(2);
+  expect(spine.slice(0, 20)).not.toEqual(fixed);
+});
+
+test('undoing a fish transform does not rewind any other swimming fish', () => {
+  const { school, output } = pond();
+  const saved = school.capture();
+  const originalPose = output.uSpine.slice(0, 20);
+  school.transform(0, [0, 0], 1.5, 0.1, 0.1);
+  school.frame(2);
+  const others = output.uSpine.slice(20);
+  school.restoreFish(0, saved);
+  expect(output.uSpine.slice(0, 20)).toEqual(originalPose);
+  expect(output.uSpine.slice(20)).toEqual(others);
+  expect(school.scale(0)).toBe(1);
+});
+
+test('double-click disturbance expires and its wave geometry is removed', () => {
+  const scene = new Scene(), ripples = new WaterRipples(scene);
+  expect(ripples.active(0)).toBe(false);
+  ripples.splash(0.5, 0.5, 10);
+  expect(ripples.active(10.5)).toBe(true);
+  expect(ripples.active(11)).toBe(false);
+  expect(scene.children.length).toBeGreaterThan(0);
+  ripples.update(13);
+  expect(scene.children).toHaveLength(0);
+  ripples.dispose();
 });

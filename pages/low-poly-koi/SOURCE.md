@@ -37,3 +37,9 @@ https://x.com/areadnemaria/status/2114898325451444419
 The editor interprets the drawn footprint's principal direction and length
 as a new fish's placement and scale. The simulation supports up to 64 fish,
 individual path transforms, deletion, and snapshot-based undo/redo.
+
+Hover outlines follow the fish bounds. Selection freezes only that fish's
+simulation state; undo/redo restores only the affected fish without rewinding
+its neighbours. Cursor movement does not steer the school. A double-click
+(or double-tap) starts a fixed-position, 0.85-second avoidance impulse and
+three fading ripple rings, shared by the ASCII and low-poly views.

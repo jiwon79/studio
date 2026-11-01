@@ -10,6 +10,7 @@ export interface PointerState { target: [number, number]; over: boolean }
 export interface SchoolContext {
   canvas: { clientWidth: number; clientHeight: number; width: number; height: number };
   options(): { size: number; interactive: boolean };
+  isPaused?(index: number): boolean;
   uniform(name: 'uSpine' | 'uFish', value: Float32Array): void;
 }
 
@@ -102,7 +103,7 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
     const hy = pointerState.target[1];
     const t = simTime;
     for (let i = 0; i < activeCount; i++) {
-      if (!enabled[i]) continue;
+      if (!enabled[i] || ctx.isPaused?.(i)) continue;
       const len = baseLength * scales[i];
       const base = len * 0.45;
       const x = head[i * 2];
@@ -294,6 +295,17 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
     capture() {
       return { activeCount, enabled: enabled.slice(), scales: scales.slice(), head: head.slice(),
         state: state.slice(), trail: trail.slice(), count: count.slice(), start: start.slice(), simTime, aspect };
+    },
+    restoreFish(index: number, saved: { activeCount: number; enabled: Uint8Array; scales: Float32Array; head: Float32Array;
+      state: Float32Array; trail: Float32Array; count: Int32Array; start: Int32Array }) {
+      if (index >= saved.activeCount || !saved.enabled[index]) { enabled[index] = 0; return; }
+      activeCount = Math.max(activeCount, index + 1);
+      enabled[index] = 1; scales[index] = saved.scales[index];
+      head.set(saved.head.subarray(index * 2, index * 2 + 2), index * 2);
+      state.set(saved.state.subarray(index * 4, index * 4 + 4), index * 4);
+      trail.set(saved.trail.subarray(index * TRAIL * 2, (index + 1) * TRAIL * 2), index * TRAIL * 2);
+      count[index] = saved.count[index]; start[index] = saved.start[index];
+      write();
     },
     restore(saved: { activeCount: number; enabled: Uint8Array; scales: Float32Array; head: Float32Array;
       state: Float32Array; trail: Float32Array; count: Int32Array; start: Int32Array; simTime: number; aspect: number }) {
