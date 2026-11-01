@@ -3,22 +3,29 @@
 html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
 canvas { display: block; width: 100%; height: 100%; touch-action: none; }
 .hint {
-  position: fixed; inset: auto 20px max(88px, calc(env(safe-area-inset-bottom) + 64px));
+  position: fixed; inset: auto 20px max(144px, calc(env(safe-area-inset-bottom) + 128px));
   margin: 0; text-align: center; pointer-events: none;
   color: #d4e2ff; font: 11px/1.5 ui-monospace, monospace; letter-spacing: .08em;
   animation: fade 1s 7s forwards;
 }
-.modes {
+.controls {
   position: fixed; bottom: max(26px, env(safe-area-inset-bottom)); left: 50%;
-  transform: translateX(-50%); display: flex; padding: 4px; gap: 4px;
+  transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px;
+  max-width: calc(100% - 24px);
+}
+.modes, .density {
+  display: flex; padding: 4px; gap: 4px; align-items: center;
   border: 1px solid #ffffff30; border-radius: 24px; background: #143cc866;
 }
-.modes button {
+.controls button {
   border: 0; border-radius: 20px; background: transparent; color: #c4d4ff;
   min-height: 40px; padding: 8px 18px; font: 12px/1.4 ui-monospace, monospace; cursor: pointer;
 }
-.modes button[aria-pressed="true"] { background: #eef4ff; color: #1d4ce9; }
-.modes button:focus-visible { outline: 2px solid white; outline-offset: 3px; }
+.density button { padding: 8px 12px; white-space: nowrap; }
+.density span { padding: 0 8px; white-space: nowrap; color: #d4e2ff; font: 11px/1.4 system-ui, sans-serif; }
+.density[hidden] { display: none; }
+.controls button[aria-pressed="true"] { background: #eef4ff; color: #1d4ce9; }
+.controls button:focus-visible { outline: 2px solid white; outline-offset: 3px; }
 .error { position: fixed; top: 45%; width: 100%; padding: 24px; text-align: center; color: #cdd4e1; font: 14px/1.6 system-ui; }
 @keyframes fade { to { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .hint { animation: none; } }

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { createSchool, MAX_FISH, type PointerState } from './school';
 import { FishGeometry, FISH_LENGTH } from './geometry';
-import { AsciiPass } from './ascii';
+import { AsciiPass, isAsciiSize, type AsciiSize } from './ascii';
 import licenseUrl from './LICENSE?url';
 
 // Retain the upstream MIT notice in the built artwork as document metadata.
@@ -22,6 +22,12 @@ function start() {
   const scene = new THREE.Scene();
   const ascii = new AsciiPass();
   const modeButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-mode]')];
+  const sizeButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-size]')];
+  const density = document.querySelector<HTMLElement>('.density')!;
+  const requestedSize = new URL(location.href).searchParams.get('ascii');
+  let asciiSize: AsciiSize = isAsciiSize(requestedSize) ? requestedSize : 'small';
+  const updateSizeButtons = () => sizeButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.size === asciiSize)));
+  updateSizeButtons();
   let mode = 'ascii';
   const camera = new THREE.OrthographicCamera(0, 1, 1, 0, 0.1, 10);
   camera.position.z = 4;
@@ -64,7 +70,20 @@ function start() {
   modeButtons.forEach(button => button.addEventListener('click', () => {
     mode = button.dataset.mode!;
     modeButtons.forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+    density.hidden = mode !== 'ascii';
     canvas.setAttribute('aria-label', `커서와 손가락을 피해 헤엄치는 ${mode === 'ascii' ? '아스키아트' : '로우폴리'} 잉어 열 마리`);
+    pointer.over = false;
+    draw();
+  }, { signal }));
+  sizeButtons.forEach(button => button.addEventListener('click', () => {
+    const selectedSize = button.dataset.size ?? null;
+    if (!isAsciiSize(selectedSize)) return;
+    asciiSize = selectedSize;
+    updateSizeButtons();
+    ascii.resize(canvas.clientWidth, canvas.clientHeight, asciiSize);
+    const url = new URL(location.href);
+    url.searchParams.set('ascii', asciiSize);
+    history.replaceState(null, '', url);
     pointer.over = false;
     draw();
   }, { signal }));
@@ -80,7 +99,7 @@ function start() {
   window.addEventListener('blur', () => { pointer.over = false; }, { signal });
   const resize = () => {
     renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
-    ascii.resize(canvas.clientWidth, canvas.clientHeight);
+    ascii.resize(canvas.clientWidth, canvas.clientHeight, asciiSize);
     camera.right = canvas.clientWidth / canvas.clientHeight;
     camera.updateProjectionMatrix();
     school.frame(time);

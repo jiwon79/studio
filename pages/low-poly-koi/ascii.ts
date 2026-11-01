@@ -1,6 +1,12 @@
 import * as THREE from 'three';
 
 const CHARACTERS = ' .:-=+*#%@';
+export const ASCII_SIZES = { original: 6, small: 4, fine: 3, micro: 2 } as const;
+export type AsciiSize = keyof typeof ASCII_SIZES;
+
+export function isAsciiSize(value: string | null): value is AsciiSize {
+  return value !== null && Object.prototype.hasOwnProperty.call(ASCII_SIZES, value);
+}
 
 /** Draw the same pond through a luminance-selected monospace character atlas. */
 export class AsciiPass {
@@ -65,10 +71,10 @@ export class AsciiPass {
     this.scene.add(new THREE.Mesh(this.geometry, this.material));
   }
 
-  resize(width: number, height: number) {
-    const cell = width < 600 ? [4.5, 7] : [6, 9];
-    const columns = Math.max(1, Math.floor(width / cell[0]));
-    const rows = Math.max(1, Math.floor(height / cell[1]));
+  resize(width: number, height: number, size: AsciiSize = 'small') {
+    const cellWidth = ASCII_SIZES[size] * (width < 600 ? 0.75 : 1);
+    const columns = Math.max(1, Math.floor(width / cellWidth));
+    const rows = Math.max(1, Math.floor(height / (cellWidth * 1.5)));
     this.target.setSize(columns, rows);
     this.material.uniforms.uGrid.value.set(columns, rows);
   }

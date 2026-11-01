@@ -24,3 +24,7 @@ material. The palette uses the source blue (`#1d4ce9`) with white faceted fish.
 `ascii.ts` adds an original GPU post-process: the same fish scene is drawn
 into a character-sized grid, then luminance selects a glyph from a local
 monospace atlas. ASCII and low-poly modes share geometry and simulation.
+
+ASCII character sizing has four presets: original (6 CSS px wide), small
+(4 px, default), fine (3 px), and micro (2 px); portrait screens scale these
+by 0.75. Each preset is directly addressable using `?ascii=<preset>`.
