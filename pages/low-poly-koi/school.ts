@@ -119,13 +119,13 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
       // Keep to the pond: turn back from the edges.
       // Look ahead by one turning radius, including the rendered axis stretch.
       // Start a continuous turn before fins reach the edge; never reflect velocity.
-      const lookAhead = 0.65;
+      const lookAhead = 0.4;
       const pressure = (p: number, extent: number, margin: number) => {
         const smooth = (n: number) => { const t = Math.max(0, Math.min(1, n)); return t * t * (3 - 2 * t); };
         return smooth(1 - p / margin) - smooth(1 - (extent - p) / margin);
       };
-      const marginX = Math.min(aspect * 0.48, 0.07 + len * 2.1 * stretchX[i]);
-      const marginY = Math.min(0.48, 0.07 + len * 2.1 * stretchY[i]);
+      const marginX = Math.min(aspect * 0.48, 0.025 + len * 1.6 * stretchX[i]);
+      const marginY = Math.min(0.48, 0.025 + len * 1.6 * stretchY[i]);
       const ex = pressure(x + dx * v * lookAhead, aspect, marginX);
       const ey = pressure(y + dy * v * lookAhead, 1, marginY);
       const edge = Math.min(1, Math.hypot(ex, ey));

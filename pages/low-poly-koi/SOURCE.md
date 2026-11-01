@@ -75,3 +75,7 @@ the posed spine includes fins, nose and spline overshoot. If edits, resize
 or a flee impulse exceed the bounds, the whole path is translated inward
 without changing its heading or curvature. Oversized fish are limited to a
 scale that fits the viewport in every swimming direction.
+
+Wall anticipation uses a compact look-ahead and body-size margin so fish
+explore the outer pond before turning. The full-body containment guard and
+continuous heading changes remain in place.

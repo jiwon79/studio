@@ -160,3 +160,27 @@ test('an outward fish turns continuously instead of reflecting its heading at th
   expect(turned).toBe(true);
   expect(largestTurn).toBeLessThan(0.03);
 });
+
+
+test('free swimming uses the outer pond without lingering only in the centre', () => {
+  const p = pond();
+  let samples = 0, nearEdge = 0;
+  let minX = 1, minY = 1, maxX = 0, maxY = 0;
+  for (let step = 0; step <= 7200; step++) {
+    p.school.frame(step / 60);
+    if (step <= 600) continue;
+    for (let i = 0; i < MAX_FISH; i++) {
+      const x = p.output.uSpine[i * 20] / 1.6, y = p.output.uSpine[i * 20 + 1];
+      samples++;
+      if (Math.min(x, 1 - x, y, 1 - y) < 0.2) nearEdge++;
+      minX = Math.min(minX, x); maxX = Math.max(maxX, x);
+      minY = Math.min(minY, y); maxY = Math.max(maxY, y);
+    }
+  }
+  expect(nearEdge / samples).toBeGreaterThan(0.2);
+  expect(nearEdge / samples).toBeLessThan(0.5);
+  expect(minX).toBeLessThan(0.13);
+  expect(maxX).toBeGreaterThan(0.87);
+  expect(minY).toBeLessThan(0.16);
+  expect(maxY).toBeGreaterThan(0.86);
+});
