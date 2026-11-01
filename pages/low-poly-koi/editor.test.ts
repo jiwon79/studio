@@ -145,8 +145,51 @@ test('axis resizing preserves the other axis, supports scoped undo and resets re
   expect(school.stretch(0)).toEqual([1, 1]);
   expect(output.uSpine.slice(0, 2)).toEqual(before.head.slice(0, 2));
   school.resizeAxis(0, [0, 0], 'x', 100);
-  expect(school.stretch(0)[0]).toBe(4);
+  expect(school.stretch(0)[0]).toBeGreaterThan(1);
+  expect(school.stretch(0)[0]).toBeLessThanOrEqual(4);
   school.removeFish(0);
   expect(school.addFish(0.5, 0.5, 0, 1)).toBe(0);
   expect(school.stretch(0)).toEqual([1, 1]);
+});
+
+test('axis enlargement near a wall fixes the opposite edge instead of moving the fish', async () => {
+  const { FishGeometry } = await import('./geometry');
+  for (const [x, y, angle, axis, side] of [
+    [1.35, 0.5, 0, 'x', 'min'], [0.25, 0.5, Math.PI, 'x', 'max'],
+    [0.8, 0.8, Math.PI / 2, 'y', 'min'], [0.8, 0.2, -Math.PI / 2, 'y', 'max'],
+  ] as const) {
+    const { school, output } = pond();
+    const id = school.addFish(x, y, angle, 1);
+    const geometry = new FishGeometry(id);
+    const bounds = () => {
+      geometry.update(output.uSpine, output.uFish[id * 4], output.uFish[id * 4 + 1], school.scale(id));
+      const position = geometry.getAttribute('position');
+      const [sx, sy] = school.stretch(id);
+      const hx = output.uSpine[id * 20], hy = output.uSpine[id * 20 + 1];
+      let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+      for (let k = 0; k < geometry.drawRange.count; k++) {
+        const px = hx + (position.getX(k) - hx) * sx, py = hy + (position.getY(k) - hy) * sy;
+        minX = Math.min(minX, px); maxX = Math.max(maxX, px);
+        minY = Math.min(minY, py); maxY = Math.max(maxY, py);
+      }
+      return { minX, maxX, minY, maxY };
+    };
+    const before = bounds();
+    const anchor = axis === 'x' ? (side === 'min' ? before.minX : before.maxX) : (side === 'min' ? before.minY : before.maxY);
+    const pivot = axis === 'x' ? [anchor, y] : [x, anchor];
+    const otherScale = school.scale(id);
+    school.resizeAxis(id, pivot, axis, 4);
+    const after = bounds();
+    const actual = axis === 'x' ? (side === 'min' ? after.minX : after.maxX) : (side === 'min' ? after.minY : after.maxY);
+    expect(actual).toBeCloseTo(anchor, 5);
+    expect(school.scale(id)).toBe(otherScale);
+    if (axis === 'x') {
+      expect(after.minY).toBeCloseTo(before.minY, 5); expect(after.maxY).toBeCloseTo(before.maxY, 5);
+    } else {
+      expect(after.minX).toBeCloseTo(before.minX, 5); expect(after.maxX).toBeCloseTo(before.maxX, 5);
+    }
+    expect(after.minX).toBeGreaterThanOrEqual(0); expect(after.maxX).toBeLessThanOrEqual(1.6);
+    expect(after.minY).toBeGreaterThanOrEqual(0); expect(after.maxY).toBeLessThanOrEqual(1);
+    geometry.dispose();
+  }
 });

@@ -310,8 +310,25 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
     stretch(index: number) { return [stretchX[index], stretchY[index]] as const; },
     resizeAxis(index: number, pivot: readonly number[], axis: 'x' | 'y', ratio: number) {
       const values = axis === 'x' ? stretchX : stretchY;
-      const applied = Math.max(0.25, Math.min(4, values[index] * ratio)) / values[index];
       const coordinate = axis === 'x' ? 0 : 1;
+      const extent = axis === 'x' ? aspect : 1;
+      const origin = head[index * 2 + coordinate];
+      const length = 0.17 * ctx.options().size * scales[index];
+      let minimum = Infinity, maximum = -Infinity;
+      for (let k = 0; k < POINTS; k++) {
+        const posed = origin + (spineOut[index * POINTS * 2 + k * 2 + coordinate] - origin) * values[index];
+        minimum = Math.min(minimum, posed); maximum = Math.max(maximum, posed);
+      }
+      minimum -= length * 0.32 * values[index];
+      maximum += length * 0.32 * values[index];
+      // Limit the requested enlargement before mutating the pose. Containment
+      // must not translate the fixed opposite edge or shrink the other axis.
+      const anchor = pivot[coordinate];
+      let maximumRatio = (extent - 0.024) / (length * 1.8 * values[index]);
+      if (anchor > minimum) maximumRatio = Math.min(maximumRatio, (anchor - 0.012) / (anchor - minimum));
+      if (anchor < maximum) maximumRatio = Math.min(maximumRatio, (extent - 0.012 - anchor) / (maximum - anchor));
+      const requested = Math.max(0.25, Math.min(4, values[index] * ratio)) / values[index];
+      const applied = Math.min(requested, Math.max(1, maximumRatio));
       const delta = (head[index * 2 + coordinate] - pivot[coordinate]) * (applied - 1);
       values[index] *= applied;
       this.transform(index, [0, 0], 1, axis === 'x' ? delta : 0, axis === 'y' ? delta : 0);

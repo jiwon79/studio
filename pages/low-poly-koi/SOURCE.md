@@ -79,3 +79,8 @@ scale that fits the viewport in every swimming direction.
 Wall anticipation uses a compact look-ahead and body-size margin so fish
 explore the outer pond before turning. The full-body containment guard and
 continuous heading changes remain in place.
+
+Axis resize computes the available room around the fixed opposite edge
+before changing the pose. It limits enlargement at the pond boundary and
+the rotation-safe size limit, rather than allowing containment to shift the
+whole fish or shrink the perpendicular dimension after the edit.
