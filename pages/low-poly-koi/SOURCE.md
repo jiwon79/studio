@@ -68,24 +68,9 @@ remain undoable. Escape explicitly rolls back the active gesture. Pointer
 ownership and capture checks ignore stale events; the final pointer-up
 position is applied even if the last move event was omitted.
 
-Pond boundaries account for body length and independent axis stretches.
-Look-ahead wall steering starts early and eases swimming speed when heading
-toward an edge; heading is never reflected. A conservative envelope around
-the posed spine includes fins, nose and spline overshoot. If edits, resize
-or a flee impulse exceed the bounds, the whole path is translated inward
-without changing its heading or curvature. Oversized fish are limited to a
-scale that fits the viewport in every swimming direction.
-
-Wall anticipation uses a compact look-ahead and body-size margin so fish
-explore the outer pond before turning. The full-body containment guard and
-continuous heading changes remain in place.
-
-Axis resize computes the available room around the fixed opposite edge
-before changing the pose. It limits enlargement at the pond boundary and
-the rotation-safe size limit, rather than allowing containment to shift the
-whole fish or shrink the perpendicular dimension after the edit.
-
-Corner resizing shares the same precomputed containment limits as side
-resizing, evaluated across both axes. The applied uniform ratio is capped
-before transforming the path, keeping the opposite rendered corner fixed
-through repeated enlargement, shrinking and viewport-size limits.
+Pond edges influence heading and speed only: compact look-ahead steering
+accounts for body length and axis stretch, easing speed toward an edge and
+turning continuously without reflecting heading. No containment step moves
+fish inward, fits their size to the viewport, or limits a resize by available
+screen space. Fish may extend offscreen. Side and corner handles retain their
+fixed opposite anchors; only the normal 0.25–4 editing scale limits apply.

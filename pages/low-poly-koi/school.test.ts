@@ -109,40 +109,21 @@ test('angular geometry remains finite and attached to its fish after mobile resi
   }
 });
 
-for (const [width, height, stretchX, stretchY] of [[1440, 900, 1, 1], [390, 844, 1, 1], [1440, 900, 4, 0.5], [390, 844, 0.5, 4]]) {
-  test(`the complete rendered fish stays inside ${width}×${height} with ${stretchX}×${stretchY} stretch`, () => {
-    const p = pond(width, height);
-    const aspect = width / height;
-    const id = p.school.addFish(aspect - 0.005, 0.005, -Math.PI / 4, 4);
-    p.school.resizeAxis(id, [aspect / 2, 0.5], 'x', stretchX);
-    p.school.resizeAxis(id, [aspect / 2, 0.5], 'y', stretchY);
-    const geometries = Array.from({ length: p.school.count }, (_, i) => new FishGeometry(i));
-    let minimum = Infinity, maximumX = -Infinity, maximumY = -Infinity;
-    for (let step = 0; step <= 3600; step++) {
-      p.pointer.over = step % 240 < 51;
-      p.pointer.target = [step % 480 < 240 ? 0.02 : 0.98, 0.1];
-      p.school.frame(step / 60);
-      if (step % 30) continue;
-      for (let i = 0; i < p.school.count; i++) {
-        const geometry = geometries[i];
-        geometry.update(p.output.uSpine, p.output.uFish[i * 4], p.output.uFish[i * 4 + 1], p.school.scale(i));
-        const positions = geometry.getAttribute('position');
-        const [sx, sy] = p.school.stretch(i);
-        const hx = p.output.uSpine[i * 20], hy = p.output.uSpine[i * 20 + 1];
-        for (let k = 0; k < geometry.drawRange.count; k++) {
-          const x = hx + (positions.getX(k) - hx) * sx;
-          const y = hy + (positions.getY(k) - hy) * sy;
-          minimum = Math.min(minimum, x, y);
-          maximumX = Math.max(maximumX, x); maximumY = Math.max(maximumY, y);
-        }
-      }
-    }
-    expect(minimum).toBeGreaterThanOrEqual(0);
-    expect(maximumX).toBeLessThanOrEqual(aspect);
-    expect(maximumY).toBeLessThanOrEqual(1);
-    geometries.forEach(geometry => geometry.dispose());
-  });
-}
+test('offscreen edits retain their position and size without automatic containment', () => {
+  const p = pond();
+  const id = p.school.addFish(2, -0.2, 0, 4);
+  expect(p.school.scale(id)).toBe(4);
+  expect(p.output.uSpine[id * 20]).toBeCloseTo(2);
+  expect(p.output.uSpine[id * 20 + 1]).toBeCloseTo(-0.2);
+  p.school.resizeAxis(id, [2, -0.2], 'x', 4);
+  expect(p.school.scale(id)).toBe(4);
+  expect(p.school.stretch(id)).toEqual([4, 1]);
+  expect(p.output.uSpine[id * 20]).toBeCloseTo(2);
+  expect(p.output.uSpine[id * 20 + 1]).toBeCloseTo(-0.2);
+  p.school.frame(0);
+  expect(p.output.uSpine[id * 20]).toBeCloseTo(2);
+  expect(p.school.scale(id)).toBe(4);
+});
 
 test('an outward fish turns continuously instead of reflecting its heading at the wall', () => {
   const p = pond();

@@ -153,7 +153,7 @@ test('axis resizing preserves the other axis, supports scoped undo and resets re
   expect(school.stretch(0)).toEqual([1, 1]);
 });
 
-test('axis enlargement near a wall fixes the opposite edge instead of moving the fish', () => {
+test('axis enlargement can extend offscreen while fixing the opposite edge', () => {
   for (const [x, y, angle, axis, side] of [
     [1.35, 0.5, 0, 'x', 'min'], [0.25, 0.5, Math.PI, 'x', 'max'],
     [0.8, 0.8, Math.PI / 2, 'y', 'min'], [0.8, 0.2, -Math.PI / 2, 'y', 'max'],
@@ -164,18 +164,18 @@ test('axis enlargement near a wall fixes the opposite edge instead of moving the
     const anchor = axis === 'x' ? (side === 'min' ? before.minX : before.maxX) : (side === 'min' ? before.minY : before.maxY);
     const pivot = axis === 'x' ? [anchor, y] : [x, anchor];
     const otherScale = school.scale(id);
-    school.resizeAxis(id, pivot, axis, 4);
+    expect(school.resizeAxis(id, pivot, axis, 4)).toBe(4);
     const after = renderedBounds(school, output, id);
     const actual = axis === 'x' ? (side === 'min' ? after.minX : after.maxX) : (side === 'min' ? after.minY : after.maxY);
     expect(actual).toBeCloseTo(anchor, 5);
     expect(school.scale(id)).toBe(otherScale);
+    if (axis === 'x') expect(side === 'min' ? after.maxX > 1.6 : after.minX < 0).toBe(true);
+    else expect(side === 'min' ? after.maxY > 1 : after.minY < 0).toBe(true);
     if (axis === 'x') {
       expect(after.minY).toBeCloseTo(before.minY, 5); expect(after.maxY).toBeCloseTo(before.maxY, 5);
     } else {
       expect(after.minX).toBeCloseTo(before.minX, 5); expect(after.maxX).toBeCloseTo(before.maxX, 5);
     }
-    expect(after.minX).toBeGreaterThanOrEqual(0); expect(after.maxX).toBeLessThanOrEqual(1.6);
-    expect(after.minY).toBeGreaterThanOrEqual(0); expect(after.maxY).toBeLessThanOrEqual(1);
   }
 });
 
@@ -196,7 +196,7 @@ function renderedBounds(school: ReturnType<typeof createSchool>, output: Record<
 }
 
 
-test('all four corner resizes keep the opposite rendered corner fixed at the size and wall limits', () => {
+test('all four corner resizes keep the opposite rendered corner fixed even offscreen', () => {
   for (const [x, y, angle, corner] of [
     [1.3, 0.75, 0.4, 'ne'], [0.3, 0.75, 2.5, 'nw'],
     [1.3, 0.25, -0.4, 'se'], [0.3, 0.25, -2.5, 'sw'],
@@ -214,8 +214,6 @@ test('all four corner resizes keep the opposite rendered corner fixed at the siz
       expect(corner.endsWith('e') ? after.minX : after.maxX).toBeCloseTo(anchorX, 5);
       expect(corner.startsWith('n') ? after.minY : after.maxY).toBeCloseTo(anchorY, 5);
       expect((after.maxX - after.minX) / (after.maxY - after.minY)).toBeCloseTo((before.maxX - before.minX) / (before.maxY - before.minY), 4);
-      expect(after.minX).toBeGreaterThanOrEqual(0); expect(after.maxX).toBeLessThanOrEqual(1.6);
-      expect(after.minY).toBeGreaterThanOrEqual(0); expect(after.maxY).toBeLessThanOrEqual(1);
     }
   }
 });

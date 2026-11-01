@@ -200,18 +200,6 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
     const o = ctx.options();
     const baseLength = 0.17 * (o.size ?? 1);
     for (let i = 0; i < activeCount; i++) {
-      // Oversized edits must still have room to fit in every swimming direction.
-      const maxScale = Math.max(0.01, Math.min((aspect - 0.024) / stretchX[i], (1 - 0.024) / stretchY[i]) / (baseLength * 1.8));
-      if (scales[i] > maxScale) {
-        const ratio = maxScale / scales[i];
-        for (let n = 0; n < TRAIL; n++) {
-          const j = (i * TRAIL + n) * 2;
-          trail[j] = head[i * 2] + (trail[j] - head[i * 2]) * ratio;
-          trail[j + 1] = head[i * 2 + 1] + (trail[j + 1] - head[i * 2 + 1]) * ratio;
-        }
-        scales[i] = maxScale;
-        state[i * 4 + 1] *= ratio;
-      }
       const len = baseLength * scales[i];
       const base = len * 0.45;
       let px = head[i * 2];
@@ -269,62 +257,11 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
         spineOut[out + k * 2] += -ty * sway;
         spineOut[out + k * 2 + 1] += tx * sway;
       }
-      // Whole-pose containment is a final guard for edits, resize and strong
-      // impulses. Translate the path with the head, preserving its heading and
-      // curvature rather than bouncing it or snapping individual spine points.
-      const sx = stretchX[i], sy = stretchY[i];
-      const hx = head[i * 2], hy = head[i * 2 + 1];
-      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-      for (let n = 0; n < POINTS; n++) {
-        const x = hx + (spineOut[out + n * 2] - hx) * sx;
-        const y = hy + (spineOut[out + n * 2 + 1] - hy) * sy;
-        minX = Math.min(minX, x); maxX = Math.max(maxX, x);
-        minY = Math.min(minY, y); maxY = Math.max(maxY, y);
-      }
-      // Conservative fin/nose envelope also covers spline overshoot.
-      const padX = len * 0.32 * sx, padY = len * 0.32 * sy;
-      const shiftX = Math.max(0, 0.012 - minX + padX) + Math.min(0, aspect - 0.012 - maxX - padX);
-      const shiftY = Math.max(0, 0.012 - minY + padY) + Math.min(0, 1 - 0.012 - maxY - padY);
-      if (shiftX || shiftY) {
-        head[i * 2] += shiftX; head[i * 2 + 1] += shiftY;
-        for (let n = 0; n < TRAIL; n++) {
-          const j = (i * TRAIL + n) * 2;
-          trail[j] += shiftX; trail[j + 1] += shiftY;
-        }
-        for (let n = 0; n < POINTS; n++) {
-          spineOut[out + n * 2] += shiftX; spineOut[out + n * 2 + 1] += shiftY;
-        }
-      }
       fishOut[i * 4] = beat;
       fishOut[i * 4 + 1] = Math.min(1, Math.max(0, (state[i * 4 + 1] - base) / (base * 2.5)));
     }
     ctx.uniform('uSpine', spineOut);
     ctx.uniform('uFish', fishOut);
-  };
-
-  // Shared limits for side and corner handles: never repair a resize by
-  // translating its anchor or changing an unrelated dimension afterwards.
-  const resizeLimit = (index: number, pivot: readonly number[], coordinates: readonly number[]) => {
-    const length = 0.17 * ctx.options().size * scales[index];
-    let limit = Infinity;
-    for (const coordinate of coordinates) {
-      const stretch = coordinate === 0 ? stretchX[index] : stretchY[index];
-      const extent = coordinate === 0 ? aspect : 1;
-      const origin = head[index * 2 + coordinate];
-      let minimum = Infinity, maximum = -Infinity;
-      for (let k = 0; k < POINTS; k++) {
-        const posed = origin + (spineOut[index * POINTS * 2 + k * 2 + coordinate] - origin) * stretch;
-        minimum = Math.min(minimum, posed); maximum = Math.max(maximum, posed);
-      }
-      minimum -= length * 0.32 * stretch;
-      maximum += length * 0.32 * stretch;
-      const anchor = pivot[coordinate];
-      let maximumRatio = (extent - 0.024) / (length * 1.8 * stretch);
-      if (anchor > minimum) maximumRatio = Math.min(maximumRatio, (anchor - 0.012) / (anchor - minimum));
-      if (anchor < maximum) maximumRatio = Math.min(maximumRatio, (extent - 0.012 - anchor) / (maximum - anchor));
-      limit = Math.min(limit, maximumRatio);
-    }
-    return Math.max(1, limit);
   };
 
   reset();
@@ -335,17 +272,14 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
     stretch(index: number) { return [stretchX[index], stretchY[index]] as const; },
     resizeUniform(index: number, pivot: readonly number[], ratio: number) {
       const before = scales[index];
-      const requested = Math.max(Math.min(0.25, before), Math.min(4, before * ratio)) / before;
-      const applied = Math.min(requested, resizeLimit(index, pivot, [0, 1]));
+      const applied = Math.max(Math.min(0.25, before), Math.min(4, before * ratio)) / before;
       this.transform(index, pivot, applied);
       return scales[index] / before;
     },
     resizeAxis(index: number, pivot: readonly number[], axis: 'x' | 'y', ratio: number) {
       const values = axis === 'x' ? stretchX : stretchY;
       const coordinate = axis === 'x' ? 0 : 1;
-      const maximumRatio = resizeLimit(index, pivot, [coordinate]);
-      const requested = Math.max(0.25, Math.min(4, values[index] * ratio)) / values[index];
-      const applied = Math.min(requested, maximumRatio);
+      const applied = Math.max(0.25, Math.min(4, values[index] * ratio)) / values[index];
       const delta = (head[index * 2 + coordinate] - pivot[coordinate]) * (applied - 1);
       values[index] *= applied;
       this.transform(index, [0, 0], 1, axis === 'x' ? delta : 0, axis === 'y' ? delta : 0);
