@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { createSchool, MAX_FISH, type PointerState } from './school';
 import { FishGeometry, FISH_LENGTH } from './geometry';
+import { AsciiPass } from './ascii';
 import licenseUrl from './LICENSE?url';
 
 // Retain the upstream MIT notice in the built artwork as document metadata.
@@ -19,6 +20,9 @@ function start() {
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   const scene = new THREE.Scene();
+  const ascii = new AsciiPass();
+  const modeButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-mode]')];
+  let mode = 'ascii';
   const camera = new THREE.OrthographicCamera(0, 1, 1, 0, 0.1, 10);
   camera.position.z = 4;
   scene.add(new THREE.AmbientLight('#ffffff', 0.95));
@@ -57,6 +61,13 @@ function start() {
   let accumulator = 0;
   const events = new AbortController();
   const signal = events.signal;
+  modeButtons.forEach(button => button.addEventListener('click', () => {
+    mode = button.dataset.mode!;
+    modeButtons.forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+    canvas.setAttribute('aria-label', `커서와 손가락을 피해 헤엄치는 ${mode === 'ascii' ? '아스키아트' : '로우폴리'} 잉어 열 마리`);
+    pointer.over = false;
+    draw();
+  }, { signal }));
   const move = (event: PointerEvent) => {
     pointer.target = [event.clientX / canvas.clientWidth, 1 - event.clientY / canvas.clientHeight];
     pointer.over = true;
@@ -69,6 +80,7 @@ function start() {
   window.addEventListener('blur', () => { pointer.over = false; }, { signal });
   const resize = () => {
     renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
+    ascii.resize(canvas.clientWidth, canvas.clientHeight);
     camera.right = canvas.clientWidth / canvas.clientHeight;
     camera.updateProjectionMatrix();
     school.frame(time);
@@ -89,7 +101,8 @@ function start() {
         eye.scale.setScalar(fishScale());
       });
     });
-    renderer.render(scene, camera);
+    if (mode === 'ascii') ascii.render(renderer, scene, camera);
+    else renderer.render(scene, camera);
   }
   let last = 0;
   function frame(now: number) {
@@ -118,6 +131,7 @@ function start() {
     eyesMaterial.dispose();
     material.dispose();
     finMaterial.dispose();
+    ascii.dispose();
     renderer.dispose();
   });
 }

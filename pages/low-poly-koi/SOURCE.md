@@ -20,3 +20,7 @@ Three.js supplies the renderer; no fish images or models are loaded.
 The silhouette follows the source body-width profile, rounded snout, small
 oval pectoral fans and shallow forked tail. Fins use a separate translucent
 material. The palette uses the source blue (`#1d4ce9`) with white faceted fish.
+
+`ascii.ts` adds an original GPU post-process: the same fish scene is drawn
+into a character-sized grid, then luminance selects a glyph from a local
+monospace atlas. ASCII and low-poly modes share geometry and simulation.
