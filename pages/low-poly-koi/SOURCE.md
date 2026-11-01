@@ -50,3 +50,8 @@ view draws the same ten interpolated spine joints used by the fish mesh,
 body-width crossbars and a head-direction arrow; a toggle overlays the
 wireframe body. All views retain selection, transforms and swimming.
 Use `?view=ascii|low-poly|spine` to link directly to a rendering mode.
+
+The four edge handles stretch screen-space width or height independently
+about the opposite edge. Corner handles retain proportional scaling. Axis
+stretches persist through swimming, mode changes and scoped undo/redo, and
+apply equally to the mesh, eyes, debug skeleton and selection bounds.

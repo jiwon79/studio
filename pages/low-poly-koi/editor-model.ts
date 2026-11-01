@@ -1,6 +1,7 @@
 export interface XY { x: number; y: number }
 export interface Bounds { x: number; y: number; width: number; height: number }
 export type Corner = 'nw' | 'ne' | 'sw' | 'se';
+export type Edge = 'n' | 's' | 'e' | 'w';
 
 /** Interpret a freehand outline (or open stroke) as an oriented fish footprint. */
 export function sketchFootprint(points: XY[]) {
@@ -26,4 +27,16 @@ export function cornerResize(box: Bounds, corner: Corner, pointer: XY) {
   const dy = corner.startsWith('n') ? -box.height : box.height;
   const scale = Math.max(0.05, ((pointer.x - pivot.x) * dx + (pointer.y - pivot.y) * dy) / Math.max(dx * dx + dy * dy, 1));
   return { pivot, scale };
+}
+
+/** Stretch one screen axis, keeping the opposite edge fixed. */
+export function edgeResize(box: Bounds, edge: Edge, pointer: XY) {
+  const horizontal = edge === 'e' || edge === 'w';
+  const pivot = { x: box.x + (edge === 'w' ? box.width : edge === 'e' ? 0 : box.width / 2),
+    y: box.y + (edge === 'n' ? box.height : edge === 's' ? 0 : box.height / 2) };
+  const extent = horizontal ? box.width : box.height;
+  const distance = horizontal ? pointer.x - pivot.x : pointer.y - pivot.y;
+  const sign = edge === 'n' || edge === 'w' ? -1 : 1;
+  return { pivot, axis: horizontal ? 'x' as const : 'y' as const,
+    scale: Math.max(0.05, distance * sign / Math.max(extent, 1)) };
 }

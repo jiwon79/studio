@@ -108,8 +108,15 @@ function start() {
       const scale = fishScale() * school.scale(i);
       geometry.update(renderedSpine, renderedStates[i * 4], renderedStates[i * 4 + 1], scale);
       if (debug.group.visible) debug.update(renderedSpine, i, scale);
+      const [sx, sy] = school.stretch(i);
+      const hx = renderedSpine[i * 20], hy = renderedSpine[i * 20 + 1];
+      for (const object of [mesh, debug.group]) {
+        object.scale.set(sx, sy, 1);
+        object.position.set(hx * (1 - sx), hy * (1 - sy), 0);
+      }
       eyes.forEach((eye, j) => {
-        eye.position.set(...geometry.eyes[j]);
+        const [x, y, z] = geometry.eyes[j];
+        eye.position.set(hx + (x - hx) * sx, hy + (y - hy) * sy, z);
         eye.scale.setScalar(scale);
       });
     });
@@ -147,13 +154,13 @@ function start() {
     } else { previousSpine.set(spine); previousStates.set(states); }
     draw();
   };
-  const nodes = () => fish.flatMap(({ geometry }, id) => {
+  const nodes = () => fish.flatMap(({ geometry, mesh }, id) => {
     if (id >= school.count || !school.enabled(id)) return [];
     const position = geometry.getAttribute('position');
     let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
     for (let vertex = 0; vertex < geometry.drawRange.count; vertex++) {
-      const x = position.getX(vertex) * canvas.clientHeight;
-      const y = (1 - position.getY(vertex)) * canvas.clientHeight;
+      const x = (position.getX(vertex) * mesh.scale.x + mesh.position.x) * canvas.clientHeight;
+      const y = (1 - position.getY(vertex) * mesh.scale.y - mesh.position.y) * canvas.clientHeight;
       minX = Math.min(minX, x); minY = Math.min(minY, y);
       maxX = Math.max(maxX, x); maxY = Math.max(maxY, y);
     }
@@ -181,6 +188,10 @@ function start() {
       const applied = Math.max(0.25, Math.min(4, scale * ratio)) / scale;
       school.transform(id, [pivot.x / canvas.clientHeight, 1 - pivot.y / canvas.clientHeight], applied);
       return applied;
+    },
+    stretch(id, pivot, axis, ratio) {
+      const h = canvas.clientHeight;
+      return school.resizeAxis(id, [pivot.x / h, 1 - pivot.y / h], axis, ratio);
     },
     remove(id) { school.removeFish(id); },
     splash(point) {

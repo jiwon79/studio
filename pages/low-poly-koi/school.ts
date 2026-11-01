@@ -33,6 +33,8 @@ const rnd = (/** @type {number} */ n: number) => {
 export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
   let activeCount = MAX_FISH;
   const enabled = new Uint8Array(MAX_SCENE_FISH);
+  const stretchX = new Float32Array(MAX_SCENE_FISH).fill(1);
+  const stretchY = new Float32Array(MAX_SCENE_FISH).fill(1);
   const scales = new Float32Array(MAX_SCENE_FISH).fill(1);
   enabled.fill(1, 0, activeCount);
   const POINTS = 10;
@@ -257,6 +259,16 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
     get count() { return activeCount; },
     enabled(index: number) { return !!enabled[index]; },
     scale(index: number) { return scales[index]; },
+    stretch(index: number) { return [stretchX[index], stretchY[index]] as const; },
+    resizeAxis(index: number, pivot: readonly number[], axis: 'x' | 'y', ratio: number) {
+      const values = axis === 'x' ? stretchX : stretchY;
+      const applied = Math.max(0.25, Math.min(4, values[index] * ratio)) / values[index];
+      const coordinate = axis === 'x' ? 0 : 1;
+      const delta = (head[index * 2 + coordinate] - pivot[coordinate]) * (applied - 1);
+      values[index] *= applied;
+      this.transform(index, [0, 0], 1, axis === 'x' ? delta : 0, axis === 'y' ? delta : 0);
+      return applied;
+    },
     addFish(x: number, y: number, angle: number, scale: number) {
       let index = enabled.findIndex((value, i) => i < activeCount && !value);
       if (index < 0) {
@@ -265,6 +277,7 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
       }
       enabled[index] = 1;
       scales[index] = scale;
+      stretchX[index] = 1; stretchY[index] = 1;
       head[index * 2] = x;
       head[index * 2 + 1] = y;
       const base = 0.17 * ctx.options().size * scale * 0.45;
@@ -293,24 +306,26 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
       write();
     },
     capture() {
-      return { activeCount, enabled: enabled.slice(), scales: scales.slice(), head: head.slice(),
+      return { activeCount, enabled: enabled.slice(), scales: scales.slice(), stretchX: stretchX.slice(), stretchY: stretchY.slice(), head: head.slice(),
         state: state.slice(), trail: trail.slice(), count: count.slice(), start: start.slice(), simTime, aspect };
     },
-    restoreFish(index: number, saved: { activeCount: number; enabled: Uint8Array; scales: Float32Array; head: Float32Array;
+    restoreFish(index: number, saved: { activeCount: number; enabled: Uint8Array; scales: Float32Array; stretchX: Float32Array; stretchY: Float32Array; head: Float32Array;
       state: Float32Array; trail: Float32Array; count: Int32Array; start: Int32Array }) {
       if (index >= saved.activeCount || !saved.enabled[index]) { enabled[index] = 0; return; }
       activeCount = Math.max(activeCount, index + 1);
       enabled[index] = 1; scales[index] = saved.scales[index];
+      stretchX[index] = saved.stretchX[index]; stretchY[index] = saved.stretchY[index];
       head.set(saved.head.subarray(index * 2, index * 2 + 2), index * 2);
       state.set(saved.state.subarray(index * 4, index * 4 + 4), index * 4);
       trail.set(saved.trail.subarray(index * TRAIL * 2, (index + 1) * TRAIL * 2), index * TRAIL * 2);
       count[index] = saved.count[index]; start[index] = saved.start[index];
       write();
     },
-    restore(saved: { activeCount: number; enabled: Uint8Array; scales: Float32Array; head: Float32Array;
+    restore(saved: { activeCount: number; enabled: Uint8Array; scales: Float32Array; stretchX: Float32Array; stretchY: Float32Array; head: Float32Array;
       state: Float32Array; trail: Float32Array; count: Int32Array; start: Int32Array; simTime: number; aspect: number }) {
       activeCount = saved.activeCount;
-      enabled.set(saved.enabled); scales.set(saved.scales); head.set(saved.head);
+      enabled.set(saved.enabled); scales.set(saved.scales);
+      stretchX.set(saved.stretchX); stretchY.set(saved.stretchY); head.set(saved.head);
       state.set(saved.state); trail.set(saved.trail); count.set(saved.count); start.set(saved.start);
       simTime = saved.simTime; aspect = saved.aspect;
       fit(); write();

@@ -1,4 +1,4 @@
-import { cornerResize, type Bounds, type Corner, type XY } from './editor-model';
+import { cornerResize, edgeResize, type Bounds, type Corner, type Edge, type XY } from './editor-model';
 
 type Tool = 'select' | 'draw' | 'swim';
 interface Host<State> {
@@ -6,6 +6,7 @@ interface Host<State> {
   add(points: XY[]): number;
   translate(id: number, dx: number, dy: number): void;
   scale(id: number, pivot: XY, ratio: number): number;
+  stretch(id: number, pivot: XY, axis: 'x' | 'y', ratio: number): number;
   remove(id: number): void;
   splash(point: XY): void;
   capture(): State;
@@ -24,7 +25,7 @@ export class PondEditor<State> {
   private selected: number | null = null;
   private tool: Tool = 'swim';
   private points: XY[] = [];
-  private drag: { type: 'move' | 'resize'; last: XY; box: Bounds; corner?: Corner; scale: number } | null = null;
+  private drag: { type: 'move' | 'resize'; last: XY; box: Bounds; corner?: Corner; edge?: Edge; scale: number } | null = null;
   private pending: State | null = null;
   private moved = false;
   private hoverPoint: XY | null = null;
@@ -43,7 +44,7 @@ export class PondEditor<State> {
     canvas.addEventListener('dblclick', event => {
       if (this.tool !== 'draw') this.splash(this.point(event));
     }, { signal });
-    document.querySelectorAll<HTMLButtonElement>('[data-corner]').forEach(button => button.addEventListener('pointerdown', event => {
+    document.querySelectorAll<HTMLButtonElement>('[data-corner], [data-edge]').forEach(button => button.addEventListener('pointerdown', event => {
       if (!event.isPrimary || event.button !== 0) return;
       event.preventDefault();
       if (this.selected === null) return;
@@ -52,7 +53,7 @@ export class PondEditor<State> {
       if (!node) return;
       this.moved = false;
       this.pending = host.capture();
-      this.drag = { type: 'resize', box: { ...node.bounds }, corner: button.dataset.corner as Corner,
+      this.drag = { type: 'resize', box: { ...node.bounds }, corner: button.dataset.corner as Corner, edge: button.dataset.edge as Edge,
         last: this.point(event), scale: 1 };
       this.canvas.setPointerCapture(event.pointerId);
     }, { signal }));
@@ -125,8 +126,13 @@ export class PondEditor<State> {
         const dx = point.x - this.drag.last.x, dy = point.y - this.drag.last.y;
         this.host.translate(this.selected, dx, dy);
       } else {
-        const { pivot, scale } = cornerResize(this.drag.box, this.drag.corner!, point);
-        this.drag.scale *= this.host.scale(this.selected, pivot, scale / this.drag.scale);
+        if (this.drag.edge) {
+          const { pivot, axis, scale } = edgeResize(this.drag.box, this.drag.edge, point);
+          this.drag.scale *= this.host.stretch(this.selected, pivot, axis, scale / this.drag.scale);
+        } else {
+          const { pivot, scale } = cornerResize(this.drag.box, this.drag.corner!, point);
+          this.drag.scale *= this.host.scale(this.selected, pivot, scale / this.drag.scale);
+        }
       }
       this.moved = true; this.drag.last = point; this.host.changed();
     } else this.refresh();

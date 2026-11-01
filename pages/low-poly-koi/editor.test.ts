@@ -1,5 +1,5 @@
 import { test, expect } from 'vitest';
-import { cornerResize, sketchFootprint } from './editor-model';
+import { cornerResize, edgeResize, sketchFootprint } from './editor-model';
 import { createSchool, MAX_FISH } from './school';
 import { ASCII_SIZES, isAsciiSize } from './ascii';
 import { Scene } from 'three';
@@ -114,4 +114,38 @@ test('double-click disturbance expires and its wave geometry is removed', () => 
   ripples.update(13);
   expect(scene.children).toHaveLength(0);
   ripples.dispose();
+});
+
+
+test('edge handles stretch only their axis and anchor the opposite edge', () => {
+  const box = { x: 10, y: 20, width: 100, height: 60 };
+  for (const [edge, point, axis, pivot] of [
+    ['e', { x: 210, y: 30 }, 'x', { x: 10, y: 50 }],
+    ['w', { x: -90, y: 30 }, 'x', { x: 110, y: 50 }],
+    ['n', { x: 20, y: -40 }, 'y', { x: 60, y: 80 }],
+    ['s', { x: 20, y: 140 }, 'y', { x: 60, y: 20 }],
+  ] as const) {
+    expect(edgeResize(box, edge, point)).toEqual({ pivot, axis, scale: 2 });
+  }
+});
+
+test('axis resizing preserves the other axis, supports scoped undo and resets reused slots', () => {
+  const { school, output } = pond();
+  const before = school.capture();
+  const x = output.uSpine[0], y = output.uSpine[1];
+  expect(school.resizeAxis(0, [0.2, 0.3], 'x', 2)).toBe(2);
+  expect(school.stretch(0)).toEqual([2, 1]);
+  expect(output.uSpine[0]).toBeCloseTo(0.2 + (x - 0.2) * 2);
+  expect(output.uSpine[1]).toBe(y);
+  school.resizeAxis(0, [0.2, 0.3], 'y', 1.5);
+  expect(school.stretch(0)).toEqual([2, 1.5]);
+  expect(school.scale(0)).toBe(1);
+  school.restoreFish(0, before);
+  expect(school.stretch(0)).toEqual([1, 1]);
+  expect(output.uSpine.slice(0, 2)).toEqual(before.head.slice(0, 2));
+  school.resizeAxis(0, [0, 0], 'x', 100);
+  expect(school.stretch(0)[0]).toBe(4);
+  school.removeFish(0);
+  expect(school.addFish(0.5, 0.5, 0, 1)).toBe(0);
+  expect(school.stretch(0)).toEqual([1, 1]);
 });

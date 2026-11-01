@@ -20,14 +20,21 @@ canvas { display: block; width: 100%; height: 100%; touch-action: none; }
 .hover-outline { position: fixed; border: 1px solid #edf4ffbb; box-shadow: 0 0 0 1px #1539b933; pointer-events: none; }
 .hover-outline[hidden] { display: none; }
 .selection[hidden] { display: none; }
-.selection [data-corner] { position: absolute; width: 24px; height: 24px; border: 0; padding: 0; background: transparent; pointer-events: auto; touch-action: none; }
-.selection [data-corner]::after { content: ''; display: block; width: 7px; height: 7px; margin: auto; background: white; border: 1px solid #214fc8; }
+.selection [data-corner], .selection [data-edge] { position: absolute; width: 24px; height: 24px; border: 0; padding: 0; background: transparent; pointer-events: auto; touch-action: none; }
+.selection [data-corner]::after, .selection [data-edge]::after { content: ''; display: block; width: 7px; height: 7px; margin: auto; background: white; border: 1px solid #214fc8; }
 [data-corner="nw"] { top: -12px; left: -12px; cursor: nwse-resize; }
 [data-corner="ne"] { top: -12px; right: -12px; cursor: nesw-resize; }
 [data-corner="sw"] { bottom: -12px; left: -12px; cursor: nesw-resize; }
 [data-corner="se"] { bottom: -12px; right: -12px; cursor: nwse-resize; }
-.selection [data-delete] { position: absolute; top: -38px; left: 50%; transform: translateX(-50%); pointer-events: auto; border: 1px solid #ffffff55; background: #153bb9; color: white; padding: 6px 12px; border-radius: 7px; font: 11px system-ui; cursor: pointer; }
- .editor-status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.selection [data-delete] { position: absolute; top: -32px; right: -6px; pointer-events: auto; border: 1px solid #ffffff55; background: #153bb9; color: white; padding: 6px 12px; border-radius: 7px; font: 11px system-ui; cursor: pointer; }
+.editor-status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .editor-tools svg, .selection [data-delete] svg { display: block; width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
-.selection [data-delete] { padding: 6px; }
+.selection [data-delete] { padding: 5px; border: 0; border-radius: 5px; }
+.selection [data-delete] svg { width: 14px; height: 14px; }
+.selection [data-delete]::before { content: ""; position: absolute; inset: -4px; }
 .lil-gui.root { z-index: 10; top: max(12px, env(safe-area-inset-top)); right: 12px; max-width: calc(100vw - 24px); }
+
+[data-edge="n"] { top: -12px; left: calc(50% - 12px); cursor: ns-resize; }
+[data-edge="s"] { bottom: -12px; left: calc(50% - 12px); cursor: ns-resize; }
+[data-edge="w"] { left: -12px; top: calc(50% - 12px); cursor: ew-resize; }
+[data-edge="e"] { right: -12px; top: calc(50% - 12px); cursor: ew-resize; }
