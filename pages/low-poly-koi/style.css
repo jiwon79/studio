@@ -1,0 +1,13 @@
+:root { color-scheme: dark; background: #0b0f1e; }
+* { box-sizing: border-box; }
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+.hint {
+  position: fixed; inset: auto 20px max(28px, env(safe-area-inset-bottom));
+  margin: 0; text-align: center; pointer-events: none;
+  color: #858b9d; font: 11px/1.5 ui-monospace, monospace; letter-spacing: .08em;
+  animation: fade 1s 7s forwards;
+}
+.error { position: fixed; top: 45%; width: 100%; padding: 24px; text-align: center; color: #cdd4e1; font: 14px/1.6 system-ui; }
+@keyframes fade { to { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .hint { animation: none; } }
