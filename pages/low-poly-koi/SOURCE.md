@@ -28,3 +28,12 @@ monospace atlas. ASCII and low-poly modes share geometry and simulation.
 ASCII character sizing has four evenly spaced presets between original
 (6 CSS px wide) and small (4 px, default): original, medium, compact, small.
 Portrait screens scale these by 0.75. Each preset is directly addressable using `?ascii=<preset>`.
+
+The sketch-to-creature and selection-box interaction is inspired by areadne's
+sheep editor video, referenced via Cosmos (no media or code is copied):
+https://www.cosmos.so/e/1698214616
+https://x.com/areadnemaria/status/2114898325451444419
+
+The editor interprets the drawn footprint's principal direction and length
+as a new fish's placement and scale. The simulation supports up to 64 fish,
+individual path transforms, deletion, and snapshot-based undo/redo.

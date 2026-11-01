@@ -4,12 +4,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#1d4ce9">
-  <meta name="description" content="문자와 다각형으로 헤엄치는 열 마리의 잉어. ASCII와 로우폴리 표현을 전환해 보세요.">
+  <meta name="description" content="그려서 만들고, 선택해서 움직이는 잉어 연못. ASCII와 로우폴리 표현으로 즐겨 보세요.">
   <title>Low Poly Koi · Jiiwon Studio</title>
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
   <canvas aria-label="커서와 손가락을 피해 헤엄치는 아스키아트 잉어 열 마리"></canvas>
+  <svg class="sketch" aria-hidden="true"><path /></svg>
+  <div class="selection" hidden>
+    <span class="selection-size"></span>
+    <button type="button" data-corner="nw" aria-label="왼쪽 위 모서리로 크기 조절"></button>
+    <button type="button" data-corner="ne" aria-label="오른쪽 위 모서리로 크기 조절"></button>
+    <button type="button" data-corner="sw" aria-label="왼쪽 아래 모서리로 크기 조절"></button>
+    <button type="button" data-corner="se" aria-label="오른쪽 아래 모서리로 크기 조절"></button>
+    <button type="button" data-delete>삭제</button>
+  </div>
+  <div class="editor-tools" role="group" aria-label="물고기 편집 도구">
+    <button type="button" data-tool="select" aria-pressed="false" title="선택 (V)">선택</button>
+    <button type="button" data-tool="draw" aria-pressed="false" title="그리기 (P)">그리기</button>
+    <button type="button" data-tool="swim" aria-pressed="true" title="재생 / 일시 정지 (Space)">헤엄치기</button>
+    <span class="tool-divider"></span>
+    <button type="button" data-undo aria-label="실행 취소" title="실행 취소 (⌘Z)">↶</button>
+    <button type="button" data-redo aria-label="다시 실행" title="다시 실행 (⌘⇧Z)">↷</button>
+  </div>
+  <p class="editor-status" role="status" aria-live="polite"></p>
   <div class="controls">
     <div class="modes" role="group" aria-label="표현 방식">
       <button type="button" data-mode="ascii" aria-pressed="true">ASCII</button>
@@ -23,7 +41,7 @@
       <button type="button" data-size="small" aria-pressed="true">작게</button>
     </div>
   </div>
-  <p class="hint">Move gently. Watch them swim.</p>
+  <p class="hint">물고기를 누르면 편집할 수 있어요 · P 그리기 · V 선택</p>
   <p class="error" role="alert" hidden>이 작품을 보려면 WebGL을 지원하는 브라우저가 필요해요.</p>
   <script type="module" src="./script.ts"></script>
 </body>

@@ -1,7 +1,9 @@
 import * as THREE from 'three';
-import { createSchool, MAX_FISH, type PointerState } from './school';
+import { createSchool, MAX_FISH, MAX_SCENE_FISH, type PointerState } from './school';
 import { FishGeometry, FISH_LENGTH } from './geometry';
 import { AsciiPass, isAsciiSize, type AsciiSize } from './ascii';
+import { PondEditor } from './editor';
+import { sketchFootprint, type Bounds } from './editor-model';
 import licenseUrl from './LICENSE?url';
 
 // Retain the upstream MIT notice in the built artwork as document metadata.
@@ -20,6 +22,7 @@ function start() {
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   const scene = new THREE.Scene();
+  let editor: PondEditor<{ school: ReturnType<ReturnType<typeof createSchool>['capture']>; time: number }> | undefined;
   const ascii = new AsciiPass();
   const modeButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-mode]')];
   const sizeButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-size]')];
@@ -40,7 +43,7 @@ function start() {
     side: THREE.DoubleSide, transparent: true, opacity: 0.43, depthWrite: false });
   const eyesMaterial = new THREE.MeshBasicMaterial({ color: '#183d93' });
   const eyeGeometry = new THREE.OctahedronGeometry(FISH_LENGTH * 0.008);
-  const fish = Array.from({ length: MAX_FISH }, (_, i) => {
+  const makeFish = (i: number) => {
     const geometry = new FishGeometry(i);
     const mesh = new THREE.Mesh(geometry, [material, finMaterial]);
     mesh.frustumCulled = false;
@@ -50,19 +53,20 @@ function start() {
       scene.add(eye);
       return eye;
     });
-    return { geometry, eyes };
-  });
+    return { geometry, mesh, eyes };
+  };
+  const fish = Array.from({ length: MAX_FISH }, (_, i) => makeFish(i));
   const pointer: PointerState = { target: [0.5, 0.5], over: false };
-  let spine: Float32Array = new Float32Array(MAX_FISH * 20);
-  let states: Float32Array = new Float32Array(MAX_FISH * 4);
+  let spine: Float32Array = new Float32Array(MAX_SCENE_FISH * 20);
+  let states: Float32Array = new Float32Array(MAX_SCENE_FISH * 4);
   const fishScale = () => Math.min(1, canvas.clientWidth / canvas.clientHeight / 0.9);
-  const school = createSchool({ canvas, options: () => ({ size: 1.15 * fishScale(), interactive: !motion.matches }),
+  const school = createSchool({ canvas, options: () => ({ size: 1.15 * fishScale(), interactive: !motion.matches && editor?.playing !== false }),
     uniform: (name, value) => { if (name === 'uSpine') spine = value; else states = value; },
   }, pointer);
-  const previousSpine = new Float32Array(MAX_FISH * 20);
-  const previousStates = new Float32Array(MAX_FISH * 4);
-  const renderedSpine = new Float32Array(MAX_FISH * 20);
-  const renderedStates = new Float32Array(MAX_FISH * 4);
+  const previousSpine = new Float32Array(MAX_SCENE_FISH * 20);
+  const previousStates = new Float32Array(MAX_SCENE_FISH * 4);
+  const renderedSpine = new Float32Array(MAX_SCENE_FISH * 20);
+  const renderedStates = new Float32Array(MAX_SCENE_FISH * 4);
   const step = 1 / 60;
   let accumulator = 0;
   const events = new AbortController();
@@ -113,19 +117,29 @@ function start() {
     // displays no longer repeat the same pose then jump to the next one.
     for (let j = 0; j < spine.length; j++) renderedSpine[j] = previousSpine[j] + (spine[j] - previousSpine[j]) * alpha;
     for (let j = 0; j < states.length; j++) renderedStates[j] = previousStates[j] + (states[j] - previousStates[j]) * alpha;
-    fish.forEach(({ geometry, eyes }, i) => {
-      geometry.update(renderedSpine, renderedStates[i * 4], renderedStates[i * 4 + 1], fishScale());
+    while (fish.length < school.count) fish.push(makeFish(fish.length));
+    fish.forEach(({ geometry, mesh, eyes }, i) => {
+      const visible = i < school.count && school.enabled(i);
+      mesh.visible = visible;
+      eyes.forEach(eye => { eye.visible = visible; });
+      if (!visible) return;
+      const scale = fishScale() * school.scale(i);
+      geometry.update(renderedSpine, renderedStates[i * 4], renderedStates[i * 4 + 1], scale);
       eyes.forEach((eye, j) => {
         eye.position.set(...geometry.eyes[j]);
-        eye.scale.setScalar(fishScale());
+        eye.scale.setScalar(scale);
       });
     });
+    const count = fish.filter((_, i) => i < school.count && school.enabled(i)).length;
+    const description = `커서와 손가락을 피해 헤엄치는 ${mode === 'ascii' ? '아스키아트' : '로우폴리'} 잉어 ${count}마리`;
+    if (canvas.getAttribute('aria-label') !== description) canvas.setAttribute('aria-label', description);
     if (mode === 'ascii') ascii.render(renderer, scene, camera);
     else renderer.render(scene, camera);
+    editor?.refresh();
   }
   let last = 0;
   function frame(now: number) {
-    if (document.hidden || motion.matches) { last = 0; accumulator = 0; return; }
+    if (document.hidden || motion.matches || editor?.playing === false) { last = 0; accumulator = 0; return; }
     if (last) accumulator += Math.min((now - last) / 1000, 0.05);
     last = now;
     while (accumulator >= step) {
@@ -140,11 +154,55 @@ function start() {
   window.addEventListener('resize', resize, { signal });
   document.addEventListener('visibilitychange', () => { last = 0; accumulator = 0; pointer.over = false; }, { signal });
   motion.addEventListener('change', () => { last = 0; accumulator = 0; draw(); }, { signal });
+  const refresh = () => {
+    previousSpine.set(spine); previousStates.set(states); accumulator = 0; last = 0;
+    draw();
+  };
+  const nodes = () => fish.flatMap(({ geometry, mesh }, id) => {
+    if (id >= school.count || !school.enabled(id) || !mesh.visible) return [];
+    const position = geometry.getAttribute('position');
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    for (let vertex = 0; vertex < geometry.drawRange.count; vertex++) {
+      const x = position.getX(vertex) * canvas.clientHeight;
+      const y = (1 - position.getY(vertex)) * canvas.clientHeight;
+      minX = Math.min(minX, x); minY = Math.min(minY, y);
+      maxX = Math.max(maxX, x); maxY = Math.max(maxY, y);
+    }
+    const bounds: Bounds = { x: minX, y: minY, width: maxX - minX, height: maxY - minY };
+    return [{ id, bounds }];
+  });
   resize();
+  editor = new PondEditor(canvas, {
+    nodes,
+    add(points) {
+      const footprint = sketchFootprint(points);
+      if (!footprint) return -1;
+      const h = canvas.clientHeight;
+      const length = FISH_LENGTH * fishScale();
+      const scale = Math.max(0.25, Math.min(4, footprint.length / h / length));
+      const angle = -footprint.angle;
+      const id = school.addFish(footprint.center.x / h + Math.cos(angle) * length * scale * 0.42,
+        1 - footprint.center.y / h + Math.sin(angle) * length * scale * 0.42, angle, scale);
+      document.querySelector<HTMLElement>('.editor-status')!.textContent = id < 0 ? '물고기는 최대 64마리까지 만들 수 있어요' : '';
+      return id;
+    },
+    translate(id, dx, dy) { school.transform(id, [0, 0], 1, dx / canvas.clientHeight, -dy / canvas.clientHeight); },
+    scale(id, pivot, ratio) {
+      const scale = school.scale(id);
+      const applied = Math.max(0.25, Math.min(4, scale * ratio)) / scale;
+      school.transform(id, [pivot.x / canvas.clientHeight, 1 - pivot.y / canvas.clientHeight], applied);
+      return applied;
+    },
+    remove(id) { school.removeFish(id); },
+    capture: () => ({ school: school.capture(), time }),
+    restore(saved) { time = saved.time; school.restore(saved.school); },
+    changed: refresh,
+  });
   renderer.setAnimationLoop(frame);
   if (import.meta.hot) import.meta.hot.dispose(() => {
     renderer.setAnimationLoop(null);
     events.abort();
+    editor?.dispose();
     fish.forEach(({ geometry }) => geometry.dispose());
     eyeGeometry.dispose();
     eyesMaterial.dispose();

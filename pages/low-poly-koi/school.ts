@@ -4,6 +4,7 @@
  * See LICENSE and SOURCE.md in this directory.
  */
 export const MAX_FISH = 10;
+export const MAX_SCENE_FISH = 64;
 export const SPINE_POINTS = 10;
 export interface PointerState { target: [number, number]; over: boolean }
 export interface SchoolContext {
@@ -29,16 +30,20 @@ const rnd = (/** @type {number} */ n: number) => {
  * @param {{ target: number[], over: boolean }} pointerState
  */
 export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
+  let activeCount = MAX_FISH;
+  const enabled = new Uint8Array(MAX_SCENE_FISH);
+  const scales = new Float32Array(MAX_SCENE_FISH).fill(1);
+  enabled.fill(1, 0, activeCount);
   const POINTS = 10;
   const TRAIL = 72;
   const STEP = 0.008;                                     // trail spacing, pond units
-  const spineOut = new Float32Array(MAX_FISH * POINTS * 2);
-  const fishOut = new Float32Array(MAX_FISH * 4);
-  const trail = new Float32Array(MAX_FISH * TRAIL * 2);
-  const head = new Float32Array(MAX_FISH * 2);
-  const state = new Float32Array(MAX_FISH * 4);           // heading, speed, beat, thrust
-  const count = new Int32Array(MAX_FISH);
-  const start = new Int32Array(MAX_FISH);
+  const spineOut = new Float32Array(MAX_SCENE_FISH * POINTS * 2);
+  const fishOut = new Float32Array(MAX_SCENE_FISH * 4);
+  const trail = new Float32Array(MAX_SCENE_FISH * TRAIL * 2);
+  const head = new Float32Array(MAX_SCENE_FISH * 2);
+  const state = new Float32Array(MAX_SCENE_FISH * 4);           // heading, speed, beat, thrust
+  const count = new Int32Array(MAX_SCENE_FISH);
+  const start = new Int32Array(MAX_SCENE_FISH);
   let simTime = 0;
   let aspect = 1.6;
 
@@ -56,7 +61,7 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
     const next = measure();
     if (Math.abs(next - aspect) < 1e-4) return;
     const k = next / aspect;
-    for (let i = 0; i < MAX_FISH; i++) {
+    for (let i = 0; i < activeCount; i++) {
       const shift = head[i * 2] * (k - 1);
       head[i * 2] += shift;
       for (let n = 0; n < TRAIL; n++) trail[(i * TRAIL + n) * 2] += shift;
@@ -66,7 +71,7 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
 
   const reset = () => {
     aspect = measure();
-    for (let i = 0; i < MAX_FISH; i++) {
+    for (let i = 0; i < activeCount; i++) {
       const x = aspect * (0.15 + 0.7 * rnd(i * 3.1));
       const y = 0.15 + 0.7 * rnd(i * 7.7);
       const a = rnd(i * 5.3) * Math.PI * 2;
@@ -91,13 +96,15 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
   /** @param {number} dt @param {boolean} live */
   const step = (dt: number, live: boolean) => {
     const o = ctx.options();
-    const len = 0.17 * (o.size ?? 1);
-    const base = len * 0.45;
+    const baseLength = 0.17 * (o.size ?? 1);
     const flee = live && pointerState.over && o.interactive !== false;
     const hx = pointerState.target[0] * aspect;
     const hy = pointerState.target[1];
     const t = simTime;
-    for (let i = 0; i < MAX_FISH; i++) {
+    for (let i = 0; i < activeCount; i++) {
+      if (!enabled[i]) continue;
+      const len = baseLength * scales[i];
+      const base = len * 0.45;
       const x = head[i * 2];
       const y = head[i * 2 + 1];
       let a = state[i * 4];
@@ -113,8 +120,8 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
       dx += ex * 3;
       dy += ey * 3;
       // Give the others room.
-      for (let j = 0; j < MAX_FISH; j++) {
-        if (j === i) continue;
+      for (let j = 0; j < activeCount; j++) {
+        if (j === i || !enabled[j]) continue;
         const ox = x - head[j * 2];
         const oy = y - head[j * 2 + 1];
         const d2 = ox * ox + oy * oy;
@@ -164,7 +171,7 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
       state[i * 4 + 3] += (thrust + Math.abs(turn) * 0.15 - state[i * 4 + 3]) * (1 - Math.exp(-dt * 3));
       // Lay down the trail the body will follow.
       const last = ((start[i] + count[i] - 1) % TRAIL) * 2 + i * TRAIL * 2;
-      if (Math.hypot(nx - trail[last], ny - trail[last + 1]) >= STEP) {
+      if (Math.hypot(nx - trail[last], ny - trail[last + 1]) >= STEP * scales[i]) {
         const next = ((start[i] + count[i]) % TRAIL) * 2 + i * TRAIL * 2;
         trail[next] = nx;
         trail[next + 1] = ny;
@@ -178,9 +185,10 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
   // evenly by length, then add the swimming wave across it.
   const write = () => {
     const o = ctx.options();
-    const len = 0.17 * (o.size ?? 1);
-    const base = len * 0.45;
-    for (let i = 0; i < MAX_FISH; i++) {
+    const baseLength = 0.17 * (o.size ?? 1);
+    for (let i = 0; i < activeCount; i++) {
+      const len = baseLength * scales[i];
+      const base = len * 0.45;
       let px = head[i * 2];
       let py = head[i * 2 + 1];
       let k = 0;
@@ -245,6 +253,56 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
 
   reset();
   return {
+    get count() { return activeCount; },
+    enabled(index: number) { return !!enabled[index]; },
+    scale(index: number) { return scales[index]; },
+    addFish(x: number, y: number, angle: number, scale: number) {
+      let index = enabled.findIndex((value, i) => i < activeCount && !value);
+      if (index < 0) {
+        if (activeCount >= MAX_SCENE_FISH) return -1;
+        index = activeCount++;
+      }
+      enabled[index] = 1;
+      scales[index] = scale;
+      head[index * 2] = x;
+      head[index * 2 + 1] = y;
+      const base = 0.17 * ctx.options().size * scale * 0.45;
+      state.set([angle, base, 0, 0], index * 4);
+      for (let k = 0; k < TRAIL; k++) {
+        const j = (index * TRAIL + k) * 2;
+        trail[j] = x - Math.cos(angle) * STEP * scale * (TRAIL - 1 - k);
+        trail[j + 1] = y - Math.sin(angle) * STEP * scale * (TRAIL - 1 - k);
+      }
+      count[index] = TRAIL;
+      start[index] = 0;
+      write();
+      return index;
+    },
+    removeFish(index: number) { enabled[index] = 0; },
+    transform(index: number, pivot: readonly number[], scale: number, dx = 0, dy = 0) {
+      head[index * 2] = pivot[0] + (head[index * 2] - pivot[0]) * scale + dx;
+      head[index * 2 + 1] = pivot[1] + (head[index * 2 + 1] - pivot[1]) * scale + dy;
+      for (let k = 0; k < TRAIL; k++) {
+        const j = (index * TRAIL + k) * 2;
+        trail[j] = pivot[0] + (trail[j] - pivot[0]) * scale + dx;
+        trail[j + 1] = pivot[1] + (trail[j + 1] - pivot[1]) * scale + dy;
+      }
+      scales[index] *= scale;
+      state[index * 4 + 1] *= scale;
+      write();
+    },
+    capture() {
+      return { activeCount, enabled: enabled.slice(), scales: scales.slice(), head: head.slice(),
+        state: state.slice(), trail: trail.slice(), count: count.slice(), start: start.slice(), simTime, aspect };
+    },
+    restore(saved: { activeCount: number; enabled: Uint8Array; scales: Float32Array; head: Float32Array;
+      state: Float32Array; trail: Float32Array; count: Int32Array; start: Int32Array; simTime: number; aspect: number }) {
+      activeCount = saved.activeCount;
+      enabled.set(saved.enabled); scales.set(saved.scales); head.set(saved.head);
+      state.set(saved.state); trail.set(saved.trail); count.set(saved.count); start.set(saved.start);
+      simTime = saved.simTime; aspect = saved.aspect;
+      fit(); write();
+    },
     /** @param {number} time Effect time. */
     frame(time: number) {
       fit();
