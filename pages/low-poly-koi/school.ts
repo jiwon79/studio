@@ -252,4 +252,3 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
     },
   };
 }
-

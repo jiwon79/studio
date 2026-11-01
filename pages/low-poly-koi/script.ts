@@ -1,6 +1,13 @@
 import * as THREE from 'three';
 import { createSchool, MAX_FISH, type PointerState } from './school';
 import { FishGeometry, FISH_LENGTH } from './geometry';
+import licenseUrl from './LICENSE?url';
+
+// Retain the upstream MIT notice in the built artwork as document metadata.
+const license = document.createElement('link');
+license.rel = 'license';
+license.href = licenseUrl;
+document.head.append(license);
 
 const canvas = document.querySelector('canvas')!;
 const motion = matchMedia('(prefers-reduced-motion: reduce)');
