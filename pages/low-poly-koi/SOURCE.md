@@ -55,3 +55,8 @@ The four edge handles stretch screen-space width or height independently
 about the opposite edge. Corner handles retain proportional scaling. Axis
 stretches persist through swimming, mode changes and scoped undo/redo, and
 apply equally to the mesh, eyes, debug skeleton and selection bounds.
+
+Editing is contextual: dragging from empty water sketches a new fish,
+while dragging from a fish moves it. There is no tool toolbar or mode switch.
+A click on empty water deselects; short taps do not create fish, so double
+click/tap still triggers ripples. Undo/redo remains available by keyboard.
