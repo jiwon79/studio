@@ -51,13 +51,13 @@ let directionLoading: number | undefined;
 let generation = 0, stream = 0, filling: number | undefined;
 let lastTime = 0, carry = 0;
 let drag: { id: number; x: number; start: number } | undefined;
-function beginFrame() {
-  const scale = 1.5;
-  if (canvas.width !== data.tileWidth * scale) {
-    canvas.width = data.tileWidth * scale;
-    canvas.height = data.tileHeight * scale;
+function beginFrame(width: number, height: number) {
+  const scale = width / data.tileWidth;
+  if (canvas.width !== width || canvas.height !== height) {
+    canvas.width = width;
+    canvas.height = height;
   }
-  context.setTransform(scale, 0, 0, scale, 0, 0);
+  context.setTransform(scale, 0, 0, height / data.tileHeight, 0, 0);
   context.imageSmoothingQuality = 'high';
   context.clearRect(0, 0, data.tileWidth, data.tileHeight);
   canvas.dataset.pixelScale = String(scale);
@@ -66,7 +66,7 @@ function paint(row: AngleFrame, yaw: number) {
   const index = frameIndices.get(row)!;
   const image = photographs.image(index);
   if (!image) throw new Error(`Photograph not decoded: ${index}`);
-  beginFrame();
+  beginFrame(image.width, image.height);
   const transform = row.posture ? cutPhotoTransform(block, offset, row.posture, phase, yaw) : IDENTITY_PHOTO;
   context.save(); applyPhotoTransform(context, transform);
   context.save(); applyPhotoTransform(context, photographs.registration(index));

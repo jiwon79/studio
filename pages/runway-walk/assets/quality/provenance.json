@@ -1269,7 +1269,12 @@
         277,
         1053
       ],
-      "prompt": "Edit target: the supplied adult runway photograph. Remove ONLY the long thin white vertical cane-like object hanging below the hand on the VIEWER'S LEFT. That object must become fully transparent. Preserve every other pixel/feature as closely as possible: exact head position, face, sunglasses, body size and lean, shoulders, visible hands and fingers, clothing, trouser silhouette, both legs, ankles, shoes and shoe overlap. No pose correction, no rotation, no relocation, no new gait, no new objects. Maintain the exact 2:3 composition and margins, transparent background. One isolated person photograph, no collage or shadow. Do not extend an arm or leg into the removed white-object area."
+      "prompt": "Edit target: the supplied adult runway photograph. Remove ONLY the long thin white vertical cane-like object hanging below the hand on the VIEWER'S LEFT. That object must become fully transparent. Preserve every other pixel/feature as closely as possible: exact head position, face, sunglasses, body size and lean, shoulders, visible hands and fingers, clothing, trouser silhouette, both legs, ankles, shoes and shoe overlap. No pose correction, no rotation, no relocation, no new gait, no new objects. Maintain the exact 2:3 composition and margins, transparent background. One isolated person photograph, no collage or shadow. Do not extend an arm or leg into the removed white-object area.",
+      "coordinateSpace": "High-resolution input before delivery resize",
+      "sourceSize": [
+        765,
+        1152
+      ]
     }
   },
   {
@@ -1331,7 +1336,12 @@
         263,
         976
       ],
-      "prompt": "Edit target: the supplied adult runway photograph. Remove ONLY the long thin white vertical cane-like object hanging below the hand on the VIEWER'S LEFT. That object must become fully transparent. Preserve every other feature as closely as possible: exact head position, face, sunglasses, body size and lean, shoulders, visible hands and fingers, clothing, trouser silhouette, both legs, ankles, shoes and shoe overlap. No pose correction, no rotation, no relocation, no new gait or objects. Maintain the exact 2:3 composition and margins, transparent background. One isolated person photograph, no collage or shadow. Do not extend a limb into the removed white-object area."
+      "prompt": "Edit target: the supplied adult runway photograph. Remove ONLY the long thin white vertical cane-like object hanging below the hand on the VIEWER'S LEFT. That object must become fully transparent. Preserve every other feature as closely as possible: exact head position, face, sunglasses, body size and lean, shoulders, visible hands and fingers, clothing, trouser silhouette, both legs, ankles, shoes and shoe overlap. No pose correction, no rotation, no relocation, no new gait or objects. Maintain the exact 2:3 composition and margins, transparent background. One isolated person photograph, no collage or shadow. Do not extend a limb into the removed white-object area.",
+      "coordinateSpace": "High-resolution input before delivery resize",
+      "sourceSize": [
+        765,
+        1152
+      ]
     }
   },
   {
@@ -1394,7 +1404,12 @@
         263,
         1035
       ],
-      "prompt": "Edit target: the supplied adult runway photograph. Remove ONLY the long thin white vertical cane-like object hanging below the hand on the VIEWER'S LEFT. That object must become fully transparent. Preserve every other feature as closely as possible: exact head position, face, sunglasses, body size and lean, shoulders, visible hands and fingers, clothing, trouser silhouette, both legs, ankles, shoes and shoe overlap. No pose correction, no rotation, no relocation, no new gait or objects. Maintain the exact 2:3 composition and margins, transparent background. One isolated person photograph, no collage or shadow. Do not extend a limb into the removed white-object area."
+      "prompt": "Edit target: the supplied adult runway photograph. Remove ONLY the long thin white vertical cane-like object hanging below the hand on the VIEWER'S LEFT. That object must become fully transparent. Preserve every other feature as closely as possible: exact head position, face, sunglasses, body size and lean, shoulders, visible hands and fingers, clothing, trouser silhouette, both legs, ankles, shoes and shoe overlap. No pose correction, no rotation, no relocation, no new gait or objects. Maintain the exact 2:3 composition and margins, transparent background. One isolated person photograph, no collage or shadow. Do not extend a limb into the removed white-object area.",
+      "coordinateSpace": "High-resolution input before delivery resize",
+      "sourceSize": [
+        765,
+        1152
+      ]
     }
   },
   {
@@ -1457,7 +1472,12 @@
         259,
         1024
       ],
-      "prompt": "Edit target: the supplied adult runway photograph. Remove ONLY the long thin white vertical cane-like object hanging below the hand on the VIEWER'S LEFT. That object must become fully transparent. Preserve every other feature as closely as possible: exact head position, face, sunglasses, body size and lean, shoulders, visible hands and fingers, clothing, trouser silhouette, both legs, ankles, shoes and shoe overlap. No pose correction, no rotation, no relocation, no new gait or objects. Maintain the exact 2:3 composition and margins, transparent background. One isolated person photograph, no collage or shadow. Do not extend a limb into the removed white-object area."
+      "prompt": "Edit target: the supplied adult runway photograph. Remove ONLY the long thin white vertical cane-like object hanging below the hand on the VIEWER'S LEFT. That object must become fully transparent. Preserve every other feature as closely as possible: exact head position, face, sunglasses, body size and lean, shoulders, visible hands and fingers, clothing, trouser silhouette, both legs, ankles, shoes and shoe overlap. No pose correction, no rotation, no relocation, no new gait or objects. Maintain the exact 2:3 composition and margins, transparent background. One isolated person photograph, no collage or shadow. Do not extend a limb into the removed white-object area.",
+      "coordinateSpace": "High-resolution input before delivery resize",
+      "sourceSize": [
+        765,
+        1152
+      ]
     }
   },
   {
@@ -1519,7 +1539,12 @@
         263,
         1080
       ],
-      "prompt": "Edit target: the supplied adult runway photograph. Remove ONLY the long thin white vertical cane-like object hanging below the hand on the VIEWER'S LEFT. That object must become fully transparent. Preserve every other feature as closely as possible: exact head position, face, sunglasses, body size and lean, shoulders, visible hands and fingers, clothing, trouser silhouette, both legs, ankles, shoes and shoe overlap. No pose correction, no rotation, no relocation, no new gait or objects. Maintain the exact 2:3 composition and margins, transparent background. One isolated person photograph, no collage or shadow. Do not extend a limb into the removed white-object area."
+      "prompt": "Edit target: the supplied adult runway photograph. Remove ONLY the long thin white vertical cane-like object hanging below the hand on the VIEWER'S LEFT. That object must become fully transparent. Preserve every other feature as closely as possible: exact head position, face, sunglasses, body size and lean, shoulders, visible hands and fingers, clothing, trouser silhouette, both legs, ankles, shoes and shoe overlap. No pose correction, no rotation, no relocation, no new gait or objects. Maintain the exact 2:3 composition and margins, transparent background. One isolated person photograph, no collage or shadow. Do not extend a limb into the removed white-object area.",
+      "coordinateSpace": "High-resolution input before delivery resize",
+      "sourceSize": [
+        765,
+        1152
+      ]
     }
   },
   {
@@ -2209,7 +2234,12 @@
         275,
         957
       ],
-      "prompt": "Edit target: the supplied adult runway photograph. Remove ONLY the long thin white vertical cane-like object hanging below the hand on the VIEWER'S LEFT. That object must become fully transparent. Preserve every other feature as closely as possible: exact head position, face, sunglasses, body size and lean, shoulders, visible hands and fingers, clothing, trouser silhouette, both legs, ankles, shoes and shoe overlap. No pose correction, no rotation, no relocation, no new gait or objects. Maintain the exact 2:3 composition and margins, transparent background. One isolated person photograph, no collage or shadow. Do not extend a limb into the removed white-object area."
+      "prompt": "Edit target: the supplied adult runway photograph. Remove ONLY the long thin white vertical cane-like object hanging below the hand on the VIEWER'S LEFT. That object must become fully transparent. Preserve every other feature as closely as possible: exact head position, face, sunglasses, body size and lean, shoulders, visible hands and fingers, clothing, trouser silhouette, both legs, ankles, shoes and shoe overlap. No pose correction, no rotation, no relocation, no new gait or objects. Maintain the exact 2:3 composition and margins, transparent background. One isolated person photograph, no collage or shadow. Do not extend a limb into the removed white-object area.",
+      "coordinateSpace": "High-resolution input before delivery resize",
+      "sourceSize": [
+        765,
+        1152
+      ]
     }
   },
   {
@@ -2272,7 +2302,12 @@
         272,
         1055
       ],
-      "prompt": "Edit target: the supplied adult runway photograph. Remove ONLY the long thin white vertical cane-like object hanging below the hand on the VIEWER'S LEFT. That object must become fully transparent. Preserve every other feature as closely as possible: exact head position, face, sunglasses, body size and lean, shoulders, visible hands and fingers, clothing, trouser silhouette, both legs, ankles, shoes and shoe overlap. No pose correction, no rotation, no relocation, no new gait or objects. Maintain the exact 2:3 composition and margins, transparent background. One isolated person photograph, no collage or shadow. Do not extend a limb into the removed white-object area."
+      "prompt": "Edit target: the supplied adult runway photograph. Remove ONLY the long thin white vertical cane-like object hanging below the hand on the VIEWER'S LEFT. That object must become fully transparent. Preserve every other feature as closely as possible: exact head position, face, sunglasses, body size and lean, shoulders, visible hands and fingers, clothing, trouser silhouette, both legs, ankles, shoes and shoe overlap. No pose correction, no rotation, no relocation, no new gait or objects. Maintain the exact 2:3 composition and margins, transparent background. One isolated person photograph, no collage or shadow. Do not extend a limb into the removed white-object area.",
+      "coordinateSpace": "High-resolution input before delivery resize",
+      "sourceSize": [
+        765,
+        1152
+      ]
     }
   },
   {
@@ -2335,7 +2370,12 @@
         276,
         986
       ],
-      "prompt": "Edit target: the supplied adult runway photograph. Remove ONLY the long thin white vertical cane-like object hanging below the hand on the VIEWER'S LEFT. That object must become fully transparent. Preserve every other feature as closely as possible: exact head position, face, sunglasses, body size and lean, shoulders, visible hands and fingers, clothing, trouser silhouette, both legs, ankles, shoes and shoe overlap. No pose correction, no rotation, no relocation, no new gait or objects. Maintain the exact 2:3 composition and margins, transparent background. One isolated person photograph, no collage or shadow. Do not extend a limb into the removed white-object area."
+      "prompt": "Edit target: the supplied adult runway photograph. Remove ONLY the long thin white vertical cane-like object hanging below the hand on the VIEWER'S LEFT. That object must become fully transparent. Preserve every other feature as closely as possible: exact head position, face, sunglasses, body size and lean, shoulders, visible hands and fingers, clothing, trouser silhouette, both legs, ankles, shoes and shoe overlap. No pose correction, no rotation, no relocation, no new gait or objects. Maintain the exact 2:3 composition and margins, transparent background. One isolated person photograph, no collage or shadow. Do not extend a limb into the removed white-object area.",
+      "coordinateSpace": "High-resolution input before delivery resize",
+      "sourceSize": [
+        765,
+        1152
+      ]
     }
   },
   {
@@ -2398,7 +2438,12 @@
         277,
         1069
       ],
-      "prompt": "Edit target: the supplied adult runway photograph. Remove ONLY the long thin white vertical cane-like object hanging below the hand on the VIEWER'S LEFT. That object must become fully transparent. Preserve every other feature as closely as possible: exact head position, face, sunglasses, body size and lean, shoulders, visible hands and fingers, clothing, trouser silhouette, both legs, ankles, shoes and shoe overlap. No pose correction, no rotation, no relocation, no new gait or objects. Maintain the exact 2:3 composition and margins, transparent background. One isolated person photograph, no collage or shadow. Do not extend a limb into the removed white-object area."
+      "prompt": "Edit target: the supplied adult runway photograph. Remove ONLY the long thin white vertical cane-like object hanging below the hand on the VIEWER'S LEFT. That object must become fully transparent. Preserve every other feature as closely as possible: exact head position, face, sunglasses, body size and lean, shoulders, visible hands and fingers, clothing, trouser silhouette, both legs, ankles, shoes and shoe overlap. No pose correction, no rotation, no relocation, no new gait or objects. Maintain the exact 2:3 composition and margins, transparent background. One isolated person photograph, no collage or shadow. Do not extend a limb into the removed white-object area.",
+      "coordinateSpace": "High-resolution input before delivery resize",
+      "sourceSize": [
+        765,
+        1152
+      ]
     }
   },
   {

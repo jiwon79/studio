@@ -26,7 +26,7 @@ test('enhanced-only playback waits for all photos and continues through directio
   vi.stubGlobal('matchMedia', () => ({ matches: false }));
   vi.stubGlobal('requestAnimationFrame', (callback: (time: number) => void) => { nextFrame = callback; });
   vi.stubGlobal('fetch', async (url: string) => { requests.push(url); return { ok: true, blob: async () => new Blob([new Uint8Array(packs.find(pack => pack.url === url)!.length)]) }; });
-  vi.stubGlobal('createImageBitmap', async () => ({ width: 768, height: 1152, close() {} }));
+  vi.stubGlobal('createImageBitmap', async () => ({ width: 640, height: 960, close() {} }));
   async function until(check: () => boolean) {
     for (let i = 0; i < 200; i++) {
       if (check()) return;
@@ -43,6 +43,8 @@ test('enhanced-only playback waits for all photos and continues through directio
     const canvas = node('#person');
     expect(canvas.dataset.quality).toBe('enhanced');
     expect(canvas.dataset.imageFormat).toBe('avif');
+    expect(canvas.width).toBe(640);
+    expect(canvas.height).toBe(960);
     let time = 100;
     nextFrame!(time);
     for (let i = 0; i < 90; i++) {

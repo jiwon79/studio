@@ -6,7 +6,9 @@ import fallback from './assets/quality/manifest.json';
 
 test('every AVIF matches the final photograph and bounded alpha recipe', () => {
   expect(optimized.assetVersion).toBe(fallback.assetVersion);
-  expect(optimized.recipe.resize).toBe(false);
+  expect(optimized.recipe.resize).toBe(true);
+  expect(optimized.recipe.width).toBe(640);
+  expect(optimized.recipe.height).toBe(960);
   expect(optimized.recipe.alphaQuality).toBe(100);
   expect(optimized.frames.map(row => row.index)).toEqual(fallback.frames.map(row => row.index));
   const sources = new Map(fallback.frames.map(row => [row.index, row]));
@@ -16,7 +18,8 @@ test('every AVIF matches the final photograph and bounded alpha recipe', () => {
   for (const row of optimized.frames) {
     expect(row.fallbackSha256).toBe(sources.get(row.index)!.sha256);
     expect(row.alphaMaxError).toBeLessThanOrEqual(4);
-    expect(row.width / row.height).toBeCloseTo(2 / 3, 2);
+    expect(row.width).toBe(640);
+    expect(row.height).toBe(960);
     const bytes = readFileSync(new URL(row.file, root));
     expect(createHash('sha256').update(bytes).digest('hex'), row.file).toBe(row.sha256);
     expect(bytes.subarray(4, 8).toString()).toBe('ftyp');
