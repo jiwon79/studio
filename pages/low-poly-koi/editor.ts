@@ -25,6 +25,7 @@ export class PondEditor<State> {
   private points: XY[] = [];
   private drag: { type: 'move' | 'resize'; last: XY; box: Bounds; corner?: Corner; edge?: Edge; scale: number } | null = null;
   private pending: State | null = null;
+  private activePointer: number | null = null;
   private moved = false;
   private hoverPoint: XY | null = null;
   private lastTap: { point: XY; time: number } | null = null;
@@ -36,24 +37,29 @@ export class PondEditor<State> {
     canvas.addEventListener('pointerdown', event => this.down(event), { signal });
     canvas.addEventListener('pointermove', event => this.move(event), { signal });
     canvas.addEventListener('pointerup', event => this.up(event), { signal });
-    canvas.addEventListener('pointercancel', () => this.cancel(), { signal });
+    canvas.addEventListener('pointercancel', event => {
+      if (event.pointerId === this.activePointer) this.finishGesture();
+    }, { signal });
     canvas.addEventListener('pointerleave', () => { this.hoverPoint = null; this.hoverBox.hidden = true; }, { signal });
     canvas.addEventListener('dblclick', event => {
       this.splash(this.point(event));
     }, { signal });
     document.querySelectorAll<HTMLButtonElement>('[data-corner], [data-edge]').forEach(button => button.addEventListener('pointerdown', event => {
-      if (!event.isPrimary || event.button !== 0) return;
+      if (!event.isPrimary || event.button !== 0 || this.activePointer !== null) return;
       event.preventDefault();
       if (this.selected === null) return;
       const node = host.nodes().find(n => n.id === this.selected);
       if (!node) return;
+      this.activePointer = event.pointerId;
       this.moved = false;
       this.pending = host.capture();
       this.drag = { type: 'resize', box: { ...node.bounds }, corner: button.dataset.corner as Corner, edge: button.dataset.edge as Edge,
         last: this.point(event), scale: 1 };
       this.canvas.setPointerCapture(event.pointerId);
     }, { signal }));
-    canvas.addEventListener('lostpointercapture', () => { if (this.pending) this.cancel(); }, { signal });
+    canvas.addEventListener('lostpointercapture', event => {
+      if (event.pointerId === this.activePointer && !canvas.hasPointerCapture(event.pointerId)) this.finishGesture();
+    }, { signal });
     window.addEventListener('keydown', event => {
       if ((event.target as HTMLElement).matches('input, textarea, select, [contenteditable="true"]')) return;
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'z') {
@@ -70,8 +76,8 @@ export class PondEditor<State> {
         host.translate(this.selected, nudge.x * amount, nudge.y * amount); host.changed();
       }
     }, { signal });
-    window.addEventListener('blur', () => this.cancel(), { signal });
-    window.addEventListener('resize', () => this.cancel(), { signal });
+    window.addEventListener('blur', () => this.finishGesture(), { signal });
+    window.addEventListener('resize', () => this.finishGesture(), { signal });
     this.refresh();
   }
 
@@ -80,8 +86,9 @@ export class PondEditor<State> {
     return { x: event.clientX - rect.left, y: event.clientY - rect.top };
   }
   private down(event: PointerEvent) {
-    if (event.button !== 0 || !event.isPrimary) return;
+    if (event.button !== 0 || !event.isPrimary || this.activePointer !== null) return;
     const point = this.point(event);
+    this.activePointer = event.pointerId;
     this.canvas.setPointerCapture(event.pointerId);
     this.moved = false;
     const node = [...this.host.nodes()].reverse().find(({ bounds: b }) => point.x >= b.x - 5 && point.x <= b.x + b.width + 5 && point.y >= b.y - 5 && point.y <= b.y + b.height + 5);
@@ -96,7 +103,7 @@ export class PondEditor<State> {
     this.host.changed(); this.refresh();
   }
   private move(event: PointerEvent) {
-    if (!event.isPrimary) return;
+    if (!event.isPrimary || (this.activePointer !== null && event.pointerId !== this.activePointer)) return;
     const point = this.point(event);
     this.hoverPoint = event.pointerType === 'touch' ? null : point;
     if (this.points.length) {
@@ -121,24 +128,29 @@ export class PondEditor<State> {
     } else this.refresh();
   }
   private up(event: PointerEvent) {
-    if (!event.isPrimary) return;
+    if (event.pointerId !== this.activePointer) return;
+    // The final pointer position can arrive without a preceding move event.
+    const point = this.point(event);
+    const last = this.drag?.last ?? this.points[this.points.length - 1];
+    if (last && (point.x !== last.x || point.y !== last.y)) this.move(event);
     if (this.points.length) {
       const id = this.host.add(this.points);
-      if (id >= 0) { this.selected = id; this.moved = true; }
+      if (id >= 0) {
+        if (this.pending) this.remember(this.pending, id);
+        this.moved = true;
+        this.hoverPoint = null;
+      }
+      // New fish swim immediately; creation history does not require selection.
+      this.selected = null;
     }
-    if (this.moved && this.pending && this.selected !== null) this.remember(this.pending, this.selected);
     const isTap = !this.moved && event.pointerType !== 'mouse';
-    this.pending = null; this.drag = null; this.points = []; this.outline.setAttribute('d', '');
-    if (this.canvas.hasPointerCapture(event.pointerId)) this.canvas.releasePointerCapture(event.pointerId);
+    this.finishGesture();
     if (isTap) {
-      const point = this.point(event);
       if (this.lastTap && event.timeStamp - this.lastTap.time < 350
         && Math.hypot(point.x - this.lastTap.point.x, point.y - this.lastTap.point.y) < 24) {
         this.splash(point); this.lastTap = null;
       } else this.lastTap = { point, time: event.timeStamp };
-    }
-    if (!isTap) this.lastTap = null;
-    this.host.changed();
+    } else this.lastTap = null;
   }
   private splash(point: XY) {
     if (performance.now() - this.lastSplash < 250) return;
@@ -146,11 +158,21 @@ export class PondEditor<State> {
     this.selected = null;
     this.host.splash(point); this.host.changed(); this.refresh();
   }
-  private cancel() {
-    if (this.pending && this.moved && this.selected !== null) this.host.restore(this.pending, this.selected);
+  /** Interrupted drags retain their last pose. Only explicit cancellation rolls back. */
+  private finishGesture(rollback = false) {
+    if (this.activePointer === null) return;
+    if (this.pending && this.moved && this.selected !== null) {
+      if (rollback) this.host.restore(this.pending, this.selected);
+      else this.remember(this.pending, this.selected);
+    }
+    const pointer = this.activePointer;
+    // Clear ownership before releasing capture: its lost event may arrive later.
+    this.activePointer = null;
     this.pending = null; this.drag = null; this.moved = false; this.points = []; this.outline.setAttribute('d', '');
+    if (this.canvas.hasPointerCapture(pointer)) this.canvas.releasePointerCapture(pointer);
     this.host.changed();
   }
+  private cancel() { this.finishGesture(true); }
   private remember(state: State, id: number) {
     this.undoStack.push({ state, id }); if (this.undoStack.length > 40) this.undoStack.shift();
     this.redoStack.length = 0;

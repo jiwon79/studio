@@ -60,3 +60,10 @@ Editing is contextual: dragging from empty water sketches a new fish,
 while dragging from a fish moves it. There is no tool toolbar or mode switch.
 A click on empty water deselects; short taps do not create fish, so double
 click/tap still triggers ripples. Undo/redo remains available by keyboard.
+
+Sketch creation records undo history without selecting the new fish, so it
+starts swimming immediately. Interrupted move/resize gestures (focus loss,
+resize, pointer cancellation or capture loss) retain the latest pose and
+remain undoable. Escape explicitly rolls back the active gesture. Pointer
+ownership and capture checks ignore stale events; the final pointer-up
+position is applied even if the last move event was omitted.
