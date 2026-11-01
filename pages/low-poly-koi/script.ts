@@ -14,22 +14,25 @@ const motion = matchMedia('(prefers-reduced-motion: reduce)');
 
 function start() {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'low-power' });
-  renderer.setClearColor('#0b0f1e', 1);
+  renderer.setClearColor('#1d4ce9', 1);
   renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
   const scene = new THREE.Scene();
   const camera = new THREE.OrthographicCamera(0, 1, 1, 0, 0.1, 10);
   camera.position.z = 4;
-  scene.add(new THREE.AmbientLight('#c8d6f6', 1.7));
-  const light = new THREE.DirectionalLight('#fff4d9', 2.6);
-  light.position.set(-1, 2, 4);
+  scene.add(new THREE.AmbientLight('#ffffff', 0.95));
+  const light = new THREE.DirectionalLight('#ffffff', 2);
+  light.position.set(-3, 4, 3);
   scene.add(light);
   const material = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.9, metalness: 0, flatShading: true, side: THREE.DoubleSide });
-  const eyesMaterial = new THREE.MeshBasicMaterial({ color: '#151a24' });
+  const finMaterial = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1, flatShading: true,
+    side: THREE.DoubleSide, transparent: true, opacity: 0.43, depthWrite: false });
+  const eyesMaterial = new THREE.MeshBasicMaterial({ color: '#183d93' });
   const eyeGeometry = new THREE.OctahedronGeometry(FISH_LENGTH * 0.008);
   const fish = Array.from({ length: MAX_FISH }, (_, i) => {
     const geometry = new FishGeometry(i);
-    const mesh = new THREE.Mesh(geometry, material);
+    const mesh = new THREE.Mesh(geometry, [material, finMaterial]);
     mesh.frustumCulled = false;
     scene.add(mesh);
     const eyes = [-1, 1].map(() => {
@@ -114,6 +117,7 @@ function start() {
     eyeGeometry.dispose();
     eyesMaterial.dispose();
     material.dispose();
+    finMaterial.dispose();
     renderer.dispose();
   });
 }

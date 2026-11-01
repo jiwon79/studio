@@ -16,3 +16,7 @@ interpolates fixed-step poses, and a smooth centreline drives the faceted mesh.
 The original procedural fragment shader and dithering are replaced with
 dynamic triangular fish geometry, flat lighting and angular silhouettes.
 Three.js supplies the renderer; no fish images or models are loaded.
+
+The silhouette follows the source body-width profile, rounded snout, small
+oval pectoral fans and shallow forked tail. Fins use a separate translucent
+material. The palette uses the source blue (`#1d4ce9`) with white faceted fish.
