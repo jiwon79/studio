@@ -4,11 +4,12 @@ import { directionPhotos } from './direction-photos';
 import { AtlasPool } from './atlas-pool';
 import { PhotoDownloads } from './photo-downloads';
 import { qualityFraming } from './quality-framing';
-import { unpackPhotographs, type PhotoPack } from './photo-packs';
+import { unpackPhotographs, type PhotoPackLibraries } from './photo-packs';
+import { supportsAvif } from './image-format';
 
-declare const __RUNWAY_PHOTO_PACKS__: PhotoPack[];
+declare const __RUNWAY_PHOTO_PACKS__: PhotoPackLibraries;
 
-const packs = __RUNWAY_PHOTO_PACKS__;
+const libraries = __RUNWAY_PHOTO_PACKS__;
 const byIndex = new Map(manifest.frames.map(row => [row.index, row]));
 if (manifest.assetVersion !== data.assetVersion) throw new Error('Photographs do not match the walk library');
 for (let yaw = -90; yaw <= 90; yaw += 5) {
@@ -19,9 +20,13 @@ for (let yaw = -90; yaw <= 90; yaw += 5) {
 export function qualityLibrary(onDownloaded: () => void) {
   const photos = new Map<number, Blob>();
   let receivedBytes = 0;
-  const entries = packs.flatMap(pack => pack.entries.map(entry => entry.index));
-  if (new Set(entries).size !== byIndex.size || entries.length !== byIndex.size || entries.some(index => !byIndex.has(index))) {
-    throw new Error('Photograph packs do not match the final edit');
+  let format: 'webp' | 'avif' = 'webp';
+  let packs = libraries.webp;
+  for (const collection of [libraries.webp, libraries.avif]) {
+    const entries = collection.flatMap(pack => pack.entries.map(entry => entry.index));
+    if (new Set(entries).size !== byIndex.size || entries.length !== byIndex.size || entries.some(index => !byIndex.has(index))) {
+      throw new Error('Photograph packs do not match the final edit');
+    }
   }
   const downloads = new PhotoDownloads(async index => {
     const pack = packs[index];
@@ -50,7 +55,12 @@ export function qualityLibrary(onDownloaded: () => void) {
       return { loaded: photos.size, total: byIndex.size, bytes: receivedBytes };
     },
     get decoded() { return images.size; },
-    async preloadAll() { await Promise.all(packs.map((_, index) => downloads.request(index, () => true, false))); },
+    get format() { return format; },
+    async preloadAll() {
+      format = await supportsAvif() ? 'avif' : 'webp';
+      packs = libraries[format];
+      await Promise.all(packs.map((_, index) => downloads.request(index, () => true, false)));
+    },
     async prepare(indices: number[]) { await Promise.all([...new Set(indices)].map(index => images.load(index))); },
     retain(indices: number[]) { images.retain(indices); },
     available(indices: number[]) { return indices.every(index => !!images.get(index)); },

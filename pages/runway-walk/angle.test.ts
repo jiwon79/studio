@@ -17,7 +17,7 @@ test('enhanced-only playback waits for all photos and continues through directio
     return { url: `/assets/runway-test-${i}.bin`, length: rows.length,
       entries: rows.map((row, offset) => ({ index: row.index, offset, length: 1 })) };
   });
-  vi.stubGlobal('__RUNWAY_PHOTO_PACKS__', packs);
+  vi.stubGlobal('__RUNWAY_PHOTO_PACKS__', { webp: packs, avif: packs.map(pack => ({ ...pack, mime: 'image/avif' })) });
   const body = { dataset: { booting: 'true' } };
   vi.stubGlobal('document', { body, hidden: false, querySelector: node, getElementById: (id: string) => node(`#${id}`), addEventListener() {} });
   vi.stubGlobal('window', { addEventListener() {}, setTimeout });
@@ -42,6 +42,7 @@ test('enhanced-only playback waits for all photos and continues through directio
     expect(requests.every(url => url.startsWith('/assets/runway-test-') && url.endsWith('.bin'))).toBe(true);
     const canvas = node('#person');
     expect(canvas.dataset.quality).toBe('enhanced');
+    expect(canvas.dataset.imageFormat).toBe('avif');
     let time = 100;
     nextFrame!(time);
     for (let i = 0; i < 90; i++) {

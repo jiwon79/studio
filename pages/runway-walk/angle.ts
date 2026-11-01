@@ -90,6 +90,7 @@ function paint(row: AngleFrame, yaw: number) {
   canvas.dataset.cutTick = String(block.before.tick);
   canvas.dataset.clock = String(clock);
   canvas.dataset.quality = 'enhanced';
+  canvas.dataset.imageFormat = photographs.format;
   canvas.dataset.gptRestored = 'true';
   canvas.dataset.qualityProvider = photographs.provider(index);
   canvas.dataset.decodedPhotos = String(photographs.decoded);

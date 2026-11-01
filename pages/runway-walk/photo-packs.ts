@@ -1,8 +1,11 @@
 export type PhotoPack = {
   url: string;
   length: number;
+  mime?: 'image/webp' | 'image/avif';
   entries: { index: number; offset: number; length: number }[];
 };
+
+export type PhotoPackLibraries = { webp: PhotoPack[]; avif: PhotoPack[] };
 
 /** Slices share the downloaded buffer; no raster decoding or image conversion. */
 export function unpackPhotographs(pack: PhotoPack, blob: Blob) {
@@ -17,7 +20,7 @@ export function unpackPhotographs(pack: PhotoPack, blob: Blob) {
     end += entry.length;
     if (end > blob.size) throw new Error('Photograph pack overflow');
     seen.add(entry.index);
-    photos.set(entry.index, blob.slice(entry.offset, end, 'image/webp'));
+    photos.set(entry.index, blob.slice(entry.offset, end, pack.mime ?? 'image/webp'));
   }
   if (end !== blob.size) throw new Error('Unindexed photograph pack data');
   return photos;

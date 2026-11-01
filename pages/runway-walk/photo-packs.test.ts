@@ -10,6 +10,7 @@ test('unpacking preserves every byte and image type without recompression', asyn
   expect([...new Uint8Array(await photos.get(12)!.arrayBuffer())]).toEqual([1, 2, 3]);
   expect([...new Uint8Array(await photos.get(24)!.arrayBuffer())]).toEqual([4, 5, 6, 7]);
   expect(photos.get(12)!.type).toBe('image/webp');
+  expect(unpackPhotographs({ ...pack, mime: 'image/avif' }, new Blob([new Uint8Array(7)])).get(12)!.type).toBe('image/avif');
 });
 
 test('partial downloads, gaps, duplicate IDs and unindexed tails fail before playback', () => {

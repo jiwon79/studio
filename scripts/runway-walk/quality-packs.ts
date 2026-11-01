@@ -2,39 +2,50 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { createHash } from 'node:crypto';
 import type { Plugin } from 'vite';
-import type { PhotoPack } from '../../pages/runway-walk/photo-packs';
+import type { PhotoPack, PhotoPackLibraries } from '../../pages/runway-walk/photo-packs';
 
 export const PHOTOS_PER_PACK = 64;
+type Frame = { index: number; file: string; sha256: string; fallbackSha256?: string };
+type Manifest = { assetVersion: string; frames: Frame[] };
 
-/** Concatenation preserves every encoded pixel; individual WebPs remain the
- * editable source. Only these content-addressed packs are shipped to browsers. */
+/** Emit alternate, content-addressed downloads. Only one format is fetched. */
 export function runwayQualityPacks(root: string): Plugin {
   let emitted: { name: string; bytes: Buffer }[] = [];
   return {
     name: 'runway-quality-packs',
     async config(_config, environment) {
       if (environment.isPreview) return;
-      const folder = resolve(root, 'pages/runway-walk/assets/quality');
-      const manifest = JSON.parse(await readFile(resolve(folder, 'manifest.json'), 'utf8')) as {
-        frames: { index: number; file: string; sha256: string }[];
-      };
-      emitted = [];
-      const packs: PhotoPack[] = [];
-      for (let start = 0; start < manifest.frames.length; start += PHOTOS_PER_PACK) {
-        const entries: PhotoPack['entries'] = [], chunks: Buffer[] = [];
-        let length = 0;
-        for (const row of manifest.frames.slice(start, start + PHOTOS_PER_PACK)) {
-          const bytes = await readFile(resolve(folder, row.file));
-          if (createHash('sha256').update(bytes).digest('hex') !== row.sha256) throw new Error(`Unexpected photo: ${row.index}`);
-          entries.push({ index: row.index, offset: length, length: bytes.length });
-          chunks.push(bytes); length += bytes.length;
-        }
-        const bytes = Buffer.concat(chunks), hash = createHash('sha256').update(bytes).digest('hex').slice(0, 8);
-        const name = `runway-photos-${String(packs.length).padStart(2, '0')}-${hash}.bin`;
-        packs.push({ url: `/assets/${name}`, length, entries });
-        emitted.push({ name, bytes });
+      const assets = resolve(root, 'pages/runway-walk/assets');
+      const original: Manifest = JSON.parse(await readFile(resolve(assets, 'quality/manifest.json'), 'utf8'));
+      const alternative: Manifest = JSON.parse(await readFile(resolve(assets, 'quality-avif/manifest.json'), 'utf8'));
+      const byIndex = new Map(original.frames.map(row => [row.index, row]));
+      if (alternative.assetVersion !== original.assetVersion || alternative.frames.length !== original.frames.length
+        || new Set(alternative.frames.map(row => row.index)).size !== byIndex.size
+        || alternative.frames.some(row => row.fallbackSha256 !== byIndex.get(row.index)?.sha256)) {
+        throw new Error('AVIF derivatives do not match the final WebP edit');
       }
-      return { define: { __RUNWAY_PHOTO_PACKS__: JSON.stringify(packs) } };
+      emitted = [];
+      const libraries: PhotoPackLibraries = { webp: [], avif: [] };
+      for (const format of ['webp', 'avif'] as const) {
+        const manifest = format === 'webp' ? original : alternative;
+        const folder = resolve(assets, format === 'webp' ? 'quality' : 'quality-avif');
+        for (let start = 0; start < manifest.frames.length; start += PHOTOS_PER_PACK) {
+          const entries: PhotoPack['entries'] = [], chunks: Buffer[] = [];
+          let length = 0;
+          for (const row of manifest.frames.slice(start, start + PHOTOS_PER_PACK)) {
+            const bytes = await readFile(resolve(folder, row.file));
+            if (createHash('sha256').update(bytes).digest('hex') !== row.sha256) throw new Error(`Unexpected ${format} photo: ${row.index}`);
+            entries.push({ index: row.index, offset: length, length: bytes.length });
+            chunks.push(bytes); length += bytes.length;
+          }
+          const bytes = Buffer.concat(chunks), hash = createHash('sha256').update(bytes).digest('hex').slice(0, 8);
+          const prefix = format === 'webp' ? 'runway-photos' : 'runway-avif';
+          const name = `${prefix}-${String(libraries[format].length).padStart(2, '0')}-${hash}.bin`;
+          libraries[format].push({ url: `/assets/${name}`, length, mime: `image/${format}`, entries });
+          emitted.push({ name, bytes });
+        }
+      }
+      return { define: { __RUNWAY_PHOTO_PACKS__: JSON.stringify(libraries) } };
     },
     buildStart() {
       for (const asset of emitted) this.emitFile({ type: 'asset', fileName: `assets/${asset.name}`, source: asset.bytes });

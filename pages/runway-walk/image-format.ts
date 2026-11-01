@@ -1,0 +1,11 @@
+// Full-resolution color + alpha AVIF probe; no network request is needed.
+const AVIF_PROBE = 'AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUEAAAGGbWV0YQAAAAAAAAAhaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAAAAAAAOcGl0bQAAAAAAAQAAACxpbG9jAAAAAEQAAAIAAQAAAAEAAAHZAAAAKwACAAAAAQAAAa4AAAArAAAAQmlpbmYAAAAAAAIAAAAaaW5mZQIAAAAAAQAAYXYwMUNvbG9yAAAAABppbmZlAgAAAAACAABhdjAxQWxwaGEAAAAAGmlyZWYAAAAAAAAADmF1eGwAAgABAAEAAADDaXBycAAAAJ1pcGNvAAAAFGlzcGUAAAAAAAAAAgAAAAIAAAAQcGl4aQAAAAADCAgIAAAADGF2MUOBIAAAAAAAE2NvbHJuY2x4AAEADQAGgAAAAA5waXhpAAAAAAEIAAAADGF2MUOBABwAAAAAOGF1eEMAAAAAdXJuOm1wZWc6bXBlZ0I6Y2ljcDpzeXN0ZW1zOmF1eGlsaWFyeTphbHBoYQAAAAAeaXBtYQAAAAAAAAACAAEEAQKDBAACBAEFhgcAAABebWRhdBIACgQYADYVMiEQAG4BH///+GdckAgAvAnhnhnhnhnhnhnhnhnhnhnhnicSAAoHOAA2kBDQaTIeGUJjBMPPPPNCqkCQQV8bBe7myK21rabXXKaYIJaL';
+
+export async function supportsAvif() {
+  try {
+    const bytes = Uint8Array.from(atob(AVIF_PROBE), character => character.charCodeAt(0));
+    const bitmap = await createImageBitmap(new Blob([bytes], { type: 'image/avif' }));
+    bitmap.close();
+    return true;
+  } catch { return false; }
+}
