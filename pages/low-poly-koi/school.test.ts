@@ -1,6 +1,6 @@
 import { test, expect } from 'vitest';
 import { createSchool, MAX_FISH, type PointerState } from './school';
-import { FishGeometry, FISH_LENGTH } from './geometry';
+import { FishGeometry, FISH_LENGTH, sampleSpine } from './geometry';
 
 function pond(width = 1440, height = 900) {
   const canvas = { clientWidth: width, clientHeight: height, width, height };
@@ -35,6 +35,57 @@ test('a nearby pointer makes a fish sprint compared with undisturbed swimming', 
   }
   expect(disturbed.output.uFish[1]).toBeGreaterThan(normal.output.uFish[1] + 0.2);
   expect(disturbed.output.uSpine).not.toEqual(normal.output.uSpine);
+});
+
+test('cruising turns do not fold the shoulders back towards the head', () => {
+  const p = pond();
+  let largest = 0;
+  for (let step = 0; step <= 1800; step++) {
+    p.school.frame(step / 60);
+    const spine = p.output.uSpine;
+    for (let fish = 0; fish < MAX_FISH; fish++) {
+      const base = fish * 20;
+      const ax = spine[base] - spine[base + 2], ay = spine[base + 1] - spine[base + 3];
+      const bx = spine[base] - spine[base + 8], by = spine[base + 1] - spine[base + 9];
+      const cosine = (ax * bx + ay * by) / (Math.hypot(ax, ay) * Math.hypot(bx, by));
+      largest = Math.max(largest, Math.acos(Math.max(-1, Math.min(1, cosine))));
+    }
+  }
+  expect(largest).toBeLessThan(0.8);
+});
+
+test('refined centreline is continuous across the simulation bones', () => {
+  const p = pond();
+  p.school.frame(10);
+  for (let fish = 0; fish < MAX_FISH; fish++) {
+    for (let bone = 1; bone < 9; bone++) {
+      const u = bone / 9, epsilon = 1e-5;
+      const left = sampleSpine(p.output.uSpine, fish, u - epsilon);
+      const at = sampleSpine(p.output.uSpine, fish, u);
+      const right = sampleSpine(p.output.uSpine, fish, u + epsilon);
+      expect(at[0]).toBeCloseTo(p.output.uSpine[fish * 20 + bone * 2], 6);
+      expect(at[1]).toBeCloseTo(p.output.uSpine[fish * 20 + bone * 2 + 1], 6);
+      for (const axis of [0, 1]) expect(Math.abs((at[axis] - left[axis]) / epsilon - (right[axis] - at[axis]) / epsilon)).toBeLessThan(0.001);
+    }
+  }
+});
+
+test('portrait resize preserves the local path shape instead of squeezing a fish sideways', () => {
+  const p = pond();
+  p.school.frame(5);
+  const before = p.output.uSpine.slice();
+  p.canvas.clientWidth = 390;
+  p.canvas.clientHeight = 844;
+  p.school.frame(5);
+  for (let fish = 0; fish < MAX_FISH; fish++) {
+    const base = fish * 20;
+    for (let bone = 1; bone < 10; bone++) {
+      for (const axis of [0, 1]) {
+        const at = base + bone * 2 + axis;
+        expect(p.output.uSpine[at] - p.output.uSpine[base + axis]).toBeCloseTo(before[at] - before[base + axis], 5);
+      }
+    }
+  }
 });
 
 test('angular geometry remains finite and attached to its fish after mobile resizing', () => {

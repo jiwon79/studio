@@ -50,13 +50,17 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
     return w > 0 && h > 0 ? w / h : 1.6;
   };
 
-  // When the canvas changes shape, stretch the school with it.
+  // Reposition fish when the viewport changes without compressing their
+  // local trajectories into hairpin turns on portrait screens.
   const fit = () => {
     const next = measure();
     if (Math.abs(next - aspect) < 1e-4) return;
     const k = next / aspect;
-    for (let i = 0; i < MAX_FISH; i++) head[i * 2] *= k;
-    for (let j = 0; j < trail.length; j += 2) trail[j] *= k;
+    for (let i = 0; i < MAX_FISH; i++) {
+      const shift = head[i * 2] * (k - 1);
+      head[i * 2] += shift;
+      for (let n = 0; n < TRAIL; n++) trail[(i * TRAIL + n) * 2] += shift;
+    }
     aspect = next;
   };
 
@@ -138,8 +142,11 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
       const want = Math.atan2(dy, dx);
       let diff = want - a;
       diff -= Math.round(diff / (Math.PI * 2)) * Math.PI * 2;
-      const maxTurn = 1.4 + fright * 6;
-      const turn = Math.max(-maxTurn, Math.min(maxTurn, diff * 2.5)) + wander * 0.5 * (1 - fright);
+      // A slow fish needs a wide turn: the previous fixed angular limit let
+      // its head turn back into its own body before the tail could follow.
+      const maxTurn = Math.min(1.4 + fright * 3, Math.max(0.35, v / (len * 0.85)));
+      const steering = diff * 2.5 + wander * 0.4 * (1 - fright);
+      const turn = Math.max(-maxTurn, Math.min(maxTurn, steering));
       a += turn * dt;
       // Burst and glide: a few strong beats, then coasting.
       const cycle = (t * (0.16 + 0.08 * rnd(i * 9.1)) + rnd(i * 6.6)) % 1;
@@ -153,7 +160,7 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
       state[i * 4] = a;
       state[i * 4 + 1] = v;
       // The tail beats faster the harder it swims, and barely at all in a glide.
-      state[i * 4 + 2] += dt * Math.PI * 2 * (0.6 + 2.6 * (v / base) * (0.35 + 0.65 * thrust));
+      state[i * 4 + 2] += dt * Math.PI * 2 * (0.45 + 1.55 * (v / base) * (0.35 + 0.65 * thrust));
       state[i * 4 + 3] += (thrust + Math.abs(turn) * 0.15 - state[i * 4 + 3]) * (1 - Math.exp(-dt * 3));
       // Lay down the trail the body will follow.
       const last = ((start[i] + count[i] - 1) % TRAIL) * 2 + i * TRAIL * 2;
@@ -211,16 +218,21 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
       // The wave: small at the head, sweeping wide at the tail.
       const beat = state[i * 4 + 2];
       const effort = 0.35 + 0.65 * state[i * 4 + 3];
+      // Read tangents from the unwarped path. Reading points already moved
+      // by the wave makes the result depend on which end is visited first.
+      const path = spineOut.slice(out, out + POINTS * 2);
       for (k = POINTS - 1; k >= 0; k--) {
         const u = k / (POINTS - 1);
-        const a = out + Math.max(k - 1, 0) * 2;
-        const b = out + Math.min(k + 1, POINTS - 1) * 2;
-        let tx = spineOut[a] - spineOut[b];
-        let ty = spineOut[a + 1] - spineOut[b + 1];
+        const a = Math.max(k - 1, 0) * 2;
+        const b = Math.min(k + 1, POINTS - 1) * 2;
+        let tx = path[a] - path[b];
+        let ty = path[a + 1] - path[b + 1];
         const tl = Math.hypot(tx, ty) || 1;
         tx /= tl;
         ty /= tl;
-        const sway = len * (0.012 + 0.1 * u * u) * effort * Math.sin(beat - u * 5.5);
+        // Keep the head still; concentrate the travelling wave behind the
+        // shoulders and through the tail rather than wiggling the whole fish.
+        const sway = len * 0.075 * u * u * u * effort * Math.sin(beat - u * 5.5);
         spineOut[out + k * 2] += -ty * sway;
         spineOut[out + k * 2 + 1] += tx * sway;
       }

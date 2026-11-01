@@ -42,9 +42,16 @@ function start() {
   const pointer: PointerState = { target: [0.5, 0.5], over: false };
   let spine: Float32Array = new Float32Array(MAX_FISH * 20);
   let states: Float32Array = new Float32Array(MAX_FISH * 4);
-  const school = createSchool({ canvas, options: () => ({ size: 1.15, interactive: !motion.matches }),
+  const fishScale = () => Math.min(1, canvas.clientWidth / canvas.clientHeight / 0.9);
+  const school = createSchool({ canvas, options: () => ({ size: 1.15 * fishScale(), interactive: !motion.matches }),
     uniform: (name, value) => { if (name === 'uSpine') spine = value; else states = value; },
   }, pointer);
+  const previousSpine = new Float32Array(MAX_FISH * 20);
+  const previousStates = new Float32Array(MAX_FISH * 4);
+  const renderedSpine = new Float32Array(MAX_FISH * 20);
+  const renderedStates = new Float32Array(MAX_FISH * 4);
+  const step = 1 / 60;
+  let accumulator = 0;
   const events = new AbortController();
   const signal = events.signal;
   const move = (event: PointerEvent) => {
@@ -61,34 +68,43 @@ function start() {
     renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
     camera.right = canvas.clientWidth / canvas.clientHeight;
     camera.updateProjectionMatrix();
+    school.frame(time);
+    previousSpine.set(spine);
+    previousStates.set(states);
     draw();
   };
   let time = 20;
-  function draw() {
-    school.frame(time);
+  function draw(alpha = 1) {
+    // Interpolate whole poses between fixed physics steps. 90/120/144 Hz
+    // displays no longer repeat the same pose then jump to the next one.
+    for (let j = 0; j < spine.length; j++) renderedSpine[j] = previousSpine[j] + (spine[j] - previousSpine[j]) * alpha;
+    for (let j = 0; j < states.length; j++) renderedStates[j] = previousStates[j] + (states[j] - previousStates[j]) * alpha;
     fish.forEach(({ geometry, eyes }, i) => {
-      geometry.update(spine, states[i * 4], states[i * 4 + 1]);
-      const base = i * 20;
-      const dx = spine[base] - spine[base + 2], dy = spine[base + 1] - spine[base + 3];
-      const len = Math.hypot(dx, dy) || 1;
+      geometry.update(renderedSpine, renderedStates[i * 4], renderedStates[i * 4 + 1], fishScale());
       eyes.forEach((eye, j) => {
-        const side = j === 0 ? -1 : 1;
-        eye.position.set(spine[base] - dx / len * 0.007 - dy / len * side * 0.01,
-          spine[base + 1] - dy / len * 0.007 + dx / len * side * 0.01, 0.009);
+        eye.position.set(...geometry.eyes[j]);
+        eye.scale.setScalar(fishScale());
       });
     });
     renderer.render(scene, camera);
   }
   let last = 0;
   function frame(now: number) {
-    if (document.hidden || motion.matches) { last = 0; return; }
-    if (last) time += Math.min((now - last) / 1000, 0.05);
+    if (document.hidden || motion.matches) { last = 0; accumulator = 0; return; }
+    if (last) accumulator += Math.min((now - last) / 1000, 0.05);
     last = now;
-    draw();
+    while (accumulator >= step) {
+      previousSpine.set(spine);
+      previousStates.set(states);
+      time += step;
+      school.frame(time);
+      accumulator -= step;
+    }
+    draw(accumulator / step);
   }
   window.addEventListener('resize', resize, { signal });
-  document.addEventListener('visibilitychange', () => { last = 0; pointer.over = false; }, { signal });
-  motion.addEventListener('change', () => { last = 0; draw(); }, { signal });
+  document.addEventListener('visibilitychange', () => { last = 0; accumulator = 0; pointer.over = false; }, { signal });
+  motion.addEventListener('change', () => { last = 0; accumulator = 0; draw(); }, { signal });
   resize();
   renderer.setAnimationLoop(frame);
   if (import.meta.hot) import.meta.hot.dispose(() => {
