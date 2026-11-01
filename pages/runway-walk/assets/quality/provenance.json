@@ -1259,6 +1259,17 @@
       ],
       "playback": "245-playback-playback-768.webp",
       "playbackSha256": "ea58e22ee11d7bd348428e61f7cdde2c92e85b0c0827170a83e7f7c41b2b52b0"
+    },
+    "cleanup": {
+      "purpose": "Remove white cane-like object only, using built-in image edit as a deletion mask. Original RGB and all pixels outside the small object region are unchanged.",
+      "generatedSha256": "93b385f36a00866c1c95b4eea14ba54553ddcd15b98446f4c0592dad721ceec1",
+      "removedRegion": [
+        233,
+        609,
+        277,
+        1053
+      ],
+      "prompt": "Edit target: the supplied adult runway photograph. Remove ONLY the long thin white vertical cane-like object hanging below the hand on the VIEWER'S LEFT. That object must become fully transparent. Preserve every other pixel/feature as closely as possible: exact head position, face, sunglasses, body size and lean, shoulders, visible hands and fingers, clothing, trouser silhouette, both legs, ankles, shoes and shoe overlap. No pose correction, no rotation, no relocation, no new gait, no new objects. Maintain the exact 2:3 composition and margins, transparent background. One isolated person photograph, no collage or shadow. Do not extend an arm or leg into the removed white-object area."
     }
   },
   {
@@ -1310,6 +1321,17 @@
       ],
       "playback": "246-playback-playback-768.webp",
       "playbackSha256": "5e0685f2f812966e09eefa71aaac2ccd7a91c31e7311dc36230bde7023e75919"
+    },
+    "cleanup": {
+      "purpose": "Remove white cane-like object only, using built-in image edit as a deletion mask. Original RGB and all pixels outside the small object region are unchanged.",
+      "generatedSha256": "d0deefd1fdc0a03338ce2b396174e79bd4db45da3d27a1fca3740957041ba5b2",
+      "removedRegion": [
+        224,
+        617,
+        263,
+        976
+      ],
+      "prompt": "Edit target: the supplied adult runway photograph. Remove ONLY the long thin white vertical cane-like object hanging below the hand on the VIEWER'S LEFT. That object must become fully transparent. Preserve every other feature as closely as possible: exact head position, face, sunglasses, body size and lean, shoulders, visible hands and fingers, clothing, trouser silhouette, both legs, ankles, shoes and shoe overlap. No pose correction, no rotation, no relocation, no new gait or objects. Maintain the exact 2:3 composition and margins, transparent background. One isolated person photograph, no collage or shadow. Do not extend a limb into the removed white-object area."
     }
   },
   {
@@ -1362,6 +1384,17 @@
       ],
       "playback": "247-playback-playback-768.webp",
       "playbackSha256": "a7f510e93a91e6285ca704e73882b3a64bbf6f07a0831d707991eefdc383aa92"
+    },
+    "cleanup": {
+      "purpose": "Remove white cane-like object only, using built-in image edit as a deletion mask. Original RGB and all pixels outside the small object region are unchanged.",
+      "generatedSha256": "43eeaf6994065e57fa043436f5fb73b1879f7365ff5b7e1640e768bf8a5a5c21",
+      "removedRegion": [
+        224,
+        607,
+        263,
+        1035
+      ],
+      "prompt": "Edit target: the supplied adult runway photograph. Remove ONLY the long thin white vertical cane-like object hanging below the hand on the VIEWER'S LEFT. That object must become fully transparent. Preserve every other feature as closely as possible: exact head position, face, sunglasses, body size and lean, shoulders, visible hands and fingers, clothing, trouser silhouette, both legs, ankles, shoes and shoe overlap. No pose correction, no rotation, no relocation, no new gait or objects. Maintain the exact 2:3 composition and margins, transparent background. One isolated person photograph, no collage or shadow. Do not extend a limb into the removed white-object area."
     }
   },
   {
@@ -1414,6 +1447,17 @@
       ],
       "playback": "248-playback-playback-768.webp",
       "playbackSha256": "e1e3a23bf910f84c55a7989fd9ea9e19bf67ae10d0a0c73e34a18cf829e25a38"
+    },
+    "cleanup": {
+      "purpose": "Remove white cane-like object only, using built-in image edit as a deletion mask. Original RGB and all pixels outside the small object region are unchanged.",
+      "generatedSha256": "1d80d910ef0202d3210aa4664fbda5ce0a375d2277c69997685c2955e1fb6308",
+      "removedRegion": [
+        225,
+        629,
+        259,
+        1024
+      ],
+      "prompt": "Edit target: the supplied adult runway photograph. Remove ONLY the long thin white vertical cane-like object hanging below the hand on the VIEWER'S LEFT. That object must become fully transparent. Preserve every other feature as closely as possible: exact head position, face, sunglasses, body size and lean, shoulders, visible hands and fingers, clothing, trouser silhouette, both legs, ankles, shoes and shoe overlap. No pose correction, no rotation, no relocation, no new gait or objects. Maintain the exact 2:3 composition and margins, transparent background. One isolated person photograph, no collage or shadow. Do not extend a limb into the removed white-object area."
     }
   },
   {
@@ -1465,6 +1509,17 @@
       ],
       "playback": "249-playback-playback-768.webp",
       "playbackSha256": "38f763f0b5abda27e81f9db40dce10b85e7ce417a6129c7ed129b47318a28ec3"
+    },
+    "cleanup": {
+      "purpose": "Remove white cane-like object only, using built-in image edit as a deletion mask. Original RGB and all pixels outside the small object region are unchanged.",
+      "generatedSha256": "481e5d9e95532ff2727e63c6019112bf2d4fa4aebe60ac9257062738e2610548",
+      "removedRegion": [
+        228,
+        638,
+        263,
+        1080
+      ],
+      "prompt": "Edit target: the supplied adult runway photograph. Remove ONLY the long thin white vertical cane-like object hanging below the hand on the VIEWER'S LEFT. That object must become fully transparent. Preserve every other feature as closely as possible: exact head position, face, sunglasses, body size and lean, shoulders, visible hands and fingers, clothing, trouser silhouette, both legs, ankles, shoes and shoe overlap. No pose correction, no rotation, no relocation, no new gait or objects. Maintain the exact 2:3 composition and margins, transparent background. One isolated person photograph, no collage or shadow. Do not extend a limb into the removed white-object area."
     }
   },
   {
@@ -2144,6 +2199,17 @@
       ],
       "playback": "264-playback-playback-768.webp",
       "playbackSha256": "a2528920548428bcd1e3c7fc37cf35e93984cba1c2ec787f8a6009b7043ccd2e"
+    },
+    "cleanup": {
+      "purpose": "Remove white cane-like object only, using built-in image edit as a deletion mask. Original RGB and all pixels outside the small object region are unchanged.",
+      "generatedSha256": "b1e60678e396566b29ed516d55c482495d8d8e7e302340133128ff07a54d13b4",
+      "removedRegion": [
+        242,
+        642,
+        275,
+        957
+      ],
+      "prompt": "Edit target: the supplied adult runway photograph. Remove ONLY the long thin white vertical cane-like object hanging below the hand on the VIEWER'S LEFT. That object must become fully transparent. Preserve every other feature as closely as possible: exact head position, face, sunglasses, body size and lean, shoulders, visible hands and fingers, clothing, trouser silhouette, both legs, ankles, shoes and shoe overlap. No pose correction, no rotation, no relocation, no new gait or objects. Maintain the exact 2:3 composition and margins, transparent background. One isolated person photograph, no collage or shadow. Do not extend a limb into the removed white-object area."
     }
   },
   {
@@ -2196,6 +2262,17 @@
       ],
       "playback": "265-playback-playback-768.webp",
       "playbackSha256": "03dc345493eb874d2027ca453454f20be2e1d7c07ad7117e10f4f8ea946ef543"
+    },
+    "cleanup": {
+      "purpose": "Remove white cane-like object only, using built-in image edit as a deletion mask. Original RGB and all pixels outside the small object region are unchanged.",
+      "generatedSha256": "e5ec91e2eea67e8ead7dfb40113eecf7b746ae5f0cd29881ac2b5a3650478902",
+      "removedRegion": [
+        238,
+        637,
+        272,
+        1055
+      ],
+      "prompt": "Edit target: the supplied adult runway photograph. Remove ONLY the long thin white vertical cane-like object hanging below the hand on the VIEWER'S LEFT. That object must become fully transparent. Preserve every other feature as closely as possible: exact head position, face, sunglasses, body size and lean, shoulders, visible hands and fingers, clothing, trouser silhouette, both legs, ankles, shoes and shoe overlap. No pose correction, no rotation, no relocation, no new gait or objects. Maintain the exact 2:3 composition and margins, transparent background. One isolated person photograph, no collage or shadow. Do not extend a limb into the removed white-object area."
     }
   },
   {
@@ -2248,6 +2325,17 @@
       ],
       "playback": "266-playback-playback-768.webp",
       "playbackSha256": "2913840d74e1a971293d217f5e617fef1e493023c8fd3d9054abf52cf23f2fa5"
+    },
+    "cleanup": {
+      "purpose": "Remove white cane-like object only, using built-in image edit as a deletion mask. Original RGB and all pixels outside the small object region are unchanged.",
+      "generatedSha256": "b371b1a1640f0e632808efefc40b524f72f13d64d7541f810c2ed995cf250362",
+      "removedRegion": [
+        240,
+        636,
+        276,
+        986
+      ],
+      "prompt": "Edit target: the supplied adult runway photograph. Remove ONLY the long thin white vertical cane-like object hanging below the hand on the VIEWER'S LEFT. That object must become fully transparent. Preserve every other feature as closely as possible: exact head position, face, sunglasses, body size and lean, shoulders, visible hands and fingers, clothing, trouser silhouette, both legs, ankles, shoes and shoe overlap. No pose correction, no rotation, no relocation, no new gait or objects. Maintain the exact 2:3 composition and margins, transparent background. One isolated person photograph, no collage or shadow. Do not extend a limb into the removed white-object area."
     }
   },
   {
@@ -2300,6 +2388,17 @@
       ],
       "playback": "267-playback-playback-768.webp",
       "playbackSha256": "e0f1c504460a1cddb9f7c8ce380e09c8f21187c77c9ce932fe181035f318ea1b"
+    },
+    "cleanup": {
+      "purpose": "Remove white cane-like object only, using built-in image edit as a deletion mask. Original RGB and all pixels outside the small object region are unchanged.",
+      "generatedSha256": "287f754b14ac852b2fd82e0ea84f692c00b2b95e4582c407f94ab7938ed69a2d",
+      "removedRegion": [
+        244,
+        640,
+        277,
+        1069
+      ],
+      "prompt": "Edit target: the supplied adult runway photograph. Remove ONLY the long thin white vertical cane-like object hanging below the hand on the VIEWER'S LEFT. That object must become fully transparent. Preserve every other feature as closely as possible: exact head position, face, sunglasses, body size and lean, shoulders, visible hands and fingers, clothing, trouser silhouette, both legs, ankles, shoes and shoe overlap. No pose correction, no rotation, no relocation, no new gait or objects. Maintain the exact 2:3 composition and margins, transparent background. One isolated person photograph, no collage or shadow. Do not extend a limb into the removed white-object area."
     }
   },
   {
