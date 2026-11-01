@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 const CHARACTERS = ' .:-=+*#%@';
-export const ASCII_SIZES = { original: 6, small: 4, fine: 3, micro: 2 } as const;
+export const ASCII_SIZES = { original: 6, medium: 16 / 3, compact: 14 / 3, small: 4 } as const;
 export type AsciiSize = keyof typeof ASCII_SIZES;
 
 export function isAsciiSize(value: string | null): value is AsciiSize {
