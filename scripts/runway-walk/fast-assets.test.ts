@@ -12,6 +12,7 @@ test('preview compresses bundles, caches versioned photos, and serves new hashes
   await writeFile(join(root, 'assets/reference-12345678.js'), script);
   await writeFile(join(root, 'assets/reference-abcdefgh.js'), 'new build');
   await writeFile(join(root, 'assets/person-12345678.webp'), 'photo bytes');
+  await writeFile(join(root, 'assets/runway-photos-00-12345678.bin'), 'unchanged photo bytes');
   const middleware = fastAssets(root);
   const server = createServer((request, response) => { void middleware(request, response, () => { response.statusCode = 404; response.end(); }); });
   await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));
@@ -39,5 +40,9 @@ test('preview compresses bundles, caches versioned photos, and serves new hashes
   const unversioned = await fetch(base + '/assets/person-12345678.webp', { method: 'HEAD' });
   expect(unversioned.headers.get('cache-control')).toContain('immutable');
   expect(await unversioned.text()).toBe('');
+  const pack = await fetch(base + '/assets/runway-photos-00-12345678.bin');
+  expect(pack.headers.get('cache-control')).toContain('immutable');
+  expect(pack.headers.get('content-type')).toBe('application/octet-stream');
+  expect(await pack.text()).toBe('unchanged photo bytes');
   expect((await fetch(base + '/runway-walk/angle.html')).status).toBe(404);
 });

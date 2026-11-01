@@ -12,6 +12,12 @@ test('enhanced-only playback waits for all photos and continues through directio
   };
   let nextFrame: ((time: number) => void) | undefined;
   const requests: string[] = [];
+  const packs = Array.from({ length: Math.ceil(manifest.frames.length / 64) }, (_, i) => {
+    const rows = manifest.frames.slice(i * 64, i * 64 + 64);
+    return { url: `/assets/runway-test-${i}.bin`, length: rows.length,
+      entries: rows.map((row, offset) => ({ index: row.index, offset, length: 1 })) };
+  });
+  vi.stubGlobal('__RUNWAY_PHOTO_PACKS__', packs);
   const body = { dataset: { booting: 'true' } };
   vi.stubGlobal('document', { body, hidden: false, querySelector: node, getElementById: (id: string) => node(`#${id}`), addEventListener() {} });
   vi.stubGlobal('window', { addEventListener() {}, setTimeout });
@@ -19,7 +25,7 @@ test('enhanced-only playback waits for all photos and continues through directio
   vi.stubGlobal('localStorage', { getItem: () => null, setItem() {} });
   vi.stubGlobal('matchMedia', () => ({ matches: false }));
   vi.stubGlobal('requestAnimationFrame', (callback: (time: number) => void) => { nextFrame = callback; });
-  vi.stubGlobal('fetch', async (url: string) => { requests.push(url); return { ok: true, blob: async () => new Blob(['image']) }; });
+  vi.stubGlobal('fetch', async (url: string) => { requests.push(url); return { ok: true, blob: async () => new Blob([new Uint8Array(packs.find(pack => pack.url === url)!.length)]) }; });
   vi.stubGlobal('createImageBitmap', async () => ({ width: 768, height: 1152, close() {} }));
   async function until(check: () => boolean) {
     for (let i = 0; i < 200; i++) {
@@ -32,8 +38,8 @@ test('enhanced-only playback waits for all photos and continues through directio
     await import('./angle');
     expect(body.dataset.booting).toBe('true');
     await until(() => body.dataset.booting === 'false');
-    expect(requests).toHaveLength(manifest.frames.length);
-    expect(requests.every(url => url.includes('/assets/quality/') && url.includes('.webp'))).toBe(true);
+    expect(requests).toHaveLength(packs.length);
+    expect(requests.every(url => url.startsWith('/assets/runway-test-') && url.endsWith('.bin'))).toBe(true);
     const canvas = node('#person');
     expect(canvas.dataset.quality).toBe('enhanced');
     let time = 100;
@@ -54,7 +60,7 @@ test('enhanced-only playback waits for all photos and continues through directio
       await until(() => canvas.dataset.requestedYaw === String(85 - i * 5) && canvas.dataset.directionLoading === 'false');
     }
     expect(canvas.dataset.requestedYaw).toBe('-90');
-    expect(requests).toHaveLength(manifest.frames.length);
+    expect(requests).toHaveLength(packs.length);
     expect(context.drawImage).toHaveBeenCalled();
   } finally { vi.unstubAllGlobals(); vi.resetModules(); }
 }, 30000);

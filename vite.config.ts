@@ -4,6 +4,7 @@ import { readdirSync, existsSync } from 'fs';
 import { staticPageAssets } from './scripts/static-page-assets';
 import { runwayLatestPages } from './scripts/runway-walk/latest-pages';
 import { runwayFastAssets } from './scripts/runway-walk/fast-assets';
+import { runwayQualityPacks } from './scripts/runway-walk/quality-packs';
 
 const root = new URL('.', import.meta.url).pathname;
 const pagesDir = resolve(root, 'pages');
@@ -73,6 +74,13 @@ const assetDirectories = pageEntries
   .filter(name => existsSync(resolve(pagesDir, name, 'assets')))
   .map(name => resolve(pagesDir, name, 'assets'));
 
+// The pack plugin emits these authoring images as shared binary downloads.
+// Do not also copy thousands of standalone WebPs into the deployment.
+const qualityDirectory = resolve(pagesDir, 'runway-walk/assets/quality');
+const packedPhotoSources = new Set(readdirSync(qualityDirectory)
+  .filter(name => name.endsWith('.webp'))
+  .map(name => resolve(qualityDirectory, name)));
+
 export default defineConfig({
   server: {
     allowedHosts: [
@@ -81,6 +89,7 @@ export default defineConfig({
     ],
   },
   plugins: [
+    runwayQualityPacks(root),
     runwayLatestPages(),
     runwayFastAssets(),
     artworkRouteFallback(pageEntries),
@@ -98,7 +107,7 @@ export default defineConfig({
         }];
       },
     },
-    staticPageAssets(assetDirectories),
+    staticPageAssets(assetDirectories, packedPhotoSources),
   ],
   build: {
     rollupOptions: { input },

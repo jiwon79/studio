@@ -13,7 +13,7 @@ export function fastAssets(directory: string) {
   return async (request: IncomingMessage, response: ServerResponse, next: () => void) => {
     if (request.method !== 'GET' && request.method !== 'HEAD') { next(); return; }
     const url = new URL(request.url ?? '/', 'http://localhost');
-    const hashed = /^\/assets\/([\w.-]+-[\w-]{8}\.(js|css|png|webp))$/.exec(url.pathname);
+    const hashed = /^\/assets\/([\w.-]+-[\w-]{8}\.(js|css|png|webp|bin))$/.exec(url.pathname);
     if (!hashed) { next(); return; }
     const filename = resolve(directory, 'assets', hashed[1]);
     const type = hashed[2];
@@ -35,7 +35,7 @@ export function fastAssets(directory: string) {
       } else body = await readFile(filename);
       response.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
       response.setHeader('Vary', [response.getHeader('Vary'), 'Accept-Encoding'].filter(Boolean).join(', '));
-      response.setHeader('Content-Type', ({ js: 'text/javascript; charset=utf-8', css: 'text/css; charset=utf-8', png: 'image/png', webp: 'image/webp' })[type]!);
+      response.setHeader('Content-Type', ({ js: 'text/javascript; charset=utf-8', css: 'text/css; charset=utf-8', png: 'image/png', webp: 'image/webp', bin: 'application/octet-stream' })[type]!);
       response.setHeader('Content-Length', body.length);
       response.statusCode = 200;
       response.end(request.method === 'HEAD' ? undefined : body);
