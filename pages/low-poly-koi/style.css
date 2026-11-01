@@ -26,15 +26,13 @@ canvas { display: block; width: 100%; height: 100%; touch-action: none; }
 [data-corner="ne"] { top: -12px; right: -12px; cursor: nesw-resize; }
 [data-corner="sw"] { bottom: -12px; left: -12px; cursor: nesw-resize; }
 [data-corner="se"] { bottom: -12px; right: -12px; cursor: nwse-resize; }
-.selection [data-delete] { position: absolute; top: -32px; right: -6px; pointer-events: auto; border: 1px solid #ffffff55; background: #153bb9; color: white; padding: 6px 12px; border-radius: 7px; font: 11px system-ui; cursor: pointer; }
 .editor-status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-.editor-tools svg, .selection [data-delete] svg { display: block; width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
-.selection [data-delete] { padding: 5px; border: 0; border-radius: 5px; }
-.selection [data-delete] svg { width: 14px; height: 14px; }
-.selection [data-delete]::before { content: ""; position: absolute; inset: -4px; }
+.editor-tools svg { display: block; width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 .lil-gui.root { z-index: 10; top: max(12px, env(safe-area-inset-top)); right: 12px; max-width: calc(100vw - 24px); }
 
 [data-edge="n"] { top: -12px; left: calc(50% - 12px); cursor: ns-resize; }
 [data-edge="s"] { bottom: -12px; left: calc(50% - 12px); cursor: ns-resize; }
 [data-edge="w"] { left: -12px; top: calc(50% - 12px); cursor: ew-resize; }
 [data-edge="e"] { right: -12px; top: calc(50% - 12px); cursor: ew-resize; }
+
+.selection-size { position: absolute; left: 50%; bottom: -29px; transform: translateX(-50%); padding: 3px 6px; white-space: nowrap; border-radius: 4px; background: #edf4ff; color: #1642cd; font: 10px/1.4 ui-monospace, monospace; }

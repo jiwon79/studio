@@ -17,6 +17,7 @@ interface Host<State> {
 export class PondEditor<State> {
   private readonly events = new AbortController();
   private readonly box = document.querySelector<HTMLElement>('.selection')!;
+  private readonly label = document.querySelector<HTMLElement>('.selection-size')!;
   private readonly hoverBox = document.querySelector<HTMLElement>('.hover-outline')!;
   private readonly outline = document.querySelector<SVGPathElement>('.sketch path')!;
   private readonly toolbar = [...document.querySelectorAll<HTMLButtonElement>('[data-tool]')];
@@ -58,7 +59,6 @@ export class PondEditor<State> {
       this.canvas.setPointerCapture(event.pointerId);
     }, { signal }));
     canvas.addEventListener('lostpointercapture', () => { if (this.pending) this.cancel(); }, { signal });
-    document.querySelector<HTMLButtonElement>('[data-delete]')!.addEventListener('click', () => this.remove(), { signal });
     document.querySelector<HTMLButtonElement>('[data-undo]')!.addEventListener('click', () => this.undo(false), { signal });
     document.querySelector<HTMLButtonElement>('[data-redo]')!.addEventListener('click', () => this.undo(true), { signal });
     window.addEventListener('keydown', event => {
@@ -192,6 +192,7 @@ export class PondEditor<State> {
     this.box.hidden = !node;
     if (node) {
       const b = node.bounds;
+      this.label.textContent = `${Math.round(b.width)} × ${Math.round(b.height)}`;
       Object.assign(this.box.style, { left: `${b.x}px`, top: `${b.y}px`, width: `${b.width}px`, height: `${b.height}px` });
     }
     const hovered = this.hoverPoint && this.tool !== 'draw' && !this.drag
