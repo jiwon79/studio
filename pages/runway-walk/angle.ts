@@ -138,7 +138,6 @@ async function startDirection() {
   const epoch = ++generation, requested = target;
   directionLoading = epoch;
   try {
-    if (ready) loading.hidden = false;
     if (epoch !== generation) return;
     const sequence = await prepareLiveDirection({
       current: () => epoch === generation && requested === target,
@@ -247,7 +246,7 @@ function tick(time: number) {
 async function load() {
   try {
     surface.dataset.playing = 'false';
-    document.body.dataset.booting = 'true'; loading.dataset.mode = 'startup'; loading.hidden = false;
+    document.body.dataset.booting = 'true'; loading.hidden = false;
     startup.update(photographs.stats);
     await photographs.preloadAll();
     startup.update(photographs.stats);
