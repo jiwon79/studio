@@ -7,6 +7,14 @@ const LANES = [-1, -0.8, -0.45, 0, 0.45, 0.8, 1];
 const RINGS = [-0.065, -0.045, -0.02, 0.025, 0.07, 0.13, 0.21, 0.3, 0.4, 0.5, 0.6, 0.69, 0.76, 0.82];
 const SMOOTH = (x: number) => { const t = Math.max(0, Math.min(1, x)); return t * t * (3 - 2 * t); };
 
+export function bodyHalfWidth(u: number, scale = 1) {
+  const width = HALF_WIDTH * scale;
+  if (u < 0) return width * 0.55 * Math.sqrt(Math.max(0, 1 - (u / 0.0715) ** 2));
+  const x = Math.min(u / 0.8, 1);
+  return width * (0.55 + 0.45 * SMOOTH(x / 0.3))
+    * (1 - 0.82 * Math.pow(SMOOTH((x - 0.3) / 0.7), 0.8));
+}
+
 // Sample a smooth centreline without increasing the simulation's ten bones.
 // Endpoints are extrapolated, so the nose and tail keep a nonzero tangent.
 export function sampleSpine(spine: Float32Array, fish: number, u: number): Point {
@@ -65,15 +73,9 @@ export class FishGeometry extends THREE.BufferGeometry {
       const length = Math.hypot(a[0] - b[0], a[1] - b[1]) || 1;
       return { p, dx: (a[0] - b[0]) / length, dy: (a[1] - b[1]) / length };
     };
-    const widthAt = (u: number) => {
-      if (u < 0) return halfWidth * 0.55 * Math.sqrt(Math.max(0, 1 - (u / 0.0715) ** 2));
-      const x = Math.min(u / 0.8, 1);
-      return halfWidth * (0.55 + 0.45 * SMOOTH(x / 0.3))
-        * (1 - 0.82 * Math.pow(SMOOTH((x - 0.3) / 0.7), 0.8));
-    };
     const surface = (u: number, lane: number, lift = 0): Point => {
       const { p, dx, dy } = frame(u);
-      const width = widthAt(u);
+      const width = bodyHalfWidth(u, scale);
       return [p[0] - dy * lane * width, p[1] + dx * lane * width,
         width * 0.38 * Math.sqrt(Math.max(0, 1 - lane * lane)) + lift];
     };

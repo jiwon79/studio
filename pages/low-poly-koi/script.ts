@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import GUI from 'lil-gui';
+import { SpineDebug } from './spine-debug';
 import { createSchool, MAX_FISH, MAX_SCENE_FISH, type PointerState } from './school';
 import { FishGeometry, FISH_LENGTH } from './geometry';
 import { AsciiPass, isAsciiSize, type AsciiSize } from './ascii';
@@ -26,14 +28,15 @@ function start() {
   let editor: PondEditor<ReturnType<ReturnType<typeof createSchool>['capture']>> | undefined;
   const ripples = new WaterRipples(scene);
   const ascii = new AsciiPass();
-  const modeButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-mode]')];
-  const sizeButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-size]')];
-  const density = document.querySelector<HTMLElement>('.density')!;
-  const requestedSize = new URL(location.href).searchParams.get('ascii');
-  let asciiSize: AsciiSize = isAsciiSize(requestedSize) ? requestedSize : 'small';
-  const updateSizeButtons = () => sizeButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.size === asciiSize)));
-  updateSizeButtons();
-  let mode = 'ascii';
+  type ViewMode = 'ascii' | 'low-poly' | 'spine';
+  const url = new URL(location.href);
+  const requestedSize = url.searchParams.get('ascii');
+  const requestedMode = url.searchParams.get('view');
+  const settings: { mode: ViewMode; size: AsciiSize; body: boolean } = {
+    mode: requestedMode === 'low-poly' || requestedMode === 'spine' ? requestedMode : 'ascii',
+    size: isAsciiSize(requestedSize) ? requestedSize : 'small',
+    body: true,
+  };
   const camera = new THREE.OrthographicCamera(0, 1, 1, 0, 0.1, 10);
   camera.position.z = 4;
   scene.add(new THREE.AmbientLight('#ffffff', 0.95));
@@ -43,19 +46,23 @@ function start() {
   const material = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.9, metalness: 0, flatShading: true, side: THREE.DoubleSide });
   const finMaterial = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1, flatShading: true,
     side: THREE.DoubleSide, transparent: true, opacity: 0.43, depthWrite: false });
+  const ghostMaterial = new THREE.MeshBasicMaterial({ color: '#d9e8ff', wireframe: true,
+    transparent: true, opacity: 0.12, depthWrite: false, toneMapped: false });
   const eyesMaterial = new THREE.MeshBasicMaterial({ color: '#183d93' });
   const eyeGeometry = new THREE.OctahedronGeometry(FISH_LENGTH * 0.008);
   const makeFish = (i: number) => {
     const geometry = new FishGeometry(i);
-    const mesh = new THREE.Mesh(geometry, [material, finMaterial]);
+    const mesh = new THREE.Mesh<FishGeometry, THREE.Material[]>(geometry, [material, finMaterial]);
     mesh.frustumCulled = false;
     scene.add(mesh);
+    const debug = new SpineDebug();
+    scene.add(debug.group);
     const eyes = [-1, 1].map(() => {
       const eye = new THREE.Mesh(eyeGeometry, eyesMaterial);
       scene.add(eye);
       return eye;
     });
-    return { geometry, mesh, eyes };
+    return { geometry, mesh, eyes, debug };
   };
   const fish = Array.from({ length: MAX_FISH }, (_, i) => makeFish(i));
   const pointer: PointerState = { target: [0.5, 0.5], over: false };
@@ -74,26 +81,9 @@ function start() {
   let accumulator = 0;
   const events = new AbortController();
   const signal = events.signal;
-  modeButtons.forEach(button => button.addEventListener('click', () => {
-    mode = button.dataset.mode!;
-    modeButtons.forEach(item => item.setAttribute('aria-pressed', String(item === button)));
-    density.hidden = mode !== 'ascii';
-    draw();
-  }, { signal }));
-  sizeButtons.forEach(button => button.addEventListener('click', () => {
-    const selectedSize = button.dataset.size ?? null;
-    if (!isAsciiSize(selectedSize)) return;
-    asciiSize = selectedSize;
-    updateSizeButtons();
-    ascii.resize(canvas.clientWidth, canvas.clientHeight, asciiSize);
-    const url = new URL(location.href);
-    url.searchParams.set('ascii', asciiSize);
-    history.replaceState(null, '', url);
-    draw();
-  }, { signal }));
   const resize = () => {
     renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
-    ascii.resize(canvas.clientWidth, canvas.clientHeight, asciiSize);
+    ascii.resize(canvas.clientWidth, canvas.clientHeight, settings.size);
     camera.right = canvas.clientWidth / canvas.clientHeight;
     camera.updateProjectionMatrix();
     school.frame(time);
@@ -108,23 +98,26 @@ function start() {
     for (let j = 0; j < spine.length; j++) renderedSpine[j] = previousSpine[j] + (spine[j] - previousSpine[j]) * alpha;
     for (let j = 0; j < states.length; j++) renderedStates[j] = previousStates[j] + (states[j] - previousStates[j]) * alpha;
     while (fish.length < school.count) fish.push(makeFish(fish.length));
-    fish.forEach(({ geometry, mesh, eyes }, i) => {
+    fish.forEach(({ geometry, mesh, eyes, debug }, i) => {
       const visible = i < school.count && school.enabled(i);
-      mesh.visible = visible;
-      eyes.forEach(eye => { eye.visible = visible; });
+      mesh.visible = visible && (settings.mode !== 'spine' || settings.body);
+      mesh.material = settings.mode === 'spine' ? [ghostMaterial, ghostMaterial] : [material, finMaterial];
+      debug.group.visible = visible && settings.mode === 'spine';
+      eyes.forEach(eye => { eye.visible = visible && settings.mode !== 'spine'; });
       if (!visible) return;
       const scale = fishScale() * school.scale(i);
       geometry.update(renderedSpine, renderedStates[i * 4], renderedStates[i * 4 + 1], scale);
+      if (debug.group.visible) debug.update(renderedSpine, i, scale);
       eyes.forEach((eye, j) => {
         eye.position.set(...geometry.eyes[j]);
         eye.scale.setScalar(scale);
       });
     });
     const count = fish.filter((_, i) => i < school.count && school.enabled(i)).length;
-    const description = `더블클릭한 곳을 피해 헤엄치는 ${mode === 'ascii' ? '아스키아트' : '로우폴리'} 잉어 ${count}마리`;
+    const description = `더블클릭한 곳을 피해 헤엄치는 ${{ ascii: '아스키아트', 'low-poly': '로우폴리', spine: '척추 디버그' }[settings.mode]} 잉어 ${count}마리`;
     if (canvas.getAttribute('aria-label') !== description) canvas.setAttribute('aria-label', description);
     ripples.update(time);
-    if (mode === 'ascii') ascii.render(renderer, scene, camera);
+    if (settings.mode === 'ascii') ascii.render(renderer, scene, camera);
     else renderer.render(scene, camera);
     editor?.refresh();
   }
@@ -154,8 +147,8 @@ function start() {
     } else { previousSpine.set(spine); previousStates.set(states); }
     draw();
   };
-  const nodes = () => fish.flatMap(({ geometry, mesh }, id) => {
-    if (id >= school.count || !school.enabled(id) || !mesh.visible) return [];
+  const nodes = () => fish.flatMap(({ geometry }, id) => {
+    if (id >= school.count || !school.enabled(id)) return [];
     const position = geometry.getAttribute('position');
     let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
     for (let vertex = 0; vertex < geometry.drawRange.count; vertex++) {
@@ -200,15 +193,37 @@ function start() {
     restore(saved, id) { school.restoreFish(id, saved); },
     changed: refresh,
   });
+  const gui = new GUI({ title: 'Koi', width: 232 });
+  gui.add(settings, 'mode', { ASCII: 'ascii', 'Low poly': 'low-poly', '척추 디버그': 'spine' }).name('표현').onChange(() => {
+    sizeController.show(settings.mode === 'ascii');
+    bodyController.show(settings.mode === 'spine');
+    const url = new URL(location.href);
+    url.searchParams.set('view', settings.mode);
+    history.replaceState(null, '', url);
+    draw();
+  });
+  const sizeController = gui.add(settings, 'size', { '기존': 'original', '중간': 'medium', '조금 작게': 'compact', '작게': 'small' }).name('글자 크기').onChange(() => {
+    ascii.resize(canvas.clientWidth, canvas.clientHeight, settings.size);
+    const url = new URL(location.href);
+    url.searchParams.set('ascii', settings.size);
+    history.replaceState(null, '', url);
+    draw();
+  });
+  const bodyController = gui.add(settings, 'body').name('몸체 겹쳐 보기').onChange(() => draw());
+  sizeController.show(settings.mode === 'ascii');
+  bodyController.show(settings.mode === 'spine');
+  if (innerWidth < 600) gui.close();
   renderer.setAnimationLoop(frame);
   if (import.meta.hot) import.meta.hot.dispose(() => {
     renderer.setAnimationLoop(null);
     events.abort();
     editor?.dispose();
-    fish.forEach(({ geometry }) => geometry.dispose());
+    fish.forEach(({ geometry, debug }) => { geometry.dispose(); debug.dispose(); });
+    gui.destroy();
     eyeGeometry.dispose();
     eyesMaterial.dispose();
     material.dispose();
+    ghostMaterial.dispose();
     finMaterial.dispose();
     ascii.dispose();
     ripples.dispose();

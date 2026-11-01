@@ -17,9 +17,7 @@ export class PondEditor<State> {
   private readonly events = new AbortController();
   private readonly box = document.querySelector<HTMLElement>('.selection')!;
   private readonly hoverBox = document.querySelector<HTMLElement>('.hover-outline')!;
-  private readonly label = document.querySelector<HTMLElement>('.selection-size')!;
   private readonly outline = document.querySelector<SVGPathElement>('.sketch path')!;
-  private readonly hint = document.querySelector<HTMLElement>('.hint')!;
   private readonly toolbar = [...document.querySelectorAll<HTMLButtonElement>('[data-tool]')];
   private readonly undoStack: { state: State; id: number }[] = [];
   private readonly redoStack: { state: State; id: number }[] = [];
@@ -96,9 +94,6 @@ export class PondEditor<State> {
     if (tool === 'draw') this.hoverPoint = null;
     this.toolbar.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.tool === tool)));
     this.canvas.style.cursor = tool === 'draw' ? 'crosshair' : 'default';
-    this.hint.textContent = tool === 'draw' ? '윤곽선을 그리면 물고기가 태어나요' : tool === 'select'
-      ? '선택한 물고기만 멈춰요 · 빈 곳을 누르면 다시 헤엄쳐요 · 더블클릭하면 물결'
-      : '물고기를 눌러 편집 · 더블클릭하면 물결과 함께 흩어져요';
     this.refresh();
   }
   private down(event: PointerEvent) {
@@ -192,7 +187,6 @@ export class PondEditor<State> {
     if (node) {
       const b = node.bounds;
       Object.assign(this.box.style, { left: `${b.x}px`, top: `${b.y}px`, width: `${b.width}px`, height: `${b.height}px` });
-      this.label.textContent = `${Math.round(b.width)} × ${Math.round(b.height)}`;
     }
     const hovered = this.hoverPoint && this.tool !== 'draw' && !this.drag
       ? [...nodes].reverse().find(({ bounds: b }) => this.hoverPoint!.x >= b.x - 5 && this.hoverPoint!.x <= b.x + b.width + 5

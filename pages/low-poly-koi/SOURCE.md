@@ -43,3 +43,10 @@ simulation state; undo/redo restores only the affected fish without rewinding
 its neighbours. Cursor movement does not steer the school. A double-click
 (or double-tap) starts a fixed-position, 0.85-second avoidance impulse and
 three fading ripple rings, shared by the ASCII and low-poly views.
+
+Rendering controls live in lil-gui: ASCII, low-poly, and spine debug views,
+with the four character-size presets exposed only in ASCII mode. The debug
+view draws the same ten interpolated spine joints used by the fish mesh,
+body-width crossbars and a head-direction arrow; a toggle overlays the
+wireframe body. All views retain selection, transforms and swimming.
+Use `?view=ascii|low-poly|spine` to link directly to a rendering mode.
