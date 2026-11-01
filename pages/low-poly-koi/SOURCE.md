@@ -67,3 +67,11 @@ resize, pointer cancellation or capture loss) retain the latest pose and
 remain undoable. Escape explicitly rolls back the active gesture. Pointer
 ownership and capture checks ignore stale events; the final pointer-up
 position is applied even if the last move event was omitted.
+
+Pond boundaries account for body length and independent axis stretches.
+Look-ahead wall steering starts early and eases swimming speed when heading
+toward an edge; heading is never reflected. A conservative envelope around
+the posed spine includes fins, nose and spline overshoot. If edits, resize
+or a flee impulse exceed the bounds, the whole path is translated inward
+without changing its heading or curvature. Oversized fish are limited to a
+scale that fits the viewport in every swimming direction.

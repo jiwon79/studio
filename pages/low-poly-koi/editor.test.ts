@@ -131,11 +131,12 @@ test('edge handles stretch only their axis and anchor the opposite edge', () => 
 
 test('axis resizing preserves the other axis, supports scoped undo and resets reused slots', () => {
   const { school, output } = pond();
+  school.transform(0, [0, 0], 1, 0.65 - output.uSpine[0], 0.5 - output.uSpine[1]);
   const before = school.capture();
   const x = output.uSpine[0], y = output.uSpine[1];
-  expect(school.resizeAxis(0, [0.2, 0.3], 'x', 2)).toBe(2);
+  expect(school.resizeAxis(0, [0.6, 0.3], 'x', 2)).toBe(2);
   expect(school.stretch(0)).toEqual([2, 1]);
-  expect(output.uSpine[0]).toBeCloseTo(0.2 + (x - 0.2) * 2);
+  expect(output.uSpine[0]).toBeCloseTo(0.6 + (x - 0.6) * 2);
   expect(output.uSpine[1]).toBe(y);
   school.resizeAxis(0, [0.2, 0.3], 'y', 1.5);
   expect(school.stretch(0)).toEqual([2, 1.5]);

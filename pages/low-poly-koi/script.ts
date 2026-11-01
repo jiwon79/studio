@@ -187,7 +187,7 @@ function start() {
       const scale = school.scale(id);
       const applied = Math.max(0.25, Math.min(4, scale * ratio)) / scale;
       school.transform(id, [pivot.x / canvas.clientHeight, 1 - pivot.y / canvas.clientHeight], applied);
-      return applied;
+      return school.scale(id) / scale;
     },
     stretch(id, pivot, axis, ratio) {
       const h = canvas.clientHeight;

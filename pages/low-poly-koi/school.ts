@@ -117,11 +117,21 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
       let dy = Math.sin(a);
       const wander = Math.sin(t * (0.21 + 0.2 * rnd(i * 2.1)) + i * 1.7) * 0.8 + Math.sin(t * (0.57 + 0.3 * rnd(i * 4.4)) + i * 4.1) * 0.45;
       // Keep to the pond: turn back from the edges.
-      const margin = 0.12 + len * 0.5;
-      const ex = x < margin ? (margin - x) / margin : x > aspect - margin ? -(x - aspect + margin) / margin : 0;
-      const ey = y < margin ? (margin - y) / margin : y > 1 - margin ? -(y - 1 + margin) / margin : 0;
-      dx += ex * 3;
-      dy += ey * 3;
+      // Look ahead by one turning radius, including the rendered axis stretch.
+      // Start a continuous turn before fins reach the edge; never reflect velocity.
+      const lookAhead = 0.65;
+      const pressure = (p: number, extent: number, margin: number) => {
+        const smooth = (n: number) => { const t = Math.max(0, Math.min(1, n)); return t * t * (3 - 2 * t); };
+        return smooth(1 - p / margin) - smooth(1 - (extent - p) / margin);
+      };
+      const marginX = Math.min(aspect * 0.48, 0.07 + len * 2.1 * stretchX[i]);
+      const marginY = Math.min(0.48, 0.07 + len * 2.1 * stretchY[i]);
+      const ex = pressure(x + dx * v * lookAhead, aspect, marginX);
+      const ey = pressure(y + dy * v * lookAhead, 1, marginY);
+      const edge = Math.min(1, Math.hypot(ex, ey));
+      const approaching = Math.max(0, -(dx * ex + dy * ey));
+      dx += ex * 5;
+      dy += ey * 5;
       // Give the others room.
       for (let j = 0; j < activeCount; j++) {
         if (j === i || !enabled[j]) continue;
@@ -144,8 +154,8 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
         const reach = 0.16 + len * 0.6;
         if (d < reach) {
           fright = (1 - d / reach) ** 2;
-          dx += (fx / (d + 1e-6)) * fright * 8;
-          dy += (fy / (d + 1e-6)) * fright * 8;
+          dx += (fx / (d + 1e-6)) * fright * 8 * (1 - edge);
+          dy += (fy / (d + 1e-6)) * fright * 8 * (1 - edge);
         }
       }
       // Turn towards where it wants to go, no faster than a fish can.
@@ -155,14 +165,14 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
       // A slow fish needs a wide turn: the previous fixed angular limit let
       // its head turn back into its own body before the tail could follow.
       const maxTurn = Math.min(1.4 + fright * 3, Math.max(0.35, v / (len * 0.85)));
-      const steering = diff * 2.5 + wander * 0.4 * (1 - fright);
+      const steering = diff * 2.5 + wander * 0.4 * (1 - fright) * (1 - edge);
       const turn = Math.max(-maxTurn, Math.min(maxTurn, steering));
       a += turn * dt;
       // Burst and glide: a few strong beats, then coasting.
       const cycle = (t * (0.16 + 0.08 * rnd(i * 9.1)) + rnd(i * 6.6)) % 1;
       const thrust = Math.max(cycle < 0.35 ? 1 : 0, fright);
-      const target = base * (0.45 + 0.8 * thrust + 3.2 * fright);
-      v += (target - v) * (1 - Math.exp(-dt * (fright > 0 ? 6 : 1.2)));
+      const target = base * (0.45 + 0.8 * thrust + 3.2 * fright * (1 - edge)) * (1 - 0.8 * approaching);
+      v += (target - v) * (1 - Math.exp(-dt * (fright > 0 || approaching > 0.1 ? 6 : 1.2)));
       const nx = x + Math.cos(a) * v * dt;
       const ny = y + Math.sin(a) * v * dt;
       head[i * 2] = nx;
@@ -190,6 +200,18 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
     const o = ctx.options();
     const baseLength = 0.17 * (o.size ?? 1);
     for (let i = 0; i < activeCount; i++) {
+      // Oversized edits must still have room to fit in every swimming direction.
+      const maxScale = Math.max(0.01, Math.min((aspect - 0.024) / stretchX[i], (1 - 0.024) / stretchY[i]) / (baseLength * 1.8));
+      if (scales[i] > maxScale) {
+        const ratio = maxScale / scales[i];
+        for (let n = 0; n < TRAIL; n++) {
+          const j = (i * TRAIL + n) * 2;
+          trail[j] = head[i * 2] + (trail[j] - head[i * 2]) * ratio;
+          trail[j + 1] = head[i * 2 + 1] + (trail[j + 1] - head[i * 2 + 1]) * ratio;
+        }
+        scales[i] = maxScale;
+        state[i * 4 + 1] *= ratio;
+      }
       const len = baseLength * scales[i];
       const base = len * 0.45;
       let px = head[i * 2];
@@ -246,6 +268,32 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
         const sway = len * 0.075 * u * u * u * effort * Math.sin(beat - u * 5.5);
         spineOut[out + k * 2] += -ty * sway;
         spineOut[out + k * 2 + 1] += tx * sway;
+      }
+      // Whole-pose containment is a final guard for edits, resize and strong
+      // impulses. Translate the path with the head, preserving its heading and
+      // curvature rather than bouncing it or snapping individual spine points.
+      const sx = stretchX[i], sy = stretchY[i];
+      const hx = head[i * 2], hy = head[i * 2 + 1];
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      for (let n = 0; n < POINTS; n++) {
+        const x = hx + (spineOut[out + n * 2] - hx) * sx;
+        const y = hy + (spineOut[out + n * 2 + 1] - hy) * sy;
+        minX = Math.min(minX, x); maxX = Math.max(maxX, x);
+        minY = Math.min(minY, y); maxY = Math.max(maxY, y);
+      }
+      // Conservative fin/nose envelope also covers spline overshoot.
+      const padX = len * 0.32 * sx, padY = len * 0.32 * sy;
+      const shiftX = Math.max(0, 0.012 - minX + padX) + Math.min(0, aspect - 0.012 - maxX - padX);
+      const shiftY = Math.max(0, 0.012 - minY + padY) + Math.min(0, 1 - 0.012 - maxY - padY);
+      if (shiftX || shiftY) {
+        head[i * 2] += shiftX; head[i * 2 + 1] += shiftY;
+        for (let n = 0; n < TRAIL; n++) {
+          const j = (i * TRAIL + n) * 2;
+          trail[j] += shiftX; trail[j + 1] += shiftY;
+        }
+        for (let n = 0; n < POINTS; n++) {
+          spineOut[out + n * 2] += shiftX; spineOut[out + n * 2 + 1] += shiftY;
+        }
       }
       fishOut[i * 4] = beat;
       fishOut[i * 4 + 1] = Math.min(1, Math.max(0, (state[i * 4 + 1] - base) / (base * 2.5)));
