@@ -4,6 +4,7 @@ import { createSchool, MAX_FISH } from './school';
 import { ASCII_SIZES, isAsciiSize } from './ascii';
 import { Scene } from 'three';
 import { WaterRipples } from './ripples';
+import { FishGeometry } from './geometry';
 
 function pond() {
   const output: Record<string, Float32Array> = {};
@@ -152,34 +153,19 @@ test('axis resizing preserves the other axis, supports scoped undo and resets re
   expect(school.stretch(0)).toEqual([1, 1]);
 });
 
-test('axis enlargement near a wall fixes the opposite edge instead of moving the fish', async () => {
-  const { FishGeometry } = await import('./geometry');
+test('axis enlargement near a wall fixes the opposite edge instead of moving the fish', () => {
   for (const [x, y, angle, axis, side] of [
     [1.35, 0.5, 0, 'x', 'min'], [0.25, 0.5, Math.PI, 'x', 'max'],
     [0.8, 0.8, Math.PI / 2, 'y', 'min'], [0.8, 0.2, -Math.PI / 2, 'y', 'max'],
   ] as const) {
     const { school, output } = pond();
     const id = school.addFish(x, y, angle, 1);
-    const geometry = new FishGeometry(id);
-    const bounds = () => {
-      geometry.update(output.uSpine, output.uFish[id * 4], output.uFish[id * 4 + 1], school.scale(id));
-      const position = geometry.getAttribute('position');
-      const [sx, sy] = school.stretch(id);
-      const hx = output.uSpine[id * 20], hy = output.uSpine[id * 20 + 1];
-      let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-      for (let k = 0; k < geometry.drawRange.count; k++) {
-        const px = hx + (position.getX(k) - hx) * sx, py = hy + (position.getY(k) - hy) * sy;
-        minX = Math.min(minX, px); maxX = Math.max(maxX, px);
-        minY = Math.min(minY, py); maxY = Math.max(maxY, py);
-      }
-      return { minX, maxX, minY, maxY };
-    };
-    const before = bounds();
+    const before = renderedBounds(school, output, id);
     const anchor = axis === 'x' ? (side === 'min' ? before.minX : before.maxX) : (side === 'min' ? before.minY : before.maxY);
     const pivot = axis === 'x' ? [anchor, y] : [x, anchor];
     const otherScale = school.scale(id);
     school.resizeAxis(id, pivot, axis, 4);
-    const after = bounds();
+    const after = renderedBounds(school, output, id);
     const actual = axis === 'x' ? (side === 'min' ? after.minX : after.maxX) : (side === 'min' ? after.minY : after.maxY);
     expect(actual).toBeCloseTo(anchor, 5);
     expect(school.scale(id)).toBe(otherScale);
@@ -190,6 +176,46 @@ test('axis enlargement near a wall fixes the opposite edge instead of moving the
     }
     expect(after.minX).toBeGreaterThanOrEqual(0); expect(after.maxX).toBeLessThanOrEqual(1.6);
     expect(after.minY).toBeGreaterThanOrEqual(0); expect(after.maxY).toBeLessThanOrEqual(1);
-    geometry.dispose();
+  }
+});
+
+function renderedBounds(school: ReturnType<typeof createSchool>, output: Record<string, Float32Array>, id: number) {
+  const geometry = new FishGeometry(id);
+  geometry.update(output.uSpine, output.uFish[id * 4], output.uFish[id * 4 + 1], school.scale(id));
+  const position = geometry.getAttribute('position');
+  const [sx, sy] = school.stretch(id);
+  const hx = output.uSpine[id * 20], hy = output.uSpine[id * 20 + 1];
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  for (let k = 0; k < geometry.drawRange.count; k++) {
+    const px = hx + (position.getX(k) - hx) * sx, py = hy + (position.getY(k) - hy) * sy;
+    minX = Math.min(minX, px); maxX = Math.max(maxX, px);
+    minY = Math.min(minY, py); maxY = Math.max(maxY, py);
+  }
+  geometry.dispose();
+  return { minX, maxX, minY, maxY };
+}
+
+
+test('all four corner resizes keep the opposite rendered corner fixed at the size and wall limits', () => {
+  for (const [x, y, angle, corner] of [
+    [1.3, 0.75, 0.4, 'ne'], [0.3, 0.75, 2.5, 'nw'],
+    [1.3, 0.25, -0.4, 'se'], [0.3, 0.25, -2.5, 'sw'],
+  ] as const) {
+    const { school, output } = pond();
+    const id = school.addFish(x, y, angle, 1);
+    school.resizeAxis(id, [x, y], 'x', 1.3);
+    const before = renderedBounds(school, output, id);
+    const anchorX = corner.endsWith('e') ? before.minX : before.maxX;
+    const anchorY = corner.startsWith('n') ? before.minY : before.maxY;
+    const pivot = [anchorX, anchorY];
+    for (const ratio of [10, 10, 0.6, 1.1, 10]) {
+      school.resizeUniform(id, pivot, ratio);
+      const after = renderedBounds(school, output, id);
+      expect(corner.endsWith('e') ? after.minX : after.maxX).toBeCloseTo(anchorX, 5);
+      expect(corner.startsWith('n') ? after.minY : after.maxY).toBeCloseTo(anchorY, 5);
+      expect((after.maxX - after.minX) / (after.maxY - after.minY)).toBeCloseTo((before.maxX - before.minX) / (before.maxY - before.minY), 4);
+      expect(after.minX).toBeGreaterThanOrEqual(0); expect(after.maxX).toBeLessThanOrEqual(1.6);
+      expect(after.minY).toBeGreaterThanOrEqual(0); expect(after.maxY).toBeLessThanOrEqual(1);
+    }
   }
 });

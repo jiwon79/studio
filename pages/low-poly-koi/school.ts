@@ -302,33 +302,50 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
     ctx.uniform('uFish', fishOut);
   };
 
+  // Shared limits for side and corner handles: never repair a resize by
+  // translating its anchor or changing an unrelated dimension afterwards.
+  const resizeLimit = (index: number, pivot: readonly number[], coordinates: readonly number[]) => {
+    const length = 0.17 * ctx.options().size * scales[index];
+    let limit = Infinity;
+    for (const coordinate of coordinates) {
+      const stretch = coordinate === 0 ? stretchX[index] : stretchY[index];
+      const extent = coordinate === 0 ? aspect : 1;
+      const origin = head[index * 2 + coordinate];
+      let minimum = Infinity, maximum = -Infinity;
+      for (let k = 0; k < POINTS; k++) {
+        const posed = origin + (spineOut[index * POINTS * 2 + k * 2 + coordinate] - origin) * stretch;
+        minimum = Math.min(minimum, posed); maximum = Math.max(maximum, posed);
+      }
+      minimum -= length * 0.32 * stretch;
+      maximum += length * 0.32 * stretch;
+      const anchor = pivot[coordinate];
+      let maximumRatio = (extent - 0.024) / (length * 1.8 * stretch);
+      if (anchor > minimum) maximumRatio = Math.min(maximumRatio, (anchor - 0.012) / (anchor - minimum));
+      if (anchor < maximum) maximumRatio = Math.min(maximumRatio, (extent - 0.012 - anchor) / (maximum - anchor));
+      limit = Math.min(limit, maximumRatio);
+    }
+    return Math.max(1, limit);
+  };
+
   reset();
   return {
     get count() { return activeCount; },
     enabled(index: number) { return !!enabled[index]; },
     scale(index: number) { return scales[index]; },
     stretch(index: number) { return [stretchX[index], stretchY[index]] as const; },
+    resizeUniform(index: number, pivot: readonly number[], ratio: number) {
+      const before = scales[index];
+      const requested = Math.max(Math.min(0.25, before), Math.min(4, before * ratio)) / before;
+      const applied = Math.min(requested, resizeLimit(index, pivot, [0, 1]));
+      this.transform(index, pivot, applied);
+      return scales[index] / before;
+    },
     resizeAxis(index: number, pivot: readonly number[], axis: 'x' | 'y', ratio: number) {
       const values = axis === 'x' ? stretchX : stretchY;
       const coordinate = axis === 'x' ? 0 : 1;
-      const extent = axis === 'x' ? aspect : 1;
-      const origin = head[index * 2 + coordinate];
-      const length = 0.17 * ctx.options().size * scales[index];
-      let minimum = Infinity, maximum = -Infinity;
-      for (let k = 0; k < POINTS; k++) {
-        const posed = origin + (spineOut[index * POINTS * 2 + k * 2 + coordinate] - origin) * values[index];
-        minimum = Math.min(minimum, posed); maximum = Math.max(maximum, posed);
-      }
-      minimum -= length * 0.32 * values[index];
-      maximum += length * 0.32 * values[index];
-      // Limit the requested enlargement before mutating the pose. Containment
-      // must not translate the fixed opposite edge or shrink the other axis.
-      const anchor = pivot[coordinate];
-      let maximumRatio = (extent - 0.024) / (length * 1.8 * values[index]);
-      if (anchor > minimum) maximumRatio = Math.min(maximumRatio, (anchor - 0.012) / (anchor - minimum));
-      if (anchor < maximum) maximumRatio = Math.min(maximumRatio, (extent - 0.012 - anchor) / (maximum - anchor));
+      const maximumRatio = resizeLimit(index, pivot, [coordinate]);
       const requested = Math.max(0.25, Math.min(4, values[index] * ratio)) / values[index];
-      const applied = Math.min(requested, Math.max(1, maximumRatio));
+      const applied = Math.min(requested, maximumRatio);
       const delta = (head[index * 2 + coordinate] - pivot[coordinate]) * (applied - 1);
       values[index] *= applied;
       this.transform(index, [0, 0], 1, axis === 'x' ? delta : 0, axis === 'y' ? delta : 0);

@@ -84,3 +84,8 @@ Axis resize computes the available room around the fixed opposite edge
 before changing the pose. It limits enlargement at the pond boundary and
 the rotation-safe size limit, rather than allowing containment to shift the
 whole fish or shrink the perpendicular dimension after the edit.
+
+Corner resizing shares the same precomputed containment limits as side
+resizing, evaluated across both axes. The applied uniform ratio is capped
+before transforming the path, keeping the opposite rendered corner fixed
+through repeated enlargement, shrinking and viewport-size limits.
