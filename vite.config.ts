@@ -77,7 +77,7 @@ const assetDirectories = pageEntries
 // The pack plugin emits these authoring images as shared binary downloads.
 // Do not also copy thousands of standalone WebPs into the deployment.
 const qualityDirectory = resolve(pagesDir, 'runway-walk/assets/quality');
-const packedPhotoSources = new Set([qualityDirectory, resolve(pagesDir, 'runway-walk/assets/quality-avif')]
+const packedPhotoSources = new Set([qualityDirectory, resolve(pagesDir, 'runway-walk/assets/quality-avif'), resolve(pagesDir, 'runway-walk/assets/quality-original')]
   .flatMap(directory => readdirSync(directory)
     .filter(name => /\.(webp|avif)$/.test(name))
     .map(name => resolve(directory, name))));

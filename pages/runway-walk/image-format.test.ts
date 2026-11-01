@@ -19,7 +19,7 @@ test('an unsupported AVIF browser downloads only the complete WebP fallback', as
     return { url: `/webp-${i}.bin`, length: rows.length,
       entries: rows.map((row, offset) => ({ index: row.index, offset, length: 1 })) };
   });
-  vi.stubGlobal('__RUNWAY_PHOTO_PACKS__', { webp: packs, avif: packs.map(pack => ({ ...pack, url: pack.url.replace('webp', 'avif') })) });
+  vi.stubGlobal('__RUNWAY_PHOTO_PACKS__', { webp: packs, avif: packs.map(pack => ({ ...pack, url: pack.url.replace('webp', 'avif') })), original: packs });
   vi.stubGlobal('createImageBitmap', vi.fn(async () => { throw new Error('Unsupported AVIF'); }));
   const fetchPhoto = vi.fn(async (url: string) => ({ ok: true, blob: async () => new Blob([new Uint8Array(packs.find(pack => pack.url === url)!.length)]) }));
   vi.stubGlobal('fetch', fetchPhoto);

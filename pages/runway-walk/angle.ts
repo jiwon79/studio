@@ -1,3 +1,5 @@
+import { comparisonControls, type PhotoVersion } from './comparison-controls';
+import { directionPhotos } from './direction-photos';
 import { qualityLibrary } from './quality-library';
 import data from './angles.json';
 import { prepareLiveDirection } from './live-direction';
@@ -37,7 +39,17 @@ function persist() {
 }
 function label(value: number) { return `${value < 0 ? '−' : value > 0 ? '+' : ''}${Math.abs(value)}°`; }
 
-const photographs = qualityLibrary(() => { if (!ready) startup.update(photographs.stats); });
+const variants = {
+  enhanced: qualityLibrary(() => { if (!ready) startup.update(variants.enhanced.stats); }),
+  original: qualityLibrary(() => {
+    if (ready && pendingVersion === 'original') {
+      const stats = variants.original.statsFor(directionPhotos(renderedTarget));
+      comparison.progress(Math.floor(stats.loaded / stats.total * 100));
+    }
+  }, 'original'),
+};
+let activeVersion: PhotoVersion = 'enhanced';
+let photographs = variants.enhanced;
 context.imageSmoothingQuality = 'high';
 let ready = false;
 let playing = !matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -51,6 +63,64 @@ let directionLoading: number | undefined;
 let generation = 0, stream = 0, filling: number | undefined;
 let lastTime = 0, carry = 0;
 let drag: { id: number; x: number; start: number } | undefined;
+let versionRequest = 0;
+let pendingVersion: PhotoVersion | undefined;
+const comparison = comparisonControls(changeVersion, playing, setPlaying);
+function setPlaying(value: boolean) {
+  playing = value; carry = 0; lastTime = 0;
+  surface.dataset.playing = String(playing);
+  status.textContent = playing ? '재생' : '일시정지';
+  comparison.playback(playing);
+}
+
+/** Keep the current edit moving while the other version downloads. Handoff
+ * changes only pixels: the frame ID, live tick and appearance history stay put. */
+async function changeVersion(version: PhotoVersion) {
+  const epoch = ++versionRequest;
+  pendingVersion = undefined;
+  const current = () => epoch === versionRequest;
+  if (!ready || version === activeVersion) {
+    comparison.pending(false); comparison.selected(activeVersion); return;
+  }
+  pendingVersion = version;
+  comparison.pending(true);
+  let didFail = false;
+  const next = variants[version];
+  try {
+    if (version === 'enhanced') await next.preloadAll(current);
+    while (current()) {
+      const yaw = renderedTarget;
+      if (version === 'original') await next.preloadDirection(yaw, () => current() && renderedTarget === yaw);
+      if (!current()) return;
+      if (yaw !== renderedTarget) continue;
+      const indices = [block, ...upcoming].flatMap(cut => cutIndices(cut));
+      next.retain(indices);
+      await next.prepare(indices);
+      if (!current()) return;
+      if (yaw !== renderedTarget || ![block, ...upcoming].every(cut => next.available(cutIndices(cut)))) continue;
+      generation++; stream++;
+      directionLoading = undefined;
+      planned = []; bufferPlanned = [];
+      activeVersion = version; photographs = next;
+      retainPhotos(); draw();
+      comparison.selected(activeVersion);
+      void fillBuffer();
+      if (target !== renderedTarget) void startDirection().catch(failed);
+      return;
+    }
+  } catch {
+    if (current()) {
+      didFail = true;
+      status.textContent = '비교 사진을 준비하지 못했어요. 다시 선택해 주세요.';
+      comparison.selected(activeVersion);
+    }
+  } finally {
+    if (current()) {
+      pendingVersion = undefined;
+      if (didFail) comparison.failed(); else comparison.pending(false);
+    }
+  }
+}
 function beginFrame(width: number, height: number) {
   const scale = width / data.tileWidth;
   if (canvas.width !== width || canvas.height !== height) {
@@ -89,9 +159,9 @@ function paint(row: AngleFrame, yaw: number) {
   canvas.dataset.continuation = String(block.sourceContinuation);
   canvas.dataset.cutTick = String(block.before.tick);
   canvas.dataset.clock = String(clock);
-  canvas.dataset.quality = 'enhanced';
+  canvas.dataset.quality = activeVersion;
   canvas.dataset.imageFormat = photographs.format;
-  canvas.dataset.gptRestored = 'true';
+  canvas.dataset.gptRestored = String(activeVersion === 'enhanced');
   canvas.dataset.qualityProvider = photographs.provider(index);
   canvas.dataset.decodedPhotos = String(photographs.decoded);
   canvas.dataset.bufferedFrames = String(upcoming.reduce((sum,cut)=>sum+cut.count,0));
@@ -124,7 +194,7 @@ async function fillBuffer() {
   finally { if (filling === epoch) filling = undefined; }
 }
 function failed(error?:unknown) {
-  playing = false;
+  playing = false; comparison.playback(false);
   surface.dataset.playing = 'false';
   surface.setAttribute('aria-busy', 'false');
   status.textContent = error instanceof WalkCoverageError?'이 각도의 보행 소스가 부족해 재생을 멈췄어요. 다른 각도를 선택해 주세요.':'프레임을 불러오지 못했어요. 새로고침해 주세요.';
@@ -139,6 +209,7 @@ async function startDirection() {
   const epoch = ++generation, requested = target;
   directionLoading = epoch;
   try {
+    if (activeVersion === 'original') await photographs.preloadDirection(requested, () => epoch === generation);
     if (epoch !== generation) return;
     const sequence = await prepareLiveDirection({
       current: () => epoch === generation && requested === target,
@@ -213,9 +284,7 @@ surface.addEventListener('keydown', event => {
   } else if (event.key === 'Home') {
     event.preventDefault(); setAngle(0); persist();
   } else if (event.code === 'Space') {
-    event.preventDefault(); playing = !playing; carry = 0; lastTime = 0;
-    surface.dataset.playing = String(playing);
-    status.textContent = playing ? '재생' : '일시정지';
+    event.preventDefault(); setPlaying(!playing);
   }
 });
 window.addEventListener('blur', () => {

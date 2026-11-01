@@ -5,7 +5,7 @@ export type PhotoPack = {
   entries: { index: number; offset: number; length: number }[];
 };
 
-export type PhotoPackLibraries = { webp: PhotoPack[]; avif: PhotoPack[] };
+export type PhotoPackLibraries = { webp: PhotoPack[]; avif: PhotoPack[]; original: PhotoPack[] };
 
 /** Slices share the downloaded buffer; no raster decoding or image conversion. */
 export function unpackPhotographs(pack: PhotoPack, blob: Blob) {

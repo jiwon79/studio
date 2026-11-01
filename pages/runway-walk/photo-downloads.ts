@@ -9,6 +9,7 @@ export class PhotoDownloads<T> {
   private active = 0;
   constructor(private fetch: (index: number) => Promise<T>, private downloaded: () => void, private limit = 6) {}
   get size() { return this.values.size; }
+  forget(index: number) { this.values.delete(index); }
   get(index: number) { return this.values.get(index); }
   request(index: number, needed = () => true, priority = true): Promise<T | undefined> {
     const cached = this.values.get(index);

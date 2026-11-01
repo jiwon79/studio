@@ -1,7 +1,12 @@
 import { test, expect, vi } from 'vitest';
 import manifest from './assets/quality/manifest.json';
+const comparison = vi.hoisted(() => ({ change: undefined as undefined | ((version: 'original' | 'enhanced') => Promise<void>), play: undefined as undefined | ((value: boolean) => void) }));
+vi.mock('./comparison-controls', () => ({ comparisonControls: (change: typeof comparison.change, _playing: boolean, play: typeof comparison.play) => {
+  comparison.change = change; comparison.play = play;
+  return { pending() {}, selected() {}, progress() {}, failed() {}, playback() {} };
+} }));
 
-test('enhanced-only playback waits for all photos and continues through direction changes', async () => {
+test('comparison preserves frame and clock while playback waits for all photos and continues through direction changes', async () => {
   const handlers = new Map<string, (event: any) => void>();
   const nodes = new Map<string, any>();
   const context = { setTransform() {}, clearRect() {}, save() {}, restore() {}, translate() {}, rotate() {}, scale() {}, drawImage: vi.fn() };
@@ -17,7 +22,8 @@ test('enhanced-only playback waits for all photos and continues through directio
     return { url: `/assets/runway-test-${i}.bin`, length: rows.length,
       entries: rows.map((row, offset) => ({ index: row.index, offset, length: 1 })) };
   });
-  vi.stubGlobal('__RUNWAY_PHOTO_PACKS__', { webp: packs, avif: packs.map(pack => ({ ...pack, mime: 'image/avif' })) });
+  const originals = packs.map(pack => ({ ...pack, url: pack.url.replace('runway-test', 'runway-original') }));
+  vi.stubGlobal('__RUNWAY_PHOTO_PACKS__', { webp: packs, avif: packs.map(pack => ({ ...pack, mime: 'image/avif' })), original: originals });
   const body = { dataset: { booting: 'true' } };
   vi.stubGlobal('document', { body, hidden: false, querySelector: node, getElementById: (id: string) => node(`#${id}`), addEventListener() {} });
   vi.stubGlobal('window', { addEventListener() {}, setTimeout });
@@ -25,7 +31,7 @@ test('enhanced-only playback waits for all photos and continues through directio
   vi.stubGlobal('localStorage', { getItem: () => null, setItem() {} });
   vi.stubGlobal('matchMedia', () => ({ matches: false }));
   vi.stubGlobal('requestAnimationFrame', (callback: (time: number) => void) => { nextFrame = callback; });
-  vi.stubGlobal('fetch', async (url: string) => { requests.push(url); return { ok: true, blob: async () => new Blob([new Uint8Array(packs.find(pack => pack.url === url)!.length)]) }; });
+  vi.stubGlobal('fetch', async (url: string) => { requests.push(url); return { ok: true, blob: async () => new Blob([new Uint8Array([...packs, ...originals].find(pack => pack.url === url)!.length)]) }; });
   vi.stubGlobal('createImageBitmap', async () => ({ width: 640, height: 960, close() {} }));
   async function until(check: () => boolean) {
     for (let i = 0; i < 200; i++) {
@@ -65,5 +71,21 @@ test('enhanced-only playback waits for all photos and continues through directio
     expect(canvas.dataset.requestedYaw).toBe('-90');
     expect(requests).toHaveLength(packs.length);
     expect(context.drawImage).toHaveBeenCalled();
+    comparison.play!(false);
+    const snapshot = { frame: canvas.dataset.frameIndex, clock: canvas.dataset.clock, transform: canvas.dataset.photoTransform };
+    await comparison.change!('original');
+    expect(canvas.dataset.quality).toBe('original');
+    expect(canvas.dataset.qualityProvider).toBe('original');
+    expect({ frame: canvas.dataset.frameIndex, clock: canvas.dataset.clock, transform: canvas.dataset.photoTransform }).toEqual(snapshot);
+    const comparedRequests = requests.length;
+    expect(comparedRequests).toBeGreaterThan(packs.length);
+    expect(comparedRequests).toBeLessThan(packs.length + originals.length);
+    await comparison.change!('enhanced');
+    expect(canvas.dataset.quality).toBe('enhanced');
+    expect({ frame: canvas.dataset.frameIndex, clock: canvas.dataset.clock, transform: canvas.dataset.photoTransform }).toEqual(snapshot);
+    expect(requests).toHaveLength(comparedRequests);
+    // A cancelled original request cannot install its pixels after the latest choice.
+    await Promise.all([comparison.change!('original'), comparison.change!('enhanced')]);
+    expect(canvas.dataset.quality).toBe('enhanced');
   } finally { vi.unstubAllGlobals(); vi.resetModules(); }
 }, 30000);
