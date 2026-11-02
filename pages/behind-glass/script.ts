@@ -224,9 +224,12 @@ function renderWalker(walker: typeof walkers[number], index: number) {
   const far = layers[0].context;
   const legs = layers[1].context;
   const feet = layers[2].context;
-  const hipHeight = pelvisHeight(cycle);
+  const walking = walkerSpeeds[index];
+  const hipHeight = 115 + (pelvisHeight(cycle) - 115) * walking;
   for (const side of [-1, 1]) {
-    const pose = footPose(cycle + (side === 1 ? .5 : 0), STRIDE);
+    const gait = footPose(cycle + (side === 1 ? .5 : 0), STRIDE);
+    // Settle onto two flat feet instead of freezing a foot in mid-swing.
+    const pose = { forward: gait.forward * walking, lift: gait.lift * walking, roll: gait.roll * walking };
     const joints = legPose(pose, hipHeight);
     const ankle = project(side * 14, joints.ankle.forward, joints.ankle.height);
     const knee = project(side * 12, joints.knee.forward, joints.knee.height);
@@ -286,8 +289,9 @@ function tick(now: number) {
     if (!paused) {
       elapsed += dt * settings.speed;
       walkerTimes.forEach((_, i) => {
-        const targetSpeed = i === selected ? .24 : 1;
-        walkerSpeeds[i] += (targetSpeed - walkerSpeeds[i]) * (1 - Math.exp(-dt * 4));
+        const targetSpeed = i === selected ? 0 : 1;
+        walkerSpeeds[i] += (targetSpeed - walkerSpeeds[i]) * (1 - Math.exp(-dt * 8));
+        if (Math.abs(walkerSpeeds[i] - targetSpeed) < .005) walkerSpeeds[i] = targetSpeed;
         walkerTimes[i] += dt * settings.speed * walkerSpeeds[i];
       });
       render();
