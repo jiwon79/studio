@@ -1,3 +1,4 @@
+import { biomechanicalLeg, BIOMECHANICAL_STRIDE } from './biomechanics';
 import GUI from 'lil-gui';
 import './style.css';
 import { footPose, legPose, pelvisHeight, FOOT_LIFT, STRIDE, RUN_STRIDE, runningFootPose, wrapPosition, type FootPose } from './motion';
@@ -10,10 +11,13 @@ let width = 0;
 let height = 0;
 let pixelRatio = 1;
 const query = new URLSearchParams(location.search);
+const legacy = query.get('motion') === 'legacy';
+const comparison = query.has('comparison');
+let showJoints = false;
 const inspectionTime = query.has('debug') ? Number(query.get('time')) : NaN;
 let elapsed = query.has('time') && Number.isFinite(inspectionTime) ? inspectionTime : 1.1;
 let previous = 0;
-let paused = reducedMotion.matches || (query.has('debug') && query.has('time'));
+let paused = comparison || reducedMotion.matches || (query.has('debug') && query.has('time'));
 let frame = 0;
 
 const layers = Array.from({ length: 3 }, () => {
@@ -31,6 +35,11 @@ const walkers = [
   { x: .08, y: .55, angle: 1.45, period: .82, phase: .48, size: .96 },
   { x: .92, y: .15, angle: .40, period: 1.17, phase: .91, size: 1.04 },
 ];
+
+if (comparison) {
+  settings.people = 1;
+  Object.assign(walkers[0], { x: .5, y: .76, angle: 1.67, period: 1.23, phase: 0, size: 1.4 });
+}
 
 const stories = [
   { destination: '집으로 가는 사람', thought: '오늘은 아무 말도 하지 않고 쉬고 싶다.' },
@@ -165,14 +174,14 @@ function legSilhouette(c: CanvasRenderingContext2D, ankle: Point, knee: Point, h
   c.fill();
 }
 
-function sole(c: CanvasRenderingContext2D, position: Point, side: number, angle: number, pose: FootPose) {
+function sole(c: CanvasRenderingContext2D, position: Point, side: number, angle: number, pose: FootPose, centered = false) {
   c.save();
   c.translate(position.x, position.y);
   c.rotate(angle + side * .035);
   // Roll around the toe, so the heel rises without dragging the contact point.
-  c.translate(0, -23);
+  c.translate(0, centered ? 0 : -23);
   c.scale(1 - pose.lift * .04, Math.cos(pose.roll));
-  c.translate(0, 23);
+  c.translate(0, centered ? 0 : 23);
   c.fillStyle = `rgba(9,10,12,${.98 - pose.lift * .24})`;
   c.beginPath();
   c.moveTo(-8, 20);
@@ -187,6 +196,7 @@ function sole(c: CanvasRenderingContext2D, position: Point, side: number, angle:
 }
 
 function sceneScale() {
+  if (comparison) return Math.min(width / 400, height / 350) * 1.3;
   return Math.max(.65, Math.min(width / 1150, height / 760, 1.35)) * settings.scale;
 }
 
@@ -195,8 +205,9 @@ function renderWalker(walker: typeof walkers[number], index: number) {
   const scale = sceneScale() * walker.size;
   const cycle = time / walker.period + walker.phase;
   const gaitKind = index === 4 ? 'run' : 'walk';
-  const stride = gaitKind === 'run' ? RUN_STRIDE : STRIDE;
-  const distance = time * stride / walker.period * scale;
+  const useBiomechanics = !legacy && gaitKind === 'walk';
+  const stride = gaitKind === 'run' ? RUN_STRIDE : useBiomechanics ? BIOMECHANICAL_STRIDE : STRIDE;
+  const distance = comparison ? 0 : time * stride / walker.period * scale;
   const x = wrapPosition(walker.x * width + Math.sin(walker.angle) * distance, width, 180 * scale);
   const y = wrapPosition(walker.y * height - Math.cos(walker.angle) * distance, height, 180 * scale);
   anchors[index] = { x, y, scale };
@@ -231,14 +242,29 @@ function renderWalker(walker: typeof walkers[number], index: number) {
     const legCycle = cycle + (side === 1 ? .5 : 0);
     const gait = gaitKind === 'run' ? runningFootPose(legCycle) : footPose(legCycle, STRIDE);
     // Settle onto two flat feet instead of freezing a foot in mid-swing.
-    const pose = { forward: gait.forward * walking, lift: gait.lift * walking, roll: gait.roll * walking };
+    let pose = { forward: gait.forward * walking, lift: gait.lift * walking, roll: gait.roll * walking };
     const joints = legPose(pose, hipHeight);
-    const ankle = project(side * 14, joints.ankle.forward, joints.ankle.height);
-    const knee = project(side * 12, joints.knee.forward, joints.knee.height);
-    const hip = project(side * 10, joints.hip.forward, joints.hip.height);
+    let ankle = project(side * 14, joints.ankle.forward, joints.ankle.height);
+    let knee = project(side * 12, joints.knee.forward, joints.knee.height);
+    let hip = project(side * 10, joints.hip.forward, joints.hip.height);
+    let contact = project(side * 14, pose.forward, pose.lift * FOOT_LIFT);
+    if (useBiomechanics) {
+      const motion = biomechanicalLeg(cycle, side);
+      const stand = legPose({ forward: 0, lift: 0, roll: 0 }, 115);
+      const blend = (moving: Point, resting: Point): Point => ({
+        x: resting.x + (moving.x - resting.x) * walking,
+        y: resting.y + (moving.y - resting.y) * walking,
+      });
+      const projectBody = (p: typeof motion.hip) => project(p.lateral, p.forward, p.height);
+      ankle = blend(projectBody(motion.ankle), project(side*14, 0, stand.ankle.height));
+      knee = blend(projectBody(motion.knee), project(side*12, stand.knee.forward, stand.knee.height));
+      hip = blend(projectBody(motion.hip), project(side*10, 0, stand.hip.height));
+      contact = blend(projectBody(motion.contact), project(side*14, 0, 0));
+      pose = { forward: motion.contact.forward * walking, lift: motion.lift * walking, roll: motion.roll * walking };
+    }
     // Only the legs survive the frosted surface. The upper thigh fades to zero;
     // there is no separate head/shoulder blob extending beyond it.
-    const diffuseEnd = project(side * 10, joints.hip.forward, joints.hip.height + 32);
+    const diffuseEnd = { x: hip.x + riseX * 32, y: hip.y + riseY * 32 };
     limb(far, knee, diffuseEnd, 32, 46, .26, 0);
     legSilhouette(legs, ankle, knee, hip, pose.lift);
     // A short sharper cuff anchors the diffuse calf to the shoe.
@@ -246,10 +272,15 @@ function renderWalker(walker: typeof walkers[number], index: number) {
     feet.save();
     feet.filter = `blur(${(2.1 + pose.lift * 3.5) * scale * pixelRatio}px)`;
     limb(feet, ankle, cuff, 18, 22, .54, 0);
-    const contact = project(side * 14, pose.forward, pose.lift * FOOT_LIFT);
     feet.filter = `blur(${(.55 + pose.lift * 2.8 + Math.max(0, pose.roll) * .4) * scale * pixelRatio}px)`;
-    sole(feet, contact, side, walker.angle, pose);
+    sole(feet, contact, side, walker.angle, pose, useBiomechanics);
     feet.restore();
+    if (showJoints) {
+      feet.save(); feet.filter = 'none'; feet.strokeStyle = '#b65c40'; feet.fillStyle = '#b65c40'; feet.lineWidth = 1;
+      feet.beginPath(); feet.moveTo(hip.x, hip.y); feet.lineTo(knee.x, knee.y); feet.lineTo(ankle.x, ankle.y); feet.stroke();
+      for (const p of [hip, knee, ankle]) { feet.beginPath(); feet.arc(p.x, p.y, 3, 0, Math.PI*2); feet.fill(); }
+      feet.restore();
+    }
   }
   for (const { context: c } of layers) c.restore();
 }
@@ -318,5 +349,21 @@ if (query.has('debug')) {
     paused = true; elapsed = time; walkerTimes.fill(time); render();
   });
 }
+if (comparison) {
+  window.addEventListener('message', event => {
+    if (event.origin !== location.origin || event.source !== parent || event.data?.type !== 'behind-glass-clock') return;
+    const time = event.data.time;
+    if (typeof time !== 'number' || !Number.isFinite(time)) return;
+    walkerTimes.fill(time); walkerSpeeds.fill(1); showJoints = event.data.joints === true;
+    dismissThought(); render();
+  });
+  people.style.pointerEvents = 'none';
+  personButtons.forEach(button => { button.disabled = true; button.style.pointerEvents = 'none'; });
+} else {
+  const compareLink = document.createElement('a');
+  compareLink.className = 'compare-link'; compareLink.href = '?compare'; compareLink.textContent = '이전 버전과 비교';
+  document.body.append(compareLink);
+}
 resize();
-frame = requestAnimationFrame(tick);
+if (comparison) parent.postMessage({ type: 'behind-glass-ready' }, location.origin);
+else frame = requestAnimationFrame(tick);

@@ -19,3 +19,5 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'N
 @keyframes thought-appear { from { opacity: 0; } to { opacity: 1; } }
 @media (max-width: 600px) { .thought { width: 254px; padding: 24px; } .thought-close { width: 40px; height: 40px; } }
 @media (prefers-reduced-motion: reduce) { .thought { animation: none; } .person::after, .person span { transition: none; } }
+.compare-link { position: fixed; right: 22px; bottom: 18px; color: #86867e; font-size: 11px; text-decoration: none; padding: 8px; }
+.compare-link:hover { color: #333; }
