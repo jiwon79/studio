@@ -3,7 +3,7 @@ html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background:
 canvas { display: block; width: 100%; height: 100%; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif; color: #343431; }
 .people { position: fixed; inset: 0; pointer-events: none; }
-.person { position: absolute; left: 0; top: 0; padding: 0; border: 0; background: transparent; pointer-events: auto; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.person { position: absolute; left: 0; top: 0; padding: 0; border: 0; background: transparent; pointer-events: auto; cursor: grab; touch-action: none; user-select: none; -webkit-tap-highlight-color: transparent; }
 .person[hidden], .thought[hidden] { display: none; }
 .person:focus-visible { outline: 2px solid #8b8b80; outline-offset: 5px; border-radius: 3px; }
 .thought { position: fixed; top: 0; left: 0; width: 214px; max-width: calc(100vw - 36px); padding: 16px 22px 17px; background: #fffffff0; border: 1px solid #e6e6e0; border-radius: 3px; box-shadow: 0 8px 35px #33332808; animation: thought-appear .45s ease both; }
@@ -14,3 +14,5 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'N
 @keyframes thought-appear { from { opacity: 0; } to { opacity: 1; } }
 @media (max-width: 600px) { .thought { width: 204px; padding: 16px 22px; } .thought-close { width: 40px; height: 40px; } }
 @media (prefers-reduced-motion: reduce) { .thought { animation: none; } }
+
+.person.dragging { cursor: grabbing; }

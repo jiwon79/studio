@@ -50,6 +50,10 @@ const closeThought = document.querySelector<HTMLButtonElement>('.thought-close')
 const walkerTimes = walkers.map(() => elapsed);
 const walkerSpeeds = walkers.map(() => 1);
 const anchors: { x: number; y: number; scale: number }[] = [];
+const dragOffsets = walkers.map(() => ({ x: 0, y: 0 }));
+const dragLifts = walkers.map(() => 0);
+let drag: { index: number; pointer: number; x: number; y: number; anchorX: number; anchorY: number; offsetX: number; offsetY: number; active: boolean } | null = null;
+let suppressClickUntil = 0;
 let selected = -1;
 let needsThoughtPlacement = false;
 let selectionRemaining = 0;
@@ -59,7 +63,38 @@ const personButtons = walkers.map((_, index) => {
   target.className = 'person';
   target.setAttribute('aria-label', `${stories[index].destination}의 생각 보기`);
   target.setAttribute('aria-expanded', 'false');
-  target.addEventListener('click', () => {
+  target.addEventListener('pointerdown', event => {
+    if (!event.isPrimary || event.button !== 0 || drag) return;
+    const anchor = anchors[index];
+    drag = { index, pointer: event.pointerId, x: event.clientX, y: event.clientY, anchorX: anchor.x, anchorY: anchor.y, offsetX: dragOffsets[index].x, offsetY: dragOffsets[index].y, active: false };
+    target.setPointerCapture(event.pointerId);
+  });
+  target.addEventListener('pointermove', event => {
+    if (!drag || drag.index !== index || drag.pointer !== event.pointerId) return;
+    const dx = event.clientX - drag.x, dy = event.clientY - drag.y;
+    if (!drag.active && Math.hypot(dx, dy) < 6) return;
+    if (!drag.active) { drag.active = true; dismissThought(); target.classList.add('dragging'); }
+    event.preventDefault();
+    const anchor = anchors[index];
+    const x = Math.max(40, Math.min(width - 40, drag.anchorX + dx));
+    const y = Math.max(100 * anchor.scale, Math.min(height - 45, drag.anchorY + dy));
+    dragOffsets[index] = { x: drag.offsetX + x - drag.anchorX, y: drag.offsetY + y - drag.anchorY };
+    if (paused) dragLifts[index] = 1;
+    render();
+  });
+  const finishDrag = (event: PointerEvent) => {
+    if (!drag || drag.index !== index || drag.pointer !== event.pointerId) return;
+    if (drag.active) suppressClickUntil = performance.now() + 350;
+    drag = null;
+    target.classList.remove('dragging');
+    if (target.hasPointerCapture(event.pointerId)) target.releasePointerCapture(event.pointerId);
+    if (paused) { dragLifts[index] = 0; render(); }
+  };
+  target.addEventListener('pointerup', finishDrag);
+  target.addEventListener('pointercancel', finishDrag);
+  target.addEventListener('lostpointercapture', finishDrag);
+  target.addEventListener('click', event => {
+    if (performance.now() < suppressClickUntil && event.detail !== 0) return;
     if (selected === index) dismissThought();
     else {
       selected = index;
@@ -209,8 +244,8 @@ function renderWalker(walker: typeof walkers[number], index: number) {
   const sin = Math.sin(walker.angle);
   const cos = Math.cos(walker.angle);
   const project = (side: number, forward: number, elevation: number): Point => ({
-    x: cos * side + sin * forward + riseX * elevation,
-    y: sin * side - cos * forward + riseY * elevation,
+    x: cos * side + sin * forward + riseX * (elevation + dragLifts[index] * 28),
+    y: sin * side - cos * forward + riseY * (elevation + dragLifts[index] * 28),
   });
   for (const { context: c } of layers) {
     c.save();
@@ -253,6 +288,8 @@ function renderWalker(walker: typeof walkers[number], index: number) {
     legSilhouette(legs, ankle, knee, hip, pose.lift);
     // A short sharper cuff anchors the diffuse calf to the shoe.
     const cuff = { x: ankle.x + (knee.x - ankle.x) * .22, y: ankle.y + (knee.y - ankle.y) * .22 };
+    pose.lift = Math.max(pose.lift, dragLifts[index] * .85);
+    pose.roll += dragLifts[index] * .18;
     feet.save();
     feet.filter = `blur(${(2.1 + pose.lift * 3.5) * scale * pixelRatio}px)`;
     limb(feet, ankle, cuff, 18, 22, .54, 0);
@@ -285,8 +322,8 @@ function render() {
     const stride = index === 4 ? RUN_STRIDE : BIOMECHANICAL_STRIDE;
     const distance = walkerTimes[index] * stride / walker.period * scale;
     return {
-      x: wrapPosition(walker.x * width + Math.sin(walker.angle) * distance, width, 180 * scale),
-      y: wrapPosition(walker.y * height - Math.cos(walker.angle) * distance, height, 180 * scale), scale,
+      x: wrapPosition(walker.x * width + Math.sin(walker.angle) * distance + dragOffsets[index].x, width, 180 * scale),
+      y: wrapPosition(walker.y * height - Math.cos(walker.angle) * distance + dragOffsets[index].y, height, 180 * scale), scale,
     };
   });
   positions.forEach((p, i) => { anchors[i] = p; });
@@ -311,10 +348,13 @@ function tick(now: number) {
     if (!paused) {
       elapsed += dt * settings.speed;
       walkerTimes.forEach((_, i) => {
-        const targetSpeed = i === selected ? 0 : 1;
+        const held = drag?.active === true && drag.index === i;
+        dragLifts[i] += ((held ? 1 : 0) - dragLifts[i]) * (1 - Math.exp(-dt * 12));
+        if (dragLifts[i] < .001) dragLifts[i] = 0;
+        const targetSpeed = i === selected || held || dragLifts[i] > .05 ? 0 : 1;
         walkerSpeeds[i] += (targetSpeed - walkerSpeeds[i]) * (1 - Math.exp(-dt * 8));
         if (Math.abs(walkerSpeeds[i] - targetSpeed) < .005) walkerSpeeds[i] = targetSpeed;
-        walkerTimes[i] += dt * settings.speed * walkerSpeeds[i];
+        if (!held) walkerTimes[i] += dt * settings.speed * walkerSpeeds[i];
       });
       render();
     }
