@@ -41,7 +41,7 @@ individual path transforms, deletion, and snapshot-based undo/redo.
 Hover outlines follow the fish bounds. Selection freezes only that fish's
 simulation state; undo/redo restores only the affected fish without rewinding
 its neighbours. Cursor movement does not steer the school. A double-click
-(or double-tap) starts a fixed-position, 0.85-second avoidance impulse and
+(or double-tap) starts a fixed-position, 1.5-second avoidance impulse and
 three fading ripple rings, shared by the ASCII and low-poly views.
 
 Rendering controls live in lil-gui: ASCII, low-poly, and spine debug views,
@@ -74,3 +74,8 @@ turning continuously without reflecting heading. No containment step moves
 fish inward, fits their size to the viewport, or limits a resize by available
 screen space. Fish may extend offscreen. Side and corner handles retain their
 fixed opposite anchors; only the normal 0.25–4 editing scale limits apply.
+
+Double-click disturbances have a broad influence radius and stronger radial
+steering, immediate turning and burst acceleration. A softer distance falloff
+includes fish beyond the old local radius; three ripple rings expand faster
+to match the wider response. Normal cruising remains unchanged.

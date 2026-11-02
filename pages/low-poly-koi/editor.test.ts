@@ -110,7 +110,8 @@ test('double-click disturbance expires and its wave geometry is removed', () => 
   expect(ripples.active(0)).toBe(false);
   ripples.splash(0.5, 0.5, 10);
   expect(ripples.active(10.5)).toBe(true);
-  expect(ripples.active(11)).toBe(false);
+  expect(ripples.active(11.4)).toBe(true);
+  expect(ripples.active(11.5)).toBe(false);
   expect(scene.children.length).toBeGreaterThan(0);
   ripples.update(13);
   expect(scene.children).toHaveLength(0);

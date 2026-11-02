@@ -8,7 +8,7 @@ export class WaterRipples {
   constructor(private readonly scene: THREE.Scene) {}
 
   splash(x: number, y: number, time: number) {
-    this.impulseUntil = time + 0.85;
+    this.impulseUntil = time + 1.5;
     for (let i = 0; i < 3; i++) {
       const material = new THREE.MeshBasicMaterial({ color: '#e7efff', transparent: true, opacity: 0,
         depthWrite: false, side: THREE.DoubleSide, toneMapped: false });
@@ -28,7 +28,7 @@ export class WaterRipples {
       const wave = this.waves[i], age = time - wave.start;
       if (age >= 2.4) { this.remove(i); continue; }
       wave.mesh.visible = age >= 0;
-      wave.mesh.scale.setScalar(0.02 + Math.max(0, age) * 0.22);
+      wave.mesh.scale.setScalar(0.02 + Math.max(0, age) * 0.34);
       wave.mesh.material.opacity = Math.pow(1 - Math.max(0, age) / 2.4, 2) * 0.45;
     }
   }

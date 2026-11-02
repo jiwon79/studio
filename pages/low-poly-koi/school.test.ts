@@ -165,3 +165,25 @@ test('free swimming uses the outer pond without lingering only in the centre', (
   expect(minY).toBeLessThan(0.16);
   expect(maxY).toBeGreaterThan(0.86);
 });
+
+
+test('a fixed double-click impulse scatters fish beyond the old local radius', () => {
+  const normal = pond(), startled = pond();
+  for (const p of [normal, startled]) {
+    for (let i = 0; i < MAX_FISH; i++) p.school.removeFish(i);
+    p.school.addFish(1.15, 0.5, 0, 1);
+    p.pointer.target = [0.5, 0.5];
+    p.school.frame(0);
+  }
+  const speeds = (p: ReturnType<typeof pond>) => p.school.capture().state[1];
+  let peakNormal = 0, peakStartled = 0;
+  for (let step = 1; step <= 90; step++) {
+    startled.pointer.over = true;
+    normal.school.frame(step / 60); startled.school.frame(step / 60);
+    peakNormal = Math.max(peakNormal, speeds(normal));
+    peakStartled = Math.max(peakStartled, speeds(startled));
+  }
+  expect(peakStartled).toBeGreaterThan(peakNormal * 1.5);
+  const distance = (p: ReturnType<typeof pond>) => Math.hypot(p.output.uSpine[0] - 0.8, p.output.uSpine[1] - 0.5);
+  expect(distance(startled)).toBeGreaterThan(distance(normal) + 0.08);
+});

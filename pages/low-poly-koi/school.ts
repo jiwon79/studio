@@ -151,11 +151,12 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
         const fx = x - hx;
         const fy = y - hy;
         const d = Math.hypot(fx, fy);
-        const reach = 0.16 + len * 0.6;
+        const reach = 0.42 + len * 0.9;
         if (d < reach) {
-          fright = (1 - d / reach) ** 2;
-          dx += (fx / (d + 1e-6)) * fright * 8 * (1 - edge);
-          dy += (fy / (d + 1e-6)) * fright * 8 * (1 - edge);
+          const proximity = 1 - d / reach;
+          fright = proximity * (0.6 + 0.4 * proximity);
+          dx += (fx / (d + 1e-6)) * fright * 12 * (1 - edge);
+          dy += (fy / (d + 1e-6)) * fright * 12 * (1 - edge);
         }
       }
       // Turn towards where it wants to go, no faster than a fish can.
@@ -164,15 +165,15 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
       diff -= Math.round(diff / (Math.PI * 2)) * Math.PI * 2;
       // A slow fish needs a wide turn: the previous fixed angular limit let
       // its head turn back into its own body before the tail could follow.
-      const maxTurn = Math.min(1.4 + fright * 3, Math.max(0.35, v / (len * 0.85)));
+      const maxTurn = Math.min(1.4 + fright * 3, Math.max(0.35 + fright * 1.2, v / (len * 0.85)));
       const steering = diff * 2.5 + wander * 0.4 * (1 - fright) * (1 - edge);
       const turn = Math.max(-maxTurn, Math.min(maxTurn, steering));
       a += turn * dt;
       // Burst and glide: a few strong beats, then coasting.
       const cycle = (t * (0.16 + 0.08 * rnd(i * 9.1)) + rnd(i * 6.6)) % 1;
       const thrust = Math.max(cycle < 0.35 ? 1 : 0, fright);
-      const target = base * (0.45 + 0.8 * thrust + 3.2 * fright * (1 - edge)) * (1 - 0.8 * approaching);
-      v += (target - v) * (1 - Math.exp(-dt * (fright > 0 || approaching > 0.1 ? 6 : 1.2)));
+      const target = base * (0.45 + 0.8 * thrust + 5.5 * fright * (1 - edge)) * (1 - 0.8 * approaching);
+      v += (target - v) * (1 - Math.exp(-dt * (fright > 0 ? 10 : approaching > 0.1 ? 6 : 1.2)));
       const nx = x + Math.cos(a) * v * dt;
       const ny = y + Math.sin(a) * v * dt;
       head[i * 2] = nx;
