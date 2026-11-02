@@ -6,13 +6,14 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'N
 .person { position: absolute; left: 0; top: 0; padding: 0; border: 0; background: transparent; pointer-events: auto; cursor: grab; touch-action: none; user-select: none; -webkit-tap-highlight-color: transparent; }
 .person[hidden], .thought[hidden] { display: none; }
 .person:focus-visible { outline: 2px solid #8b8b80; outline-offset: 5px; border-radius: 3px; }
-.thought { position: fixed; top: 0; left: 0; width: 214px; max-width: calc(100vw - 36px); padding: 16px 22px 17px; background: #fffffff0; border: 1px solid #e6e6e0; border-radius: 3px; box-shadow: 0 8px 35px #33332808; animation: thought-appear .45s ease both; }
-.destination { margin: 0 0 7px; font-size: 11px; letter-spacing: .04em; color: #89897e; }
-.sentence { margin: 0; font-size: 13px; line-height: 1.7; word-break: keep-all; color: #42423b; }
-.thought-close { position: absolute; top: 0; right: 0; width: 30px; height: 30px; border: 0; padding: 0; font-size: 18px; background: transparent; color: #9a9a90; cursor: pointer; }
-.thought-close:focus-visible { outline: 2px solid #777; }
+.thought { position: fixed; top: 0; left: 0; width: 220px; max-width: calc(100vw - 24px); padding: 12px 14px 13px; background: rgba(255, 255, 255, .97); border: 1px solid rgba(65, 65, 50, .09); border-radius: 10px; box-shadow: 0 3px 12px #29291f07, 0 1px 3px #29291f04; animation: thought-appear .2s ease both; }
+.destination { margin: 0 22px 5px 0; font-size: 10px; font-weight: 500; line-height: 16px; letter-spacing: 0; color: #85857c; }
+.sentence { margin: 0; font-size: 13px; line-height: 1.55; letter-spacing: -.02em; word-break: keep-all; overflow-wrap: break-word; color: #363631; }
+.thought-close { position: absolute; top: 7px; right: 7px; display: grid; place-items: center; width: 26px; height: 26px; border: 0; border-radius: 6px; padding: 0; background: transparent; color: #92928a; cursor: pointer; transition: background .15s, color .15s; }
+.thought-close svg { width: 12px; height: 12px; pointer-events: none; }
+.thought-close:hover { background: #f0f0ec; color: #44443d; }
+.thought-close:focus-visible { outline: 2px solid #85857c; outline-offset: 1px; }
 @keyframes thought-appear { from { opacity: 0; } to { opacity: 1; } }
-@media (max-width: 600px) { .thought { width: 204px; padding: 16px 22px; } .thought-close { width: 40px; height: 40px; } }
 @media (prefers-reduced-motion: reduce) { .thought { animation: none; } }
 
 .person.dragging { cursor: grabbing; }
