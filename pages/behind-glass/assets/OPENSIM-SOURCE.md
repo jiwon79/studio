@@ -11,6 +11,6 @@ Source: [OpenSim's distributed Gait2392 model and example pipeline](https://gith
 - Six-harmonic periodic fitting of the 0.60–1.83 s trajectory closes the display loop. OpenSim realizes the fitted coordinates on the source model, including coupled knee translations. These are then baked into 160 samples containing bilateral hip, knee, ankle and heel/toe stations.
 - Drawing units: 120 per metre. A 1.1 m/s treadmill compensation supplies display travel. The foot-bottom stations (calcaneus-local `[0,-.035,0]` and `[.20,-.035,0]`) approximate a shoe sole; no source bone meshes are distributed.
 - Browser interpolation, blur, camera projection, loop fitting, standing blend, timing changes and shoe shape are presentation choices. This is not a clinical simulation or a real-time muscle-force solver.
-- Only walkers use the OpenSim clip. The previously added procedural runner is retained unchanged. Comparison isolates one walker in a tracking view at matched scale, heading and 1.23 s cycle duration.
+- Only walkers use the OpenSim clip. The previously added procedural runner is retained unchanged.
 
 OpenSim's documentation attributes the model to Thelen, Seth, Anderson and Delp, and the accompanying experimental protocol to John et al. (2012), DOI 10.1080/10255842.2011.627560. Upstream distribution/provenance is retained here; no new license grant is asserted for the source data.

@@ -1,4 +1,4 @@
-import { personBounds, spreadPeople, placeCard } from './layout';
+import { personBounds, placeCard } from './layout';
 import { biomechanicalLeg, BIOMECHANICAL_STRIDE } from './biomechanics';
 import GUI from 'lil-gui';
 import './style.css';
@@ -12,13 +12,10 @@ let width = 0;
 let height = 0;
 let pixelRatio = 1;
 const query = new URLSearchParams(location.search);
-const legacy = query.get('motion') === 'legacy';
-const comparison = query.has('comparison');
-let showJoints = false;
 const inspectionTime = query.has('debug') ? Number(query.get('time')) : NaN;
 let elapsed = query.has('time') && Number.isFinite(inspectionTime) ? inspectionTime : 1.1;
 let previous = 0;
-let paused = comparison || reducedMotion.matches || (query.has('debug') && query.has('time'));
+let paused = reducedMotion.matches || (query.has('debug') && query.has('time'));
 let frame = 0;
 
 const layers = Array.from({ length: 3 }, () => {
@@ -27,7 +24,7 @@ const layers = Array.from({ length: 3 }, () => {
 });
 // Distinct routes, headings and cadences avoid a marching, synchronized crowd.
 // Motion reference: https://x.com/nusretuzman/status/2114480094840570247
-// All shapes and motion are procedural; no source video or imagery is shipped.
+// Shapes are procedural; walking uses the OpenSim clip. No reference video or imagery is shipped.
 const walkers = [
   { x: .05, y: .30, angle: 1.67, period: 1.20, phase: .12, size: .98 },
   { x: .86, y: .79, angle: .08, period: 1.32, phase: .67, size: 1.06 },
@@ -37,18 +34,13 @@ const walkers = [
   { x: .92, y: .15, angle: .40, period: 1.17, phase: .91, size: 1.04 },
 ];
 
-if (comparison) {
-  settings.people = 1;
-  Object.assign(walkers[0], { x: .5, y: .76, angle: 1.67, period: 1.23, phase: 0, size: 1.4 });
-}
-
 const stories = [
-  { destination: '집으로 가는 사람', thought: '오늘은 아무 말도 하지 않고 쉬고 싶다.' },
-  { destination: '누군가를 만나러 가는 사람', thought: '먼저 와 있다고 할까, 아직 가는 중이라고 할까.' },
-  { destination: '조금 늦은 사람', thought: '뛰면 더 늦은 사람처럼 보이겠지.' },
+  { destination: '집으로 가는 사람', thought: '집에 가면 바로 누워야지.' },
+  { destination: '소개팅하러 가는 사람', thought: '만나면 무슨 말부터 하지.' },
+  { destination: '퇴근하는 사람', thought: '내일 일은 내일 생각하자.' },
   { destination: '그냥 걷는 사람', thought: '목적지가 없어도 걷는 건 좋다.' },
   { destination: '뛰어가는 사람', thought: '아직 늦지 않았을 거야.' },
-  { destination: '아직 가는 중인 사람', thought: '조금 천천히 가도 괜찮겠지.' },
+  { destination: '편의점 가는 사람', thought: '아이스크림만 사서 나와야지.' },
 ];
 const people = document.querySelector<HTMLDivElement>('.people')!;
 const thought = document.querySelector<HTMLElement>('.thought')!;
@@ -57,9 +49,9 @@ const sentence = document.querySelector<HTMLElement>('.sentence')!;
 const closeThought = document.querySelector<HTMLButtonElement>('.thought-close')!;
 const walkerTimes = walkers.map(() => elapsed);
 const walkerSpeeds = walkers.map(() => 1);
-const routeOffsets = walkers.map(() => ({ x: 0, y: 0 }));
 const anchors: { x: number; y: number; scale: number }[] = [];
 let selected = -1;
+let needsThoughtPlacement = false;
 let selectionRemaining = 0;
 const personButtons = walkers.map((_, index) => {
   const target = document.createElement('button');
@@ -67,13 +59,11 @@ const personButtons = walkers.map((_, index) => {
   target.className = 'person';
   target.setAttribute('aria-label', `${stories[index].destination}의 생각 보기`);
   target.setAttribute('aria-expanded', 'false');
-  const label = document.createElement('span');
-  label.textContent = stories[index].destination;
-  target.append(label);
   target.addEventListener('click', () => {
     if (selected === index) dismissThought();
     else {
       selected = index;
+      needsThoughtPlacement = true;
       selectionRemaining = 8;
       destination.textContent = stories[index].destination;
       sentence.textContent = stories[index].thought;
@@ -104,16 +94,18 @@ window.addEventListener('keydown', event => {
 });
 
 function positionThought() {
-  if (selected < 0) return;
+  if (selected < 0 || !needsThoughtPlacement) return;
   const anchor = anchors[selected];
   if (!anchor) return;
   const bounds = personBounds(anchor);
   const obstacles = anchors.filter((_, i) => i < settings.people && i !== selected).map(personBounds);
   const position = placeCard(bounds, obstacles, thought.offsetWidth, thought.offsetHeight, { width, height });
   thought.style.transform = `translate(${position.x}px, ${position.y}px)`;
+  needsThoughtPlacement = false;
 }
 
 function resize() {
+  needsThoughtPlacement = true;
   width = innerWidth;
   height = innerHeight;
   pixelRatio = Math.min(devicePixelRatio, 1.5);
@@ -194,7 +186,6 @@ function sole(c: CanvasRenderingContext2D, position: Point, side: number, angle:
 }
 
 function sceneScale() {
-  if (comparison) return Math.min(width / 400, height / 350) * 1.3;
   return Math.max(.65, Math.min(width / 1150, height / 760, 1.35)) * settings.scale;
 }
 
@@ -203,7 +194,7 @@ function renderWalker(walker: typeof walkers[number], index: number) {
   const { x, y, scale } = anchors[index];
   const cycle = time / walker.period + walker.phase;
   const gaitKind = index === 4 ? 'run' : 'walk';
-  const useBiomechanics = !legacy && gaitKind === 'walk';
+  const useBiomechanics = gaitKind === 'walk';
   const target = personButtons[index];
   target.hidden = x < 12 || x > width - 12 || y < 24 || y > height - 52;
   const targetWidth = Math.max(86, 112 * scale);
@@ -268,12 +259,7 @@ function renderWalker(walker: typeof walkers[number], index: number) {
     feet.filter = `blur(${(.55 + pose.lift * 2.8 + Math.max(0, pose.roll) * .4) * scale * pixelRatio}px)`;
     sole(feet, contact, side, walker.angle, pose, useBiomechanics);
     feet.restore();
-    if (showJoints) {
-      feet.save(); feet.filter = 'none'; feet.strokeStyle = '#b65c40'; feet.fillStyle = '#b65c40'; feet.lineWidth = 1;
-      feet.beginPath(); feet.moveTo(hip.x, hip.y); feet.lineTo(knee.x, knee.y); feet.lineTo(ankle.x, ankle.y); feet.stroke();
-      for (const p of [hip, knee, ankle]) { feet.beginPath(); feet.arc(p.x, p.y, 3, 0, Math.PI*2); feet.fill(); }
-      feet.restore();
-    }
+
   }
   for (const { context: c } of layers) c.restore();
 }
@@ -294,21 +280,16 @@ function render() {
   }
   personButtons.forEach((target, i) => { if (i >= settings.people) target.hidden = true; });
   if (selected >= settings.people) dismissThought();
-  const raw = walkers.slice(0, settings.people).map((walker, index) => {
+  const positions = walkers.slice(0, settings.people).map((walker, index) => {
     const scale = sceneScale() * walker.size;
-    const stride = index === 4 ? RUN_STRIDE : legacy ? STRIDE : BIOMECHANICAL_STRIDE;
-    const distance = comparison ? 0 : walkerTimes[index] * stride / walker.period * scale;
+    const stride = index === 4 ? RUN_STRIDE : BIOMECHANICAL_STRIDE;
+    const distance = walkerTimes[index] * stride / walker.period * scale;
     return {
       x: wrapPosition(walker.x * width + Math.sin(walker.angle) * distance, width, 180 * scale),
       y: wrapPosition(walker.y * height - Math.cos(walker.angle) * distance, height, 180 * scale), scale,
     };
   });
-  const positions = raw.map((p, i) => ({ ...p, x: p.x + routeOffsets[i].x, y: p.y + routeOffsets[i].y }));
-  if (!comparison) spreadPeople(positions, selected);
-  positions.forEach((p, i) => {
-    routeOffsets[i] = { x: p.x - raw[i].x, y: p.y - raw[i].y };
-    anchors[i] = p;
-  });
+  positions.forEach((p, i) => { anchors[i] = p; });
   walkers.slice(0, settings.people).forEach(renderWalker);
   const size = sceneScale();
   for (let i = 0; i < layers.length; i++) {
@@ -328,9 +309,6 @@ function tick(now: number) {
       if (selectionRemaining <= 0) dismissThought();
     }
     if (!paused) {
-      routeOffsets.forEach((offset, i) => {
-        if (i !== selected) { offset.x *= Math.exp(-dt*.35); offset.y *= Math.exp(-dt*.35); }
-      });
       elapsed += dt * settings.speed;
       walkerTimes.forEach((_, i) => {
         const targetSpeed = i === selected ? 0 : 1;
@@ -360,21 +338,5 @@ if (query.has('debug')) {
     paused = true; elapsed = time; walkerTimes.fill(time); render();
   });
 }
-if (comparison) {
-  window.addEventListener('message', event => {
-    if (event.origin !== location.origin || event.source !== parent || event.data?.type !== 'behind-glass-clock') return;
-    const time = event.data.time;
-    if (typeof time !== 'number' || !Number.isFinite(time)) return;
-    walkerTimes.fill(time); walkerSpeeds.fill(1); showJoints = event.data.joints === true;
-    dismissThought(); render();
-  });
-  people.style.pointerEvents = 'none';
-  personButtons.forEach(button => { button.disabled = true; button.style.pointerEvents = 'none'; });
-} else {
-  const compareLink = document.createElement('a');
-  compareLink.className = 'compare-link'; compareLink.href = '?compare'; compareLink.textContent = '이전 버전과 비교';
-  document.body.append(compareLink);
-}
 resize();
-if (comparison) parent.postMessage({ type: 'behind-glass-ready' }, location.origin);
-else frame = requestAnimationFrame(tick);
+frame = requestAnimationFrame(tick);
