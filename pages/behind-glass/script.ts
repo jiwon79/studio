@@ -1,5 +1,5 @@
 import { advanceSway } from './drag-physics';
-import { personBounds, placeCard } from './layout';
+import { positionBelowFeet } from './layout';
 import { biomechanicalLeg, BIOMECHANICAL_STRIDE } from './biomechanics';
 import GUI from 'lil-gui';
 import './style.css';
@@ -51,6 +51,8 @@ const closeThought = document.querySelector<HTMLButtonElement>('.thought-close')
 const walkerTimes = walkers.map(() => elapsed);
 const walkerSpeeds = walkers.map(() => 1);
 const anchors: { x: number; y: number; scale: number }[] = [];
+const footAnchors: { x: number; y: number }[] = [];
+let holdTimer = 0;
 const dragOffsets = walkers.map(() => ({ x: 0, y: 0 }));
 const dragLifts = walkers.map(() => 0);
 const dragSways = walkers.map(() => ({ x: 0, y: 0, vx: 0, vy: 0 }));
@@ -71,6 +73,11 @@ const personButtons = walkers.map((_, index) => {
     const anchor = anchors[index];
     drag = { index, pointer: event.pointerId, x: event.clientX, y: event.clientY, anchorX: anchor.x, anchorY: anchor.y, offsetX: dragOffsets[index].x, offsetY: dragOffsets[index].y, active: false };
     target.setPointerCapture(event.pointerId);
+    holdTimer = window.setTimeout(() => {
+      if (!drag || drag.index !== index || drag.active) return;
+      drag.active = true; dismissThought(); target.classList.add('dragging');
+      if (paused) { dragLifts[index] = 1; render(); }
+    }, 450);
   });
   target.addEventListener('pointermove', event => {
     if (!drag || drag.index !== index || drag.pointer !== event.pointerId) return;
@@ -87,6 +94,7 @@ const personButtons = walkers.map((_, index) => {
   });
   const finishDrag = (event: PointerEvent) => {
     if (!drag || drag.index !== index || drag.pointer !== event.pointerId) return;
+    clearTimeout(holdTimer);
     if (drag.active) suppressClickUntil = performance.now() + 350;
     drag = null;
     target.classList.remove('dragging');
@@ -101,6 +109,7 @@ const personButtons = walkers.map((_, index) => {
     if (selected === index) dismissThought();
     else {
       selected = index;
+      walkerSpeeds[index] = 0;
       needsThoughtPlacement = true;
       selectionRemaining = 8;
       destination.textContent = stories[index].destination;
@@ -135,9 +144,8 @@ function positionThought() {
   if (selected < 0 || !needsThoughtPlacement) return;
   const anchor = anchors[selected];
   if (!anchor) return;
-  const bounds = personBounds(anchor);
-  const obstacles = anchors.filter((_, i) => i < settings.people && i !== selected).map(personBounds);
-  const position = placeCard(bounds, obstacles, thought.offsetWidth, thought.offsetHeight, { width, height });
+  const feet = footAnchors[selected] ?? anchor;
+  const position = positionBelowFeet(feet, thought.offsetWidth, thought.offsetHeight, { width, height });
   thought.style.transform = `translate(${position.x}px, ${position.y}px)`;
   needsThoughtPlacement = false;
 }
@@ -260,6 +268,7 @@ function renderWalker(walker: typeof walkers[number], index: number) {
   const feet = layers[2].context;
   const walking = walkerSpeeds[index];
   const hipHeight = 115 + (pelvisHeight(cycle, gaitKind) - 115) * walking;
+  const footPositions: { x: number; bottom: number }[] = [];
   for (const side of [-1, 1]) {
     const legCycle = cycle + (side === 1 ? .5 : 0);
     const gait = gaitKind === 'run' ? runningFootPose(legCycle) : footPose(legCycle, STRIDE);
@@ -313,8 +322,9 @@ function renderWalker(walker: typeof walkers[number], index: number) {
     feet.filter = `blur(${(.55 + pose.lift * 2.8 + Math.max(0, pose.roll) * .4) * scale * pixelRatio}px)`;
     sole(feet, contact, side, shoeAngle, pose, useBiomechanics || lifted > .01);
     feet.restore();
-
+    footPositions.push({ x: contact.x, bottom: contact.y + Math.abs(Math.cos(shoeAngle)) * 23 * Math.cos(pose.roll) + Math.abs(Math.sin(shoeAngle)) * 13 });
   }
+  footAnchors[index] = { x: x + (footPositions[0].x + footPositions[1].x) / 2 * scale, y: y + Math.max(...footPositions.map(p => p.bottom)) * scale };
   for (const { context: c } of layers) c.restore();
 }
 
@@ -373,10 +383,10 @@ function tick(now: number) {
         const held = drag?.active === true && drag.index === i;
         dragLifts[i] += ((held ? 1 : 0) - dragLifts[i]) * (1 - Math.exp(-dt * 12));
         if (dragLifts[i] < .001) dragLifts[i] = 0;
-        const targetSpeed = i === selected || held || dragLifts[i] > .05 ? 0 : 1;
+        const targetSpeed = i === selected || drag?.index === i || dragLifts[i] > .05 ? 0 : 1;
         walkerSpeeds[i] += (targetSpeed - walkerSpeeds[i]) * (1 - Math.exp(-dt * 8));
         if (Math.abs(walkerSpeeds[i] - targetSpeed) < .005) walkerSpeeds[i] = targetSpeed;
-        if (!held) walkerTimes[i] += dt * settings.speed * walkerSpeeds[i];
+        if (drag?.index !== i) walkerTimes[i] += dt * settings.speed * walkerSpeeds[i];
       });
       render();
     }
