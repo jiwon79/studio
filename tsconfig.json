@@ -18,6 +18,7 @@
     "pages/color-text/**/*.ts",
     "pages/guseul/**/*.ts",
     "pages/soft-forms/**/*.ts",
+    "pages/behind-glass/**/*.ts",
     "pages/rose-glass/**/*.ts",
     "pages/line-pull/**/*.ts",
     "pages/smile-flower/**/*.ts",
