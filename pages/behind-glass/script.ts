@@ -1,3 +1,4 @@
+import { advanceSway } from './drag-physics';
 import { personBounds, placeCard } from './layout';
 import { biomechanicalLeg, BIOMECHANICAL_STRIDE } from './biomechanics';
 import GUI from 'lil-gui';
@@ -52,6 +53,8 @@ const walkerSpeeds = walkers.map(() => 1);
 const anchors: { x: number; y: number; scale: number }[] = [];
 const dragOffsets = walkers.map(() => ({ x: 0, y: 0 }));
 const dragLifts = walkers.map(() => 0);
+const dragSways = walkers.map(() => ({ x: 0, y: 0, vx: 0, vy: 0 }));
+const previousDragOffsets = walkers.map(() => ({ x: 0, y: 0 }));
 let drag: { index: number; pointer: number; x: number; y: number; anchorX: number; anchorY: number; offsetX: number; offsetY: number; active: boolean } | null = null;
 let suppressClickUntil = 0;
 let selected = -1;
@@ -281,6 +284,21 @@ function renderWalker(walker: typeof walkers[number], index: number) {
       contact = blend(projectBody(motion.contact), project(side*14, 0, 0));
       pose = { forward: motion.contact.forward * walking, lift: motion.lift * walking, roll: motion.roll * walking };
     }
+    const lifted = dragLifts[index];
+    const sway = dragSways[index];
+    // Rotate the suspended leg about the hip so the projected bones keep length.
+    const swing = Math.atan2(sway.x + sway.y * .35, 110 * scale) * lifted;
+    const rotate = (p: Point): Point => {
+      const dx = p.x - hip.x, dy = p.y - hip.y;
+      return { x: hip.x + dx * Math.cos(swing) + dy * Math.sin(swing), y: hip.y - dx * Math.sin(swing) + dy * Math.cos(swing) };
+    };
+    knee = rotate(knee); ankle = rotate(ankle); contact = rotate(contact);
+    // With no ground support, the ankle relaxes and the toe hangs downward.
+    const turn = Math.atan2(Math.sin(Math.PI - walker.angle), Math.cos(Math.PI - walker.angle));
+    const shoeAngle = walker.angle + turn * lifted * .85 + swing;
+    const hangingContact = { x: ankle.x + Math.sin(shoeAngle) * 14, y: ankle.y - Math.cos(shoeAngle) * 14 };
+    contact = { x: contact.x + (hangingContact.x - contact.x) * lifted, y: contact.y + (hangingContact.y - contact.y) * lifted };
+    pose.roll = pose.roll * (1 - lifted) + .85 * lifted;
     // Only the legs survive the frosted surface. The upper thigh fades to zero;
     // there is no separate head/shoulder blob extending beyond it.
     const diffuseEnd = { x: hip.x + riseX * 32, y: hip.y + riseY * 32 };
@@ -289,12 +307,11 @@ function renderWalker(walker: typeof walkers[number], index: number) {
     // A short sharper cuff anchors the diffuse calf to the shoe.
     const cuff = { x: ankle.x + (knee.x - ankle.x) * .22, y: ankle.y + (knee.y - ankle.y) * .22 };
     pose.lift = Math.max(pose.lift, dragLifts[index] * .85);
-    pose.roll += dragLifts[index] * .18;
     feet.save();
     feet.filter = `blur(${(2.1 + pose.lift * 3.5) * scale * pixelRatio}px)`;
     limb(feet, ankle, cuff, 18, 22, .54, 0);
     feet.filter = `blur(${(.55 + pose.lift * 2.8 + Math.max(0, pose.roll) * .4) * scale * pixelRatio}px)`;
-    sole(feet, contact, side, walker.angle, pose, useBiomechanics);
+    sole(feet, contact, side, shoeAngle, pose, useBiomechanics || lifted > .01);
     feet.restore();
 
   }
@@ -348,6 +365,11 @@ function tick(now: number) {
     if (!paused) {
       elapsed += dt * settings.speed;
       walkerTimes.forEach((_, i) => {
+        const offset = dragOffsets[i];
+        const last = previousDragOffsets[i];
+        const velocity = { x: (offset.x - last.x) / Math.max(dt, .001), y: (offset.y - last.y) / Math.max(dt, .001) };
+        advanceSway(dragSways[i], velocity, dt);
+        previousDragOffsets[i] = { ...offset };
         const held = drag?.active === true && drag.index === i;
         dragLifts[i] += ((held ? 1 : 0) - dragLifts[i]) * (1 - Math.exp(-dt * 12));
         if (dragLifts[i] < .001) dragLifts[i] = 0;
