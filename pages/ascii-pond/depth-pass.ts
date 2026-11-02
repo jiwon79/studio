@@ -38,13 +38,18 @@ export class PondDepthPass {
           depth = max(max(depthAt(vUv + vec2(rim.x, 0.0)), depthAt(vUv - vec2(rim.x, 0.0))),
                       max(depthAt(vUv + vec2(0.0, rim.y)), depthAt(vUv - vec2(0.0, rim.y))));
         }
-        vec2 r = uPixel * uBlur * depth;
+        float softness = smoothstep(0.22, 0.95, depth);
+        vec2 r = uPixel * uBlur * softness;
         vec3 color = texture2D(uColor, vUv).rgb * 0.25;
         color += (texture2D(uColor, vUv + vec2(r.x, 0.0)).rgb + texture2D(uColor, vUv - vec2(r.x, 0.0)).rgb
                 + texture2D(uColor, vUv + vec2(0.0, r.y)).rgb + texture2D(uColor, vUv - vec2(0.0, r.y)).rgb) * 0.125;
         color += (texture2D(uColor, vUv + r).rgb + texture2D(uColor, vUv - r).rgb
                 + texture2D(uColor, vUv + vec2(r.x, -r.y)).rgb + texture2D(uColor, vUv + vec2(-r.x, r.y)).rgb) * 0.0625;
-        gl_FragColor = vec4(mix(color, uWater, depth * 0.5), 1.0);
+        // Keep the surface band crisp and bright; attenuation starts deeper.
+        float surface = 1.0 - smoothstep(0.12, 0.35, depth);
+        color = clamp(mix(uWater, color, 1.0 + surface * 0.18), 0.0, 1.0);
+        float attenuation = smoothstep(0.3, 1.0, depth) * 0.6;
+        gl_FragColor = vec4(mix(color, uWater, attenuation), 1.0);
         #include <colorspace_fragment>
       }`,
     depthTest: false, depthWrite: false, toneMapped: false,

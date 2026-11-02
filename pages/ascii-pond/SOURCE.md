@@ -86,10 +86,14 @@ Initial positions span more of the viewport, wandering has longer straight
 sections, and a shorter wall look-ahead with a smaller size-aware margin lets
 fish explore the outer pond. These changes do not introduce containment.
 
-`depth.ts` assigns stable per-fish water depths with subtle perspective scale.
+`depth.ts` drives independent, smooth 18–26-second dive/surface cycles with
+perspective scale and a subtle body pitch.
 Real scene z positions drive a depth-texture composite in `depth-pass.ts`:
 blur and water-color attenuation increase with depth. In ASCII mode this
 runs after glyph rendering, so deep characters themselves soften. Low-poly
 uses the same composite; spine debug bypasses it. Surface ripples stay at
 the focus plane. A lil-gui toggle compares the effect, and selection sorts
-fish by visible depth. Fixed depth preserves editing bounds and anchors.
+fish by visible depth. Selecting a fish freezes its private dive clock;
+deselecting resumes that clock without catching up or jumping. The upper
+water band has no blur or attenuation and receives a modest contrast boost.
+Body pitch changes z geometry and lighting without changing its x/y outline.

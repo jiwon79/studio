@@ -64,7 +64,7 @@ export class FishGeometry extends THREE.BufferGeometry {
     for (let j = 0; j < 3; j++) this.color.toArray(this.colors, offset + j * 3);
   }
 
-  update(spine: Float32Array, beat: number, sprint: number, scale = 1) {
+  update(spine: Float32Array, beat: number, sprint: number, scale = 1, pitch = 0) {
     const halfWidth = HALF_WIDTH * scale;
     this.triangle = 0;
     const frame = (u: number) => {
@@ -134,6 +134,15 @@ export class FishGeometry extends THREE.BufferGeometry {
           center[1] + fy * Math.cos(angle) * radius * 0.75 + fx * Math.sin(angle) * radius * 0.4, 0.0008];
       });
       for (let j = 0; j < rim.length - 1; j++) this.face(root, rim[j], rim[j + 1], u, j, 'fin');
+    }
+    if (pitch) {
+      const base = this.fish * 20;
+      const hx = spine[base], hy = spine[base + 1];
+      const dx = hx - spine[base + 2], dy = hy - spine[base + 3];
+      const length = Math.hypot(dx, dy) || 1;
+      const slope = (x: number, y: number) => -((x - hx) * dx + (y - hy) * dy) / length * pitch;
+      for (let k = 0; k < this.triangle * 9; k += 3) this.positions[k + 2] += slope(this.positions[k], this.positions[k + 1]);
+      this.eyes.forEach(eye => { eye[2] += slope(eye[0], eye[1]); });
     }
     this.clearGroups();
     this.addGroup(0, skinVertices, 0);

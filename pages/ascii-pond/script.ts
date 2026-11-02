@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import GUI from 'lil-gui';
 import { PondDepthPass } from './depth-pass';
-import { fishDepth } from './depth';
+import { DepthMotion } from './depth';
 import { SpineDebug } from './spine-debug';
 import { createSchool, MAX_FISH, MAX_SCENE_FISH, type PointerState } from './school';
 import { FishGeometry, FISH_LENGTH } from './geometry';
@@ -40,6 +40,7 @@ function start() {
   };
   const ascii = new AsciiPass(settings.asciiStyle);
   const depthPass = new PondDepthPass();
+  const depthMotion = new DepthMotion();
   url.searchParams.set('ascii', 'medium');
   history.replaceState(null, '', url);
   const camera = new THREE.OrthographicCamera(0, 1, 1, 0, 0.1, 10);
@@ -111,11 +112,12 @@ function start() {
       debug.group.visible = visible && settings.mode === 'spine';
       eyes.forEach(eye => { eye.visible = visible && settings.mode !== 'spine'; });
       if (!visible) return;
+      const diving = depthMotion.sample(i, time, editor?.selectedId === i);
+      const depth = settings.depth && settings.mode !== 'spine' ? diving : { scale: 1, z: 0, pitch: 0 };
       const scale = fishScale() * school.scale(i);
-      geometry.update(renderedSpine, renderedStates[i * 4], renderedStates[i * 4 + 1], scale);
+      geometry.update(renderedSpine, renderedStates[i * 4], renderedStates[i * 4 + 1], scale, depth.pitch);
       if (debug.group.visible) debug.update(renderedSpine, i, scale);
       const [stretchX, stretchY] = school.stretch(i);
-      const depth = settings.depth && settings.mode !== 'spine' ? fishDepth(i) : { scale: 1, z: 0 };
       const sx = stretchX * depth.scale, sy = stretchY * depth.scale;
       const hx = renderedSpine[i * 20], hy = renderedSpine[i * 20 + 1];
       for (const object of [mesh, debug.group]) {
