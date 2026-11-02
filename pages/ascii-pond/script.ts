@@ -202,7 +202,7 @@ function start() {
     restore(saved, id) { school.restoreFish(id, saved); },
     changed: refresh,
   });
-  const gui = new GUI({ title: 'Koi', width: 232 });
+  const gui = new GUI({ title: 'ASCII Pond', width: 232 });
   gui.add(settings, 'mode', { ASCII: 'ascii', 'Low poly': 'low-poly', '척추 디버그': 'spine' }).name('표현').onChange(() => {
     sizeController.show(settings.mode === 'ascii');
     bodyController.show(settings.mode === 'spine');
