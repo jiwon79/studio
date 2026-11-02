@@ -1,3 +1,4 @@
+import { personBounds, spreadPeople, placeCard } from './layout';
 import { biomechanicalLeg, BIOMECHANICAL_STRIDE } from './biomechanics';
 import GUI from 'lil-gui';
 import './style.css';
@@ -56,6 +57,7 @@ const sentence = document.querySelector<HTMLElement>('.sentence')!;
 const closeThought = document.querySelector<HTMLButtonElement>('.thought-close')!;
 const walkerTimes = walkers.map(() => elapsed);
 const walkerSpeeds = walkers.map(() => 1);
+const routeOffsets = walkers.map(() => ({ x: 0, y: 0 }));
 const anchors: { x: number; y: number; scale: number }[] = [];
 let selected = -1;
 let selectionRemaining = 0;
@@ -105,14 +107,10 @@ function positionThought() {
   if (selected < 0) return;
   const anchor = anchors[selected];
   if (!anchor) return;
-  const gutter = 18;
-  const cardWidth = thought.offsetWidth;
-  const cardHeight = thought.offsetHeight;
-  let left = anchor.x + 48 * anchor.scale;
-  if (left + cardWidth > width - gutter) left = anchor.x - cardWidth - 48 * anchor.scale;
-  left = Math.max(gutter, Math.min(width - cardWidth - gutter, left));
-  const top = Math.max(gutter, Math.min(height - cardHeight - 82, anchor.y - cardHeight / 2));
-  thought.style.transform = `translate(${left}px, ${top}px)`;
+  const bounds = personBounds(anchor);
+  const obstacles = anchors.filter((_, i) => i < settings.people && i !== selected).map(personBounds);
+  const position = placeCard(bounds, obstacles, thought.offsetWidth, thought.offsetHeight, { width, height });
+  thought.style.transform = `translate(${position.x}px, ${position.y}px)`;
 }
 
 function resize() {
@@ -202,15 +200,10 @@ function sceneScale() {
 
 function renderWalker(walker: typeof walkers[number], index: number) {
   const time = walkerTimes[index];
-  const scale = sceneScale() * walker.size;
+  const { x, y, scale } = anchors[index];
   const cycle = time / walker.period + walker.phase;
   const gaitKind = index === 4 ? 'run' : 'walk';
   const useBiomechanics = !legacy && gaitKind === 'walk';
-  const stride = gaitKind === 'run' ? RUN_STRIDE : useBiomechanics ? BIOMECHANICAL_STRIDE : STRIDE;
-  const distance = comparison ? 0 : time * stride / walker.period * scale;
-  const x = wrapPosition(walker.x * width + Math.sin(walker.angle) * distance, width, 180 * scale);
-  const y = wrapPosition(walker.y * height - Math.cos(walker.angle) * distance, height, 180 * scale);
-  anchors[index] = { x, y, scale };
   const target = personButtons[index];
   target.hidden = x < 12 || x > width - 12 || y < 24 || y > height - 52;
   const targetWidth = Math.max(86, 112 * scale);
@@ -301,6 +294,21 @@ function render() {
   }
   personButtons.forEach((target, i) => { if (i >= settings.people) target.hidden = true; });
   if (selected >= settings.people) dismissThought();
+  const raw = walkers.slice(0, settings.people).map((walker, index) => {
+    const scale = sceneScale() * walker.size;
+    const stride = index === 4 ? RUN_STRIDE : legacy ? STRIDE : BIOMECHANICAL_STRIDE;
+    const distance = comparison ? 0 : walkerTimes[index] * stride / walker.period * scale;
+    return {
+      x: wrapPosition(walker.x * width + Math.sin(walker.angle) * distance, width, 180 * scale),
+      y: wrapPosition(walker.y * height - Math.cos(walker.angle) * distance, height, 180 * scale), scale,
+    };
+  });
+  const positions = raw.map((p, i) => ({ ...p, x: p.x + routeOffsets[i].x, y: p.y + routeOffsets[i].y }));
+  if (!comparison) spreadPeople(positions, selected);
+  positions.forEach((p, i) => {
+    routeOffsets[i] = { x: p.x - raw[i].x, y: p.y - raw[i].y };
+    anchors[i] = p;
+  });
   walkers.slice(0, settings.people).forEach(renderWalker);
   const size = sceneScale();
   for (let i = 0; i < layers.length; i++) {
@@ -320,6 +328,9 @@ function tick(now: number) {
       if (selectionRemaining <= 0) dismissThought();
     }
     if (!paused) {
+      routeOffsets.forEach((offset, i) => {
+        if (i !== selected) { offset.x *= Math.exp(-dt*.35); offset.y *= Math.exp(-dt*.35); }
+      });
       elapsed += dt * settings.speed;
       walkerTimes.forEach((_, i) => {
         const targetSpeed = i === selected ? 0 : 1;

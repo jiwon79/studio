@@ -11,13 +11,13 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'N
 .person:hover span, .person:focus-visible span { opacity: 1; }
 .person[aria-expanded='true'] span { opacity: 0; }
 .person:focus-visible { outline: 2px solid #8b8b80; outline-offset: 5px; border-radius: 3px; }
-.thought { position: fixed; top: 0; left: 0; width: 276px; max-width: calc(100vw - 36px); padding: 24px 28px 26px; background: #fffffff0; border: 1px solid #e6e6e0; border-radius: 3px; box-shadow: 0 8px 35px #33332808; animation: thought-appear .45s ease both; }
-.destination { margin: 0 0 13px; font-size: 11px; letter-spacing: .04em; color: #89897e; }
-.sentence { margin: 0; font-size: 15px; line-height: 1.9; word-break: keep-all; color: #42423b; }
+.thought { position: fixed; top: 0; left: 0; width: 214px; max-width: calc(100vw - 36px); padding: 16px 22px 17px; background: #fffffff0; border: 1px solid #e6e6e0; border-radius: 3px; box-shadow: 0 8px 35px #33332808; animation: thought-appear .45s ease both; }
+.destination { margin: 0 0 7px; font-size: 11px; letter-spacing: .04em; color: #89897e; }
+.sentence { margin: 0; font-size: 13px; line-height: 1.7; word-break: keep-all; color: #42423b; }
 .thought-close { position: absolute; top: 0; right: 0; width: 30px; height: 30px; border: 0; padding: 0; font-size: 18px; background: transparent; color: #9a9a90; cursor: pointer; }
 .thought-close:focus-visible { outline: 2px solid #777; }
 @keyframes thought-appear { from { opacity: 0; } to { opacity: 1; } }
-@media (max-width: 600px) { .thought { width: 254px; padding: 24px; } .thought-close { width: 40px; height: 40px; } }
+@media (max-width: 600px) { .thought { width: 204px; padding: 16px 22px; } .thought-close { width: 40px; height: 40px; } }
 @media (prefers-reduced-motion: reduce) { .thought { animation: none; } .person::after, .person span { transition: none; } }
 .compare-link { position: fixed; right: 22px; bottom: 18px; color: #86867e; font-size: 11px; text-decoration: none; padding: 8px; }
 .compare-link:hover { color: #333; }
