@@ -1,6 +1,6 @@
 import GUI from 'lil-gui';
 import './style.css';
-import { footPose, wrapPosition } from './motion';
+import { footPose, legPose, STRIDE, wrapPosition, type FootPose } from './motion';
 
 const canvas = document.querySelector('canvas')!;
 const ctx = canvas.getContext('2d', { alpha: false })!;
@@ -10,9 +10,11 @@ const settings = { speed: 1, blur: 1, scale: 1, people: 4 };
 let width = 0;
 let height = 0;
 let pixelRatio = 1;
-let elapsed = 2.3;
+const query = new URLSearchParams(location.search);
+const inspectionTime = query.has('debug') ? Number(query.get('time')) : NaN;
+let elapsed = query.has('time') && Number.isFinite(inspectionTime) ? inspectionTime : 1.1;
 let previous = 0;
-let paused = reducedMotion.matches;
+let paused = reducedMotion.matches || (query.has('debug') && query.has('time'));
 let frame = 0;
 
 const layers = Array.from({ length: 3 }, () => {
@@ -23,10 +25,10 @@ const layers = Array.from({ length: 3 }, () => {
 // Motion reference: https://x.com/nusretuzman/status/2114480094840570247
 // All shapes and motion are procedural; no source video or imagery is shipped.
 const walkers = [
-  { x: .12, y: .24, angle: 1.10, period: 1.20, phase: .12, size: .98 },
-  { x: .80, y: .54, angle: 3.55, period: 1.32, phase: .67, size: 1.06 },
-  { x: .44, y: .92, angle: -.64, period: 1.12, phase: .35, size: .92 },
-  { x: .64, y: -.12, angle: 2.60, period: 1.38, phase: .82, size: 1.02 },
+  { x: .05, y: .30, angle: 1.67, period: 1.20, phase: .12, size: .98 },
+  { x: .86, y: .79, angle: .08, period: 1.32, phase: .67, size: 1.06 },
+  { x: .43, y: .78, angle: -1.67, period: 1.12, phase: .35, size: .98 },
+  { x: .65, y: .24, angle: -.08, period: 1.38, phase: .82, size: 1.02 },
   { x: .20, y: .78, angle: -2.40, period: 1.27, phase: .48, size: .96 },
   { x: .92, y: .15, angle: .40, period: 1.17, phase: .91, size: 1.04 },
 ];
@@ -44,31 +46,69 @@ function resize() {
   render();
 }
 
-function capsule(c: CanvasRenderingContext2D, x1: number, y1: number, x2: number, y2: number, thickness: number, color: string) {
-  c.strokeStyle = color;
-  c.lineWidth = thickness;
-  c.lineCap = 'round';
+interface Point { x: number; y: number }
+
+function limb(c: CanvasRenderingContext2D, a: Point, b: Point, startWidth: number, endWidth: number, nearAlpha: number, farAlpha: number) {
+  const dx = b.x - a.x;
+  const dy = b.y - a.y;
+  const length = Math.hypot(dx, dy);
+  if (length < .01) return;
+  const nx = -dy / length;
+  const ny = dx / length;
+  const gradient = c.createLinearGradient(a.x, a.y, b.x, b.y);
+  gradient.addColorStop(0, `rgba(17,18,20,${nearAlpha})`);
+  gradient.addColorStop(1, `rgba(17,18,20,${farAlpha})`);
+  c.fillStyle = gradient;
   c.beginPath();
-  c.moveTo(x1, y1);
-  c.lineTo(x2, y2);
-  c.stroke();
+  c.moveTo(a.x + nx * startWidth / 2, a.y + ny * startWidth / 2);
+  c.lineTo(b.x + nx * endWidth / 2, b.y + ny * endWidth / 2);
+  c.quadraticCurveTo(b.x + dx / length * endWidth / 3, b.y + dy / length * endWidth / 3, b.x - nx * endWidth / 2, b.y - ny * endWidth / 2);
+  c.lineTo(a.x - nx * startWidth / 2, a.y - ny * startWidth / 2);
+  c.quadraticCurveTo(a.x - dx / length * startWidth / 3, a.y - dy / length * startWidth / 3, a.x + nx * startWidth / 2, a.y + ny * startWidth / 2);
+  c.fill();
 }
 
-function sole(c: CanvasRenderingContext2D, forward: number, side: number, lift: number, roll: number, swing: number) {
-  c.save();
-  c.translate(side, -forward - lift * 10);
-  c.rotate(side * .005 + swing * .07);
-  // The heel narrows into the arch; the toe box is deliberately asymmetric.
-  c.scale(1 - lift * .09, 1 - roll * .19);
-  c.fillStyle = `rgba(13,14,16,${.96 - lift * .24})`;
+function legSilhouette(c: CanvasRenderingContext2D, ankle: Point, knee: Point, hip: Point, lift: number) {
+  const normal = (a: Point, b: Point, radius: number) => {
+    const length = Math.hypot(b.x - a.x, b.y - a.y) || 1;
+    return { x: -(b.y - a.y) / length * radius, y: (b.x - a.x) / length * radius };
+  };
+  const a = normal(ankle, knee, 10);
+  const k = normal(ankle, hip, 14);
+  const h = normal(knee, hip, 17);
+  const gradient = c.createLinearGradient(ankle.x, ankle.y, hip.x, hip.y);
+  gradient.addColorStop(0, `rgba(16,17,19,${.87 - lift * .12})`);
+  gradient.addColorStop(.38, 'rgba(16,17,19,.65)');
+  gradient.addColorStop(.72, 'rgba(16,17,19,.24)');
+  gradient.addColorStop(1, 'rgba(16,17,19,0)');
+  c.fillStyle = gradient;
   c.beginPath();
-  c.moveTo(-7, 19);
-  c.bezierCurveTo(-11, 15, -9, 7, -10, 1);
-  c.bezierCurveTo(-13, -9, -12, -20, -6, -24);
-  c.bezierCurveTo(0, -28, 11, -25, 12, -17);
-  c.bezierCurveTo(14, -9, 9, 1, 8, 8);
-  c.bezierCurveTo(8, 18, 5, 22, -1, 22);
-  c.bezierCurveTo(-4, 22, -6, 21, -7, 19);
+  c.moveTo(ankle.x + a.x, ankle.y + a.y);
+  c.lineTo(knee.x + k.x, knee.y + k.y);
+  c.quadraticCurveTo(hip.x + h.x, hip.y + h.y, hip.x, hip.y);
+  c.quadraticCurveTo(hip.x - h.x, hip.y - h.y, knee.x - k.x, knee.y - k.y);
+  c.lineTo(ankle.x - a.x, ankle.y - a.y);
+  c.closePath();
+  c.fill();
+}
+
+function sole(c: CanvasRenderingContext2D, position: Point, side: number, angle: number, pose: FootPose) {
+  c.save();
+  c.translate(position.x, position.y);
+  c.rotate(angle + side * .035);
+  // Roll around the toe, so the heel rises without dragging the contact point.
+  c.translate(0, -23);
+  c.scale(1 - pose.lift * .04, Math.cos(pose.roll));
+  c.translate(0, 23);
+  c.fillStyle = `rgba(9,10,12,${.98 - pose.lift * .24})`;
+  c.beginPath();
+  c.moveTo(-8, 20);
+  c.bezierCurveTo(-12, 16, -9, 7, -10, 1);
+  c.bezierCurveTo(-13, -10, -13, -21, -6, -25);
+  c.bezierCurveTo(1, -28, 12, -26, 13, -17);
+  c.bezierCurveTo(14, -8, 10, 2, 9, 9);
+  c.bezierCurveTo(10, 19, 5, 23, -1, 23);
+  c.bezierCurveTo(-4, 23, -7, 22, -8, 20);
   c.fill();
   c.restore();
 }
@@ -79,41 +119,47 @@ function sceneScale() {
 
 function renderWalker(walker: typeof walkers[number]) {
   const scale = sceneScale() * walker.size;
-  const stride = 88;
   const cycle = elapsed / walker.period + walker.phase;
-  const distance = elapsed * stride / walker.period * scale;
+  const distance = elapsed * STRIDE / walker.period * scale;
   const x = wrapPosition(walker.x * width + Math.sin(walker.angle) * distance, width, 180 * scale);
   const y = wrapPosition(walker.y * height - Math.cos(walker.angle) * distance, height, 180 * scale);
-  const sway = Math.sin(cycle * Math.PI * 2) * 3;
+  // Camera projection is shared by every person. Height recedes up the glass,
+  // not backwards along each walking direction like a trailing shadow.
+  const riseX = (width * .5 - x) / width * .95;
+  const riseY = -.98;
+  const sin = Math.sin(walker.angle);
+  const cos = Math.cos(walker.angle);
+  const project = (side: number, forward: number, elevation: number): Point => ({
+    x: cos * side + sin * forward + riseX * elevation,
+    y: sin * side - cos * forward + riseY * elevation,
+  });
   for (const { context: c } of layers) {
     c.save();
     c.translate(x, y);
-    c.rotate(walker.angle);
     c.scale(scale, scale);
   }
-  const body = layers[0].context;
+  const far = layers[0].context;
   const legs = layers[1].context;
   const feet = layers[2].context;
-  // Height above the glass becomes both displacement and diffusion.
-  // A receding torso joins the two legs, rather than leaving isolated footprints.
-  capsule(body, sway, 37, sway * .7, 88, 41, 'rgba(30,31,33,.24)');
-  capsule(body, -17 + sway, 50, 18 + sway, 50, 29, 'rgba(27,28,30,.28)');
-  body.fillStyle = 'rgba(30,31,33,.16)';
-  body.beginPath();
-  body.ellipse(sway, 111, 14, 18, 0, 0, Math.PI * 2);
-  body.fill();
+  const hipHeight = 96 + Math.cos(cycle * Math.PI * 4) * 1.5;
   for (const side of [-1, 1]) {
-    const pose = footPose(cycle + (side === 1 ? .5 : 0), stride);
-    const ankleX = side * 14;
-    const ankleY = -pose.forward + 7 - pose.lift * 10;
-    const kneeX = side * 13 + sway;
-    const kneeY = (ankleY + 44) * .5 + 10;
-    capsule(body, side * 12 + sway, 49, kneeX, kneeY, 24, 'rgba(21,22,24,.42)');
-    capsule(legs, kneeX, kneeY, ankleX, ankleY, 17, `rgba(22,23,26,${.55 - pose.lift * .13})`);
-    capsule(legs, ankleX, ankleY, ankleX, ankleY + 10, 17, 'rgba(16,17,19,.56)');
+    const pose = footPose(cycle + (side === 1 ? .5 : 0), STRIDE);
+    const joints = legPose(pose, hipHeight);
+    const ankle = project(side * 14, joints.ankle.forward, joints.ankle.height);
+    const knee = project(side * 12, joints.knee.forward, joints.knee.height);
+    const hip = project(side * 10, joints.hip.forward, joints.hip.height);
+    // Only the legs survive the frosted surface. The upper thigh fades to zero;
+    // there is no separate head/shoulder blob extending beyond it.
+    limb(far, knee, hip, 32, 38, .18, 0);
+    legSilhouette(legs, ankle, knee, hip, pose.lift);
+    // A short sharper cuff anchors the diffuse calf to the shoe.
+    const cuff = { x: ankle.x + (knee.x - ankle.x) * .22, y: ankle.y + (knee.y - ankle.y) * .22 };
     feet.save();
-    feet.filter = `blur(${1 + pose.lift * 3}px)`;
-    sole(feet, pose.forward, ankleX, pose.lift, pose.roll, Math.sin(cycle * Math.PI * 2));
+    feet.filter = `blur(${(2.1 + pose.lift * 3.5) * scale * pixelRatio}px)`;
+    limb(feet, ankle, cuff, 18, 22, .54, 0);
+    const contact = project(side * 14, pose.forward, pose.lift * 23);
+    feet.filter = `blur(${(.55 + pose.lift * 2.8 + Math.max(0, pose.roll) * .4) * scale * pixelRatio}px)`;
+    sole(feet, contact, side, walker.angle, pose);
     feet.restore();
   }
   for (const { context: c } of layers) c.restore();
@@ -136,7 +182,7 @@ function render() {
   walkers.slice(0, settings.people).forEach(renderWalker);
   const size = sceneScale();
   for (let i = 0; i < layers.length; i++) {
-    ctx.filter = `blur(${[17 * settings.blur * size, 7 * settings.blur * size, .55 * size][i]}px)`;
+    ctx.filter = `blur(${[11 * settings.blur * size, 7.2 * settings.blur * size, .35 * size][i] * pixelRatio}px)`;
     ctx.drawImage(layers[i].element, 0, 0, width, height);
   }
   ctx.filter = 'none';
@@ -163,12 +209,15 @@ window.addEventListener('pagehide', () => cancelAnimationFrame(frame));
 window.addEventListener('pageshow', event => {
   if (event.persisted) { previous = performance.now(); frame = requestAnimationFrame(tick); }
 });
-if (new URLSearchParams(location.search).has('debug')) {
+if (query.has('debug')) {
   const gui = new GUI({ title: 'Behind Glass' });
   gui.add(settings, 'speed', .1, 2, .05);
   gui.add(settings, 'blur', .2, 2, .05).onChange(render);
   gui.add(settings, 'scale', .5, 1.8, .05).onChange(render);
   gui.add(settings, 'people', 1, 6, 1).onChange(render);
+  gui.add({ time: elapsed }, 'time', 0, 20, .01).onChange((time: number) => {
+    paused = true; elapsed = time; updatePlayback(); render();
+  });
 }
 updatePlayback();
 resize();
