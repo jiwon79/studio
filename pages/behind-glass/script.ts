@@ -4,7 +4,6 @@ import { footPose, legPose, pelvisHeight, FOOT_LIFT, STRIDE, wrapPosition, type 
 
 const canvas = document.querySelector('canvas')!;
 const ctx = canvas.getContext('2d', { alpha: false })!;
-const button = document.querySelector<HTMLButtonElement>('.playback')!;
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 const settings = { speed: 1, blur: 1, scale: 1, people: 4 };
 let width = 0;
@@ -300,16 +299,7 @@ function tick(now: number) {
   frame = requestAnimationFrame(tick);
 }
 
-function updatePlayback() {
-  button.setAttribute('aria-pressed', String(paused));
-  button.setAttribute('aria-label', paused ? '애니메이션 재생' : '애니메이션 일시 정지');
-}
-function togglePlayback() { paused = !paused; updatePlayback(); }
-button.addEventListener('click', togglePlayback);
-window.addEventListener('keydown', event => {
-  if (event.code === 'Space' && event.target === document.body) { event.preventDefault(); togglePlayback(); }
-});
-reducedMotion.addEventListener('change', event => { paused = event.matches; updatePlayback(); });
+reducedMotion.addEventListener('change', event => { paused = event.matches; });
 window.addEventListener('resize', resize);
 window.addEventListener('pagehide', () => cancelAnimationFrame(frame));
 window.addEventListener('pageshow', event => {
@@ -322,9 +312,8 @@ if (query.has('debug')) {
   gui.add(settings, 'scale', .5, 1.8, .05).onChange(render);
   gui.add(settings, 'people', 1, 6, 1).onChange(render);
   gui.add({ time: elapsed }, 'time', 0, 20, .01).onChange((time: number) => {
-    paused = true; elapsed = time; walkerTimes.fill(time); updatePlayback(); render();
+    paused = true; elapsed = time; walkerTimes.fill(time); render();
   });
 }
-updatePlayback();
 resize();
 frame = requestAnimationFrame(tick);
