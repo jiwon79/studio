@@ -33,6 +33,80 @@ const walkers = [
   { x: .92, y: .15, angle: .40, period: 1.17, phase: .91, size: 1.04 },
 ];
 
+const stories = [
+  { destination: '집으로 가는 사람', thought: '오늘은 아무 말도 하지 않고 쉬고 싶다.' },
+  { destination: '누군가를 만나러 가는 사람', thought: '먼저 와 있다고 할까, 아직 가는 중이라고 할까.' },
+  { destination: '조금 늦은 사람', thought: '뛰면 더 늦은 사람처럼 보이겠지.' },
+  { destination: '그냥 걷는 사람', thought: '목적지가 없어도 걷는 건 좋다.' },
+  { destination: '다시 돌아가는 사람', thought: '아까 그 길로 한 번 더 걸어 볼까.' },
+  { destination: '아직 가는 중인 사람', thought: '조금 천천히 가도 괜찮겠지.' },
+];
+const people = document.querySelector<HTMLDivElement>('.people')!;
+const thought = document.querySelector<HTMLElement>('.thought')!;
+const destination = document.querySelector<HTMLElement>('.destination')!;
+const sentence = document.querySelector<HTMLElement>('.sentence')!;
+const closeThought = document.querySelector<HTMLButtonElement>('.thought-close')!;
+const walkerTimes = walkers.map(() => elapsed);
+const walkerSpeeds = walkers.map(() => 1);
+const anchors: { x: number; y: number; scale: number }[] = [];
+let selected = -1;
+let selectionRemaining = 0;
+const personButtons = walkers.map((_, index) => {
+  const target = document.createElement('button');
+  target.type = 'button';
+  target.className = 'person';
+  target.setAttribute('aria-label', `${stories[index].destination}의 생각 보기`);
+  target.setAttribute('aria-expanded', 'false');
+  const label = document.createElement('span');
+  label.textContent = stories[index].destination;
+  target.append(label);
+  target.addEventListener('click', () => {
+    if (selected === index) dismissThought();
+    else {
+      selected = index;
+      selectionRemaining = 8;
+      destination.textContent = stories[index].destination;
+      sentence.textContent = stories[index].thought;
+      thought.hidden = false;
+      syncSelection();
+      render();
+    }
+  });
+  people.append(target);
+  return target;
+});
+function syncSelection() {
+  personButtons.forEach((target, i) => target.setAttribute('aria-expanded', String(i === selected)));
+}
+function dismissThought() {
+  selected = -1;
+  thought.hidden = true;
+  syncSelection();
+}
+closeThought.addEventListener('click', dismissThought);
+canvas.addEventListener('click', dismissThought);
+window.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && selected >= 0) {
+    const target = personButtons[selected];
+    dismissThought();
+    target.focus({ preventScroll: true });
+  }
+});
+
+function positionThought() {
+  if (selected < 0) return;
+  const anchor = anchors[selected];
+  if (!anchor) return;
+  const gutter = 18;
+  const cardWidth = thought.offsetWidth;
+  const cardHeight = thought.offsetHeight;
+  let left = anchor.x + 48 * anchor.scale;
+  if (left + cardWidth > width - gutter) left = anchor.x - cardWidth - 48 * anchor.scale;
+  left = Math.max(gutter, Math.min(width - cardWidth - gutter, left));
+  const top = Math.max(gutter, Math.min(height - cardHeight - 82, anchor.y - cardHeight / 2));
+  thought.style.transform = `translate(${left}px, ${top}px)`;
+}
+
 function resize() {
   width = innerWidth;
   height = innerHeight;
@@ -117,12 +191,21 @@ function sceneScale() {
   return Math.max(.65, Math.min(width / 1150, height / 760, 1.35)) * settings.scale;
 }
 
-function renderWalker(walker: typeof walkers[number]) {
+function renderWalker(walker: typeof walkers[number], index: number) {
+  const time = walkerTimes[index];
   const scale = sceneScale() * walker.size;
-  const cycle = elapsed / walker.period + walker.phase;
-  const distance = elapsed * STRIDE / walker.period * scale;
+  const cycle = time / walker.period + walker.phase;
+  const distance = time * STRIDE / walker.period * scale;
   const x = wrapPosition(walker.x * width + Math.sin(walker.angle) * distance, width, 180 * scale);
   const y = wrapPosition(walker.y * height - Math.cos(walker.angle) * distance, height, 180 * scale);
+  anchors[index] = { x, y, scale };
+  const target = personButtons[index];
+  target.hidden = x < 12 || x > width - 12 || y < 24 || y > height - 52;
+  const targetWidth = Math.max(86, 112 * scale);
+  const targetHeight = Math.max(112, 160 * scale);
+  target.style.width = `${targetWidth}px`;
+  target.style.height = `${targetHeight}px`;
+  target.style.transform = `translate(${x - targetWidth / 2}px, ${y - targetHeight + 30 * scale}px)`;
   // Camera projection is shared by every person. Height recedes up the glass,
   // not backwards along each walking direction like a trailing shadow.
   const riseX = (width * .5 - x) / width * .95;
@@ -180,6 +263,8 @@ function render() {
     c.clearRect(0, 0, canvas.width, canvas.height);
     c.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
   }
+  personButtons.forEach((target, i) => { if (i >= settings.people) target.hidden = true; });
+  if (selected >= settings.people) dismissThought();
   walkers.slice(0, settings.people).forEach(renderWalker);
   const size = sceneScale();
   for (let i = 0; i < layers.length; i++) {
@@ -187,14 +272,30 @@ function render() {
     ctx.drawImage(layers[i].element, 0, 0, width, height);
   }
   ctx.filter = 'none';
+  positionThought();
 }
 
 function tick(now: number) {
-  if (!paused && !document.hidden) elapsed += Math.min((now - previous) / 1000, .05) * settings.speed;
+  const dt = Math.min((now - previous) / 1000, .05);
   previous = now;
-  if (!paused && !document.hidden) render();
+  if (!document.hidden) {
+    if (selected >= 0 && !thought.matches(':hover, :focus-within') && !personButtons[selected].matches(':focus-visible')) {
+      selectionRemaining -= dt;
+      if (selectionRemaining <= 0) dismissThought();
+    }
+    if (!paused) {
+      elapsed += dt * settings.speed;
+      walkerTimes.forEach((_, i) => {
+        const targetSpeed = i === selected ? .24 : 1;
+        walkerSpeeds[i] += (targetSpeed - walkerSpeeds[i]) * (1 - Math.exp(-dt * 4));
+        walkerTimes[i] += dt * settings.speed * walkerSpeeds[i];
+      });
+      render();
+    }
+  }
   frame = requestAnimationFrame(tick);
 }
+
 function updatePlayback() {
   button.setAttribute('aria-pressed', String(paused));
   button.setAttribute('aria-label', paused ? '애니메이션 재생' : '애니메이션 일시 정지');
@@ -217,7 +318,7 @@ if (query.has('debug')) {
   gui.add(settings, 'scale', .5, 1.8, .05).onChange(render);
   gui.add(settings, 'people', 1, 6, 1).onChange(render);
   gui.add({ time: elapsed }, 'time', 0, 20, .01).onChange((time: number) => {
-    paused = true; elapsed = time; updatePlayback(); render();
+    paused = true; elapsed = time; walkerTimes.fill(time); updatePlayback(); render();
   });
 }
 updatePlayback();

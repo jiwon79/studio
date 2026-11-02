@@ -4,11 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#f4f4f3" />
-  <meta name="description" content="반투명 유리 너머, 조용히 지나가는 사람들의 발걸음." />
-  <title>Behind Glass · Jiiwon Studio</title>
+  <meta name="description" content="각자의 속도로 걷는 사람들. 한 사람을 선택하면, 잠깐 그 사람의 마음이 보입니다." />
+  <title>각자의 속도 · Jiiwon Studio</title>
 </head>
 <body>
   <canvas aria-label="뿌연 유리 너머로 사람들이 걸어가는 애니메이션"></canvas>
+  <div class="people" aria-label="지나가는 사람들"></div>
+  <aside class="thought" hidden aria-label="지나가는 마음">
+    <button class="thought-close" type="button" aria-label="생각 닫기">×</button>
+    <div aria-live="polite" aria-atomic="true">
+      <p class="destination"></p>
+      <p class="sentence"></p>
+    </div>
+  </aside>
+  <header class="artwork-title"><h1>각자의 속도</h1><p>지나가는 사람을 선택해 보세요.</p></header>
   <button class="playback" type="button" aria-label="애니메이션 일시 정지" aria-pressed="false"><span></span><span></span></button>
   <script type="module" src="./script.ts"></script>
 </body>

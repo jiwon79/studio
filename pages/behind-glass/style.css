@@ -7,3 +7,24 @@ canvas { display: block; width: 100%; height: 100%; }
 .playback span { width: 2px; height: 9px; background: #383838; }
 .playback[aria-pressed="true"] span:first-child { width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 7px solid #383838; background: none; }
 .playback[aria-pressed="true"] span:last-child { display: none; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif; color: #343431; }
+.people { position: fixed; inset: 0; pointer-events: none; }
+.person { position: absolute; left: 0; top: 0; padding: 0; border: 0; background: transparent; pointer-events: auto; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.person[hidden], .thought[hidden] { display: none; }
+.person::after { content: ''; position: absolute; inset: 0; background: linear-gradient(#85857a88, #85857a88) left top / 10px 1px no-repeat, linear-gradient(#85857a88, #85857a88) left top / 1px 10px no-repeat, linear-gradient(#85857a88, #85857a88) right top / 10px 1px no-repeat, linear-gradient(#85857a88, #85857a88) right top / 1px 10px no-repeat, linear-gradient(#85857a88, #85857a88) left bottom / 10px 1px no-repeat, linear-gradient(#85857a88, #85857a88) left bottom / 1px 10px no-repeat, linear-gradient(#85857a88, #85857a88) right bottom / 10px 1px no-repeat, linear-gradient(#85857a88, #85857a88) right bottom / 1px 10px no-repeat; opacity: 0; transition: opacity .25s; }
+.person span { position: absolute; left: 0; top: -26px; white-space: nowrap; font-family: inherit; font-size: 11px; line-height: 1.5; letter-spacing: .03em; color: #72726b; opacity: 0; transition: opacity .25s; }
+.person:hover::after, .person:focus-visible::after, .person[aria-expanded='true']::after { opacity: 1; }
+.person:hover span, .person:focus-visible span { opacity: 1; }
+.person[aria-expanded='true'] span { opacity: 0; }
+.person:focus-visible { outline: 2px solid #8b8b80; outline-offset: 5px; border-radius: 3px; }
+.thought { position: fixed; top: 0; left: 0; width: 276px; max-width: calc(100vw - 36px); padding: 24px 28px 26px; background: #fffffff0; border: 1px solid #e6e6e0; border-radius: 3px; box-shadow: 0 8px 35px #33332808; animation: thought-appear .45s ease both; }
+.destination { margin: 0 0 13px; font-size: 11px; letter-spacing: .04em; color: #89897e; }
+.sentence { margin: 0; font-size: 15px; line-height: 1.9; word-break: keep-all; color: #42423b; }
+.thought-close { position: absolute; top: 0; right: 0; width: 30px; height: 30px; border: 0; padding: 0; font-size: 18px; background: transparent; color: #9a9a90; cursor: pointer; }
+.thought-close:focus-visible { outline: 2px solid #777; }
+.artwork-title { position: fixed; left: 30px; bottom: 26px; pointer-events: none; }
+.artwork-title h1 { margin: 0 0 7px; font-size: 14px; line-height: 1.5; font-weight: 400; letter-spacing: .13em; color: #62625a; }
+.artwork-title p { margin: 0; font-size: 11px; line-height: 1.5; color: #929289; letter-spacing: .03em; }
+@keyframes thought-appear { from { opacity: 0; } to { opacity: 1; } }
+@media (max-width: 600px) { .artwork-title { left: 22px; bottom: 24px; } .thought { width: 254px; padding: 24px; } .thought-close { width: 40px; height: 40px; } }
+@media (prefers-reduced-motion: reduce) { .thought { animation: none; } .person::after, .person span { transition: none; } }
