@@ -271,12 +271,6 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
     enabled(index: number) { return !!enabled[index]; },
     scale(index: number) { return scales[index]; },
     stretch(index: number) { return [stretchX[index], stretchY[index]] as const; },
-    resizeUniform(index: number, pivot: readonly number[], ratio: number) {
-      const before = scales[index];
-      const applied = Math.max(Math.min(0.25, before), Math.min(4, before * ratio)) / before;
-      this.transform(index, pivot, applied);
-      return scales[index] / before;
-    },
     resizeAxis(index: number, pivot: readonly number[], axis: 'x' | 'y', ratio: number) {
       const values = axis === 'x' ? stretchX : stretchY;
       const coordinate = axis === 'x' ? 0 : 1;

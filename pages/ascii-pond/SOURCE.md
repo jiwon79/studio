@@ -54,7 +54,8 @@ wireframe body. All views retain selection, transforms and swimming.
 Use `?view=ascii|low-poly|spine` to link directly to a rendering mode.
 
 The four edge handles stretch screen-space width or height independently
-about the opposite edge. Corner handles retain proportional scaling. Axis
+about the opposite edge. Corner handles independently resize both axes
+around the fixed opposite corner without locking aspect ratio. Axis
 stretches persist through swimming, mode changes and scoped undo/redo, and
 apply equally to the mesh, eyes, debug skeleton and selection bounds.
 

@@ -37,7 +37,6 @@ function fixture() {
       return 1;
     },
     translate(id, dx, dy) { const box = fish.get(id)!; box.x += dx; box.y += dy; },
-    scale: () => 1,
     stretch: () => 1,
     remove: id => { fish.delete(id); },
     splash() {},

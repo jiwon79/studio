@@ -20,12 +20,15 @@ export function sketchFootprint(points: XY[]) {
   return { center, angle, length: Math.max(...projections) - Math.min(...projections) };
 }
 
-/** Resize with a fixed opposite corner, preserving the fish's proportions. */
+/** Resize each axis independently around the fixed opposite corner. */
 export function cornerResize(box: Bounds, corner: Corner, pointer: XY) {
   const pivot = { x: box.x + (corner.endsWith('w') ? box.width : 0), y: box.y + (corner.startsWith('n') ? box.height : 0) };
   const dx = corner.endsWith('w') ? -box.width : box.width;
   const dy = corner.startsWith('n') ? -box.height : box.height;
-  const scale = Math.max(0.05, ((pointer.x - pivot.x) * dx + (pointer.y - pivot.y) * dy) / Math.max(dx * dx + dy * dy, 1));
+  const scale = {
+    x: Math.max(0.05, (pointer.x - pivot.x) / (Math.sign(dx) * Math.max(Math.abs(dx), 1))),
+    y: Math.max(0.05, (pointer.y - pivot.y) / (Math.sign(dy) * Math.max(Math.abs(dy), 1))),
+  };
   return { pivot, scale };
 }
 

@@ -40,11 +40,12 @@ test('a drawn outline gives an oriented footprint, while a tap creates nothing',
   expect(footprint.length).toBeCloseTo(160);
 });
 
-test('corner resizing anchors the opposite corner and does not invert the fish', () => {
+test('corner resizing independently stretches width and height around the opposite corner', () => {
   const box = { x: 100, y: 200, width: 120, height: 60 };
-  expect(cornerResize(box, 'se', { x: 340, y: 320 })).toEqual({ pivot: { x: 100, y: 200 }, scale: 2 });
-  expect(cornerResize(box, 'nw', { x: -20, y: 140 })).toEqual({ pivot: { x: 220, y: 260 }, scale: 2 });
-  expect(cornerResize(box, 'se', { x: 50, y: 50 }).scale).toBeGreaterThan(0);
+  expect(cornerResize(box, 'se', { x: 340, y: 380 })).toEqual({ pivot: { x: 100, y: 200 }, scale: { x: 2, y: 3 } });
+  expect(cornerResize(box, 'nw', { x: -20, y: 80 })).toEqual({ pivot: { x: 220, y: 260 }, scale: { x: 2, y: 3 } });
+  expect(cornerResize(box, 'se', { x: 50, y: 50 }).scale.x).toBeGreaterThan(0);
+  expect(cornerResize(box, 'se', { x: 50, y: 50 }).scale.y).toBeGreaterThan(0);
 });
 
 test('adding, moving and scaling affects the actual simulation and restores through undo', () => {
@@ -209,12 +210,15 @@ test('all four corner resizes keep the opposite rendered corner fixed even offsc
     const anchorX = corner.endsWith('e') ? before.minX : before.maxX;
     const anchorY = corner.startsWith('n') ? before.minY : before.maxY;
     const pivot = [anchorX, anchorY];
-    for (const ratio of [10, 10, 0.6, 1.1, 10]) {
-      school.resizeUniform(id, pivot, ratio);
+    for (const [ratioX, ratioY] of [[2, 1], [1, 1.5], [0.6, 0.8], [1.1, 0.7], [10, 10]]) {
+      const old = renderedBounds(school, output, id);
+      const appliedX = school.resizeAxis(id, pivot, 'x', ratioX);
+      const appliedY = school.resizeAxis(id, pivot, 'y', ratioY);
       const after = renderedBounds(school, output, id);
       expect(corner.endsWith('e') ? after.minX : after.maxX).toBeCloseTo(anchorX, 5);
       expect(corner.startsWith('n') ? after.minY : after.maxY).toBeCloseTo(anchorY, 5);
-      expect((after.maxX - after.minX) / (after.maxY - after.minY)).toBeCloseTo((before.maxX - before.minX) / (before.maxY - before.minY), 4);
+      expect(after.maxX - after.minX).toBeCloseTo((old.maxX - old.minX) * appliedX, 5);
+      expect(after.maxY - after.minY).toBeCloseTo((old.maxY - old.minY) * appliedY, 5);
     }
   }
 });

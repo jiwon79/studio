@@ -4,7 +4,6 @@ interface Host<State> {
   nodes(): { id: number; bounds: Bounds }[];
   add(points: XY[]): number;
   translate(id: number, dx: number, dy: number): void;
-  scale(id: number, pivot: XY, ratio: number): number;
   stretch(id: number, pivot: XY, axis: 'x' | 'y', ratio: number): number;
   remove(id: number): void;
   splash(point: XY): void;
@@ -23,7 +22,7 @@ export class PondEditor<State> {
   private readonly redoStack: { state: State; id: number }[] = [];
   private selected: number | null = null;
   private points: XY[] = [];
-  private drag: { type: 'move' | 'resize'; last: XY; box: Bounds; corner?: Corner; edge?: Edge; scale: number } | null = null;
+  private drag: { type: 'move' | 'resize'; last: XY; box: Bounds; corner?: Corner; edge?: Edge; scale: XY } | null = null;
   private pending: State | null = null;
   private activePointer: number | null = null;
   private moved = false;
@@ -54,7 +53,7 @@ export class PondEditor<State> {
       this.moved = false;
       this.pending = host.capture();
       this.drag = { type: 'resize', box: { ...node.bounds }, corner: button.dataset.corner as Corner, edge: button.dataset.edge as Edge,
-        last: this.point(event), scale: 1 };
+        last: this.point(event), scale: { x: 1, y: 1 } };
       this.canvas.setPointerCapture(event.pointerId);
     }, { signal }));
     canvas.addEventListener('lostpointercapture', event => {
@@ -95,7 +94,7 @@ export class PondEditor<State> {
     this.selected = node?.id ?? null;
     if (node) {
       this.pending = this.host.capture();
-      this.drag = { type: 'move', last: point, box: { ...node.bounds }, scale: 1 };
+      this.drag = { type: 'move', last: point, box: { ...node.bounds }, scale: { x: 1, y: 1 } };
     } else {
       this.points = [point];
       this.pending = this.host.capture();
@@ -118,10 +117,11 @@ export class PondEditor<State> {
       } else {
         if (this.drag.edge) {
           const { pivot, axis, scale } = edgeResize(this.drag.box, this.drag.edge, point);
-          this.drag.scale *= this.host.stretch(this.selected, pivot, axis, scale / this.drag.scale);
+          this.drag.scale[axis] *= this.host.stretch(this.selected, pivot, axis, scale / this.drag.scale[axis]);
         } else {
           const { pivot, scale } = cornerResize(this.drag.box, this.drag.corner!, point);
-          this.drag.scale *= this.host.scale(this.selected, pivot, scale / this.drag.scale);
+          this.drag.scale.x *= this.host.stretch(this.selected, pivot, 'x', scale.x / this.drag.scale.x);
+          this.drag.scale.y *= this.host.stretch(this.selected, pivot, 'y', scale.y / this.drag.scale.y);
         }
       }
       this.moved = true; this.drag.last = point; this.host.changed();

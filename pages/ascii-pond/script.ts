@@ -194,10 +194,6 @@ function start() {
       return id;
     },
     translate(id, dx, dy) { school.transform(id, [0, 0], 1, dx / canvas.clientHeight, -dy / canvas.clientHeight); },
-    scale(id, pivot, ratio) {
-      const h = canvas.clientHeight;
-      return school.resizeUniform(id, [pivot.x / h, 1 - pivot.y / h], ratio);
-    },
     stretch(id, pivot, axis, ratio) {
       const h = canvas.clientHeight;
       return school.resizeAxis(id, [pivot.x / h, 1 - pivot.y / h], axis, ratio);
