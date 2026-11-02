@@ -1,6 +1,6 @@
 import GUI from 'lil-gui';
 import './style.css';
-import { footPose, legPose, STRIDE, wrapPosition, type FootPose } from './motion';
+import { footPose, legPose, pelvisHeight, FOOT_LIFT, STRIDE, wrapPosition, type FootPose } from './motion';
 
 const canvas = document.querySelector('canvas')!;
 const ctx = canvas.getContext('2d', { alpha: false })!;
@@ -79,7 +79,7 @@ function legSilhouette(c: CanvasRenderingContext2D, ankle: Point, knee: Point, h
   const gradient = c.createLinearGradient(ankle.x, ankle.y, hip.x, hip.y);
   gradient.addColorStop(0, `rgba(16,17,19,${.87 - lift * .12})`);
   gradient.addColorStop(.38, 'rgba(16,17,19,.65)');
-  gradient.addColorStop(.72, 'rgba(16,17,19,.24)');
+  gradient.addColorStop(.72, 'rgba(16,17,19,.30)');
   gradient.addColorStop(1, 'rgba(16,17,19,0)');
   c.fillStyle = gradient;
   c.beginPath();
@@ -141,7 +141,7 @@ function renderWalker(walker: typeof walkers[number]) {
   const far = layers[0].context;
   const legs = layers[1].context;
   const feet = layers[2].context;
-  const hipHeight = 96 + Math.cos(cycle * Math.PI * 4) * 1.5;
+  const hipHeight = pelvisHeight(cycle);
   for (const side of [-1, 1]) {
     const pose = footPose(cycle + (side === 1 ? .5 : 0), STRIDE);
     const joints = legPose(pose, hipHeight);
@@ -150,14 +150,15 @@ function renderWalker(walker: typeof walkers[number]) {
     const hip = project(side * 10, joints.hip.forward, joints.hip.height);
     // Only the legs survive the frosted surface. The upper thigh fades to zero;
     // there is no separate head/shoulder blob extending beyond it.
-    limb(far, knee, hip, 32, 38, .18, 0);
+    const diffuseEnd = project(side * 10, joints.hip.forward, joints.hip.height + 32);
+    limb(far, knee, diffuseEnd, 32, 46, .26, 0);
     legSilhouette(legs, ankle, knee, hip, pose.lift);
     // A short sharper cuff anchors the diffuse calf to the shoe.
     const cuff = { x: ankle.x + (knee.x - ankle.x) * .22, y: ankle.y + (knee.y - ankle.y) * .22 };
     feet.save();
     feet.filter = `blur(${(2.1 + pose.lift * 3.5) * scale * pixelRatio}px)`;
     limb(feet, ankle, cuff, 18, 22, .54, 0);
-    const contact = project(side * 14, pose.forward, pose.lift * 23);
+    const contact = project(side * 14, pose.forward, pose.lift * FOOT_LIFT);
     feet.filter = `blur(${(.55 + pose.lift * 2.8 + Math.max(0, pose.roll) * .4) * scale * pixelRatio}px)`;
     sole(feet, contact, side, walker.angle, pose);
     feet.restore();
@@ -182,7 +183,7 @@ function render() {
   walkers.slice(0, settings.people).forEach(renderWalker);
   const size = sceneScale();
   for (let i = 0; i < layers.length; i++) {
-    ctx.filter = `blur(${[11 * settings.blur * size, 7.2 * settings.blur * size, .35 * size][i] * pixelRatio}px)`;
+    ctx.filter = `blur(${[14 * settings.blur * size, 7.2 * settings.blur * size, .35 * size][i] * pixelRatio}px)`;
     ctx.drawImage(layers[i].element, 0, 0, width, height);
   }
   ctx.filter = 'none';

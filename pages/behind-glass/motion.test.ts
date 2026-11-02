@@ -1,5 +1,5 @@
 import { test, expect } from 'vitest';
-import { footPose, legPose, STRIDE, SHIN_LENGTH, THIGH_LENGTH, wrapPosition } from './motion';
+import { footPose, legPose, pelvisHeight, STRIDE, SHIN_LENGTH, THIGH_LENGTH, wrapPosition } from './motion';
 
 test('a planted foot stays fixed as the person advances', () => {
   const stride = 88;
@@ -23,7 +23,7 @@ test('routes wrap outside the viewport with space for the entire body', () => {
 test('knees preserve both bone lengths throughout the walking cycle', () => {
   for (let i = 0; i < 200; i++) {
     const cycle = i / 200;
-    const { hip, knee, ankle } = legPose(footPose(cycle, STRIDE), 96 + Math.cos(cycle * Math.PI * 4) * 1.5);
+    const { hip, knee, ankle } = legPose(footPose(cycle, STRIDE), pelvisHeight(cycle));
     const length = (a: typeof hip, b: typeof hip) => Math.hypot(a.forward - b.forward, a.height - b.height);
     expect(length(hip, knee)).toBeCloseTo(THIGH_LENGTH, 6);
     expect(length(knee, ankle)).toBeCloseTo(SHIN_LENGTH, 6);
@@ -46,4 +46,24 @@ test('alternating feet always leave at least one foot on the glass', () => {
   for (let i = 0; i < 200; i++) {
     expect(Math.min(footPose(i / 200, STRIDE).lift, footPose(i / 200 + .5, STRIDE).lift)).toBe(0);
   }
+});
+
+
+test('support transfer stays continuous and avoids a crouched gait', () => {
+  let maxStance = 0;
+  let maxSwing = 0;
+  for (let i = 0; i < 1000; i++) {
+    const cycle = i / 1000;
+    const height = pelvisHeight(cycle);
+    expect(Math.abs(height - pelvisHeight(cycle + .00001))).toBeLessThan(.01);
+    const foot = footPose(cycle, STRIDE);
+    const { hip, knee, ankle } = legPose(foot, height);
+    const a = [hip.forward - knee.forward, hip.height - knee.height];
+    const b = [ankle.forward - knee.forward, ankle.height - knee.height];
+    const bend = 180 - Math.acos((a[0] * b[0] + a[1] * b[1]) / (Math.hypot(...a) * Math.hypot(...b))) * 180 / Math.PI;
+    if (foot.lift === 0) maxStance = Math.max(maxStance, bend);
+    else maxSwing = Math.max(maxSwing, bend);
+  }
+  expect(maxStance).toBeLessThan(50);
+  expect(maxSwing).toBeLessThan(55);
 });

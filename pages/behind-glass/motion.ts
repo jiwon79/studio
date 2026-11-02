@@ -10,7 +10,7 @@ export function footPose(cycle: number, stride: number): FootPose {
   if (phase < STANCE) {
     const heelStrike = 1 - smooth(Math.min(1, phase / .09));
     const toeOff = smooth(Math.max(0, (phase - .43) / (STANCE - .43)));
-    return { forward: stride * (STANCE / 2 - phase), lift: 0, roll: toeOff * .95 - heelStrike * .16 };
+    return { forward: stride * (STANCE / 2 - phase), lift: 0, roll: toeOff * .48 - heelStrike * .16 };
   }
   const swing = (phase - STANCE) / (1 - STANCE);
   const ease = smooth(swing);
@@ -19,18 +19,32 @@ export function footPose(cycle: number, stride: number): FootPose {
   return {
     forward: stride * STANCE * (ease - .5) + tangent,
     lift: Math.sin(Math.PI * swing) ** 2,
-    roll: .95 * (1 - ease) - .16 * ease,
+    roll: .48 * (1 - ease) - .16 * ease,
   };
 }
 
 export interface Joint { forward: number; height: number }
 export const THIGH_LENGTH = 58;
 export const SHIN_LENGTH = 55;
+export const FOOT_LIFT = 7;
+const HEEL_RISE = 6;
+const SOLE_HEIGHT = 4;
+const ankleHeight = (foot: FootPose) => foot.lift * FOOT_LIFT + Math.max(0, foot.roll) * HEEL_RISE + SOLE_HEIGHT;
+
+/** Follow the support legs' reach instead of holding the pelvis in a crouch. */
+export function pelvisHeight(cycle: number): number {
+  const reach = THIGH_LENGTH + SHIN_LENGTH - 1.2;
+  const heights = [footPose(cycle, STRIDE), footPose(cycle + .5, STRIDE)]
+    .map(foot => ankleHeight(foot) + Math.sqrt(reach ** 2 - foot.forward ** 2));
+  // A smooth minimum transfers support without a height jump at toe-off.
+  const [a, b] = heights;
+  return (a + b - Math.hypot(a - b, 1.5)) / 2;
+}
 
 /** Two-bone leg in the direction-of-travel plane; the knee bends forward. */
 export function legPose(foot: FootPose, hipHeight: number): { hip: Joint; knee: Joint; ankle: Joint } {
   const hip = { forward: 0, height: hipHeight };
-  const ankle = { forward: foot.forward, height: foot.lift * 23 + Math.max(0, foot.roll) * 12 + 4 };
+  const ankle = { forward: foot.forward, height: ankleHeight(foot) };
   const dx = ankle.forward;
   const dy = ankle.height - hipHeight;
   const distance = Math.hypot(dx, dy);
