@@ -75,7 +75,7 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
   const reset = () => {
     aspect = measure();
     for (let i = 0; i < activeCount; i++) {
-      const x = aspect * (0.15 + 0.7 * rnd(i * 3.1));
+      const x = aspect * (0.08 + 0.84 * rnd(i * 3.1));
       const y = 0.15 + 0.7 * rnd(i * 7.7);
       const a = rnd(i * 5.3) * Math.PI * 2;
       head[i * 2] = x;
@@ -119,13 +119,13 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
       // Keep to the pond: turn back from the edges.
       // Look ahead by one turning radius, including the rendered axis stretch.
       // Start a continuous turn before fins reach the edge; never reflect velocity.
-      const lookAhead = 0.4;
+      const lookAhead = 0.25;
       const pressure = (p: number, extent: number, margin: number) => {
         const smooth = (n: number) => { const t = Math.max(0, Math.min(1, n)); return t * t * (3 - 2 * t); };
         return smooth(1 - p / margin) - smooth(1 - (extent - p) / margin);
       };
-      const marginX = Math.min(aspect * 0.48, 0.025 + len * 1.6 * stretchX[i]);
-      const marginY = Math.min(0.48, 0.025 + len * 1.6 * stretchY[i]);
+      const marginX = Math.min(aspect * 0.48, 0.018 + len * 1.1 * stretchX[i]);
+      const marginY = Math.min(0.48, 0.018 + len * 1.1 * stretchY[i]);
       const ex = pressure(x + dx * v * lookAhead, aspect, marginX);
       const ey = pressure(y + dy * v * lookAhead, 1, marginY);
       const edge = Math.min(1, Math.hypot(ex, ey));
@@ -166,7 +166,7 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
       // A slow fish needs a wide turn: the previous fixed angular limit let
       // its head turn back into its own body before the tail could follow.
       const maxTurn = Math.min(1.4 + fright * 3, Math.max(0.35 + fright * 1.2, v / (len * 0.85)));
-      const steering = diff * 2.5 + wander * 0.4 * (1 - fright) * (1 - edge);
+      const steering = diff * 2.5 + wander * 0.28 * (1 - fright) * (1 - edge);
       const turn = Math.max(-maxTurn, Math.min(maxTurn, steering));
       a += turn * dt;
       // Burst and glide: a few strong beats, then coasting.

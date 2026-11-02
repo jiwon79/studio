@@ -25,9 +25,11 @@ material. The palette uses the source blue (`#1d4ce9`) with white faceted fish.
 into a character-sized grid, then luminance selects a glyph from a local
 monospace atlas. ASCII and low-poly modes share geometry and simulation.
 
-ASCII character sizing has four evenly spaced presets between original
-(6 CSS px wide) and small (4 px, default): original, medium, compact, small.
-Portrait screens scale these by 0.75. Each preset is directly addressable using `?ascii=<preset>`.
+ASCII cells are fixed at the former medium size (16/3 CSS px wide), with
+the existing 0.75 portrait-screen multiplier. Old size links normalize to
+`?ascii=medium`. Five palettes (classic, dots, lines, code and blocks) use
+distinct glyph sets, tone curves and stable per-cell texture variation.
+Use `?style=<palette>` to share a style; lil-gui exposes the style selector.
 
 The sketch-to-creature and selection-box interaction is inspired by areadne's
 sheep editor video, referenced via Cosmos (no media or code is copied):
@@ -45,7 +47,7 @@ its neighbours. Cursor movement does not steer the school. A double-click
 three fading ripple rings, shared by the ASCII and low-poly views.
 
 Rendering controls live in lil-gui: ASCII, low-poly, and spine debug views,
-with the four character-size presets exposed only in ASCII mode. The debug
+with the five texture styles exposed only in ASCII mode. The debug
 view draws the same ten interpolated spine joints used by the fish mesh,
 body-width crossbars and a head-direction arrow; a toggle overlays the
 wireframe body. All views retain selection, transforms and swimming.
@@ -79,3 +81,7 @@ Double-click disturbances have a broad influence radius and stronger radial
 steering, immediate turning and burst acceleration. A softer distance falloff
 includes fish beyond the old local radius; three ripple rings expand faster
 to match the wider response. Normal cruising remains unchanged.
+
+Initial positions span more of the viewport, wandering has longer straight
+sections, and a shorter wall look-ahead with a smaller size-aware margin lets
+fish explore the outer pond. These changes do not introduce containment.

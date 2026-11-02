@@ -158,8 +158,8 @@ test('free swimming uses the outer pond without lingering only in the centre', (
       minY = Math.min(minY, y); maxY = Math.max(maxY, y);
     }
   }
-  expect(nearEdge / samples).toBeGreaterThan(0.2);
-  expect(nearEdge / samples).toBeLessThan(0.5);
+  expect(nearEdge / samples).toBeGreaterThan(0.35);
+  expect(nearEdge / samples).toBeLessThan(0.75);
   expect(minX).toBeLessThan(0.13);
   expect(maxX).toBeGreaterThan(0.87);
   expect(minY).toBeLessThan(0.16);

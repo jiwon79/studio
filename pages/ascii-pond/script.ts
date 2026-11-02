@@ -3,7 +3,7 @@ import GUI from 'lil-gui';
 import { SpineDebug } from './spine-debug';
 import { createSchool, MAX_FISH, MAX_SCENE_FISH, type PointerState } from './school';
 import { FishGeometry, FISH_LENGTH } from './geometry';
-import { AsciiPass, isAsciiSize, type AsciiSize } from './ascii';
+import { AsciiPass, isAsciiStyle, type AsciiStyle } from './ascii';
 import { PondEditor } from './editor';
 import { WaterRipples } from './ripples';
 import { sketchFootprint, type Bounds } from './editor-model';
@@ -27,16 +27,18 @@ function start() {
   const scene = new THREE.Scene();
   let editor: PondEditor<ReturnType<ReturnType<typeof createSchool>['capture']>> | undefined;
   const ripples = new WaterRipples(scene);
-  const ascii = new AsciiPass();
   type ViewMode = 'ascii' | 'low-poly' | 'spine';
   const url = new URL(location.href);
-  const requestedSize = url.searchParams.get('ascii');
+  const requestedStyle = url.searchParams.get('style');
   const requestedMode = url.searchParams.get('view');
-  const settings: { mode: ViewMode; size: AsciiSize; body: boolean } = {
+  const settings: { mode: ViewMode; asciiStyle: AsciiStyle; body: boolean } = {
     mode: requestedMode === 'low-poly' || requestedMode === 'spine' ? requestedMode : 'ascii',
-    size: isAsciiSize(requestedSize) ? requestedSize : 'small',
+    asciiStyle: isAsciiStyle(requestedStyle) ? requestedStyle : 'classic',
     body: true,
   };
+  const ascii = new AsciiPass(settings.asciiStyle);
+  url.searchParams.set('ascii', 'medium');
+  history.replaceState(null, '', url);
   const camera = new THREE.OrthographicCamera(0, 1, 1, 0, 0.1, 10);
   camera.position.z = 4;
   scene.add(new THREE.AmbientLight('#ffffff', 0.95));
@@ -83,7 +85,7 @@ function start() {
   const signal = events.signal;
   const resize = () => {
     renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
-    ascii.resize(canvas.clientWidth, canvas.clientHeight, settings.size);
+    ascii.resize(canvas.clientWidth, canvas.clientHeight);
     camera.right = canvas.clientWidth / canvas.clientHeight;
     camera.updateProjectionMatrix();
     school.frame(time);
@@ -204,22 +206,22 @@ function start() {
   });
   const gui = new GUI({ title: 'ASCII Pond', width: 232 });
   gui.add(settings, 'mode', { ASCII: 'ascii', 'Low poly': 'low-poly', '척추 디버그': 'spine' }).name('표현').onChange(() => {
-    sizeController.show(settings.mode === 'ascii');
+    styleController.show(settings.mode === 'ascii');
     bodyController.show(settings.mode === 'spine');
     const url = new URL(location.href);
     url.searchParams.set('view', settings.mode);
     history.replaceState(null, '', url);
     draw();
   });
-  const sizeController = gui.add(settings, 'size', { '기존': 'original', '중간': 'medium', '조금 작게': 'compact', '작게': 'small' }).name('글자 크기').onChange(() => {
-    ascii.resize(canvas.clientWidth, canvas.clientHeight, settings.size);
+  const styleController = gui.add(settings, 'asciiStyle', { '클래식': 'classic', '도트': 'dots', '라인': 'lines', '코드': 'code', '블록': 'blocks' }).name('ASCII 스타일').onChange(() => {
+    ascii.setStyle(settings.asciiStyle);
     const url = new URL(location.href);
-    url.searchParams.set('ascii', settings.size);
+    url.searchParams.set('style', settings.asciiStyle);
     history.replaceState(null, '', url);
     draw();
   });
   const bodyController = gui.add(settings, 'body').name('몸체 겹쳐 보기').onChange(() => draw());
-  sizeController.show(settings.mode === 'ascii');
+  styleController.show(settings.mode === 'ascii');
   bodyController.show(settings.mode === 'spine');
   if (innerWidth < 600) gui.close();
   renderer.setAnimationLoop(frame);

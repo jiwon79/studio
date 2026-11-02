@@ -1,7 +1,7 @@
 import { test, expect } from 'vitest';
 import { cornerResize, edgeResize, sketchFootprint } from './editor-model';
 import { createSchool, MAX_FISH } from './school';
-import { ASCII_SIZES, isAsciiSize } from './ascii';
+import { ASCII_CELL_WIDTH, ASCII_STYLES, isAsciiStyle } from './ascii';
 import { Scene } from 'three';
 import { WaterRipples } from './ripples';
 import { FishGeometry } from './geometry';
@@ -17,14 +17,14 @@ function pond() {
   return { school, output };
 }
 
-test('the four character sizes are evenly spaced within the requested endpoints', () => {
-  const sizes = Object.values(ASCII_SIZES);
-  expect(sizes).toHaveLength(4);
-  expect(sizes[0]).toBe(6);
-  expect(sizes[3]).toBe(4);
-  for (let i = 1; i < sizes.length; i++) expect(sizes[i - 1] - sizes[i]).toBeCloseTo(2 / 3);
-  expect(isAsciiSize('fine')).toBe(false);
-  expect(isAsciiSize('micro')).toBe(false);
+test('ASCII uses the medium cell size with distinct character palettes', () => {
+  expect(ASCII_CELL_WIDTH).toBe(16 / 3);
+  const palettes = Object.values(ASCII_STYLES).map(style => style.characters);
+  expect(palettes).toHaveLength(5);
+  expect(new Set(palettes).size).toBe(5);
+  for (const palette of palettes) expect(palette.startsWith(' ')).toBe(true);
+  expect(isAsciiStyle('code')).toBe(true);
+  expect(isAsciiStyle('unknown')).toBe(false);
 });
 
 test('a drawn outline gives an oriented footprint, while a tap creates nothing', () => {
