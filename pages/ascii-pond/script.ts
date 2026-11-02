@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import GUI from 'lil-gui';
+import { PondDepthPass } from './depth-pass';
+import { fishDepth } from './depth';
 import { SpineDebug } from './spine-debug';
 import { createSchool, MAX_FISH, MAX_SCENE_FISH, type PointerState } from './school';
 import { FishGeometry, FISH_LENGTH } from './geometry';
@@ -31,12 +33,13 @@ function start() {
   const url = new URL(location.href);
   const requestedStyle = url.searchParams.get('style');
   const requestedMode = url.searchParams.get('view');
-  const settings: { mode: ViewMode; asciiStyle: AsciiStyle; body: boolean } = {
+  const settings: { mode: ViewMode; asciiStyle: AsciiStyle; body: boolean; depth: boolean } = {
     mode: requestedMode === 'low-poly' || requestedMode === 'spine' ? requestedMode : 'ascii',
     asciiStyle: isAsciiStyle(requestedStyle) ? requestedStyle : 'classic',
-    body: true,
+    body: true, depth: true,
   };
   const ascii = new AsciiPass(settings.asciiStyle);
+  const depthPass = new PondDepthPass();
   url.searchParams.set('ascii', 'medium');
   history.replaceState(null, '', url);
   const camera = new THREE.OrthographicCamera(0, 1, 1, 0, 0.1, 10);
@@ -47,7 +50,7 @@ function start() {
   scene.add(light);
   const material = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.9, metalness: 0, flatShading: true, side: THREE.DoubleSide });
   const finMaterial = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1, flatShading: true,
-    side: THREE.DoubleSide, transparent: true, opacity: 0.43, depthWrite: false });
+    side: THREE.DoubleSide, transparent: true, opacity: 0.43, depthWrite: true });
   const ghostMaterial = new THREE.MeshBasicMaterial({ color: '#d9e8ff', wireframe: true,
     transparent: true, opacity: 0.12, depthWrite: false, toneMapped: false });
   const eyesMaterial = new THREE.MeshBasicMaterial({ color: '#183d93' });
@@ -86,6 +89,7 @@ function start() {
   const resize = () => {
     renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
     ascii.resize(canvas.clientWidth, canvas.clientHeight);
+    depthPass.resize(canvas.clientWidth, canvas.clientHeight);
     camera.right = canvas.clientWidth / canvas.clientHeight;
     camera.updateProjectionMatrix();
     school.frame(time);
@@ -110,23 +114,26 @@ function start() {
       const scale = fishScale() * school.scale(i);
       geometry.update(renderedSpine, renderedStates[i * 4], renderedStates[i * 4 + 1], scale);
       if (debug.group.visible) debug.update(renderedSpine, i, scale);
-      const [sx, sy] = school.stretch(i);
+      const [stretchX, stretchY] = school.stretch(i);
+      const depth = settings.depth && settings.mode !== 'spine' ? fishDepth(i) : { scale: 1, z: 0 };
+      const sx = stretchX * depth.scale, sy = stretchY * depth.scale;
       const hx = renderedSpine[i * 20], hy = renderedSpine[i * 20 + 1];
       for (const object of [mesh, debug.group]) {
         object.scale.set(sx, sy, 1);
-        object.position.set(hx * (1 - sx), hy * (1 - sy), 0);
+        object.position.set(hx * (1 - sx), hy * (1 - sy), depth.z);
       }
       eyes.forEach((eye, j) => {
         const [x, y, z] = geometry.eyes[j];
-        eye.position.set(hx + (x - hx) * sx, hy + (y - hy) * sy, z);
-        eye.scale.setScalar(scale);
+        eye.position.set(hx + (x - hx) * sx, hy + (y - hy) * sy, z + depth.z);
+        eye.scale.setScalar(scale * depth.scale);
       });
     });
     const count = fish.filter((_, i) => i < school.count && school.enabled(i)).length;
     const description = `더블클릭한 곳을 피해 헤엄치는 ${{ ascii: '아스키아트', 'low-poly': '로우폴리', spine: '척추 디버그' }[settings.mode]} 잉어 ${count}마리`;
     if (canvas.getAttribute('aria-label') !== description) canvas.setAttribute('aria-label', description);
     ripples.update(time);
-    if (settings.mode === 'ascii') ascii.render(renderer, scene, camera);
+    if (settings.depth && settings.mode !== 'spine') depthPass.render(renderer, scene, camera, settings.mode === 'ascii' ? ascii : undefined);
+    else if (settings.mode === 'ascii') ascii.render(renderer, scene, camera);
     else renderer.render(scene, camera);
     editor?.refresh();
   }
@@ -168,7 +175,7 @@ function start() {
     }
     const bounds: Bounds = { x: minX, y: minY, width: maxX - minX, height: maxY - minY };
     return [{ id, bounds }];
-  });
+  }).sort((a, b) => fish[a.id].mesh.position.z - fish[b.id].mesh.position.z);
   resize();
   editor = new PondEditor(canvas, {
     nodes,
@@ -223,6 +230,7 @@ function start() {
   const bodyController = gui.add(settings, 'body').name('몸체 겹쳐 보기').onChange(() => draw());
   styleController.show(settings.mode === 'ascii');
   bodyController.show(settings.mode === 'spine');
+  gui.add(settings, 'depth').name('수심 효과').onChange(() => draw());
   if (innerWidth < 600) gui.close();
   renderer.setAnimationLoop(frame);
   if (import.meta.hot) import.meta.hot.dispose(() => {
@@ -237,6 +245,7 @@ function start() {
     ghostMaterial.dispose();
     finMaterial.dispose();
     ascii.dispose();
+    depthPass.dispose();
     ripples.dispose();
     renderer.dispose();
   });

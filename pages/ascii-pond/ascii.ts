@@ -17,7 +17,9 @@ export function isAsciiStyle(value: string | null): value is AsciiStyle {
 export class AsciiPass {
   private readonly target = new THREE.WebGLRenderTarget(1, 1, {
     minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter,
+    depthTexture: new THREE.DepthTexture(1, 1, THREE.UnsignedIntType),
   });
+  get depthTexture() { return this.target.depthTexture!; }
   private atlas: THREE.CanvasTexture;
   private readonly material: THREE.ShaderMaterial;
   private readonly geometry = new THREE.PlaneGeometry(2, 2);
@@ -123,6 +125,7 @@ export class AsciiPass {
   }
 
   dispose() {
+    this.target.depthTexture?.dispose();
     this.target.dispose();
     this.atlas.dispose();
     this.geometry.dispose();

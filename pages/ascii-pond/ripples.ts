@@ -11,9 +11,9 @@ export class WaterRipples {
     this.impulseUntil = time + 1.5;
     for (let i = 0; i < 3; i++) {
       const material = new THREE.MeshBasicMaterial({ color: '#e7efff', transparent: true, opacity: 0,
-        depthWrite: false, side: THREE.DoubleSide, toneMapped: false });
+        depthWrite: true, side: THREE.DoubleSide, toneMapped: false });
       const mesh = new THREE.Mesh(this.geometry, material);
-      mesh.position.set(x, y, -0.01);
+      mesh.position.set(x, y, 0.06);
       this.scene.add(mesh);
       this.waves.push({ mesh, start: time + i * 0.2 });
     }
