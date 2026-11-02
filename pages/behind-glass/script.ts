@@ -1,11 +1,11 @@
 import GUI from 'lil-gui';
 import './style.css';
-import { footPose, legPose, pelvisHeight, FOOT_LIFT, STRIDE, wrapPosition, type FootPose } from './motion';
+import { footPose, legPose, pelvisHeight, FOOT_LIFT, STRIDE, RUN_STRIDE, runningFootPose, wrapPosition, type FootPose } from './motion';
 
 const canvas = document.querySelector('canvas')!;
 const ctx = canvas.getContext('2d', { alpha: false })!;
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-const settings = { speed: 1, blur: 1, scale: 1, people: 4 };
+const settings = { speed: 1, blur: 1, scale: 1, people: 5 };
 let width = 0;
 let height = 0;
 let pixelRatio = 1;
@@ -28,7 +28,7 @@ const walkers = [
   { x: .86, y: .79, angle: .08, period: 1.32, phase: .67, size: 1.06 },
   { x: .43, y: .78, angle: -1.67, period: 1.12, phase: .35, size: .98 },
   { x: .65, y: .24, angle: -.08, period: 1.38, phase: .82, size: 1.02 },
-  { x: .20, y: .78, angle: -2.40, period: 1.27, phase: .48, size: .96 },
+  { x: .08, y: .55, angle: 1.45, period: .82, phase: .48, size: .96 },
   { x: .92, y: .15, angle: .40, period: 1.17, phase: .91, size: 1.04 },
 ];
 
@@ -37,7 +37,7 @@ const stories = [
   { destination: '누군가를 만나러 가는 사람', thought: '먼저 와 있다고 할까, 아직 가는 중이라고 할까.' },
   { destination: '조금 늦은 사람', thought: '뛰면 더 늦은 사람처럼 보이겠지.' },
   { destination: '그냥 걷는 사람', thought: '목적지가 없어도 걷는 건 좋다.' },
-  { destination: '다시 돌아가는 사람', thought: '아까 그 길로 한 번 더 걸어 볼까.' },
+  { destination: '뛰어가는 사람', thought: '아직 늦지 않았을 거야.' },
   { destination: '아직 가는 중인 사람', thought: '조금 천천히 가도 괜찮겠지.' },
 ];
 const people = document.querySelector<HTMLDivElement>('.people')!;
@@ -194,7 +194,9 @@ function renderWalker(walker: typeof walkers[number], index: number) {
   const time = walkerTimes[index];
   const scale = sceneScale() * walker.size;
   const cycle = time / walker.period + walker.phase;
-  const distance = time * STRIDE / walker.period * scale;
+  const gaitKind = index === 4 ? 'run' : 'walk';
+  const stride = gaitKind === 'run' ? RUN_STRIDE : STRIDE;
+  const distance = time * stride / walker.period * scale;
   const x = wrapPosition(walker.x * width + Math.sin(walker.angle) * distance, width, 180 * scale);
   const y = wrapPosition(walker.y * height - Math.cos(walker.angle) * distance, height, 180 * scale);
   anchors[index] = { x, y, scale };
@@ -224,9 +226,10 @@ function renderWalker(walker: typeof walkers[number], index: number) {
   const legs = layers[1].context;
   const feet = layers[2].context;
   const walking = walkerSpeeds[index];
-  const hipHeight = 115 + (pelvisHeight(cycle) - 115) * walking;
+  const hipHeight = 115 + (pelvisHeight(cycle, gaitKind) - 115) * walking;
   for (const side of [-1, 1]) {
-    const gait = footPose(cycle + (side === 1 ? .5 : 0), STRIDE);
+    const legCycle = cycle + (side === 1 ? .5 : 0);
+    const gait = gaitKind === 'run' ? runningFootPose(legCycle) : footPose(legCycle, STRIDE);
     // Settle onto two flat feet instead of freezing a foot in mid-swing.
     const pose = { forward: gait.forward * walking, lift: gait.lift * walking, roll: gait.roll * walking };
     const joints = legPose(pose, hipHeight);

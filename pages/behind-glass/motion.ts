@@ -3,6 +3,9 @@ const smooth = (x: number) => x * x * (3 - 2 * x);
 export interface FootPose { forward: number; lift: number; roll: number }
 export const STRIDE = 148;
 const STANCE = .62;
+export type Gait = 'walk' | 'run';
+export const RUN_STRIDE = 190;
+const smoother = (x: number) => x ** 3 * (10 - 15 * x + 6 * x * x);
 
 /** A planted sole cancels the body's travel. Swing joins that velocity smoothly. */
 export function footPose(cycle: number, stride: number): FootPose {
@@ -31,14 +34,31 @@ const HEEL_RISE = 6;
 const SOLE_HEIGHT = 4;
 const ankleHeight = (foot: FootPose) => foot.lift * FOOT_LIFT + Math.max(0, foot.roll) * HEEL_RISE + SOLE_HEIGHT;
 
-/** Follow the support legs' reach instead of holding the pelvis in a crouch. */
-export function pelvisHeight(cycle: number): number {
-  const reach = THIGH_LENGTH + SHIN_LENGTH - 1.2;
-  const heights = [footPose(cycle, STRIDE), footPose(cycle + .5, STRIDE)]
-    .map(foot => ankleHeight(foot) + Math.sqrt(reach ** 2 - foot.forward ** 2));
-  // A smooth minimum transfers support without a height jump at toe-off.
-  const [a, b] = heights;
-  return (a + b - Math.hypot(a - b, 1.5)) / 2;
+/** Two smooth support arcs per cycle, independent of the swinging foot.
+ * The low point spans weight transfer; the high point is mid-stance.
+ */
+export function pelvisHeight(cycle: number, gait: Gait = 'walk'): number {
+  if (gait === 'run') return 104 - 5 * Math.cos(4 * Math.PI * (cycle - .18));
+  return 109.5 + 5 * Math.cos(4 * Math.PI * (cycle - .28));
+}
+
+/** Short support and a flight interval distinguish running from faster walking. */
+export function runningFootPose(cycle: number): FootPose {
+  const phase = fract(cycle);
+  const stance = .36;
+  if (phase < stance) {
+    return {
+      forward: RUN_STRIDE * (stance / 2 - phase), lift: 0,
+      roll: .62 * smooth(Math.max(0, (phase - .15) / .21))
+        - .12 * (1 - smooth(Math.min(1, phase / .08))),
+    };
+  }
+  const swing = (phase - stance) / (1 - stance);
+  return {
+    forward: RUN_STRIDE * (-stance / 2 - (1 - stance) * swing + smoother(swing)),
+    lift: 3.2 * Math.sin(Math.PI * swing) ** 2,
+    roll: .62 - .74 * smooth(swing),
+  };
 }
 
 /** Two-bone leg in the direction-of-travel plane; the knee bends forward. */

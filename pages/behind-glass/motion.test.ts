@@ -1,5 +1,5 @@
 import { test, expect } from 'vitest';
-import { footPose, legPose, pelvisHeight, STRIDE, SHIN_LENGTH, THIGH_LENGTH, wrapPosition } from './motion';
+import { footPose, legPose, pelvisHeight, STRIDE, SHIN_LENGTH, THIGH_LENGTH, wrapPosition, runningFootPose, RUN_STRIDE } from './motion';
 
 test('a planted foot stays fixed as the person advances', () => {
   const stride = 88;
@@ -66,4 +66,39 @@ test('support transfer stays continuous and avoids a crouched gait', () => {
   }
   expect(maxStance).toBeLessThan(50);
   expect(maxSwing).toBeLessThan(55);
+});
+
+
+test('pelvis has one rise and one fall per step without a support-transfer rebound', () => {
+  const delta = .0001;
+  let reversals = 0;
+  let previous = Math.sign(pelvisHeight(delta) - pelvisHeight(0));
+  for (let i = 1; i <= 500; i++) {
+    const cycle = i / 1000;
+    const direction = Math.sign(pelvisHeight(cycle + delta) - pelvisHeight(cycle));
+    if (direction !== previous) reversals++;
+    previous = direction;
+  }
+  expect(reversals).toBe(2);
+});
+
+test('running keeps support planted, has flight, and preserves reachable legs', () => {
+  const a = runningFootPose(.05);
+  const b = runningFootPose(.25);
+  expect(.05 * RUN_STRIDE + a.forward).toBeCloseTo(.25 * RUN_STRIDE + b.forward);
+  expect(runningFootPose(.43).lift).toBeGreaterThan(0);
+  expect(runningFootPose(.93).lift).toBeGreaterThan(0);
+  for (let i = 0; i < 1000; i++) {
+    const c = i / 1000;
+    const { hip, knee, ankle } = legPose(runningFootPose(c), pelvisHeight(c, 'run'));
+    expect(Math.hypot(knee.forward - hip.forward, knee.height - hip.height)).toBeCloseTo(THIGH_LENGTH, 6);
+    expect(Math.hypot(ankle.forward - knee.forward, ankle.height - knee.height)).toBeCloseTo(SHIN_LENGTH, 6);
+  }
+  for (const boundary of [.36, 1]) {
+    const delta = .00001;
+    const before = (runningFootPose(boundary).forward - runningFootPose(boundary - delta).forward) / delta;
+    const after = (runningFootPose(boundary + delta).forward - runningFootPose(boundary).forward) / delta;
+    expect(Math.abs(after - before)).toBeLessThan(.04);
+    expect(runningFootPose(boundary - delta).lift).toBeCloseTo(runningFootPose(boundary + delta).lift, 6);
+  }
 });
