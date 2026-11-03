@@ -1,3 +1,5 @@
+import { createStepper } from '../../common/stepper';
+import { PROCESS_STEPS, stageLayers, type ProcessStage } from './process-stages';
 import { settleSpeed, STOP_RESPONSE } from './settling';
 import { advanceSway } from './drag-physics';
 import { positionBelowFeet } from './layout';
@@ -15,8 +17,8 @@ let height = 0;
 let pixelRatio = 1;
 const query = new URLSearchParams(location.search);
 const debugMode = query.has('debug');
-const debug = { joints: false, touch: true, soles: false, origins: false, far: true, legs: true, feet: true, glass: true, hitScale: 1, solo: -1, stage: '완성' };
-const overlay = debugMode ? document.createElement('canvas') : null;
+const debug = { joints: false, touch: true, soles: false, origins: false, far: true, legs: true, feet: true, glass: true, hitScale: 1, solo: -1, stage: 'interact' as ProcessStage };
+const overlay = document.createElement('canvas');
 if (overlay) { overlay.className = 'debug-overlay'; overlay.setAttribute('aria-hidden', 'true'); document.body.append(overlay); }
 const debugCtx = overlay?.getContext('2d');
 const inspectionTime = query.has('debug') ? Number(query.get('time')) : NaN;
@@ -76,7 +78,7 @@ const personButtons = walkers.map((_, index) => {
   target.setAttribute('aria-label', `${stories[index].destination}의 생각 보기`);
   target.setAttribute('aria-expanded', 'false');
   target.addEventListener('pointerdown', event => {
-    if (!event.isPrimary || event.button !== 0 || drag) return;
+    if ((!debugMode && debug.stage !== 'interact') || !event.isPrimary || event.button !== 0 || drag) return;
     const anchor = anchors[index];
     drag = { index, pointer: event.pointerId, x: event.clientX, y: event.clientY, anchorX: anchor.x, anchorY: anchor.y, offsetX: dragOffsets[index].x, offsetY: dragOffsets[index].y, active: false };
     target.setPointerCapture(event.pointerId);
@@ -112,6 +114,7 @@ const personButtons = walkers.map((_, index) => {
   target.addEventListener('pointercancel', finishDrag);
   target.addEventListener('lostpointercapture', finishDrag);
   target.addEventListener('click', event => {
+    if (!debugMode && debug.stage !== 'interact') return;
     if (performance.now() < suppressClickUntil && event.detail !== 0) return;
     if (selected === index) dismissThought();
     else {
@@ -405,7 +408,7 @@ function render() {
   });
   const size = sceneScale();
   for (let i = 0; i < layers.length; i++) {
-    if (debugMode && ![debug.far, debug.legs, debug.feet][i]) continue;
+    if (![debug.far, debug.legs, debug.feet][i]) continue;
     ctx.filter = !debug.glass ? 'none' : `blur(${[14 * settings.blur * size, 7.2 * settings.blur * size, .35 * size][i] * pixelRatio}px)`;
     ctx.drawImage(layers[i].element, 0, 0, width, height);
   }
@@ -449,7 +452,7 @@ window.addEventListener('pageshow', event => {
   if (event.persisted) { previous = performance.now(); frame = requestAnimationFrame(tick); }
 });
 if (debugMode) {
-  const gui = new GUI({ title: 'Behind Glass · 제작 과정', width: 290 });
+  const gui = new GUI({ title: 'Behind Glass · 디버그', width: 290 });
   const playback = { playing: !paused, time: elapsed, nextFrame: () => {
     paused = true; playback.playing = false;
     elapsed += 1/60; walkerTimes.forEach((t,i) => { walkerTimes[i] = t+1/60; }); render();
@@ -459,13 +462,6 @@ if (debugMode) {
     dragOffsets.forEach((p,i) => { p.x=0;p.y=0;previousDragOffsets[i]={x:0,y:0};dragSways[i]={x:0,y:0,vx:0,vy:0};personButtons[i].classList.remove('dragging'); }); render();
   } };
   debugPlayback = playback;
-  gui.add(debug, 'stage', ['완성','1 · 관절 궤적','2 · 다리 실루엣','3 · 발 모양','4 · 유리 효과','5 · 터치 영역']).name('제작 단계').onChange((stage: string) => {
-    debug.joints = stage.startsWith('1'); debug.touch = stage.startsWith('5'); debug.soles = stage.startsWith('1');
-    debug.far = stage === '완성' || stage.startsWith('4') || stage.startsWith('5');
-    debug.legs = !stage.startsWith('1') && !stage.startsWith('3');
-    debug.feet = !stage.startsWith('1') && !stage.startsWith('2');
-    debug.glass = stage === '완성' || stage.startsWith('4') || stage.startsWith('5'); render();
-  });
   const motion = gui.addFolder('재생 · 시점');
   motion.add(playback,'playing').name('재생').listen().onChange((value: boolean) => { paused = !value; });
   motion.add(settings,'speed',.1,2,.05).name('재생 속도');
@@ -490,5 +486,30 @@ if (debugMode) {
   drawing.add(settings,'scale',.5,1.8,.05).name('사람 크기').onChange(render);
   drawing.add(settings,'people',1,6,1).name('인원').listen().onChange(render);
 }
+const processCaption = document.createElement('aside');
+processCaption.className = 'process-caption';
+processCaption.setAttribute('aria-live', 'polite');
+const processTitle = document.createElement('p');
+const processDescription = document.createElement('p');
+processCaption.append(processTitle, processDescription);
+document.body.append(processCaption);
+resize();
+createStepper({
+  steps: PROCESS_STEPS,
+  initialStep: 'interact',
+  ariaLabel: '유리 너머 사람들 제작 단계',
+  onChange: (stage) => {
+    debug.stage = stage;
+    personButtons.forEach(button => { button.disabled = stage !== 'interact' && !debugMode; });
+    Object.assign(debug, stageLayers(stage));
+    debug.touch = stage === 'interact' && debugMode;
+    const step = PROCESS_STEPS.find(s => s.id === stage)!;
+    processCaption.hidden = stage === 'interact';
+    processTitle.textContent = step.title;
+    processDescription.textContent = step.description;
+    if (selected >= 0) dismissThought();
+    render();
+  },
+});
 resize();
 frame = requestAnimationFrame(tick);
