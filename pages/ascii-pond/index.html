@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#1d4ce9">
+  <meta name="description" content="그려서 만들고, 선택해서 움직이는 잉어 연못. ASCII와 로우폴리 표현으로 즐겨 보세요.">
+  <title>ASCII Pond · Jiiwon Studio</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <canvas aria-label="더블클릭한 곳을 피해 헤엄치는 아스키아트 잉어 열 마리"></canvas>
+  <svg class="sketch" aria-hidden="true"><path /></svg>
+  <div class="hover-outline" aria-hidden="true" hidden></div>
+  <div class="selection" hidden>
+    <span class="selection-size"></span>
+    <button type="button" data-corner="nw" aria-label="왼쪽 위 모서리로 크기 조절"></button>
+    <button type="button" data-corner="ne" aria-label="오른쪽 위 모서리로 크기 조절"></button>
+    <button type="button" data-corner="sw" aria-label="왼쪽 아래 모서리로 크기 조절"></button>
+    <button type="button" data-corner="se" aria-label="오른쪽 아래 모서리로 크기 조절"></button>
+    <button type="button" data-edge="n" aria-label="위쪽에서 세로 크기 조절"></button>
+    <button type="button" data-edge="s" aria-label="아래쪽에서 세로 크기 조절"></button>
+    <button type="button" data-edge="w" aria-label="왼쪽에서 가로 크기 조절"></button>
+    <button type="button" data-edge="e" aria-label="오른쪽에서 가로 크기 조절"></button>
+  </div>
+  <p class="editor-status" role="status" aria-live="polite"></p>
+  <p class="error" role="alert" hidden>이 작품을 보려면 WebGL을 지원하는 브라우저가 필요해요.</p>
+  <script type="module" src="./script.ts"></script>
+  <script type="module" src="/common/touch-pointer.ts"></script>
+</body>
+</html>
