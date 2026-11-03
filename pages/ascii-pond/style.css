@@ -27,5 +27,3 @@ canvas { display: block; width: 100%; height: 100%; touch-action: none; }
 
 artwork-stepper { --stepper-color: #f3f7ff; --stepper-muted-color: #b5caff; --stepper-text-shadow: none; --stepper-max-width: 620px; --stepper-bottom: max(20px, env(safe-area-inset-bottom)); }
 artwork-stepper[hidden] { display: none; }
-.process-caption { position: fixed; left: 50%; bottom: max(60px, calc(env(safe-area-inset-bottom) + 50px)); transform: translateX(-50%); width: min(620px, calc(100vw - 32px)); margin: 0; text-align: center; color: #ecf3ff; font: 12px/1.6 system-ui, sans-serif; text-shadow: 0 1px 6px #123bb9; pointer-events: none; }
-.process-caption[hidden] { display: none; }

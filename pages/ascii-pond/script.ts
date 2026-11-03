@@ -220,19 +220,16 @@ function start() {
     restore(saved, id) { school.restoreFish(id, saved); },
     changed: refresh,
   });
-  const caption = document.querySelector<HTMLElement>('.process-caption')!;
   let syncGui: (() => void) | undefined;
   const stepper = createStepper({
     steps: PROCESS_STEPS, initialStep: stage, keyboard: false, urlParameter: 'stage',
     ariaLabel: '제작 과정 단계',
     onChange(id) {
       stage = id;
-      caption.textContent = PROCESS_STEPS.find(step => step.id === id)!.description;
       syncGui?.(); draw();
     },
   });
   stepper.element.hidden = !settings.process;
-  caption.hidden = !settings.process;
   const gui = new GUI({ title: 'ASCII Pond', width: 232 });
   const modeController = gui.add(settings, 'mode', { ASCII: 'ascii', 'Low poly': 'low-poly', '척추 디버그': 'spine' }).name('표현').onChange(() => {
     syncGui?.();
@@ -255,7 +252,6 @@ function start() {
   const pauseController = gui.add(settings, 'paused').name('일시정지').onChange(() => { last = 0; accumulator = 0; draw(); });
   gui.add(settings, 'process').name('제작 과정').onChange(() => {
     stepper.element.hidden = !settings.process;
-    caption.hidden = !settings.process;
     const url = new URL(location.href);
     if (settings.process) { url.searchParams.set('process', '1'); url.searchParams.set('stage', stage); }
     else { url.searchParams.delete('process'); url.searchParams.delete('stage'); settings.paused = false; pauseController.updateDisplay(); }

@@ -104,4 +104,4 @@ The optional making-of mode uses the shared artwork stepper: recorded path
 animated depth composite. Each view reads the same school state. Global
 pause keeps the same moment for stage comparison; switching stages does not
 reset the pond. `?process=1&stage=motion` opens the tour. The normal artwork
-hides the stepper/caption; lil-gui exposes the tour and pause controls.
+hides the stepper; lil-gui exposes the tour and pause controls.
