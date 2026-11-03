@@ -71,6 +71,30 @@ def test_send_batch_checks_all_accounts_before_any_post(tmp_path, monkeypatch):
     assert requests == [("GET", "/api/events/dm%3Aone"), ("GET", "/api/events/dm%3Atwo")]
 
 
+def test_sync_batch_reuses_send_manifest_in_one_request(tmp_path, monkeypatch):
+    requests = []
+
+    class FakeClient:
+        def __init__(self, base_url, token): pass
+        def login(self, password): pass
+        def request(self, method, path, **kwargs):
+            requests.append((method, path, kwargs))
+            return {"targets": []}
+
+    manifest = tmp_path / "approved.json"
+    manifest.write_text(json.dumps([
+        {"event_id": "dm:one", "username": "first", "messages": ["hello"]},
+        {"event_id": "dm:two", "username": "second", "messages": ["hi"]},
+    ]))
+    monkeypatch.setattr(cli, "Client", FakeClient)
+    monkeypatch.setenv("INSTAGRAM_ASSISTANT_ADMIN_PASSWORD", "test password")
+    assert cli.main(["--env", "dev", "sync-batch", str(manifest)]) == 0
+    assert requests == [("POST", "/api/dm/sync-batch", {"body": {"targets": [
+        {"event_id": "dm:one", "username": "first"},
+        {"event_id": "dm:two", "username": "second"},
+    ]}})]
+
+
 def test_custom_url_cannot_receive_automatic_keychain_password(monkeypatch):
     monkeypatch.delenv("INSTAGRAM_ASSISTANT_ADMIN_PASSWORD", raising=False)
     assert cli.main(["--env", "dev", "--base-url", "https://example.com", "status"]) == 1
@@ -123,3 +147,27 @@ def test_viewer_sync_sets_required_header(monkeypatch):
     assert client.request("POST", "/api/viewer/sync", params={"scope": "dm"}, body={}) == {"dms": 1}
     assert observed == {"origin": "https://instagram-assistant-dev.vercel.app",
                         "requested_with": "InstagramAssistant", "timeout": 600, "scope": "scope=dm"}
+
+
+def test_review_selects_oldest_before_offset_and_excludes_holds(monkeypatch, capsys):
+    requested = []
+
+    class FakeClient:
+        def __init__(self, base_url, token): pass
+        def login(self, password): pass
+        def request(self, method, path, **kwargs):
+            if path == '/api/conversations':
+                return [
+                    {'username': 'new', 'thread_id': 'new', 'latest_at': '2026-10-01'},
+                    {'username': 'held', 'thread_id': 'held', 'latest_at': '2026-09-01'},
+                    {'username': 'middle', 'thread_id': 'middle', 'latest_at': '2026-09-20'},
+                    {'username': 'old', 'thread_id': 'old', 'latest_at': '2026-09-10'},
+                ]
+            requested.append(path)
+            return [{'id': 'dm:middle', 'direction': 'inbound', 'body': 'hello'}]
+
+    monkeypatch.setattr(cli, 'Client', FakeClient)
+    monkeypatch.setenv('INSTAGRAM_ASSISTANT_ADMIN_PASSWORD', 'test password')
+    assert cli.main(['--env', 'dev', 'review', '--skip-user', '@HELD', '--offset', '1', '--limit', '1']) == 0
+    assert requested == ['/api/conversations/middle']
+    assert json.loads(capsys.readouterr().out)['conversations'][0]['username'] == 'middle'

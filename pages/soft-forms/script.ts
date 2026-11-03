@@ -1,22 +1,20 @@
 /// <reference types="vite/client" />
 import * as THREE from 'three';
 import GUI from 'lil-gui';
-import { boneDefinitions, BoneRig } from './bone-rig';
-import { createBoneMotion, cycleFrame, forwardFrame, smooth, SOURCE_END, BONE_LOOP_FRAMES, PREVIOUS_BONE_LOOP_FRAMES, sampleDefaultPose } from './bone-motion';
-import { restRadius, restSurface } from './bone-surface';
-import { fitBoneFrames } from './bone-animation';
+import { controlDefinitions, DeformationRig } from './deformation-rig';
+import { createMotionClips, cycleFrame, forwardFrame, smooth, SOURCE_END, LOOP_FRAMES, PREVIOUS_LOOP_FRAMES, sampleDefaultPose } from './motion-clips';
+import { restRadius, restSurface } from './rest-surface';
+import { bindSurface, skinBoundPoint, cheekWeight } from './surface-binding';
+import { FurRenderer, FUR_RENDER_ORDER } from './fur-renderer';
+import { fitControlFrames } from './motion-fit';
 import backgroundFragment from './background.frag?raw';
 import bodyFragment from './body.frag?raw';
-import furRibbonFragment from './fur-ribbon.frag?raw';
-import furRibbonVertex from './fur-ribbon.vert?raw';
-import furShellFragment from './fur-shell.frag?raw';
-import furShellVertex from './fur-shell.vert?raw';
 import paletteShader from './palette.glsl?raw';
 import { motionFrames } from './motion-data';
 import { DEFAULT_PLAYBACK_SPEED, MOTION_FPS } from './motion-track';
 import { variants, type VariantColors } from './variants';
 import { TouchReaction } from './touch-reaction';
-import { pinchDistance, pinchZoom, MIN_ZOOM, MAX_ZOOM } from './zoom';
+import { pinchDistance, pinchZoom } from './zoom';
 
 const params = new URLSearchParams(location.search);
 if (params.has('editor') || params.has('rig')) {
@@ -28,7 +26,7 @@ if (params.has('editor') || params.has('rig')) {
 const shapeAliases: Record<string, string> = { drop: 'flower', cloud: 'wave' };
 const requestedShape = shapeAliases[params.get('shape') ?? ''] ?? params.get('shape');
 const requestedVariant = variants.findIndex((variant) => variant.id === requestedShape);
-let targetVariant = requestedVariant >= 0 ? requestedVariant : 3;
+let targetVariant = requestedVariant >= 0 ? requestedVariant : variants.findIndex((variant) => variant.id === 'wave');
 const variantWeights = variants.map((_, index) => Number(index === targetVariant));
 const colorChannels: readonly (keyof VariantColors)[] = [
   'base', 'cool', 'blush', 'warm', 'highlight', 'bottom', 'detail', 'furTip',
@@ -59,15 +57,9 @@ const paletteUniforms = {
 const restingFrame = motionFrames[Math.floor(motionFrames.length / 2)];
 const baselineRadii = Float32Array.from(motionFrames[0].radii, (_, point) =>
   motionFrames.reduce((sum, frame) => sum + frame.radii[point], 0) / motionFrames.length);
-let boneRig = new BoneRig(variants[targetVariant].id);
-const boneAnimationFrames = fitBoneFrames(motionFrames.map((frame) => frame.radii));
-const { clips: boneClips, timeMaps } = createBoneMotion(boneAnimationFrames);
-let bodyBoneWeights: Float32Array | null = null;
-let fiberBoneWeights: Float32Array | null = null;
-let bodyRestPositions: Float32Array | null = null;
-let fiberRestPositions: Float32Array | null = null;
-let bodyCheekWeights: Float32Array | null = null;
-let fiberCheekWeights: Float32Array | null = null;
+let deformationRig = new DeformationRig(variants[targetVariant].id);
+const fittedControlFrames = fitControlFrames(motionFrames.map((frame) => frame.radii));
+const { clips: motionClips, timeMaps } = createMotionClips(fittedControlFrames);
 
 function blendColor(target: THREE.Vector3, channel: keyof VariantColors) {
   target.set(0, 0, 0);
@@ -109,14 +101,16 @@ scene.add(background);
 
 const character = new THREE.Group();
 scene.add(character);
-const shape = new THREE.SphereGeometry(1, 88, 64);
-const original = Float32Array.from(shape.getAttribute('position').array as ArrayLike<number>);
-const shapePosition = shape.getAttribute('position') as THREE.BufferAttribute;
-const shapeNormal = shape.getAttribute('normal') as THREE.BufferAttribute;
-shapePosition.setUsage(THREE.DynamicDrawUsage);
+const bodyGeometry = new THREE.SphereGeometry(1, 88, 64);
+const bodyDirections = Float32Array.from(bodyGeometry.getAttribute('position').array as ArrayLike<number>);
+const bodyPosition = bodyGeometry.getAttribute('position') as THREE.BufferAttribute;
+bodyPosition.setUsage(THREE.DynamicDrawUsage);
+const influenceColors = new Float32Array(bodyDirections.length);
+const influenceColorAttribute = new THREE.BufferAttribute(influenceColors, 3).setUsage(THREE.DynamicDrawUsage);
+bodyGeometry.setAttribute('color', influenceColorAttribute);
 const bodyUniforms = { uCheek: { value: 0 }, uStarSoftness: { value: 0 }, ...paletteUniforms };
-const body = new THREE.Mesh(
-  shape,
+const body: THREE.Mesh<THREE.SphereGeometry, THREE.Material> = new THREE.Mesh(
+  bodyGeometry,
   new THREE.ShaderMaterial({
     vertexShader: `varying vec3 vLocal; varying vec3 vNormal; void main() { vLocal = position; vNormal = normalize(normalMatrix * normal); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
     fragmentShader: `precision highp float;
@@ -129,120 +123,40 @@ ${bodyFragment}`,
   }),
 );
 character.add(body);
+const artworkBodyMaterial = body.material;
+const inspectionBodyMaterial = new THREE.MeshStandardMaterial({ color: 0xb3bac3, roughness: 0.92 });
+const influenceBodyMaterial = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.92 });
 // The inspection overlay shares the animated body geometry, so every wire follows the real skin.
-const bodyWire = new THREE.Mesh(shape, new THREE.MeshBasicMaterial({
-  color: 0xf8f5ff, wireframe: true, transparent: true, opacity: 0.36,
+const bodyWire = new THREE.Mesh(bodyGeometry, new THREE.MeshBasicMaterial({
+  color: 0x35404f, wireframe: true, transparent: true, opacity: 0.32,
   depthTest: false, depthWrite: false, side: THREE.FrontSide,
 }));
 bodyWire.scale.setScalar(1.003);
 bodyWire.renderOrder = 80;
 bodyWire.visible = false;
 character.add(bodyWire);
-const boneLinesPosition = new Float32Array((boneDefinitions.length - 1) * 4 * 3);
-const boneLineGeometry = new THREE.BufferGeometry();
-boneLineGeometry.setAttribute('position', new THREE.BufferAttribute(boneLinesPosition, 3).setUsage(THREE.DynamicDrawUsage));
-const boneLines = new THREE.LineSegments(boneLineGeometry, new THREE.LineBasicMaterial({
-  color: 0x6b3568, transparent: true, opacity: 0.95, depthTest: false, depthWrite: false,
+// The real rig uses independent weighted controls, so no connection is drawn between them.
+const controlMarkerGeometry = new THREE.SphereGeometry(6, 14, 10);
+const influencePalette = [
+  0xffc27a, 0xff8d91, 0xf7ab6d, 0xe5cf78, 0x9ed99c, 0x73cdb7, 0x76c8df,
+  0x83aaf0, 0xa8a1ef, 0xd3a0df, 0xf0a6c8, 0xed9eab, 0xe8a477,
+].map((value) => new THREE.Color(value));
+const influenceMarkerMaterials = influencePalette.map((color) => new THREE.MeshBasicMaterial({
+  color, transparent: true, depthTest: false, depthWrite: false,
 }));
-boneLines.frustumCulled = false;
-boneLines.renderOrder = 90;
-const boneMarkerGeometry = new THREE.SphereGeometry(4.6, 10, 8);
-const boneMarkerMaterial = new THREE.MeshBasicMaterial({
-  color: 0xfff2cd, transparent: true, depthTest: false, depthWrite: false,
-});
-const boneMarkers = boneDefinitions.map(() => {
-  const marker = new THREE.Mesh(boneMarkerGeometry, boneMarkerMaterial);
+const controlMarkers = controlDefinitions.map((_, index) => {
+  const marker = new THREE.Mesh(controlMarkerGeometry, influenceMarkerMaterials[index]);
   marker.frustumCulled = false;
   marker.renderOrder = 91;
   return marker;
 });
-const boneDisplay = new THREE.Group();
-boneDisplay.add(boneLines, ...boneMarkers);
-boneDisplay.visible = false;
-character.add(boneDisplay);
-// Thin translucent shells fill the volume between the body and visible fiber tips.
-const SHELL_COUNT = 13;
-const shells = Array.from({ length: SHELL_COUNT }, (_, index) => {
-  const layer = index / (SHELL_COUNT - 1);
-  const geometry = shape.clone();
-  geometry.setAttribute('basePosition', shapePosition);
-  geometry.setAttribute('normal', shapeNormal);
-  const positions = geometry.getAttribute('position') as THREE.BufferAttribute;
-  positions.setUsage(THREE.DynamicDrawUsage);
-  geometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 300);
-  const mesh = new THREE.Mesh(geometry, new THREE.ShaderMaterial({
-    vertexShader: `precision highp float;
-${paletteShader}
-${furShellVertex}`,
-    fragmentShader: furShellFragment,
-    uniforms: { ...bodyUniforms, uLayer: { value: layer } },
-    transparent: true,
-    depthWrite: false,
-    side: THREE.FrontSide,
-  }));
-  mesh.renderOrder = index + 1;
-  character.add(mesh);
-  return { mesh, positions, layer };
-});
-
-// Camera-facing tapered ribbons stay legible at the silhouette while rotating.
-const FIBER_COUNT = 23000;
-const fiberSeeds = new Float32Array(FIBER_COUNT * 5);
-const fiberRoots = new Float32Array(FIBER_COUNT * 3);
-const fiberTips = new Float32Array(FIBER_COUNT * 3);
-const fiberDirections = new Float32Array(FIBER_COUNT * 3);
-const fiberWidths = new Float32Array(FIBER_COUNT);
-const fiberBends = new Float32Array(FIBER_COUNT);
-let randomState = 723981;
-function random() {
-  randomState = (Math.imul(randomState, 1664525) + 1013904223) >>> 0;
-  return randomState / 4294967296;
-}
-for (let i = 0; i < FIBER_COUNT; i++) {
-  const z = random() * 2 - 1;
-  const angle = random() * Math.PI * 2;
-  const side = Math.sqrt(1 - z * z);
-  const x = Math.cos(angle) * side;
-  const y = Math.sin(angle) * side;
-  const guardHair = random() < 0.17;
-  const length = (guardHair ? 16 + Math.pow(random(), 1.1) * 15 : 7 + Math.pow(random(), 0.7) * 17)
-    * (1 + THREE.MathUtils.smoothstep(y, -0.1, 0.55) * 0.26) * 1.09;
-  const lean = (random() - 0.5) * 0.82;
-  fiberSeeds.set([x, y, z, length, lean], i * 5);
-  fiberDirections.set([x, y, z], i * 3);
-  fiberWidths[i] = 0.49 + random() * 0.28;
-  fiberBends[i] = (random() - 0.5) * 4.5 * Math.min(1, length / 25);
-}
-const fiberGeometry = new THREE.InstancedBufferGeometry();
-const fiberStations = [0, 0.22, 0.48, 0.73, 1];
-const fiberVertices = fiberStations.flatMap((along) => [-1, along, 0, 1, along, 0]);
-const fiberIndices = fiberStations.slice(1).flatMap((_, station) => {
-  const start = station * 2;
-  return [start, start + 1, start + 2, start + 2, start + 1, start + 3];
-});
-fiberGeometry.setIndex(fiberIndices);
-fiberGeometry.setAttribute('position', new THREE.Float32BufferAttribute(fiberVertices, 3));
-const fiberRootAttribute = new THREE.InstancedBufferAttribute(fiberRoots, 3).setUsage(THREE.DynamicDrawUsage);
-const fiberTipAttribute = new THREE.InstancedBufferAttribute(fiberTips, 3).setUsage(THREE.DynamicDrawUsage);
-fiberGeometry.setAttribute('instanceRoot', fiberRootAttribute);
-fiberGeometry.setAttribute('instanceTip', fiberTipAttribute);
-fiberGeometry.setAttribute('instanceDirection', new THREE.InstancedBufferAttribute(fiberDirections, 3));
-fiberGeometry.setAttribute('instanceWidth', new THREE.InstancedBufferAttribute(fiberWidths, 1));
-fiberGeometry.setAttribute('instanceBend', new THREE.InstancedBufferAttribute(fiberBends, 1));
-fiberGeometry.instanceCount = FIBER_COUNT;
-fiberGeometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 300);
-const fur = new THREE.Mesh(fiberGeometry, new THREE.ShaderMaterial({
-  vertexShader: `precision highp float;
-${paletteShader}
-${furRibbonVertex}`,
-  fragmentShader: furRibbonFragment,
-  uniforms: bodyUniforms,
-  transparent: true,
-  depthWrite: false,
-  side: THREE.DoubleSide,
-}));
-fur.renderOrder = SHELL_COUNT + 1;
-character.add(fur);
+const controlDisplay = new THREE.Group();
+controlDisplay.add(...controlMarkers);
+controlDisplay.visible = false;
+character.add(controlDisplay);
+const fur = new FurRenderer(bodyGeometry, bodyDirections, bodyUniforms, deformationRig, baselineRadii);
+character.add(fur.group);
+let bodyBinding = bindSurface(deformationRig, bodyDirections, baselineRadii);
 
 const eyeMaterial = new THREE.ShaderMaterial({
   vertexShader: `varying vec3 vNormal; void main() { vNormal = normalize(normalMatrix * normal); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
@@ -253,7 +167,7 @@ const eyeMaterial = new THREE.ShaderMaterial({
 });
 const eyes = Array.from({ length: 2 }, () => {
   const eye = new THREE.Mesh(new THREE.SphereGeometry(1, 20, 16), eyeMaterial);
-  eye.renderOrder = SHELL_COUNT + 2;
+  eye.renderOrder = FUR_RENDER_ORDER + 1;
   character.add(eye);
   return eye;
 });
@@ -264,30 +178,25 @@ const frozenTime = params.has('t') && Number.isFinite(queryTime) ? Math.max(0, q
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const startTime = performance.now();
 const controls = { turnX: 0, turnY: 0, turnZ: 0 };
-const view = { shape: variants[targetVariant].id, mesh: false, bones: false, zoom: 1 };
-const guiMount = document.querySelector<HTMLElement>('#gui');
-if (!guiMount) throw new Error('GUI mount is missing');
-const gui = new GUI({ title: '솜결 · 구조 보기', container: guiMount, width: 244 });
+const view = { shape: variants[targetVariant].id, mesh: false, handles: false };
+const gui = new GUI({ title: '솜결 · 구조 보기' });
 const shapeController = gui.add(view, 'shape', Object.fromEntries(variants.map((variant) => [variant.label, variant.id])))
   .name('모양').onChange((id: typeof view.shape) => {
     const index = variants.findIndex((variant) => variant.id === id);
     if (index >= 0) selectVariant(index);
   });
 function applyInspection() {
+  const inspecting = view.mesh || view.handles;
+  body.material = view.handles ? influenceBodyMaterial : view.mesh ? inspectionBodyMaterial : artworkBodyMaterial;
   bodyWire.visible = view.mesh;
-  boneDisplay.visible = view.bones;
-  for (const shell of shells) shell.mesh.visible = !view.mesh;
-  fur.visible = !view.mesh;
-  canvas!.style.filter = view.mesh || view.bones ? 'none' : '';
+  controlDisplay.visible = view.handles;
+  fur.group.visible = !inspecting;
+  for (const eye of eyes) eye.visible = !inspecting;
+  canvas!.style.filter = inspecting ? 'none' : '';
   refresh();
 }
 gui.add(view, 'mesh').name('몸체 메시').onChange(applyInspection);
-gui.add(view, 'bones').name('관절 13개').onChange(applyInspection);
-const zoomController = gui.add(view, 'zoom', MIN_ZOOM, MAX_ZOOM, 0.01).name('확대').onChange((value: number) => {
-  camera.zoom = value;
-  camera.updateProjectionMatrix();
-  refresh();
-});
+gui.add(view, 'handles').name('변형 컨트롤').onChange(applyInspection);
 let frameRequested = false;
 function refresh() {
   if (frameRequested) return;
@@ -363,8 +272,6 @@ canvas.addEventListener('pointermove', (event) => {
     const [first, second] = [...touchPoints.values()];
     camera.zoom = Math.round(pinchZoom(pinch.zoom, pinch.distance, pinchDistance(first, second)) * 100) / 100;
     camera.updateProjectionMatrix();
-    view.zoom = camera.zoom;
-    zoomController.updateDisplay();
     refresh();
     return;
   }
@@ -403,54 +310,23 @@ canvas.addEventListener('lostpointercapture', stopDragging);
 
 let cheekStrength = 0;
 let lastRenderTime = performance.now();
-function ensureBoneWeights() {
+function ensureSurfaceBindings() {
   const id = variants[targetVariant].id;
-  if (boneRig.shape !== id) {
-    boneRig = new BoneRig(id);
-    bodyBoneWeights = fiberBoneWeights = null;
-  }
-  if (bodyBoneWeights && fiberBoneWeights) return;
-  bodyBoneWeights = new Float32Array(original.length / 3 * boneDefinitions.length);
-  bodyRestPositions = new Float32Array(original.length);
-  bodyCheekWeights = new Float32Array(original.length / 3);
-  for (let vertex = 0; vertex < original.length / 3; vertex++) {
-    const x = original[vertex * 3], y = original[vertex * 3 + 1], z = original[vertex * 3 + 2];
-    restSurface(id, x, y, z, baselineRadii, bodyRestPositions, vertex * 3);
-    bodyBoneWeights.set(boneRig.weightsFor(bodyRestPositions[vertex * 3], bodyRestPositions[vertex * 3 + 1]), vertex * boneDefinitions.length);
-    bodyCheekWeights[vertex] = id === 'original' ? Math.max(0, z)
-      * Math.exp(-Math.pow((x - 0.71) / 0.26, 2) - Math.pow((y + 0.38) / 0.38, 2)) * 44 : 0;
-  }
-  fiberBoneWeights = new Float32Array(FIBER_COUNT * boneDefinitions.length);
-  fiberRestPositions = new Float32Array(FIBER_COUNT * 3);
-  fiberCheekWeights = new Float32Array(FIBER_COUNT);
-  for (let fiber = 0; fiber < FIBER_COUNT; fiber++) {
-    const x = fiberSeeds[fiber * 5], y = fiberSeeds[fiber * 5 + 1], z = fiberSeeds[fiber * 5 + 2];
-    restSurface(id, x, y, z, baselineRadii, fiberRestPositions, fiber * 3);
-    fiberBoneWeights.set(boneRig.weightsFor(fiberRestPositions[fiber * 3], fiberRestPositions[fiber * 3 + 1]), fiber * boneDefinitions.length);
-    fiberRestPositions[fiber * 3] -= x * 1.5;
-    fiberRestPositions[fiber * 3 + 1] -= y * 1.5;
-    fiberRestPositions[fiber * 3 + 2] -= z * 1.5;
-    fiberCheekWeights[fiber] = id === 'original' ? Math.max(0, z)
-      * Math.exp(-Math.pow((x - 0.71) / 0.26, 2) - Math.pow((y + 0.38) / 0.38, 2)) * 44 : 0;
-  }
+  if (deformationRig.shape === id) return;
+  deformationRig = new DeformationRig(id);
+  bodyBinding = bindSurface(deformationRig, bodyDirections, baselineRadii);
+  fur.bind(deformationRig, baselineRadii);
 }
 const surfaceRest = new Float32Array(3);
-function surface(x: number, y: number, z: number, target: Float32Array, offset: number) {
-  restSurface(boneRig.shape, x, y, z, baselineRadii, surfaceRest);
-  if (boneRig.shape === 'original') surfaceRest[2] += Math.max(0, z)
-    * Math.exp(-Math.pow((x - 0.71) / 0.26, 2) - Math.pow((y + 0.38) / 0.38, 2)) * cheekStrength * 44;
-  boneRig.skinPoint(surfaceRest[0], surfaceRest[1], surfaceRest[2], boneRig.weightsFor(surfaceRest[0], surfaceRest[1]), target, offset);
+function sampleSurface(x: number, y: number, z: number, target: Float32Array, offset: number) {
+  restSurface(deformationRig.shape, x, y, z, baselineRadii, surfaceRest);
+  surfaceRest[2] += cheekWeight(deformationRig.shape, x, y, z) * cheekStrength;
+  deformationRig.skinPoint(surfaceRest[0], surfaceRest[1], surfaceRest[2], deformationRig.weightsFor(surfaceRest[0], surfaceRest[1]), target, offset);
 }
-function updateShape() {
-  const bodyPositions = shapePosition.array as Float32Array;
-  for (let i = 0; i < original.length; i += 3) {
-    if (bodyRestPositions && bodyBoneWeights && bodyCheekWeights) {
-      boneRig.skinPoint(bodyRestPositions[i], bodyRestPositions[i + 1],
-        bodyRestPositions[i + 2] + cheekStrength * bodyCheekWeights[i / 3],
-        bodyBoneWeights, bodyPositions, i, i / 3 * boneDefinitions.length);
-    } else {
-      surface(original[i], original[i + 1], original[i + 2], bodyPositions, i);
-    }
+function updateBodyGeometry() {
+  const bodyPositions = bodyPosition.array as Float32Array;
+  for (let i = 0; i < bodyDirections.length; i += 3) {
+    skinBoundPoint(deformationRig, bodyBinding, i / 3, cheekStrength, bodyPositions, i);
     if (reaction.deforming) {
       const push = reaction.displacement(bodyPositions[i], bodyPositions[i + 1], bodyPositions[i + 2]);
       bodyPositions[i] += reaction.normal.x * push;
@@ -458,70 +334,44 @@ function updateShape() {
       bodyPositions[i + 2] += reaction.normal.z * push;
     }
   }
-  shapePosition.needsUpdate = true;
-  shape.computeVertexNormals();
-  for (const shell of shells) {
-    const offset = 0.5 + 29 * Math.pow(shell.layer, 1.3);
-    const positions = shell.positions.array as Float32Array;
-    for (let i = 0; i < original.length; i++) {
-      positions[i] = bodyPositions[i] + original[i] * offset;
-    }
-    shell.positions.needsUpdate = true;
-  }
-  for (let i = 0; i < FIBER_COUNT; i++) {
-    const seed = i * 5;
-    const vertex = i * 3;
-    const x = fiberSeeds[seed], y = fiberSeeds[seed + 1], z = fiberSeeds[seed + 2];
-    const length = fiberSeeds[seed + 3], lean = fiberSeeds[seed + 4];
-    if (fiberBoneWeights && fiberRestPositions && fiberCheekWeights) {
-      const restX = fiberRestPositions[vertex], restY = fiberRestPositions[vertex + 1];
-      const restZ = fiberRestPositions[vertex + 2] + cheekStrength * fiberCheekWeights[i];
-      const weightOffset = i * boneDefinitions.length;
-      boneRig.skinPoint(restX, restY, restZ, fiberBoneWeights, fiberRoots, vertex, weightOffset);
-      boneRig.skinPoint(restX + x * length + y * lean * length,
-        restY + y * length - x * lean * length, restZ + z * length,
-        fiberBoneWeights, fiberTips, vertex, weightOffset);
-    } else {
-      surface(x, y, z, fiberRoots, vertex);
-      fiberRoots[vertex] -= x * 1.5;
-      fiberRoots[vertex + 1] -= y * 1.5;
-      fiberRoots[vertex + 2] -= z * 1.5;
-      fiberTips[vertex] = fiberRoots[vertex] + x * length + y * lean * length;
-      fiberTips[vertex + 1] = fiberRoots[vertex + 1] + y * length - x * lean * length;
-      fiberTips[vertex + 2] = fiberRoots[vertex + 2] + z * length;
-    }
-    if (reaction.deforming) {
-      const push = reaction.displacement(fiberRoots[vertex], fiberRoots[vertex + 1], fiberRoots[vertex + 2]);
-      fiberRoots[vertex] += reaction.normal.x * push;
-      fiberRoots[vertex + 1] += reaction.normal.y * push;
-      fiberRoots[vertex + 2] += reaction.normal.z * push;
-      const tipPush = push * 0.72;
-      fiberTips[vertex] += reaction.normal.x * tipPush;
-      fiberTips[vertex + 1] += reaction.normal.y * tipPush;
-      fiberTips[vertex + 2] += reaction.normal.z * tipPush;
-    }
-    if (reaction.active) {
-      fiberTips[vertex] += reaction.furLagX * Math.max(0, z);
-      fiberTips[vertex + 1] += reaction.furLagY * Math.max(0, z);
-    }
-  }
-  fiberRootAttribute.needsUpdate = true;
-  fiberTipAttribute.needsUpdate = true;
+  bodyPosition.needsUpdate = true;
+  bodyGeometry.computeVertexNormals();
+  fur.update(deformationRig, cheekStrength, reaction, bodyPositions);
 }
 
-function updateBoneDisplay() {
-  if (!view.bones) return;
-  const center = boneRig.jointPosition(0);
-  const rimCount = boneDefinitions.length - 1;
-  for (let index = 0; index < boneDefinitions.length; index++) {
-    const [x, y] = boneRig.jointPosition(index);
-    boneMarkers[index].position.set(x, y, 155);
-    if (index === 0) continue;
-    const next = boneRig.jointPosition(index === rimCount ? 1 : index + 1);
-    boneLinesPosition.set([center[0], center[1], 155, x, y, 155,
-      x, y, 155, next[0], next[1], 155], (index - 1) * 12);
+let influenceKey = '';
+function updateInfluenceColors() {
+  if (!view.handles) return;
+  const key = deformationRig.shape;
+  if (key === influenceKey) return;
+  influenceKey = key;
+  for (let index = 0; index < bodyDirections.length / 3; index++) {
+    let total = 0;
+    let red = 0, green = 0, blue = 0;
+    for (let control = 0; control < controlDefinitions.length; control++) {
+      const weight = bodyBinding.controlWeights[index * controlDefinitions.length + control] ** 4;
+      const color = influencePalette[control];
+      red += color.r * weight;
+      green += color.g * weight;
+      blue += color.b * weight;
+      total += weight;
+    }
+    const offset = index * 3;
+    influenceColors[offset] = red / total;
+    influenceColors[offset + 1] = green / total;
+    influenceColors[offset + 2] = blue / total;
   }
-  boneLineGeometry.getAttribute('position').needsUpdate = true;
+  influenceColorAttribute.needsUpdate = true;
+}
+
+function updateControlDisplay() {
+  if (!view.handles) return;
+  for (let index = 0; index < controlDefinitions.length; index++) {
+    const [x, y] = deformationRig.controlPosition(index);
+    // The rig is planar: its controls live inside the body on the local XY plane.
+    // A fixed front-facing Z offset makes them orbit outside the body when it rotates.
+    controlMarkers[index].position.set(x, y, 0);
+  }
 }
 
 function render(now: number) {
@@ -556,7 +406,7 @@ function render(now: number) {
   const source = forwardFrame(previousFrame);
   const a = forward ? Math.floor(source) : SOURCE_END;
   const b = forward ? Math.min(a + 1, SOURCE_END) : 0;
-  const fraction = forward ? source - a : smooth((previousFrame - SOURCE_END) / (PREVIOUS_BONE_LOOP_FRAMES - SOURCE_END));
+  const fraction = forward ? source - a : smooth((previousFrame - SOURCE_END) / (PREVIOUS_LOOP_FRAMES - SOURCE_END));
   const first = motionFrames[a], second = motionFrames[b];
   const lerp = (one: number, two: number) => THREE.MathUtils.lerp(one, two, fraction);
   const selectedVariant = variants[targetVariant];
@@ -564,10 +414,11 @@ function render(now: number) {
     ? lerp(THREE.MathUtils.smoothstep(a, 45, 76), THREE.MathUtils.smoothstep(b, 45, 76)) : 0;
   bodyUniforms.uCheek.value = cheekStrength;
   bodyUniforms.uStarSoftness.value = variantWeights[3];
-  ensureBoneWeights();
-  boneRig.setPose(sampleDefaultPose(boneClips, selectedVariant.id, timelineFrame));
-  updateShape();
-  updateBoneDisplay();
+  ensureSurfaceBindings();
+  updateInfluenceColors();
+  deformationRig.setPose(sampleDefaultPose(motionClips, selectedVariant.id, timelineFrame));
+  updateBodyGeometry();
+  updateControlDisplay();
 
   const sourceCx = lerp(first.center[0], second.center[0]);
   const sourceCy = lerp(first.center[1], second.center[1]);
@@ -589,14 +440,14 @@ function render(now: number) {
     const sourceEyeY = sourceCy - lerp(first.eyes[i * 2 + 1], second.eyes[i * 2 + 1]);
     const ex = (isOriginal ? sourceEyeX : restingFrame.eyes[i * 2] - restingFrame.center[0]) + selectedVariant.eyeShift[0];
     const openness = isOriginal ? lerp(first.eyes[4], second.eyes[4])
-      : 1 - 0.85 * Math.exp(-Math.pow((timelineFrame / BONE_LOOP_FRAMES - 0.64) / 0.023, 2));
+      : 1 - 0.85 * Math.exp(-Math.pow((timelineFrame / LOOP_FRAMES - 0.64) / 0.023, 2));
     const reactedOpenness = openness * reaction.eyeOpen;
     const ey = (isOriginal ? sourceEyeY : restingFrame.center[1] - restingFrame.eyes[i * 2 + 1])
       - (1 - reactedOpenness) * 11 + selectedVariant.eyeShift[1];
     const eyeRadius = restRadius(selectedVariant.id, ex, ey, baselineRadii);
     const seedX = ex / eyeRadius, seedY = ey / eyeRadius;
     const proportion = Math.min(0.98, Math.hypot(seedX, seedY));
-    surface(seedX, seedY, Math.sqrt(1 - proportion * proportion), eyePosition, 0);
+    sampleSurface(seedX, seedY, Math.sqrt(1 - proportion * proportion), eyePosition, 0);
     if (reaction.deforming) {
       const push = reaction.displacement(eyePosition[0], eyePosition[1], eyePosition[2]);
       eyePosition[0] += reaction.normal.x * push;
@@ -606,7 +457,7 @@ function render(now: number) {
     eyes[i].position.set(eyePosition[0], eyePosition[1], eyePosition[2] + 1);
     eyes[i].scale.set(4.9, Math.max(1.1, 9.3 * reactedOpenness), 2.1);
   }
-  shadowUniforms.uShadow.value.set(cx + boneRig.poses[0].dx * 0.7 - 465, -191);
+  shadowUniforms.uShadow.value.set(cx + deformationRig.poses[0].dx * 0.7 - 465, -191);
   shadowUniforms.uShadowScale.value = 0.94 + Math.max(0, cy - 350) * 0.0012;
   renderer.render(scene, camera);
   if ((frozenTime === null && !reduceMotion) || morphing || reaction.active) refresh();

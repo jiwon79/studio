@@ -30,6 +30,12 @@ docs/
 
 ## Artworks
 
+### Cursive
+
+- [`architecture.md`](./artworks/cursive/architecture.md) - 저작 획·샘플 경로·재생 일정의 용어와 SVG 필기, 로프, 파일 출력의 현재 구조
+- [`pen-paths.md`](./artworks/cursive/pen-paths.md) - 글자별 펜 경로 선택과 원본 폰트·교본 비교, 형태·순서 검증 기준
+- [`social-share-image.md`](./artworks/cursive/social-share-image.md) - 실제 필기체 렌더링과 제목 합성, 공유 이미지 재생성 방법
+
 ### Body Echo
 
 - [`architecture.md`](./artworks/body-echo/architecture.md) - SVG rope hold, wave-gated particle dissolve, Canvas 2D 합성 구조
@@ -41,7 +47,7 @@ docs/
 
 ### Cursor Cat
 
-- [`architecture.md`](./artworks/cursor-cat/architecture.md) - R2 manifest, 시선 기준점, 원형 frame 선택과 모바일 출력 구조
+- [`architecture.md`](./artworks/cursor-cat/architecture.md) - 눈 위치와 커서 방향으로 프레임을 고르고 원형 순서에서 부드럽게 전환하는 흐름
 - [`generation.md`](./artworks/cursor-cat/generation.md) - Seedance 생성, 각도 샘플링, 색·배경·크기 보정과 검증 절차
 
 ### Guseul
@@ -61,11 +67,12 @@ docs/
 
 ### 솜결 (Soft Forms)
 
+- [`architecture.md`](./artworks/soft-forms/architecture.md) - 독립 변형 컨트롤, 표면 바인딩, 셸·리본 털과 터치 응답의 현재 실행 흐름
 - [`social-share-image.md`](./artworks/soft-forms/social-share-image.md) - 실제 별 캐릭터 캡처에 한글·영어 제목을 합성하는 공유 PNG 제작 방법
 
 ### 웃음꽃 (Smile Flower)
 
-- [`architecture.md`](./artworks/smile-flower/architecture.md) - Blender 모델 생성, GLB 최적화, instancing, 회전·bloom·파동 렌더링 구조
+- [`architecture.md`](./artworks/smile-flower/architecture.md) - 타일의 드래그 회전, 길게 누른 배치 변화와 회전 파동을 그리는 흐름
 - [`rebuild-guide.md`](./artworks/smile-flower/rebuild-guide.md) - Blender 원본부터 웹 페이지까지 다시 만드는 단계별 가이드
 - [`social-share-image.md`](./artworks/smile-flower/social-share-image.md) - 실제 캡처 왼쪽 위에 Smile Flower 제목만 합성하는 PNG 제작 도구와 재생성 방법
 
@@ -78,11 +85,15 @@ Concept는 다음 중 하나를 만족할 때 독립 문서로 둔다.
 
 반대로 단일 작품의 파라미터 선택, 좌표 변환이나 역함수 한 번으로 끝나는 계산은 다른 곳에 응용할 수 있더라도 artwork architecture에 포함한다. 여러 원리를 조합한 자체 방법을 Concept로 유지할 때는 제목이 설명용 이름임을 본문 첫머리에 밝힌다.
 
+- [`3d-model-look-development.md`](./concepts/3d-model-look-development.md) - 기본색, PBR 재질, 조명과 tone mapping이 3D 모델의 색감과 재질감을 만드는 과정
+- [`fur-shells-and-ribbons.md`](./concepts/fur-shells-and-ribbons.md) - 겹친 셸로 털 두께를 채우고 카메라 방향 리본으로 가닥을 그리는 공간 관계와 수식
 - [`fragment-shader-execution.md`](./concepts/fragment-shader-execution.md) - 2x2 quad, warp/wave, helper invocation과 mipmap 선택 과정
 - [`golden-angle-sphere-distribution.md`](./concepts/golden-angle-sphere-distribution.md) - 점을 구 표면 전체에 분산하는 Fibonacci sphere 원리
 - [`jump-flood-nearest-seed.md`](./concepts/jump-flood-nearest-seed.md) - GPU pass가 큰 jump부터 가까운 seed 좌표를 전달하는 JFA 원리와 bounded 근사
 - [`mean-value-coordinates.md`](./concepts/mean-value-coordinates.md) - cage의 거리와 이웃 각도로 내부 좌표 weights를 만들고 다른 cage에 옮기는 원리
 - [`pixel-metaball-field.md`](./concepts/pixel-metaball-field.md) - 활성 픽셀의 황금각 주변 표본을 누적해 threshold 실루엣을 만드는 원리
+- [`pbr-material-parameters.md`](./concepts/pbr-material-parameters.md) - roughness·specular·환경광 강도·metalness의 역할과 계산, 0~1 실제 렌더 비교
+- [`pmrem.md`](./concepts/pmrem.md) - 환경 맵을 미리 필터하고 roughness별로 조회하는 PMREM의 데이터와 계산
 - [`sdf-glass-rendering.md`](./concepts/sdf-glass-rendering.md) - SDF에서 normal, 가상 유리 단면, 굴절 offset을 만드는 공통 원리
 - [`smooth-union.md`](./concepts/smooth-union.md) - signed-distance field의 union과 부드러운 접합 원리
 - [`svg-path-rope-tension.md`](./concepts/svg-path-rope-tension.md) - SVG contour를 graph로 바꾸고 거리 감쇠로 rope 장력을 전달하는 원리
@@ -105,6 +116,7 @@ Vibe의 **작품별 기록**에서 게시 상태, 캡션·초안, 크레딧과 �
 
 | 작품 | 운영 기록 |
 | --- | --- |
+| Cursive | [Cursive · 릴스 캡션](https://app.notion.com/p/3f7a89f7e31a814dbdc6cc52ca2e3803) |
 | Guseul | [Guseul · 1일차](https://app.notion.com/p/3cda89f7e31a81abb5d4e400ee742826) |
 | Color Text | [Color Text · 2일차](https://app.notion.com/p/3cda89f7e31a81d0b566fe5dd0d0b993) |
 | Body Echo | [Body Echo · 3일차](https://app.notion.com/p/3cda89f7e31a8147a835fcce47562c3d) |
@@ -123,9 +135,10 @@ Vibe의 **외부 공유**에는 독자가 직접 따라 만들 수 있는 제작
 | Color Text | [Color Text — 글자에서 액체가 흐르는 포스터 만들기](https://app.notion.com/p/3d6a89f7e31a816d9fd2ca03d39bac36) | 세 단계 제작 프롬프트, 참고 사진과 포스터 문구 |
 | Body Echo | [Body Echo — 몸의 선을 당기고 파동으로 흩뜨리기](https://app.notion.com/p/3d6a89f7e31a8124a56cc44c7e1e3ae4) | 세 단계 제작 프롬프트, 참고 사진과 인체 SVG 에셋 |
 | Line Pull | [Line Pull — 선 사이에 숨겨진 자기소개 만들기](https://app.notion.com/p/3d6a89f7e31a81418657d9a7aeaf1b21) | 세 단계 제작 프롬프트, 참고 사진과 폰트·표면 질감 에셋 |
+| Smile Flower | [웃음꽃 제작 안내](https://app.notion.com/p/3d9a89f7e31a818cb561dc1bf4d8142d) | 시작하기 PDF에서 연결되는 제작 프롬프트와 참고 자료 |
 | Rose Glass | [Rose Glass — 장밋빛 유리 만들기](https://app.notion.com/p/3e3a89f7e31a815c8059faa903ba0630) | 준비·형태·정지 재질·조명·드래그 단계 프롬프트, 4K 렌더·설정 JSON·시작하기 PDF·전체 자료 ZIP |
 
-위 목록은 2026-09-22에 Vibe와 외부 공유 페이지에서 확인했다. 첨부 자료의 준비 상태와 최신 내용은 각 Notion 페이지에서 확인한다. 새 작품은 Vibe 아래 기존 페이지를 먼저 찾고, 확인한 주소만 이 목록에 추가한다.
+위 목록의 페이지 주소는 2026-09-26에 다시 확인했다. 첨부 자료의 준비 상태와 최신 내용은 각 Notion 페이지에서 확인한다. 새 작품은 Vibe 아래 기존 페이지를 먼저 찾고, 확인한 주소만 이 목록에 추가한다.
 
 ## Placement Rules
 
