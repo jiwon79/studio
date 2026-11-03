@@ -486,13 +486,6 @@ if (debugMode) {
   drawing.add(settings,'scale',.5,1.8,.05).name('사람 크기').onChange(render);
   drawing.add(settings,'people',1,6,1).name('인원').listen().onChange(render);
 }
-const processCaption = document.createElement('aside');
-processCaption.className = 'process-caption';
-processCaption.setAttribute('aria-live', 'polite');
-const processTitle = document.createElement('p');
-const processDescription = document.createElement('p');
-processCaption.append(processTitle, processDescription);
-document.body.append(processCaption);
 resize();
 createStepper({
   steps: PROCESS_STEPS,
@@ -503,10 +496,6 @@ createStepper({
     personButtons.forEach(button => { button.disabled = stage !== 'interact' && !debugMode; });
     Object.assign(debug, stageLayers(stage));
     debug.touch = stage === 'interact' && debugMode;
-    const step = PROCESS_STEPS.find(s => s.id === stage)!;
-    processCaption.hidden = stage === 'interact';
-    processTitle.textContent = step.title;
-    processDescription.textContent = step.description;
     if (selected >= 0) dismissThought();
     render();
   },

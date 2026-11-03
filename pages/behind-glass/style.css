@@ -22,8 +22,3 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'N
 .lil-gui.root { z-index: 10; }
 
 artwork-stepper { --stepper-max-width: 440px; --stepper-color: #44443d; --stepper-muted-color: #99998f; --stepper-font: 500 11px/1 -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif; --stepper-letter-spacing: 0; }
-.process-caption { position: fixed; left: 50%; bottom: 70px; transform: translateX(-50%); width: min(460px, calc(100vw - 36px)); text-align: center; pointer-events: none; z-index: 3; }
-.process-caption[hidden] { display: none; }
-.process-caption p { margin: 0; text-shadow: 0 1px 10px #ffffff; }
-.process-caption p:first-child { font-size: 11px; color: #66665d; margin-bottom: 7px; }
-.process-caption p:last-child { font-size: 11px; color: #93938a; line-height: 1.7; word-break: keep-all; }
