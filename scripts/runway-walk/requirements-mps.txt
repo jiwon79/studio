@@ -1,9 +1,0 @@
--r requirements.txt
-torch==2.13.0
-torchvision==0.24.1
-timm==1.0.22
-transformers==5.10.1
-safetensors==0.6.2
-huggingface-hub==0.36.0
-kornia==0.8.2
-einops==0.8.1
