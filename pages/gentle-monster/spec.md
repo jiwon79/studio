@@ -6,7 +6,8 @@
 - `style.css` - Styling for table-based layout with header, summary, and image gallery
 - `script.ts` - TypeScript functionality
 - `assets/` - Asset directory
-- `scripts/` - Additional scripts
+
+초기 수집·JPG 배경 제거·일회성 화면 검증 스크립트는 현재 WebP와 썸네일을 만드는 전체 절차를 재현하지 않아 제거했다. 당시 스크립트는 Git `9013100f`의 `pages/gentle-monster/scripts/`에서 확인할 수 있다. 작품은 `assets/metadata.json`과 `assets/images/`, `assets/thumbnails/`의 완성된 WebP를 읽는다.
 
 ## 2. 컨셉
 
