@@ -16,7 +16,7 @@ uv venv --python 3.11 .cache/runway-walk/.venv
 - 영상 URL, 로컬 파일명, 원본 fps, 시작 오프셋, 저해상도 포즈 영상과 원본 사이의 크기 비율은 [`angle-sources.json`](../../../scripts/runway-walk/angle-sources.json)에 있다. 각 `file`과 `poseFile`을 캐시 바로 아래에 준비한다.
 - [`angle-shots.json`](../../../scripts/runway-walk/angle-shots.json)은 선택 구간·ROI·인물 선택·관절 보정·가림·제외 프레임 등 수동 검토 결과다. 영상을 임의로 앞뒤에서 자르면 이 프레임 번호와 맞지 않는다. 파일별 fps와 오프셋을 유지한다.
 - MediaPipe Pose Landmarker 모델을 캐시의 `pose.task`로 준비한다. 현재 배포 데이터의 `quality.headSupportModelSha256`은 `4eaa5eb7a98365221087693fcc286334cf0858e2eb6e15b506aa4a7ecdcec4ad`다. 모델을 교체하면 포즈 검출 결과도 다시 검토한다.
-- 최초 전면 추출용 `extract.py`는 `1920×1080`, `25fps` Louis Vuitton 영상에 맞춘 고정 샷을 사용한다. 여러 방향을 만드는 절차는 아래 `angles.py`부터 시작한다.
+- 여러 방향을 만드는 절차는 아래 `angles.py`부터 시작한다. 사용하지 않는 최초 전면 추출기 `extract.py`, 초기 합성 모듈 `core.py`, 초기 발 접촉 목록 `footfalls.json`은 정리했다. 초기 실험을 조사할 때만 Git의 `9013100f`에서 해당 파일을 확인한다.
 
 ## 2. 필요한 패키지만 임시 설치
 
