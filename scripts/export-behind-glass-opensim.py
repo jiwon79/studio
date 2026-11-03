@@ -72,6 +72,6 @@ with tempfile.TemporaryDirectory(prefix='behind-glass-opensim-') as tmp:
         'unitsPerMetre': SCALE, 'harmonics': HARMONICS,
         'frames': np.round(frames,5).tolist(),
     }
-    output = Path(__file__).resolve().parents[1] / 'pages/behind-glass/assets/opensim-walk.json'
+    output = Path(__file__).resolve().parents[1] / 'pages/behind-glass/data/opensim-walk.json'
     output.write_text(json.dumps(result,separators=(',',':'))+'\n')
     print(f'Wrote {COUNT} frames to {output}')

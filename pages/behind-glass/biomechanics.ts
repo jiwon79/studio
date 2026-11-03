@@ -1,4 +1,4 @@
-import clip from './assets/opensim-walk.json';
+import clip from './data/opensim-walk.json';
 import { fract } from './motion';
 
 export const BIOMECHANICAL_STRIDE = clip.stride;

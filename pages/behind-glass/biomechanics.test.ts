@@ -1,6 +1,6 @@
 import { test, expect } from 'vitest';
 import { biomechanicalLeg } from './biomechanics';
-import clip from './assets/opensim-walk.json';
+import clip from './data/opensim-walk.json';
 
 const length = (a: { forward: number; height: number; lateral: number }, b: typeof a) =>
   Math.hypot(a.forward-b.forward, a.height-b.height, a.lateral-b.lateral);
