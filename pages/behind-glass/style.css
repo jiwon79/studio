@@ -17,3 +17,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'N
 @media (prefers-reduced-motion: reduce) { .thought { animation: none; } }
 
 .person.dragging { cursor: grabbing; }
+
+.debug-overlay { position: fixed; inset: 0; pointer-events: none; z-index: 2; }
+.lil-gui.root { z-index: 10; }

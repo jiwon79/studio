@@ -14,11 +14,17 @@ let width = 0;
 let height = 0;
 let pixelRatio = 1;
 const query = new URLSearchParams(location.search);
+const debugMode = query.has('debug');
+const debug = { joints: false, touch: true, soles: false, origins: false, far: true, legs: true, feet: true, glass: true, hitScale: 1, solo: -1, stage: '완성' };
+const overlay = debugMode ? document.createElement('canvas') : null;
+if (overlay) { overlay.className = 'debug-overlay'; overlay.setAttribute('aria-hidden', 'true'); document.body.append(overlay); }
+const debugCtx = overlay?.getContext('2d');
 const inspectionTime = query.has('debug') ? Number(query.get('time')) : NaN;
 let elapsed = query.has('time') && Number.isFinite(inspectionTime) ? inspectionTime : 1.1;
 let previous = 0;
 let paused = reducedMotion.matches || (query.has('debug') && query.has('time'));
 let frame = 0;
+let debugPlayback: { time: number; playing: boolean } | null = null;
 
 const layers = Array.from({ length: 3 }, () => {
   const element = document.createElement('canvas');
@@ -165,6 +171,7 @@ function resize() {
   pixelRatio = Math.min(devicePixelRatio, 1.5);
   canvas.width = Math.round(width * pixelRatio);
   canvas.height = Math.round(height * pixelRatio);
+  if (overlay) { overlay.width = canvas.width; overlay.height = canvas.height; }
   for (const layer of layers) {
     layer.element.width = canvas.width;
     layer.element.height = canvas.height;
@@ -251,8 +258,8 @@ function renderWalker(walker: typeof walkers[number], index: number) {
   const useBiomechanics = gaitKind === 'walk';
   const target = personButtons[index];
   target.hidden = x < 12 || x > width - 12 || y < 24 || y > height - 52;
-  const targetWidth = Math.max(86, 112 * scale);
-  const targetHeight = Math.max(112, 160 * scale);
+  const targetWidth = Math.max(86, 112 * scale) * debug.hitScale;
+  const targetHeight = Math.max(112, 160 * scale) * debug.hitScale;
   target.style.width = `${targetWidth}px`;
   target.style.height = `${targetHeight}px`;
   target.style.transform = `translate(${x - targetWidth / 2}px, ${y - targetHeight + 30 * scale}px)`;
@@ -330,13 +337,43 @@ function renderWalker(walker: typeof walkers[number], index: number) {
     feet.filter = `blur(${(.55 + pose.lift * 2.8 + Math.max(0, pose.roll) * .4) * scale * pixelRatio}px)`;
     sole(feet, contact, side, shoeAngle, pose, useBiomechanics || lifted > .01);
     feet.restore();
+    if (debugCtx && debug.joints) {
+      debugCtx.save(); debugCtx.translate(x, y); debugCtx.scale(scale, scale);
+      debugCtx.strokeStyle = side < 0 ? '#b66b41' : '#326fb0'; debugCtx.fillStyle = debugCtx.strokeStyle;
+      debugCtx.lineWidth = 1.4 / scale; debugCtx.beginPath(); debugCtx.moveTo(hip.x, hip.y); debugCtx.lineTo(knee.x, knee.y); debugCtx.lineTo(ankle.x, ankle.y); debugCtx.lineTo(contact.x, contact.y); debugCtx.stroke();
+      for (const [name, p] of [['골반',hip],['무릎',knee],['발목',ankle]] as const) {
+        debugCtx.beginPath(); debugCtx.arc(p.x,p.y,3/scale,0,Math.PI*2); debugCtx.fill();
+        debugCtx.font = `${10/scale}px sans-serif`; debugCtx.fillText(name,p.x+5/scale,p.y-5/scale);
+      }
+      debugCtx.restore();
+    }
+    if (debugCtx && debug.soles) {
+      debugCtx.save(); debugCtx.strokeStyle = '#b65aab'; debugCtx.lineWidth = 1;
+      const px = x + contact.x * scale, py = y + contact.y * scale;
+      debugCtx.beginPath(); debugCtx.moveTo(px-5,py); debugCtx.lineTo(px+5,py); debugCtx.moveTo(px,py-5); debugCtx.lineTo(px,py+5); debugCtx.stroke(); debugCtx.restore();
+    }
     footPositions.push({ x: contact.x, bottom: contact.y + Math.abs(Math.cos(shoeAngle)) * 23 * Math.cos(pose.roll) + Math.abs(Math.sin(shoeAngle)) * 13 });
   }
   footAnchors[index] = { x: x + (footPositions[0].x + footPositions[1].x) / 2 * scale, y: y + Math.max(...footPositions.map(p => p.bottom)) * scale };
   for (const { context: c } of layers) c.restore();
+  if (debugCtx) {
+    if (debug.touch && !target.hidden) {
+      debugCtx.fillStyle = index === selected ? '#e2952518' : '#168f9c0c'; debugCtx.strokeStyle = index === selected ? '#bd7c1c' : '#168f9c';
+      const left = x-targetWidth/2, top = y-targetHeight+30*scale;
+      debugCtx.fillRect(left,top,targetWidth,targetHeight); debugCtx.strokeRect(left,top,targetWidth,targetHeight);
+      debugCtx.font = '11px sans-serif'; debugCtx.fillStyle = '#16737c';
+      debugCtx.fillText(`#${index+1} · ${Math.round(targetWidth)}×${Math.round(targetHeight)} px`,left,top-7);
+      debugCtx.fillText(`속도 ${Math.round(walking*100)}% · 들림 ${Math.round(dragLifts[index]*100)}%`,left,top+14);
+    }
+    if (debug.origins) {
+      debugCtx.strokeStyle='#829349'; debugCtx.beginPath(); debugCtx.arc(x,y,5,0,Math.PI*2); debugCtx.moveTo(x,y); debugCtx.lineTo(x+sin*28,y-cos*28); debugCtx.stroke();
+    }
+  }
 }
 
 function render() {
+  if (debugPlayback) { debugPlayback.time = elapsed; debugPlayback.playing = !paused; }
+  if (debugCtx) { debugCtx.setTransform(pixelRatio,0,0,pixelRatio,0,0); debugCtx.clearRect(0,0,width,height); }
   ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
   ctx.fillStyle = '#f4f4f3';
   ctx.fillRect(0, 0, width, height);
@@ -362,10 +399,14 @@ function render() {
     };
   });
   positions.forEach((p, i) => { anchors[i] = p; });
-  walkers.slice(0, settings.people).forEach(renderWalker);
+  walkers.slice(0, settings.people).forEach((walker, i) => {
+    if (debugMode && debug.solo >= 0 && debug.solo !== i) personButtons[i].hidden = true;
+    else renderWalker(walker,i);
+  });
   const size = sceneScale();
   for (let i = 0; i < layers.length; i++) {
-    ctx.filter = `blur(${[14 * settings.blur * size, 7.2 * settings.blur * size, .35 * size][i] * pixelRatio}px)`;
+    if (debugMode && ![debug.far, debug.legs, debug.feet][i]) continue;
+    ctx.filter = !debug.glass ? 'none' : `blur(${[14 * settings.blur * size, 7.2 * settings.blur * size, .35 * size][i] * pixelRatio}px)`;
     ctx.drawImage(layers[i].element, 0, 0, width, height);
   }
   ctx.filter = 'none';
@@ -407,15 +448,47 @@ window.addEventListener('pagehide', () => cancelAnimationFrame(frame));
 window.addEventListener('pageshow', event => {
   if (event.persisted) { previous = performance.now(); frame = requestAnimationFrame(tick); }
 });
-if (query.has('debug')) {
-  const gui = new GUI({ title: 'Behind Glass' });
-  gui.add(settings, 'speed', .1, 2, .05);
-  gui.add(settings, 'blur', .2, 2, .05).onChange(render);
-  gui.add(settings, 'scale', .5, 1.8, .05).onChange(render);
-  gui.add(settings, 'people', 1, 6, 1).onChange(render);
-  gui.add({ time: elapsed }, 'time', 0, 20, .01).onChange((time: number) => {
-    paused = true; elapsed = time; walkerTimes.fill(time); render();
+if (debugMode) {
+  const gui = new GUI({ title: 'Behind Glass · 제작 과정', width: 290 });
+  const playback = { playing: !paused, time: elapsed, nextFrame: () => {
+    paused = true; playback.playing = false;
+    elapsed += 1/60; walkerTimes.forEach((t,i) => { walkerTimes[i] = t+1/60; }); render();
+  }, reset: () => {
+    clearTimeout(holdTimer); drag = null; dismissThought();
+    elapsed = 1.1; walkerTimes.fill(elapsed); walkerSpeeds.fill(1); dragLifts.fill(0);
+    dragOffsets.forEach((p,i) => { p.x=0;p.y=0;previousDragOffsets[i]={x:0,y:0};dragSways[i]={x:0,y:0,vx:0,vy:0};personButtons[i].classList.remove('dragging'); }); render();
+  } };
+  debugPlayback = playback;
+  gui.add(debug, 'stage', ['완성','1 · 관절 궤적','2 · 다리 실루엣','3 · 발 모양','4 · 유리 효과','5 · 터치 영역']).name('제작 단계').onChange((stage: string) => {
+    debug.joints = stage.startsWith('1'); debug.touch = stage.startsWith('5'); debug.soles = stage.startsWith('1');
+    debug.far = stage === '완성' || stage.startsWith('4') || stage.startsWith('5');
+    debug.legs = !stage.startsWith('1') && !stage.startsWith('3');
+    debug.feet = !stage.startsWith('1') && !stage.startsWith('2');
+    debug.glass = stage === '완성' || stage.startsWith('4') || stage.startsWith('5'); render();
   });
+  const motion = gui.addFolder('재생 · 시점');
+  motion.add(playback,'playing').name('재생').listen().onChange((value: boolean) => { paused = !value; });
+  motion.add(settings,'speed',.1,2,.05).name('재생 속도');
+  motion.add(playback,'time',0,20,.01).name('시간 탐색 (초)').listen().onChange((time: number) => {
+    paused=true;playback.playing=false;elapsed=time;walkerTimes.fill(time);render();
+  });
+  motion.add(playback,'nextFrame').name('한 프레임 진행');
+  motion.add(playback,'reset').name('배치 초기화');
+  motion.add(debug,'solo',{'전체':-1,'1 · 집으로':0,'2 · 소개팅':1,'3 · 퇴근':2,'4 · 산책':3,'5 · 달리기':4,'6 · 편의점':5}).name('한 사람 보기').onChange((i: number) => { if(i>=settings.people)settings.people=i+1;render(); });
+  const guides = gui.addFolder('디버그 표시');
+  guides.add(debug,'joints').name('골반 · 무릎 · 발목').listen().onChange(render);
+  guides.add(debug,'touch').name('실제 터치 영역').listen().onChange(render);
+  guides.add(debug,'soles').name('발 중심점').listen().onChange(render);
+  guides.add(debug,'origins').name('이동 기준점 · 방향').onChange(render);
+  guides.add(debug,'hitScale',.6,2,.05).name('터치 영역 배율').onChange(render);
+  const drawing = gui.addFolder('렌더링 레이어');
+  drawing.add(debug,'far').name('뒤쪽 실루엣').listen().onChange(render);
+  drawing.add(debug,'legs').name('다리').listen().onChange(render);
+  drawing.add(debug,'feet').name('발').listen().onChange(render);
+  drawing.add(debug,'glass').name('유리 블러').listen().onChange(render);
+  drawing.add(settings,'blur',0,2,.05).name('블러 강도').onChange(render);
+  drawing.add(settings,'scale',.5,1.8,.05).name('사람 크기').onChange(render);
+  drawing.add(settings,'people',1,6,1).name('인원').listen().onChange(render);
 }
 resize();
 frame = requestAnimationFrame(tick);
