@@ -32,6 +32,19 @@ test('selection freezes depth and resumes from the same place instead of catchin
   expect(motion.sample(2, 30 + 1 / 60, false)).toEqual(fishDepth(2, 21 + 1 / 60));
 });
 
+test('new and reused fish start shallow at any simulation time, then dive smoothly', () => {
+  const motion = new DepthMotion();
+  for (const index of [0, 10, 25, 63]) {
+    motion.sample(index, 20, false);
+    for (const createdAt of [80, 150]) {
+      motion.startAtSurface(index, createdAt);
+      expect(motion.sample(index, createdAt, false).depth).toBeCloseTo(0);
+      expect(motion.sample(index, createdAt + 1 / 60, false).depth).toBeLessThan(0.001);
+      expect(motion.sample(index, createdAt + 6, false).depth).toBeGreaterThan(0.4);
+    }
+  }
+});
+
 test('diving tilt changes 3D geometry without shifting its editable screen outline', async () => {
   const { FishGeometry } = await import('./geometry');
   const spine = new Float32Array(20);

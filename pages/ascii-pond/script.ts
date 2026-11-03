@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import GUI from 'lil-gui';
+import { exposeGuiInDebugMode } from '../../common/debug';
 import { createStepper } from '../../common/stepper';
 import { PROCESS_STEPS, isProcessStage, processView, type ProcessStage } from './process';
 import { PathDebug } from './path-debug';
@@ -201,6 +202,7 @@ function start() {
       const angle = -footprint.angle;
       const id = school.addFish(footprint.center.x / h + Math.cos(angle) * length * scale * 0.42,
         1 - footprint.center.y / h + Math.sin(angle) * length * scale * 0.42, angle, scale);
+      if (id >= 0) depthMotion.startAtSurface(id, time);
       document.querySelector<HTMLElement>('.editor-status')!.textContent = id < 0 ? '물고기는 최대 64마리까지 만들 수 있어요' : '';
       return id;
     },
@@ -230,7 +232,7 @@ function start() {
     },
   });
   stepper.element.hidden = !settings.process;
-  const gui = new GUI({ title: 'ASCII Pond', width: 232 });
+  const gui = exposeGuiInDebugMode(new GUI({ title: 'ASCII Pond', width: 232 }));
   const modeController = gui.add(settings, 'mode', { ASCII: 'ascii', 'Low poly': 'low-poly', '척추 디버그': 'spine' }).name('표현').onChange(() => {
     syncGui?.();
     const url = new URL(location.href);

@@ -1,7 +1,12 @@
-/** Slow, phase-shifted dives give each fish an independent vertical trajectory. */
-export function fishDepth(index: number, time = 0) {
+function diveCycle(index: number) {
   const phase = (index * 0.61803398875) % 1;
   const period = 18 + ((index * 0.38196601125) % 1) * 8;
+  return { phase, period };
+}
+
+/** Slow, phase-shifted dives give each fish an independent vertical trajectory. */
+export function fishDepth(index: number, time = 0) {
+  const { phase, period } = diveCycle(index);
   const angle = (phase + time / period) * Math.PI * 2;
   const depth = 0.5 - 0.5 * Math.cos(angle);
   return { depth, scale: 1.08 - depth * 0.24, z: -depth * 1.15, pitch: Math.sin(angle) * 0.2 };
@@ -11,6 +16,13 @@ export function fishDepth(index: number, time = 0) {
 export class DepthMotion {
   private readonly clocks: number[] = [];
   private readonly previous: number[] = [];
+
+  /** New fish begin at the surface, including slots reused after deletion. */
+  startAtSurface(index: number, time: number) {
+    const { phase, period } = diveCycle(index);
+    this.clocks[index] = -phase * period;
+    this.previous[index] = time;
+  }
 
   sample(index: number, time: number, paused: boolean) {
     if (this.previous[index] === undefined) {
