@@ -2,8 +2,8 @@ import { resolve } from 'node:path';
 import { normalizePath, type PluginOption } from 'vite';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 
-/** Keep runtime/OG URLs, but do not copy assets Vite already emitted with a hash. */
-export function staticPageAssets(assetDirectories: string[]): PluginOption[] {
+/** Keep runtime/OG URLs without duplicating bundled or externally packed sources. */
+export function staticPageAssets(assetDirectories: string[], externalizedSources: ReadonlySet<string> = new Set()): PluginOption[] {
   const bundledSources = new Set<string>();
   let root = '';
 
@@ -34,7 +34,7 @@ export function staticPageAssets(assetDirectories: string[]): PluginOption[] {
         transform: {
           encoding: 'buffer',
           handler(content, filename) {
-            return bundledSources.has(normalizePath(filename)) ? null : content;
+            return bundledSources.has(normalizePath(filename)) || externalizedSources.has(normalizePath(filename)) ? null : content;
           },
         },
       })),
