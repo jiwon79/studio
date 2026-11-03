@@ -187,3 +187,23 @@ test('a fixed double-click impulse scatters fish beyond the old local radius', (
   const distance = (p: ReturnType<typeof pond>) => Math.hypot(p.output.uSpine[0] - 0.8, p.output.uSpine[1] - 0.5);
   expect(distance(startled)).toBeGreaterThan(distance(normal) + 0.08);
 });
+
+test('process paths expose the chronological trail and follow editor transforms', () => {
+  const p = pond();
+  p.school.frame(6);
+  const path = new Float32Array(73 * 3);
+  const count = p.school.copyPath(0, path);
+  const saved = p.school.capture();
+  expect(count).toBe(saved.count[0] + 1);
+  expect(path[0]).toBe(saved.trail[saved.start[0] * 2]);
+  expect(path[1]).toBe(saved.trail[saved.start[0] * 2 + 1]);
+  expect(path[(count - 1) * 3]).toBe(p.output.uSpine[0]);
+  expect(path[(count - 1) * 3 + 1]).toBe(p.output.uSpine[1]);
+  const before = path.slice();
+  p.school.transform(0, [0, 0], 1, 0.1, 0.05);
+  expect(p.school.copyPath(0, path)).toBe(count);
+  for (let k = 0; k < count; k++) {
+    expect(path[k * 3]).toBeCloseTo(before[k * 3] + 0.1, 5);
+    expect(path[k * 3 + 1]).toBeCloseTo(before[k * 3 + 1] + 0.05, 5);
+  }
+});

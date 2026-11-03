@@ -30,6 +30,7 @@ export class AsciiPass {
     this.atlas = this.makeAtlas(style);
     this.material = new THREE.ShaderMaterial({
       uniforms: {
+        uPixels: { value: false },
         uScene: { value: this.target.texture },
         uAtlas: { value: this.atlas },
         uGrid: { value: new THREE.Vector2(1, 1) },
@@ -45,6 +46,7 @@ export class AsciiPass {
       `,
       fragmentShader: `
         uniform sampler2D uScene, uAtlas;
+        uniform bool uPixels;
         uniform vec2 uGrid;
         uniform float uCharacters, uGamma, uVariation;
         uniform vec3 uBackground, uInk;
@@ -55,6 +57,11 @@ export class AsciiPass {
           // The source is rendered over transparent black: fin opacity is
           // already reflected in RGB, so do not multiply by alpha a second time.
           float luminance = clamp(dot(source.rgb, vec3(0.2126, 0.7152, 0.0722)), 0.0, 1.0);
+          if (uPixels) {
+            gl_FragColor = vec4(mix(uBackground, uInk, luminance), 1.0);
+            #include <colorspace_fragment>
+            return;
+          }
           // Stable cell noise adds texture without flickering between frames.
           float grain = fract(sin(dot(cell, vec2(127.1, 311.7))) * 43758.5453) - 0.5;
           float character = luminance < 0.015 ? 0.0 : clamp(floor(pow(luminance, uGamma) * (uCharacters - 1.0)
@@ -107,7 +114,8 @@ export class AsciiPass {
     this.material.uniforms.uGrid.value.set(columns, rows);
   }
 
-  render(renderer: THREE.WebGLRenderer, scene: THREE.Scene, camera: THREE.Camera) {
+  render(renderer: THREE.WebGLRenderer, scene: THREE.Scene, camera: THREE.Camera, pixels = false) {
+    this.material.uniforms.uPixels.value = pixels;
     const target = renderer.getRenderTarget();
     const color = renderer.getClearColor(new THREE.Color());
     const alpha = renderer.getClearAlpha();

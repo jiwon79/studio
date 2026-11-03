@@ -1,5 +1,8 @@
 import * as THREE from 'three';
 import GUI from 'lil-gui';
+import { createStepper } from '../../common/stepper';
+import { PROCESS_STEPS, isProcessStage, processView, type ProcessStage } from './process';
+import { PathDebug } from './path-debug';
 import { PondDepthPass } from './depth-pass';
 import { DepthMotion } from './depth';
 import { SpineDebug } from './spine-debug';
@@ -33,11 +36,13 @@ function start() {
   const url = new URL(location.href);
   const requestedStyle = url.searchParams.get('style');
   const requestedMode = url.searchParams.get('view');
-  const settings: { mode: ViewMode; asciiStyle: AsciiStyle; body: boolean; depth: boolean } = {
+  const settings: { mode: ViewMode; asciiStyle: AsciiStyle; body: boolean; depth: boolean; process: boolean; paused: boolean } = {
     mode: requestedMode === 'low-poly' || requestedMode === 'spine' ? requestedMode : 'ascii',
     asciiStyle: isAsciiStyle(requestedStyle) ? requestedStyle : 'classic',
-    body: true, depth: true,
+    body: true, depth: true, process: url.searchParams.get('process') === '1', paused: false,
   };
+  const requestedStage = url.searchParams.get('stage');
+  let stage: ProcessStage = isProcessStage(requestedStage) ? requestedStage : 'motion';
   const ascii = new AsciiPass(settings.asciiStyle);
   const depthPass = new PondDepthPass();
   const depthMotion = new DepthMotion();
@@ -61,6 +66,8 @@ function start() {
     const mesh = new THREE.Mesh<FishGeometry, THREE.Material[]>(geometry, [material, finMaterial]);
     mesh.frustumCulled = false;
     scene.add(mesh);
+    const path = new PathDebug();
+    scene.add(path.group);
     const debug = new SpineDebug();
     scene.add(debug.group);
     const eyes = [-1, 1].map(() => {
@@ -68,7 +75,7 @@ function start() {
       scene.add(eye);
       return eye;
     });
-    return { geometry, mesh, eyes, debug };
+    return { geometry, mesh, eyes, debug, path };
   };
   const fish = Array.from({ length: MAX_FISH }, (_, i) => makeFish(i));
   const pointer: PointerState = { target: [0.5, 0.5], over: false };
@@ -100,20 +107,24 @@ function start() {
   };
   let time = 20;
   function draw(alpha = 1) {
+    const view = settings.process ? processView(stage).mode : settings.mode;
+    const depthEnabled = settings.process ? processView(stage).depth : settings.depth && view !== 'spine';
     // Interpolate whole poses between fixed physics steps. 90/120/144 Hz
     // displays no longer repeat the same pose then jump to the next one.
     for (let j = 0; j < spine.length; j++) renderedSpine[j] = previousSpine[j] + (spine[j] - previousSpine[j]) * alpha;
     for (let j = 0; j < states.length; j++) renderedStates[j] = previousStates[j] + (states[j] - previousStates[j]) * alpha;
     while (fish.length < school.count) fish.push(makeFish(fish.length));
-    fish.forEach(({ geometry, mesh, eyes, debug }, i) => {
+    fish.forEach(({ geometry, mesh, eyes, debug, path }, i) => {
       const visible = i < school.count && school.enabled(i);
-      mesh.visible = visible && (settings.mode !== 'spine' || settings.body);
-      mesh.material = settings.mode === 'spine' ? [ghostMaterial, ghostMaterial] : [material, finMaterial];
-      debug.group.visible = visible && settings.mode === 'spine';
-      eyes.forEach(eye => { eye.visible = visible && settings.mode !== 'spine'; });
+      mesh.visible = visible && view !== 'path' && (view !== 'spine' || (!settings.process && settings.body));
+      mesh.material = view === 'spine' ? [ghostMaterial, ghostMaterial] : [material, finMaterial];
+      debug.group.visible = visible && view === 'spine';
+      path.group.visible = visible && view === 'path';
+      eyes.forEach(eye => { eye.visible = visible && view !== 'spine' && view !== 'path'; });
       if (!visible) return;
       const diving = depthMotion.sample(i, time, editor?.selectedId === i);
-      const depth = settings.depth && settings.mode !== 'spine' ? diving : { scale: 1, z: 0, pitch: 0 };
+      const depth = depthEnabled ? diving : { scale: 1, z: 0, pitch: 0 };
+      if (path.group.visible) path.update(school.copyPath(i, path.positions), renderedSpine[i * 20], renderedSpine[i * 20 + 1]);
       const scale = fishScale() * school.scale(i);
       geometry.update(renderedSpine, renderedStates[i * 4], renderedStates[i * 4 + 1], scale, depth.pitch);
       if (debug.group.visible) debug.update(renderedSpine, i, scale);
@@ -131,17 +142,17 @@ function start() {
       });
     });
     const count = fish.filter((_, i) => i < school.count && school.enabled(i)).length;
-    const description = `더블클릭한 곳을 피해 헤엄치는 ${{ ascii: '아스키아트', 'low-poly': '로우폴리', spine: '척추 디버그' }[settings.mode]} 잉어 ${count}마리`;
+    const description = `더블클릭한 곳을 피해 헤엄치는 ${{ ascii: '아스키아트', 'low-poly': '로우폴리', spine: '척추 디버그', path: '이동 경로', pixels: '픽셀' }[view]} 잉어 ${count}마리`;
     if (canvas.getAttribute('aria-label') !== description) canvas.setAttribute('aria-label', description);
     ripples.update(time);
-    if (settings.depth && settings.mode !== 'spine') depthPass.render(renderer, scene, camera, settings.mode === 'ascii' ? ascii : undefined);
-    else if (settings.mode === 'ascii') ascii.render(renderer, scene, camera);
+    if (depthEnabled) depthPass.render(renderer, scene, camera, view === 'ascii' ? ascii : undefined);
+    else if (view === 'ascii' || view === 'pixels') ascii.render(renderer, scene, camera, view === 'pixels');
     else renderer.render(scene, camera);
     editor?.refresh();
   }
   let last = 0;
   function frame(now: number) {
-    if (document.hidden || motion.matches) { last = 0; accumulator = 0; return; }
+    if (document.hidden || motion.matches || settings.paused) { last = 0; accumulator = 0; return; }
     if (last) accumulator += Math.min((now - last) / 1000, 0.05);
     last = now;
     while (accumulator >= step) {
@@ -209,10 +220,22 @@ function start() {
     restore(saved, id) { school.restoreFish(id, saved); },
     changed: refresh,
   });
+  const caption = document.querySelector<HTMLElement>('.process-caption')!;
+  let syncGui: (() => void) | undefined;
+  const stepper = createStepper({
+    steps: PROCESS_STEPS, initialStep: stage, keyboard: false, urlParameter: 'stage',
+    ariaLabel: '제작 과정 단계',
+    onChange(id) {
+      stage = id;
+      caption.textContent = PROCESS_STEPS.find(step => step.id === id)!.description;
+      syncGui?.(); draw();
+    },
+  });
+  stepper.element.hidden = !settings.process;
+  caption.hidden = !settings.process;
   const gui = new GUI({ title: 'ASCII Pond', width: 232 });
-  gui.add(settings, 'mode', { ASCII: 'ascii', 'Low poly': 'low-poly', '척추 디버그': 'spine' }).name('표현').onChange(() => {
-    styleController.show(settings.mode === 'ascii');
-    bodyController.show(settings.mode === 'spine');
+  const modeController = gui.add(settings, 'mode', { ASCII: 'ascii', 'Low poly': 'low-poly', '척추 디버그': 'spine' }).name('표현').onChange(() => {
+    syncGui?.();
     const url = new URL(location.href);
     url.searchParams.set('view', settings.mode);
     history.replaceState(null, '', url);
@@ -228,14 +251,34 @@ function start() {
   const bodyController = gui.add(settings, 'body').name('몸체 겹쳐 보기').onChange(() => draw());
   styleController.show(settings.mode === 'ascii');
   bodyController.show(settings.mode === 'spine');
-  gui.add(settings, 'depth').name('수심 효과').onChange(() => draw());
+  const depthController = gui.add(settings, 'depth').name('수심 효과').onChange(() => draw());
+  const pauseController = gui.add(settings, 'paused').name('일시정지').onChange(() => { last = 0; accumulator = 0; draw(); });
+  gui.add(settings, 'process').name('제작 과정').onChange(() => {
+    stepper.element.hidden = !settings.process;
+    caption.hidden = !settings.process;
+    const url = new URL(location.href);
+    if (settings.process) { url.searchParams.set('process', '1'); url.searchParams.set('stage', stage); }
+    else { url.searchParams.delete('process'); url.searchParams.delete('stage'); settings.paused = false; pauseController.updateDisplay(); }
+    history.replaceState(null, '', url);
+    last = 0; accumulator = 0;
+    syncGui?.(); draw();
+  });
+  syncGui = () => {
+    modeController.show(!settings.process);
+    depthController.show(!settings.process);
+    bodyController.show(!settings.process && settings.mode === 'spine');
+    styleController.show(settings.process ? stage === 'ascii' || stage === 'depth' : settings.mode === 'ascii');
+    pauseController.show(settings.process);
+  };
+  syncGui();
   if (innerWidth < 600) gui.close();
   renderer.setAnimationLoop(frame);
   if (import.meta.hot) import.meta.hot.dispose(() => {
     renderer.setAnimationLoop(null);
     events.abort();
     editor?.dispose();
-    fish.forEach(({ geometry, debug }) => { geometry.dispose(); debug.dispose(); });
+    fish.forEach(({ geometry, debug, path }) => { geometry.dispose(); debug.dispose(); path.dispose(); });
+    stepper.destroy();
     gui.destroy();
     eyeGeometry.dispose();
     eyesMaterial.dispose();

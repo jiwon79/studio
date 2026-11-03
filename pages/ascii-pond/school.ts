@@ -6,6 +6,7 @@
 export const MAX_FISH = 10;
 export const MAX_SCENE_FISH = 64;
 export const SPINE_POINTS = 10;
+export const TRAIL_POINTS = 72;
 export interface PointerState { target: [number, number]; over: boolean }
 export interface SchoolContext {
   canvas: { clientWidth: number; clientHeight: number; width: number; height: number };
@@ -38,7 +39,7 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
   const scales = new Float32Array(MAX_SCENE_FISH).fill(1);
   enabled.fill(1, 0, activeCount);
   const POINTS = 10;
-  const TRAIL = 72;
+  const TRAIL = TRAIL_POINTS;
   const STEP = 0.008;                                     // trail spacing, pond units
   const spineOut = new Float32Array(MAX_SCENE_FISH * POINTS * 2);
   const fishOut = new Float32Array(MAX_SCENE_FISH * 4);
@@ -269,6 +270,15 @@ export function createSchool(ctx: SchoolContext, pointerState: PointerState) {
   return {
     get count() { return activeCount; },
     enabled(index: number) { return !!enabled[index]; },
+    copyPath(index: number, output: Float32Array) {
+      const points = count[index];
+      for (let k = 0; k < points; k++) {
+        const j = (index * TRAIL + (start[index] + k) % TRAIL) * 2;
+        output.set([trail[j], trail[j + 1], 0.04], k * 3);
+      }
+      output.set([head[index * 2], head[index * 2 + 1], 0.04], points * 3);
+      return points + 1;
+    },
     scale(index: number) { return scales[index]; },
     stretch(index: number) { return [stretchX[index], stretchY[index]] as const; },
     resizeAxis(index: number, pivot: readonly number[], axis: 'x' | 'y', ratio: number) {

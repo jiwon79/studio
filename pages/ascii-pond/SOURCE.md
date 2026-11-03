@@ -98,3 +98,10 @@ fish by visible depth. Selecting a fish freezes its private dive clock;
 deselecting resumes that clock without catching up or jumping. The upper
 water band has no blur or attenuation and receives a modest contrast boost.
 Body pitch changes z geometry and lighting without changing its x/y outline.
+
+The optional making-of mode uses the shared artwork stepper: recorded path
+→ posed spine → triangular body → luminance pixels → ASCII characters →
+animated depth composite. Each view reads the same school state. Global
+pause keeps the same moment for stage comparison; switching stages does not
+reset the pond. `?process=1&stage=motion` opens the tour. The normal artwork
+hides the stepper/caption; lil-gui exposes the tour and pause controls.
