@@ -1,3 +1,4 @@
+import { settleSpeed, STOP_RESPONSE } from './settling';
 import { advanceSway } from './drag-physics';
 import { positionBelowFeet } from './layout';
 import { biomechanicalLeg, BIOMECHANICAL_STRIDE } from './biomechanics';
@@ -109,7 +110,6 @@ const personButtons = walkers.map((_, index) => {
     if (selected === index) dismissThought();
     else {
       selected = index;
-      walkerSpeeds[index] = 0;
       needsThoughtPlacement = true;
       selectionRemaining = 8;
       destination.textContent = stories[index].destination;
@@ -144,7 +144,15 @@ function positionThought() {
   if (selected < 0 || !needsThoughtPlacement) return;
   const anchor = anchors[selected];
   if (!anchor) return;
-  const feet = footAnchors[selected] ?? anchor;
+  const walker = walkers[selected];
+  const remaining = paused ? 0 : walkerSpeeds[selected] / STOP_RESPONSE * settings.speed;
+  const stride = selected === 4 ? RUN_STRIDE : BIOMECHANICAL_STRIDE;
+  const travel = remaining * stride / walker.period * anchor.scale;
+  // Pin the card below the predicted resting soles, without following the brake.
+  const feet = walkerSpeeds[selected] > 0 ? {
+    x: anchor.x + Math.sin(walker.angle) * travel,
+    y: anchor.y - Math.cos(walker.angle) * travel + (Math.abs(Math.cos(walker.angle))*23 + Math.abs(Math.sin(walker.angle))*13)*anchor.scale,
+  } : footAnchors[selected] ?? anchor;
   const position = positionBelowFeet(feet, thought.offsetWidth, thought.offsetHeight, { width, height });
   thought.style.transform = `translate(${position.x}px, ${position.y}px)`;
   needsThoughtPlacement = false;
@@ -384,9 +392,8 @@ function tick(now: number) {
         dragLifts[i] += ((held ? 1 : 0) - dragLifts[i]) * (1 - Math.exp(-dt * 12));
         if (dragLifts[i] < .001) dragLifts[i] = 0;
         const targetSpeed = i === selected || drag?.index === i || dragLifts[i] > .05 ? 0 : 1;
-        walkerSpeeds[i] += (targetSpeed - walkerSpeeds[i]) * (1 - Math.exp(-dt * 8));
-        if (Math.abs(walkerSpeeds[i] - targetSpeed) < .005) walkerSpeeds[i] = targetSpeed;
-        if (drag?.index !== i) walkerTimes[i] += dt * settings.speed * walkerSpeeds[i];
+        walkerSpeeds[i] = settleSpeed(walkerSpeeds[i], targetSpeed, dt);
+        if (!held) walkerTimes[i] += dt * settings.speed * walkerSpeeds[i];
       });
       render();
     }
