@@ -22,6 +22,7 @@ docs/
 
 - [`sales-asset-management.md`](./guides/sales-asset-management.md) - 판매 자료의 Google Drive 원본 위치, 배포 ZIP과 리틀리 전달 파일의 관리 기준
 - [`social-performance-tracking.md`](./guides/social-performance-tracking.md) - Instagram 성과 조회 조건과 스냅샷 보존 기준
+- [`interactive-video-sources.md`](./guides/interactive-video-sources.md) - 기존 커서·선택 UI, 자연스러운 입력 동선과 프레임 단위 저장을 사용하는 세로 영상 소스 제작 절차
 
 - [`social-share-images.md`](./guides/social-share-images.md) - 실제 작품 화면을 PNG로 캡처하고 제목·회차 합성 및 소셜 공유 메타데이터 연결·검증을 수행하는 공통 절차
 - [`reference-extension-workflow.md`](./guides/reference-extension-workflow.md) - 레퍼런스 복원 뒤 정체성을 유지하며 새로운 상호작용을 제안·비교·선택하는 공통 작업 방식
@@ -118,6 +119,7 @@ Concept는 다음 중 하나를 만족할 때 독립 문서로 둔다.
 ### 내부 운영
 
 - [Instagram DM 답변 규칙](https://app.notion.com/p/3e7a89f7e31a815b8b60c3ead057bf0a) - 요청 유형별 문구, 메시지 분할, 대화별 승인 및 전송 확인 기준. 답변하거나 자동 답변 로직을 수정하기 전에 최신 내용을 확인한다.
+- [바이브코딩 릴스 · 구성과 편집 레퍼런스](https://app.notion.com/p/40da89f7e31a816fae5ad0a4f2d11342) - 기존 시리즈 10편의 구성 유형, 화면·자막 편집 특징과 조사 범위.
 
 ### 카드뉴스
 
@@ -132,6 +134,7 @@ Vibe의 **작품별 기록**에서 게시 상태, 캡션·초안, 크레딧과 �
 
 | 작품 | 운영 기록 |
 | --- | --- |
+| ASCII Pond | [ASCII Pond · 릴스 구성·촬영 기록](https://app.notion.com/p/40da89f7e31a8163a34ecfb913aee15f) |
 | Cursive | [Cursive · 릴스 캡션](https://app.notion.com/p/3f7a89f7e31a814dbdc6cc52ca2e3803) |
 | Guseul | [Guseul · 1일차](https://app.notion.com/p/3cda89f7e31a81abb5d4e400ee742826) |
 | Color Text | [Color Text · 2일차](https://app.notion.com/p/3cda89f7e31a81d0b566fe5dd0d0b993) |
