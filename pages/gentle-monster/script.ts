@@ -10,7 +10,6 @@ interface ColorVariant {
 
 interface Product {
   id: string;
-  name_kr: string | null;
   name_en: string | null;
   category: string;
   collection: string | null;
@@ -204,7 +203,7 @@ class Catalog {
       const angles: Angle[] = ['FRONT', 'SIDE', 'D_45'];
       for (const a of angles) {
         const img = document.createElement('img');
-        img.alt = a === 'FRONT' ? (product.name_kr ?? product.id) : '';
+        img.alt = a === 'FRONT' ? (product.name_en ?? product.id) : '';
         img.decoding = 'async';
         img.draggable = false;
         img.dataset.angle = a;
@@ -480,14 +479,13 @@ class Catalog {
     const thumbSrc = this.imageSrc(product, this.currentAngle, true);
     const fullSrc = this.imageSrc(product, this.currentAngle, false);
     detailImg.src = thumbSrc; // FLIP은 썸네일로 즉시 시작
-    detailImg.alt = product.name_kr ?? product.id;
+    detailImg.alt = product.name_en ?? product.id;
     // full-size를 백그라운드 로드 후 교체 — 화질 개선
     const preloadFull = new Image();
     preloadFull.onload = () => { if (this.selectedIdx === idx) detailImg.src = fullSrc; };
     preloadFull.src = fullSrc;
 
-    (this.detailEl.querySelector('.detail-name-kr') as HTMLElement).textContent = product.name_kr ?? '';
-    (this.detailEl.querySelector('.detail-name-en') as HTMLElement).textContent = product.name_en ?? product.id;
+    (this.detailEl.querySelector('.detail-name') as HTMLElement).textContent = product.name_en ?? product.id;
 
     const metaParts: string[] = [];
     if (product.collection) metaParts.push(product.collection);
@@ -579,13 +577,12 @@ class Catalog {
 
     // 썸네일 즉시 표시 후 full-size 백그라운드 로드
     detailImg.src = this.imageSrc(product, this.currentAngle, true);
-    detailImg.alt = product.name_kr ?? product.id;
+    detailImg.alt = product.name_en ?? product.id;
     const pre = new Image();
     pre.onload = () => { if (this.selectedIdx === newIdx) detailImg.src = this.imageSrc(product, this.currentAngle, false); };
     pre.src = this.imageSrc(product, this.currentAngle, false);
 
-    (this.detailEl.querySelector('.detail-name-kr') as HTMLElement).textContent = product.name_kr ?? '';
-    (this.detailEl.querySelector('.detail-name-en') as HTMLElement).textContent = product.name_en ?? product.id;
+    (this.detailEl.querySelector('.detail-name') as HTMLElement).textContent = product.name_en ?? product.id;
     const metaParts: string[] = [];
     if (product.collection) metaParts.push(product.collection);
     if (product.price) metaParts.push(`₩${product.price.toLocaleString()}`);
