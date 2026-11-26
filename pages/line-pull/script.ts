@@ -470,9 +470,9 @@ resize();
 
 // Preload even while the messages are hidden. If a pull precedes font loading,
 // refresh its cached bounds so the new glyphs still fit the same opening.
-void document.fonts.load('800 100px "Pretendard"', '안녕하세요이지원입니다잘부탁드립니다').then(() => {
+void document.fonts.load('800 100px "Pretendard"', 'Hello I’m Jiiwon Nice to meet you').then(() => {
   for (let layer: Layer | null = root; layer; layer = layer.child) {
     if (layer.pull && isActive(layer.pull) && !layer.child) measureCopy(layer);
   }
   render();
-}).catch(() => { /* The Korean system-font fallback remains interactive. */ });
+}).catch(() => { /* The system-font fallback remains interactive. */ });

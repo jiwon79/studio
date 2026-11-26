@@ -68,20 +68,20 @@ test('nested content is deterministic per slot, sparse, and bounded in depth', (
 
 test('outer slots repeat greeting, hidden inner grid, and closing phrase in a fixed order', () => {
   for (let cycle = -10; cycle <= 10; cycle++) {
-    expect(messageForSlot(cycle * 3, 0)).toStrictEqual(['안녕하세요']);
+    expect(messageForSlot(cycle * 3, 0)).toStrictEqual(['Hello']);
     expect(messageForSlot(cycle * 3 + 1, 0)).toStrictEqual([]);
-    expect(messageForSlot(cycle * 3 + 2, 0)).toStrictEqual(['잘부탁드립니다']);
+    expect(messageForSlot(cycle * 3 + 2, 0)).toStrictEqual(['Nice to meet you']);
   }
 });
 
 test('the name appears only inside the second layer, never after repeated outer pulls', () => {
   const messages = new Set();
   for (let row = -30; row <= 30; row++) {
-    expect(messageForSlot(row, 0).includes('이지원입니다')).toBe(false);
-    expect(messageForSlot(row, 1)).toStrictEqual(['이지원입니다']);
+    expect(messageForSlot(row, 0).includes('I’m Jiiwon')).toBe(false);
+    expect(messageForSlot(row, 1)).toStrictEqual(['I’m Jiiwon']);
     for (const depth of [0, 1]) for (const message of messageForSlot(row, depth)) messages.add(message);
   }
-  expect([...messages].sort()).toStrictEqual(['안녕하세요', '이지원입니다', '잘부탁드립니다'].sort());
+  expect([...messages].sort()).toStrictEqual(['Hello', 'I’m Jiiwon', 'Nice to meet you'].sort());
 });
 
 test('each inner grid stays aligned to its own phase and covers the visible screen', () => {

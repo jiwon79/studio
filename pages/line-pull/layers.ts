@@ -26,8 +26,8 @@ export function isNestedSlot(row: number, depth: number): boolean {
 
 export function messageForSlot(row: number, depth: number): string[] {
   if (isNestedSlot(row, depth)) return [];
-  if (depth > 0) return ['이지원입니다'];
-  return [((row % 3) + 3) % 3 === 0 ? '안녕하세요' : '잘부탁드립니다'];
+  if (depth > 0) return ['I’m Jiiwon'];
+  return [((row % 3) + 3) % 3 === 0 ? 'Hello' : 'Nice to meet you'];
 }
 
 export function layerGap(rootGap: number, depth: number): number {
